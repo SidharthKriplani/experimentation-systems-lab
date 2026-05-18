@@ -2,7 +2,7 @@ export function LockOverlay({ onUnlock }) {
   return (
     <div style={{
       position: 'absolute', inset: 0, zIndex: 10,
-      background: 'rgba(15,17,23,0.92)',
+      background: 'rgba(0,0,0,0.55)',
       backdropFilter: 'blur(4px)',
       borderRadius: '8px',
       display: 'flex',
@@ -14,15 +14,15 @@ export function LockOverlay({ onUnlock }) {
       textAlign: 'center',
     }}>
       <div style={{ fontSize: '2rem' }}>🔒</div>
-      <div style={{ fontWeight: 700, fontSize: '1rem', color: '#e8eaf0' }}>Private Beta</div>
-      <div style={{ color: '#8890a8', fontSize: '0.85rem', maxWidth: '260px' }}>
+      <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>Private Beta</div>
+      <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', maxWidth: '260px' }}>
         This scenario is part of the paid tier. Paid access coming soon — unlock code enabled for private beta.
       </div>
       <button
         onClick={onUnlock}
         style={{
           marginTop: '0.5rem',
-          background: '#5b7fff',
+          background: 'var(--accent)',
           color: '#fff',
           border: 'none',
           borderRadius: '6px',

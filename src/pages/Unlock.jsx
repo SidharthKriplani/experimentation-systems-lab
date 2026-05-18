@@ -21,14 +21,14 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
     return (
       <div style={{ maxWidth: '500px', margin: '4rem auto', padding: '2rem 1.5rem', textAlign: 'center' }}>
         <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✓</div>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#22c55e', marginBottom: '0.75rem' }}>Beta Access Active</h1>
-        <p style={{ color: '#8890a8', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--green)', marginBottom: '0.75rem' }}>Beta Access Active</h1>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
           All 8 scenarios are unlocked. Head to the Scenario Browser to access the paid scenarios.
         </p>
         <button
           onClick={() => onNavigate('browser')}
           style={{
-            background: '#5b7fff', color: '#fff', border: 'none',
+            background: 'var(--accent)', color: '#fff', border: 'none',
             borderRadius: '6px', padding: '0.6rem 1.5rem',
             fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
           }}
@@ -42,17 +42,18 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
   return (
     <div style={{ maxWidth: '480px', margin: '4rem auto', padding: '2rem 1.5rem' }}>
       <div style={{
-        background: '#1a1d27',
-        border: '1px solid #2d3148',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
         borderRadius: '10px',
         padding: '2rem',
+        boxShadow: 'var(--shadow)',
       }}>
         <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🔒</div>
-          <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#e8eaf0', marginBottom: '0.5rem' }}>
+          <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text)', marginBottom: '0.5rem' }}>
             Private Beta Access
           </h1>
-          <p style={{ color: '#8890a8', fontSize: '0.875rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6 }}>
             Paid access coming soon — unlock code enabled for private beta.
             Enter your access code to unlock all 8 scenarios.
           </p>
@@ -60,16 +61,16 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
 
         {success ? (
           <div style={{
-            background: '#0d2e1a', border: '1px solid #22c55e',
+            background: 'var(--green-bg)', border: '1px solid var(--green-border)',
             borderRadius: '6px', padding: '1rem', textAlign: 'center',
-            color: '#22c55e', fontWeight: 700,
+            color: 'var(--green)', fontWeight: 700,
           }}>
             ✓ Code accepted — unlocking access...
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#8890a8', display: 'block', marginBottom: '0.4rem' }}>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
                 Access Code
               </label>
               <input
@@ -79,15 +80,15 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
                 placeholder="EXP-LAB-XXXX-XXXX"
                 style={{
                   width: '100%', boxSizing: 'border-box',
-                  background: '#0f1117', border: `1px solid ${error ? '#ef4444' : '#2d3148'}`,
+                  background: 'var(--input-bg)', border: `1px solid ${error ? 'var(--red-border)' : 'var(--border)'}`,
                   borderRadius: '6px', padding: '0.6rem 0.875rem',
-                  color: '#e8eaf0', fontSize: '0.95rem',
+                  color: 'var(--text)', fontSize: '0.95rem',
                   fontFamily: 'monospace', letterSpacing: '0.05em',
                   outline: 'none',
                 }}
               />
               {error && (
-                <div style={{ marginTop: '0.4rem', fontSize: '0.78rem', color: '#ef4444' }}>{error}</div>
+                <div style={{ marginTop: '0.4rem', fontSize: '0.78rem', color: 'var(--red)' }}>{error}</div>
               )}
             </div>
             <button
@@ -95,9 +96,9 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
               disabled={!code.trim()}
               style={{
                 width: '100%',
-                background: code.trim() ? '#5b7fff' : '#1a1d27',
-                color: code.trim() ? '#fff' : '#545b7a',
-                border: `1px solid ${code.trim() ? '#5b7fff' : '#2d3148'}`,
+                background: code.trim() ? 'var(--accent)' : 'var(--surface-2)',
+                color: code.trim() ? '#fff' : 'var(--text-dim)',
+                border: `1px solid ${code.trim() ? 'var(--accent)' : 'var(--border)'}`,
                 borderRadius: '6px', padding: '0.65rem',
                 fontWeight: 700, fontSize: '0.9rem', cursor: code.trim() ? 'pointer' : 'not-allowed',
               }}
@@ -107,7 +108,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
           </form>
         )}
 
-        <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid #1e2235', fontSize: '0.75rem', color: '#545b7a', textAlign: 'center' }}>
+        <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-subtle)', fontSize: '0.75rem', color: 'var(--text-dim)', textAlign: 'center' }}>
           Access status stored locally in your browser. No account required.
         </div>
       </div>

@@ -18,29 +18,29 @@ export function Button({ children, onClick, variant = 'primary', disabled, fullW
 
   const variants = {
     primary: {
-      background: '#5b7fff',
+      background: 'var(--accent)',
       color: '#fff',
-      borderColor: '#5b7fff',
+      borderColor: 'var(--accent)',
     },
     secondary: {
-      background: '#1a1d27',
-      color: '#e8eaf0',
-      borderColor: '#2d3148',
+      background: 'var(--surface-2)',
+      color: 'var(--text)',
+      borderColor: 'var(--border)',
     },
     ghost: {
       background: 'transparent',
-      color: '#8890a8',
+      color: 'var(--text-muted)',
       borderColor: 'transparent',
     },
     danger: {
-      background: '#2e0d0d',
-      color: '#ef4444',
-      borderColor: '#ef4444',
+      background: 'var(--red-bg)',
+      color: 'var(--red)',
+      borderColor: 'var(--red-border)',
     },
     success: {
-      background: '#0d2e1a',
-      color: '#22c55e',
-      borderColor: '#22c55e',
+      background: 'var(--green-bg)',
+      color: 'var(--green)',
+      borderColor: 'var(--green-border)',
     },
   };
 

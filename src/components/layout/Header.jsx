@@ -1,7 +1,8 @@
-export function Header({ currentPage, onNavigate, unlockedStatus }) {
+export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme }) {
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'browser', label: 'Scenarios' },
+    { id: 'bank', label: 'Judgment Bank' },
     { id: 'progress', label: 'Progress' },
     { id: 'about', label: 'Methodology' },
   ];
@@ -11,9 +12,9 @@ export function Header({ currentPage, onNavigate, unlockedStatus }) {
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      background: 'rgba(15,17,23,0.95)',
+      background: 'var(--header-bg)',
       backdropFilter: 'blur(8px)',
-      borderBottom: '1px solid #1e2235',
+      borderBottom: '1px solid var(--border-subtle)',
       padding: '0 1.5rem',
     }}>
       <div style={{
@@ -38,12 +39,12 @@ export function Header({ currentPage, onNavigate, unlockedStatus }) {
         >
           <div style={{
             width: '28px', height: '28px',
-            background: 'linear-gradient(135deg, #5b7fff, #a78bfa)',
+            background: 'linear-gradient(135deg, var(--accent), var(--purple))',
             borderRadius: '6px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '14px',
           }}>⚗</div>
-          <span style={{ fontWeight: 700, fontSize: '0.9rem', color: '#e8eaf0', letterSpacing: '-0.01em' }}>
+          <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)', letterSpacing: '-0.01em' }}>
             Experimentation Systems Lab
           </span>
         </button>
@@ -54,11 +55,11 @@ export function Header({ currentPage, onNavigate, unlockedStatus }) {
               key={item.id}
               onClick={() => onNavigate(item.id)}
               style={{
-                background: currentPage === item.id ? '#1a1d27' : 'none',
+                background: currentPage === item.id ? 'var(--surface-2)' : 'none',
                 border: 'none',
                 borderRadius: '5px',
                 padding: '0.4rem 0.75rem',
-                color: currentPage === item.id ? '#e8eaf0' : '#8890a8',
+                color: currentPage === item.id ? 'var(--text)' : 'var(--text-muted)',
                 fontWeight: currentPage === item.id ? 600 : 400,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
@@ -68,15 +69,36 @@ export function Header({ currentPage, onNavigate, unlockedStatus }) {
               {item.label}
             </button>
           ))}
+
+          {/* Theme toggle */}
+          <button
+            onClick={onToggleTheme}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              background: 'none',
+              border: '1px solid var(--border)',
+              borderRadius: '5px',
+              padding: '0.35rem 0.55rem',
+              color: 'var(--text-muted)',
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              marginLeft: '0.25rem',
+            }}
+          >
+            {theme === 'dark' ? '☀' : '🌙'}
+          </button>
+
           {!unlockedStatus && (
             <button
               onClick={() => onNavigate('unlock')}
               style={{
-                background: '#1a1d27',
-                border: '1px solid #2d3148',
+                background: 'var(--surface-2)',
+                border: '1px solid var(--border)',
                 borderRadius: '5px',
                 padding: '0.35rem 0.75rem',
-                color: '#8890a8',
+                color: 'var(--text-muted)',
                 fontSize: '0.8rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -91,11 +113,11 @@ export function Header({ currentPage, onNavigate, unlockedStatus }) {
           {unlockedStatus && (
             <span style={{
               fontSize: '0.75rem',
-              color: '#22c55e',
+              color: 'var(--green)',
               fontWeight: 600,
               padding: '0.35rem 0.75rem',
-              background: '#0d2e1a',
-              border: '1px solid #22c55e',
+              background: 'var(--green-bg)',
+              border: '1px solid var(--green-border)',
               borderRadius: '5px',
             }}>✓ Beta Access</span>
           )}

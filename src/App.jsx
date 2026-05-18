@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { scenarios } from './data/scenarios.js';
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -7,15 +7,34 @@ import { ScenarioBrowser } from './pages/ScenarioBrowser.jsx';
 import { Progress } from './pages/Progress.jsx';
 import { Unlock } from './pages/Unlock.jsx';
 import { About } from './pages/About.jsx';
+import { JudgmentBank } from './pages/JudgmentBank.jsx';
 import { ScenarioRunner } from './components/scenario/ScenarioRunner.jsx';
 import { getAllProgress } from './utils/progress.js';
 import { isUnlocked } from './utils/unlock.js';
+
+function getInitialTheme() {
+  try {
+    return localStorage.getItem('exp-lab-theme') === 'dark' ? 'dark' : 'light';
+  } catch (e) {
+    return 'light';
+  }
+}
 
 export default function App() {
   const [page, setPage] = useState('home');
   const [activeScenarioId, setActiveScenarioId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
+  const [theme, setTheme] = useState(getInitialTheme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : '');
+    try { localStorage.setItem('exp-lab-theme', theme); } catch (e) {}
+  }, [theme]);
+
+  function toggleTheme() {
+    setTheme(t => t === 'dark' ? 'light' : 'dark');
+  }
 
   function refreshProgress() {
     setProgressSnapshot(getAllProgress());
@@ -55,8 +74,8 @@ export default function App() {
   const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Header currentPage={page} onNavigate={navigate} unlockedStatus={unlocked} />
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
+      <Header currentPage={page} onNavigate={navigate} unlockedStatus={unlocked} theme={theme} onToggleTheme={toggleTheme} />
       <main style={{ flex: 1 }}>
         {page === 'home' && (
           <Home onNavigate={navigate} onStartScenario={openScenario} />
@@ -95,6 +114,7 @@ export default function App() {
           />
         )}
         {page === 'about' && <About />}
+        {page === 'bank' && <JudgmentBank onNavigate={navigate} />}
       </main>
       <Footer />
     </div>

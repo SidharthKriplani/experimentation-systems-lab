@@ -1,30 +1,103 @@
 @import "tailwindcss";
 
+/* ── Theme Variables ──────────────────────────────────────────── */
+:root {
+  --bg: #f9f8f6;
+  --surface: #ffffff;
+  --surface-2: #f4f2ee;
+  --border: #e5e1d8;
+  --border-subtle: #ede9e3;
+  --text: #1e2a3a;
+  --text-secondary: #374151;
+  --text-muted: #6b7a96;
+  --text-dim: #9ba5be;
+  --accent: #4f63d2;
+  --accent-hover: #3d50c0;
+  --accent-bg: #eef1fb;
+  --accent-border: #bfdbfe;
+  --green: #15803d;
+  --green-bg: #f0fdf4;
+  --green-border: #86efac;
+  --red: #b91c1c;
+  --red-bg: #fef2f2;
+  --red-border: #fca5a5;
+  --yellow: #b45309;
+  --yellow-bg: #fffbeb;
+  --yellow-border: #fde68a;
+  --yellow-text: #92400e;
+  --purple: #6d28d9;
+  --purple-bg: #f5f3ff;
+  --purple-border: #c4b5fd;
+  --blue-text: #1e40af;
+  --blue-bg: #eff6ff;
+  --blue-border: #bfdbfe;
+  --header-bg: rgba(249, 248, 246, 0.95);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --input-bg: #ffffff;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface-2: #21253a;
+  --border: #2d3148;
+  --border-subtle: #1e2235;
+  --text: #e8eaf0;
+  --text-secondary: #c5c9d8;
+  --text-muted: #8890a8;
+  --text-dim: #545b7a;
+  --accent: #5b7fff;
+  --accent-hover: #7395ff;
+  --accent-bg: #0d1629;
+  --accent-border: #1d3a6e;
+  --green: #22c55e;
+  --green-bg: #0d2e1a;
+  --green-border: #22c55e;
+  --red: #ef4444;
+  --red-bg: #2e0d0d;
+  --red-border: #ef4444;
+  --yellow: #f59e0b;
+  --yellow-bg: #2e200d;
+  --yellow-border: #f59e0b;
+  --yellow-text: #fbbf24;
+  --purple: #a78bfa;
+  --purple-bg: #1e1030;
+  --purple-border: #7c3aed;
+  --blue-text: #93b4f5;
+  --blue-bg: #0d1629;
+  --blue-border: #1d3a6e;
+  --header-bg: rgba(15, 17, 23, 0.95);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --input-bg: #0f1117;
+}
+
+/* ── Base ────────────────────────────────────────────────────── */
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
   padding: 0;
-  background: #0f1117;
-  color: #e8eaf0;
+  background: var(--bg);
+  color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   line-height: 1.6;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.3;
   font-weight: 600;
-  color: #e8eaf0;
+  color: var(--text);
   margin: 0;
 }
 
-a { color: #5b7fff; text-decoration: none; }
-a:hover { color: #7395ff; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0f1117; }
-::-webkit-scrollbar-thumb { background: #2d3148; border-radius: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
 .mono {
   font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', Consolas, monospace;

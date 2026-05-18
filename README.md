@@ -4,6 +4,8 @@
 
 A static decision simulator for product analysts and data scientists who already understand A/B testing basics — and want to practice making judgment calls under messy, realistic experiment data.
 
+Built for product analysts, data scientists, growth analysts, and PMs.
+
 ---
 
 ## What this is
@@ -14,7 +16,7 @@ Not a statistics course. No primers, no glossary, no certificate. You're dropped
 
 ---
 
-## V1 Scope — 8 Scenarios
+## V1.1 — Current
 
 | Tier | Scenario | Difficulty | Theme |
 |------|----------|------------|-------|
@@ -27,6 +29,13 @@ Not a statistics course. No primers, no glossary, no certificate. You're dropped
 | Beta | The Two-Sided Spill | Staff | Marketplace Interference / SUTVA |
 | Beta | False Rigor | Senior | When Not to Experiment |
 
+**V1.1 additions:**
+- Light/dark theme toggle (default light, persists in localStorage)
+- Judgment Bank page — 50-scenario architecture across 15 families (8 playable + 42 planned cards)
+- Improved homepage with "Why this is different" section
+- Enhanced scenario browser with difficulty + industry filters
+- Full CSS variable system for theming
+
 ---
 
 ## Tech Stack
@@ -34,7 +43,7 @@ Not a statistics course. No primers, no glossary, no certificate. You're dropped
 - **React** + **Vite** v8
 - **Tailwind CSS** v4 via `@tailwindcss/vite`
 - Static frontend only — no backend, no database, no API calls
-- `localStorage` for progress and unlock state
+- `localStorage` for progress, unlock state, and theme preference
 - Deployable to Vercel free tier
 
 ---
@@ -78,22 +87,23 @@ Output in `dist/`.
 ```
 src/
   data/
-    scenarios.js          # All 8 scenario objects — the core content file
+    scenarios.js          # All 8 playable scenario objects
+    scenarioBank.js       # 42 planned scenario metadata (V1.5/V2 roadmap)
   components/
     layout/
-      Header.jsx
+      Header.jsx          # Nav + theme toggle
       Footer.jsx
     scenario/
-      ScenarioCard.jsx    # Browser grid card
-      ContextPanel.jsx    # Company / background / hypothesis
+      ScenarioCard.jsx
+      ContextPanel.jsx
       ExperimentDesign.jsx
-      MetricTable.jsx     # Readout table with severity coloring
-      WarningFlags.jsx    # Flag cards with severity indicators
-      FlagChecklist.jsx   # Interactive pre-decision self-reflection
-      DecisionPanel.jsx   # Radio-style decision selector
-      ScoreReveal.jsx     # Junior Miss / Analyst-Ready / Senior-Ready / Staff-Level
-      DebriefPanel.jsx    # Full debrief: feedback + senior read + flags
-      ScenarioRunner.jsx  # Main orchestrator: tabbed left panel + decision right
+      MetricTable.jsx
+      WarningFlags.jsx
+      FlagChecklist.jsx
+      DecisionPanel.jsx
+      ScoreReveal.jsx
+      DebriefPanel.jsx
+      ScenarioRunner.jsx
     ui/
       Badge.jsx
       Button.jsx
@@ -101,21 +111,22 @@ src/
   pages/
     Home.jsx
     ScenarioBrowser.jsx
+    JudgmentBank.jsx      # 50-scenario bank (new in V1.1)
     Progress.jsx
     Unlock.jsx
     About.jsx
   utils/
-    progress.js           # localStorage progress helpers
-    scoring.js            # Score level definitions
-    unlock.js             # Unlock code validation
-  App.jsx                 # Page state machine
+    progress.js
+    scoring.js
+    unlock.js
+  App.jsx
   main.jsx
-  index.css
+  index.css              # CSS variable theme system (light + dark)
 ```
 
 ---
 
-## Scenario Schema (summary)
+## Scenario Schema
 
 ```js
 {
@@ -131,7 +142,6 @@ src/
   idealDecision, secondBestDecision,
   juniorMistake, seniorFlags, staffFlags,
   debrief, interviewTakeaway, relatedConcepts,
-  // V2 fields: scenarioFamily, tags, conceptTags, nextTestIdeas, stakeholderSummary
 }
 ```
 
@@ -145,7 +155,13 @@ QA unlock code for all 4 paid scenarios:
 EXP-LAB-DEV-2026
 ```
 
-Enter on the Unlock page. Stored in `localStorage` — no account required. Real payment integration not implemented in V1.
+Enter on the Unlock page. Stored in `localStorage` — no account required.
+
+---
+
+## Theme System
+
+CSS custom properties on `:root` (light, default) and `:root[data-theme="dark"]`. Theme toggled via the header button, persisted in `localStorage` key `exp-lab-theme`. Flash-of-wrong-theme prevented by inline script in `index.html`.
 
 ---
 
@@ -153,9 +169,10 @@ Enter on the Unlock page. Stored in `localStorage` — no account required. Real
 
 | Version | Scope |
 |---------|-------|
-| **V1** (current) | 8 scenarios · Free + beta tiers |
+| **V1** (shipped) | 8 scenarios · Free + beta tiers |
+| **V1.1** (current) | Light/dark theme · 50-scenario Judgment Bank architecture |
 | V1.5 | 20 scenarios · Geo-holdout, CUPED, switchback, cannibalization, right-censored metrics |
-| V2 | 50-scenario Experiment Judgment Bank · 15 scenario families |
+| V2 | 50-scenario Experiment Judgment Bank · 15 scenario families fully playable |
 
 ---
 
