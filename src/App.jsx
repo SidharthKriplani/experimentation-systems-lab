@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
 import { scenarios } from './data/scenarios.js';
 import { designScenarios } from './data/designScenarios.js';
+import { statsModules } from './data/statsModules.js';
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
 import { Home } from './pages/Home.jsx';
 import { ScenarioBrowser } from './pages/ScenarioBrowser.jsx';
 import { DesignBrowser } from './pages/DesignBrowser.jsx';
+import { StatsBrowser } from './pages/StatsBrowser.jsx';
 import { Progress } from './pages/Progress.jsx';
 import { Unlock } from './pages/Unlock.jsx';
 import { About } from './pages/About.jsx';
 import { JudgmentBank } from './pages/JudgmentBank.jsx';
 import { ScenarioRunner } from './components/scenario/ScenarioRunner.jsx';
 import { DesignRunner } from './components/design/DesignRunner.jsx';
+import { StatsRunner } from './components/stats/StatsRunner.jsx';
 import { getAllProgress } from './utils/progress.js';
 import { getDesignProgress } from './utils/designProgress.js';
+import { getStatsProgress } from './utils/statsProgress.js';
 import { isUnlocked } from './utils/unlock.js';
 
 function getInitialTheme() {
@@ -28,6 +32,7 @@ export default function App() {
   const [page, setPage] = useState('home');
   const [activeScenarioId, setActiveScenarioId] = useState(null);
   const [activeDesignScenarioId, setActiveDesignScenarioId] = useState(null);
+  const [activeStatsModuleId, setActiveStatsModuleId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
   const [theme, setTheme] = useState(getInitialTheme);
@@ -49,6 +54,16 @@ export default function App() {
     setPage(target);
     setActiveScenarioId(null);
     setActiveDesignScenarioId(null);
+    setActiveStatsModuleId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openStatsModule(id) {
+    const module = statsModules.find(m => m.id === id);
+    if (!module) return;
+    if (!module.isFree && !unlocked) { setPage('unlock'); return; }
+    setActiveStatsModuleId(id);
+    setPage('stats-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -91,6 +106,7 @@ export default function App() {
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
   const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
   const activeDesignScenario = designScenarios.find(s => s.id === activeDesignScenarioId);
+  const activeStatsModule = statsModules.find(m => m.id === activeStatsModuleId);
 
   // Paired design scenario for a given review scenario id
   function getPairedDesignId(reviewScenarioId) {
@@ -104,6 +120,23 @@ export default function App() {
       <main style={{ flex: 1 }}>
         {page === 'home' && (
           <Home onNavigate={navigate} onStartScenario={openScenario} />
+        )}
+        {page === 'stats' && (
+          <StatsBrowser
+            onSelectModule={openStatsModule}
+            unlocked={unlocked}
+            onUnlock={() => navigate('unlock')}
+          />
+        )}
+        {page === 'stats-runner' && activeStatsModule && (
+          <StatsRunner
+            key={activeStatsModuleId}
+            module={activeStatsModule}
+            savedProgress={getStatsProgress(activeStatsModuleId)}
+            onBack={() => navigate('stats')}
+            onGoToReview={id => openScenario(id)}
+            onGoToDesign={id => openDesignScenario(id)}
+          />
         )}
         {page === 'design' && (
           <DesignBrowser

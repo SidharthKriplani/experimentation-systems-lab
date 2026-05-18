@@ -1,6 +1,7 @@
 export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme }) {
   const navItems = [
     { id: 'home', label: 'Home' },
+    { id: 'stats', label: 'Stats' },
     { id: 'design', label: 'Design' },
     { id: 'browser', label: 'Review' },
     { id: 'bank', label: 'Judgment Bank' },
@@ -47,7 +48,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               Product Analytics Lab
             </span>
             <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)', letterSpacing: '0.02em', lineHeight: 1.1 }}>
-              Analytics judgment gym · V1.2
+              Analytics judgment gym · V1.5
             </span>
           </div>
         </button>
@@ -56,6 +57,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
         <nav style={{ display: 'flex', alignItems: 'center', gap: '0.15rem' }}>
           {navItems.map(item => {
             const isActive = currentPage === item.id
+              || (item.id === 'stats' && currentPage === 'stats-runner')
               || (item.id === 'design' && currentPage === 'design-runner')
               || (item.id === 'browser' && currentPage === 'runner');
             return (

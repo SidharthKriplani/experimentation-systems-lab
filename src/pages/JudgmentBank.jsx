@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { scenarios } from '../data/scenarios.js';
 import { designScenarios } from '../data/designScenarios.js';
+import { statsModules } from '../data/statsModules.js';
 import { plannedScenarios, SCENARIO_FAMILIES } from '../data/scenarioBank.js';
 
 const DIFFICULTY_COLORS = {
