@@ -13,7 +13,8 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
       top: 0,
       zIndex: 100,
       background: 'var(--header-bg)',
-      backdropFilter: 'blur(8px)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
       borderBottom: '1px solid var(--border-subtle)',
       padding: '0 1.5rem',
     }}>
@@ -23,33 +24,35 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        height: '56px',
+        height: '54px',
       }}>
+        {/* Logo */}
         <button
           onClick={() => onNavigate('home')}
           style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.6rem',
-            padding: 0,
+            background: 'none', border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: '0.55rem', padding: 0,
           }}
         >
           <div style={{
-            width: '28px', height: '28px',
-            background: 'linear-gradient(135deg, var(--accent), var(--purple))',
+            width: '26px', height: '26px',
+            background: 'linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%)',
             borderRadius: '6px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '14px',
+            fontSize: '13px', flexShrink: 0,
           }}>⚗</div>
-          <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)', letterSpacing: '-0.01em' }}>
-            Experimentation Systems Lab
-          </span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+            <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+              Experimentation Systems Lab
+            </span>
+            <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)', letterSpacing: '0.02em', lineHeight: 1.1 }}>
+              Experiment Review Room · V1.1
+            </span>
+          </div>
         </button>
 
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+        {/* Nav */}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.15rem' }}>
           {navItems.map(item => (
             <button
               key={item.id}
@@ -58,17 +61,22 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
                 background: currentPage === item.id ? 'var(--surface-2)' : 'none',
                 border: 'none',
                 borderRadius: '5px',
-                padding: '0.4rem 0.75rem',
+                padding: '0.35rem 0.7rem',
                 color: currentPage === item.id ? 'var(--text)' : 'var(--text-muted)',
                 fontWeight: currentPage === item.id ? 600 : 400,
-                fontSize: '0.85rem',
+                fontSize: '0.83rem',
                 cursor: 'pointer',
-                transition: 'all 0.15s',
+                transition: 'color 0.12s, background 0.12s',
+                whiteSpace: 'nowrap',
               }}
+              onMouseEnter={e => { if (currentPage !== item.id) e.currentTarget.style.color = 'var(--text-secondary)'; }}
+              onMouseLeave={e => { if (currentPage !== item.id) e.currentTarget.style.color = 'var(--text-muted)'; }}
             >
               {item.label}
             </button>
           ))}
+
+          <div style={{ width: '1px', height: '18px', background: 'var(--border)', margin: '0 0.35rem' }} />
 
           {/* Theme toggle */}
           <button
@@ -78,13 +86,12 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               background: 'none',
               border: '1px solid var(--border)',
               borderRadius: '5px',
-              padding: '0.35rem 0.55rem',
+              padding: '0.3rem 0.5rem',
               color: 'var(--text-muted)',
-              fontSize: '0.85rem',
+              fontSize: '0.8rem',
               cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              marginLeft: '0.25rem',
+              display: 'flex', alignItems: 'center',
+              lineHeight: 1,
             }}
           >
             {theme === 'dark' ? '☀' : '🌙'}
@@ -97,29 +104,28 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
                 background: 'var(--surface-2)',
                 border: '1px solid var(--border)',
                 borderRadius: '5px',
-                padding: '0.35rem 0.75rem',
+                padding: '0.3rem 0.65rem',
                 color: 'var(--text-muted)',
-                fontSize: '0.8rem',
+                fontSize: '0.78rem',
                 fontWeight: 600,
                 cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.35rem',
+                display: 'flex', alignItems: 'center', gap: '0.3rem',
+                marginLeft: '0.15rem',
               }}
             >
-              🔒 Private Beta
+              🔒 Beta
             </button>
           )}
           {unlockedStatus && (
             <span style={{
-              fontSize: '0.75rem',
+              fontSize: '0.72rem', fontWeight: 600,
+              padding: '0.3rem 0.65rem',
               color: 'var(--green)',
-              fontWeight: 600,
-              padding: '0.35rem 0.75rem',
               background: 'var(--green-bg)',
               border: '1px solid var(--green-border)',
               borderRadius: '5px',
-            }}>✓ Beta Access</span>
+              marginLeft: '0.15rem',
+            }}>✓ Beta</span>
           )}
         </nav>
       </div>

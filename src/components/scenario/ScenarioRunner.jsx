@@ -11,11 +11,11 @@ import { saveAttempt } from '../../utils/progress.js';
 
 function PanelHeader({ title, subtitle }) {
   return (
-    <div style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-subtle)' }}>
-      <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.2rem' }}>
+    <div style={{ marginBottom: '1rem', paddingBottom: '0.7rem', borderBottom: '1px solid var(--border-subtle)' }}>
+      <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-dim)', marginBottom: '0.15rem' }}>
         {subtitle}
       </div>
-      <h3 style={{ fontSize: '0.975rem', fontWeight: 700, color: 'var(--text)', margin: 0 }}>{title}</h3>
+      <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text)', margin: 0 }}>{title}</h3>
     </div>
   );
 }
@@ -25,7 +25,7 @@ function Card({ children, style }) {
     <div style={{
       background: 'var(--surface)',
       border: '1px solid var(--border)',
-      borderRadius: '8px',
+      borderRadius: 'var(--radius)',
       padding: '1.25rem',
       boxShadow: 'var(--shadow)',
       ...style,
@@ -35,7 +35,12 @@ function Card({ children, style }) {
   );
 }
 
-const LEFT_TABS = ['Context', 'Design', 'Metrics', 'Flags'];
+const TABS = [
+  { id: 'Context', label: 'Context', hint: 'Company & setup' },
+  { id: 'Design',  label: 'Design',  hint: 'How it was run' },
+  { id: 'Metrics', label: 'Metrics', hint: 'The readout' },
+  { id: 'Flags',   label: 'Flags',   hint: 'Warning signs' },
+];
 
 export function ScenarioRunner({ scenario, onBack, onNext, hasNext }) {
   const [leftTab, setLeftTab] = useState('Context');
@@ -71,65 +76,111 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext }) {
   }
 
   const selectedDecisionObj = scenario.decisions.find(d => d.id === selectedDecision);
+  const difficultyLabel = { analyst: 'Analyst', senior: 'Senior', staff: 'Staff' }[scenario.difficulty] || scenario.difficulty;
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.5rem' }}>
-      {/* Back + Title */}
-      <div style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '1.5rem 1.5rem 3rem' }}>
+
+      {/* ── Back + title bar ──────────────────────────────────────────── */}
+      <div style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'flex-start', gap: '0.875rem', flexWrap: 'wrap' }}>
         <button
           onClick={onBack}
           style={{
-            background: 'none', border: '1px solid var(--border)', borderRadius: '5px',
-            padding: '0.35rem 0.75rem', color: 'var(--text-muted)', fontSize: '0.8rem',
-            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem',
+            background: 'none', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)',
+            padding: '0.3rem 0.65rem', color: 'var(--text-muted)', fontSize: '0.78rem',
+            cursor: 'pointer', flexShrink: 0, marginTop: '3px',
           }}
         >
           ← Scenarios
         </button>
-        <div>
-          <h1 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>
-            {scenario.title}
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.15rem 0 0' }}>{scenario.subtitle}</p>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.15rem', flexWrap: 'wrap' }}>
+            <h1 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em' }}>
+              {scenario.title}
+            </h1>
+            <span style={{
+              fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+              color: scenario.isFree ? 'var(--accent)' : 'var(--teal)',
+              background: scenario.isFree ? 'var(--accent-bg)' : 'var(--teal-bg)',
+              border: `1px solid ${scenario.isFree ? 'var(--accent-border)' : 'var(--teal-border)'}`,
+              borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.45rem',
+            }}>{scenario.isFree ? 'Free' : 'Private Beta'}</span>
+            <span style={{
+              fontSize: '0.62rem', fontWeight: 600, color: 'var(--text-dim)',
+              background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.45rem',
+            }}>{difficultyLabel}</span>
+          </div>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.83rem', margin: 0 }}>{scenario.subtitle}</p>
         </div>
       </div>
 
-      {/* Main layout */}
+      {/* ── Workflow hint (pre-submit) ────────────────────────────────── */}
+      {!submitted && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0', marginBottom: '1.25rem',
+          background: 'var(--surface)', border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius)', padding: '0.5rem 0.875rem',
+          fontSize: '0.72rem', color: 'var(--text-dim)', overflowX: 'auto',
+        }}>
+          {['Context', 'Design', 'Metrics', 'Flags', 'Decision'].map((step, i) => (
+            <span key={step} style={{ display: 'flex', alignItems: 'center', gap: '0', flexShrink: 0 }}>
+              <span style={{
+                color: leftTab === step ? 'var(--accent)' : (i === 4 ? 'var(--text-dim)' : 'var(--text-muted)'),
+                fontWeight: leftTab === step ? 700 : 400,
+                padding: '0 0.1rem',
+                cursor: i < 4 ? 'pointer' : 'default',
+              }}
+                onClick={() => { if (i < 4) setLeftTab(step); }}
+              >{step}</span>
+              {i < 4 && <span style={{ margin: '0 0.3rem', color: 'var(--border-strong)' }}>→</span>}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* ── Main 2-col layout ─────────────────────────────────────────── */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 380px',
+        gridTemplateColumns: 'minmax(0, 1fr) 360px',
         gap: '1.25rem',
         alignItems: 'start',
       }}>
-        {/* LEFT: Tabbed info panel */}
+
+        {/* LEFT: Tabbed info */}
         <div>
           {/* Tab nav */}
           <div style={{
-            display: 'flex', gap: '0.25rem', marginBottom: '1rem',
-            background: 'var(--surface)', border: '1px solid var(--border)',
-            borderRadius: '8px', padding: '4px',
+            display: 'flex', gap: '2px', marginBottom: '0.875rem',
+            background: 'var(--surface-2)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius)', padding: '3px',
           }}>
-            {LEFT_TABS.map(tab => (
+            {TABS.map(tab => (
               <button
-                key={tab}
-                onClick={() => setLeftTab(tab)}
+                key={tab.id}
+                onClick={() => setLeftTab(tab.id)}
+                title={tab.hint}
                 style={{
                   flex: 1,
-                  background: leftTab === tab ? 'var(--surface-2)' : 'transparent',
-                  border: 'none', borderRadius: '5px',
-                  padding: '0.4rem 0.5rem',
-                  color: leftTab === tab ? 'var(--text)' : 'var(--text-muted)',
-                  fontWeight: leftTab === tab ? 600 : 400,
-                  fontSize: '0.82rem', cursor: 'pointer', transition: 'all 0.15s',
+                  background: leftTab === tab.id ? 'var(--surface)' : 'transparent',
+                  border: leftTab === tab.id ? '1px solid var(--border)' : '1px solid transparent',
+                  borderRadius: 'calc(var(--radius) - 2px)',
+                  padding: '0.38rem 0.4rem',
+                  color: leftTab === tab.id ? 'var(--text)' : 'var(--text-muted)',
+                  fontWeight: leftTab === tab.id ? 600 : 400,
+                  fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.12s',
+                  boxShadow: leftTab === tab.id ? 'var(--shadow-sm)' : 'none',
+                  position: 'relative',
                 }}
               >
-                {tab}
-                {tab === 'Flags' && scenario.warningFlags?.length > 0 && (
+                {tab.label}
+                {tab.id === 'Flags' && scenario.warningFlags?.length > 0 && (
                   <span style={{
-                    marginLeft: '0.3rem',
+                    marginLeft: '0.25rem',
                     background: 'var(--red-bg)', color: 'var(--red)',
-                    borderRadius: '10px', padding: '0 5px',
-                    fontSize: '0.65rem', fontWeight: 800,
+                    border: '1px solid var(--red-border)',
+                    borderRadius: '10px', padding: '0 4px',
+                    fontSize: '0.6rem', fontWeight: 800, verticalAlign: 'middle',
                   }}>{scenario.warningFlags.length}</span>
                 )}
               </button>
@@ -157,44 +208,47 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext }) {
             )}
             {leftTab === 'Flags' && (
               <>
-                {!submitted ? (
-                  <>
-                    <PanelHeader title="Warning Flags" subtitle="Self-Reflection" />
-                    <FlagChecklist flags={scenario.warningFlags} checked={checkedFlags} onToggle={handleFlagToggle} />
-                  </>
-                ) : (
-                  <>
-                    <PanelHeader title="Warning Flags" subtitle="All Flags" />
-                    <WarningFlags flags={scenario.warningFlags} />
-                  </>
-                )}
+                {!submitted
+                  ? (
+                    <>
+                      <PanelHeader title="Warning Flags" subtitle="Self-Check" />
+                      <FlagChecklist flags={scenario.warningFlags} checked={checkedFlags} onToggle={handleFlagToggle} />
+                    </>
+                  ) : (
+                    <>
+                      <PanelHeader title="Warning Flags" subtitle="All Flags" />
+                      <WarningFlags flags={scenario.warningFlags} />
+                    </>
+                  )
+                }
               </>
             )}
           </Card>
 
-          {/* Quick nav hint */}
+          {/* Quick tab links */}
           {!submitted && (
-            <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              {LEFT_TABS.filter(t => t !== leftTab).map(tab => (
-                <button key={tab} onClick={() => setLeftTab(tab)} style={{
+            <div style={{ marginTop: '0.6rem', display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+              {TABS.filter(t => t.id !== leftTab).map(tab => (
+                <button key={tab.id} onClick={() => setLeftTab(tab.id)} style={{
                   background: 'none', border: '1px solid var(--border-subtle)',
-                  borderRadius: '4px', padding: '0.25rem 0.6rem',
-                  color: 'var(--text-dim)', fontSize: '0.75rem', cursor: 'pointer',
+                  borderRadius: 'var(--radius-sm)', padding: '0.22rem 0.55rem',
+                  color: 'var(--text-dim)', fontSize: '0.72rem', cursor: 'pointer',
                 }}>
-                  View {tab} →
+                  {tab.label} →
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* RIGHT: Decision + Submit */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {/* RIGHT: Decision panel */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
           <Card>
-            <PanelHeader title="Make Your Call" subtitle="The Decision" />
-            <div style={{ marginBottom: '0.75rem', fontSize: '0.8rem', color: 'var(--text-dim)', lineHeight: 1.5 }}>
-              Based on the experiment data, what would you recommend?
-            </div>
+            <PanelHeader title="Make Your Call" subtitle="Your Decision" />
+            <p style={{ marginBottom: '0.875rem', fontSize: '0.78rem', color: 'var(--text-dim)', lineHeight: 1.55 }}>
+              Review the context, design, metrics, and flags. Select the recommendation
+              you would make to this team.
+            </p>
             <DecisionPanel
               decisions={scenario.decisions}
               selected={selectedDecision}
@@ -211,56 +265,53 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext }) {
                     background: selectedDecision ? 'var(--accent)' : 'var(--surface-2)',
                     color: selectedDecision ? '#fff' : 'var(--text-dim)',
                     border: `1px solid ${selectedDecision ? 'var(--accent)' : 'var(--border)'}`,
-                    borderRadius: '6px', padding: '0.65rem 1rem',
+                    borderRadius: 'var(--radius)', padding: '0.65rem 1rem',
                     fontWeight: 700, fontSize: '0.9rem',
                     cursor: selectedDecision ? 'pointer' : 'not-allowed',
-                    transition: 'all 0.15s',
+                    transition: 'all 0.13s',
+                    boxShadow: selectedDecision ? 'var(--shadow-sm)' : 'none',
                   }}
                 >
                   Submit Decision →
                 </button>
                 {!selectedDecision && (
-                  <div style={{ textAlign: 'center', fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '0.4rem' }}>
-                    Select a decision above to submit
+                  <div style={{ textAlign: 'center', fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: '0.35rem' }}>
+                    Select a decision above
                   </div>
                 )}
               </div>
             )}
           </Card>
 
+          {/* Post-submit actions */}
           {submitted && selectedDecisionObj && (
             <div id="score-reveal">
               <ScoreReveal scoreKey={selectedDecisionObj.score} decisionLabel={selectedDecisionObj.label} />
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.65rem' }}>
                 <button
                   onClick={() => document.getElementById('debrief-panel')?.scrollIntoView({ behavior: 'smooth' })}
                   style={{
                     background: 'var(--surface-2)', border: '1px solid var(--border)',
-                    borderRadius: '6px', padding: '0.55rem', color: 'var(--text)',
-                    fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer',
+                    borderRadius: 'var(--radius)', padding: '0.5rem',
+                    color: 'var(--text)', fontWeight: 600, fontSize: '0.83rem', cursor: 'pointer',
                   }}
                 >
-                  Read Debrief ↓
+                  Read Senior Analyst Debrief ↓
                 </button>
-                <button
-                  onClick={handleReplay}
-                  style={{
-                    background: 'transparent', border: '1px solid var(--border)',
-                    borderRadius: '6px', padding: '0.55rem', color: 'var(--text-muted)',
-                    fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer',
-                  }}
-                >
-                  Try Another Decision
+                <button onClick={handleReplay} style={{
+                  background: 'transparent', border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius)', padding: '0.5rem',
+                  color: 'var(--text-muted)', fontWeight: 500, fontSize: '0.83rem', cursor: 'pointer',
+                }}>
+                  Try a Different Decision
                 </button>
                 {hasNext && (
-                  <button
-                    onClick={onNext}
-                    style={{
-                      background: 'var(--accent)', border: '1px solid var(--accent)',
-                      borderRadius: '6px', padding: '0.55rem', color: '#fff',
-                      fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
-                    }}
-                  >
+                  <button onClick={onNext} style={{
+                    background: 'var(--accent)', border: '1px solid var(--accent)',
+                    borderRadius: 'var(--radius)', padding: '0.5rem',
+                    color: '#fff', fontWeight: 700, fontSize: '0.83rem', cursor: 'pointer',
+                    boxShadow: 'var(--shadow-sm)',
+                  }}>
                     Next Scenario →
                   </button>
                 )}
@@ -270,22 +321,26 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext }) {
         </div>
       </div>
 
-      {/* Debrief panel — full width below */}
+      {/* ── Debrief — full width ──────────────────────────────────────── */}
       {showDebrief && selectedDecision && (
-        <div id="debrief-panel" style={{ marginTop: '2rem' }}>
+        <div id="debrief-panel" style={{ marginTop: '2.5rem' }}>
           <div style={{
-            borderBottom: '1px solid var(--border)',
-            paddingBottom: '0.75rem', marginBottom: '1.25rem',
             display: 'flex', alignItems: 'center', gap: '0.75rem',
+            borderBottom: '2px solid var(--border)', paddingBottom: '0.875rem', marginBottom: '1.5rem',
           }}>
             <div style={{
-              width: '3px', height: '24px',
-              background: 'linear-gradient(var(--accent), var(--purple))',
-              borderRadius: '2px',
+              width: '3px', height: '22px',
+              background: 'linear-gradient(180deg, var(--accent) 0%, var(--purple) 100%)',
+              borderRadius: '2px', flexShrink: 0,
             }} />
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text)', margin: 0 }}>
-              Senior Analyst Read
-            </h2>
+            <div>
+              <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text)', margin: 0 }}>
+                Senior Analyst Read
+              </h2>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-dim)', margin: '0.1rem 0 0' }}>
+                How a senior analyst would interpret this experiment. Read carefully — this is the learning.
+              </p>
+            </div>
           </div>
           <DebriefPanel scenario={scenario} selectedDecisionId={selectedDecision} />
         </div>

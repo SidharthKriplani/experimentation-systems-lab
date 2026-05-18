@@ -12,6 +12,8 @@ Built for product analysts, data scientists, growth analysts, and PMs.
 
 Not a statistics course. No primers, no glossary, no certificate. You're dropped into a fictional experiment review meeting with real-looking data and asked to make the call: ship, rollback, or investigate? After you decide, you see how a senior analyst would have read the same data.
 
+The answer is rarely "p < 0.05, ship it."
+
 **Target user:** A data scientist or analyst who knows what p-values and A/B testing are, but wants to build judgment under business pressure and messy product data.
 
 ---
@@ -32,9 +34,17 @@ Not a statistics course. No primers, no glossary, no certificate. You're dropped
 **V1.1 additions:**
 - Light/dark theme toggle (default light, persists in localStorage)
 - Judgment Bank page — 50-scenario architecture across 15 families (8 playable + 42 planned cards)
-- Improved homepage with "Why this is different" section
-- Enhanced scenario browser with difficulty + industry filters
-- Full CSS variable system for theming
+- Improved homepage, scenario browser, and runner
+- Full CSS variable design system
+
+---
+
+## Documentation
+
+- [PRD — Product vision, modules, monetization](docs/PRODUCT_ANALYTICS_SYSTEMS_LAB_PRD.md)
+- [Roadmap — V1 through V5](docs/ROADMAP.md)
+- [Content Quality Bar — What makes a scenario shippable](docs/CONTENT_QUALITY_BAR.md)
+- [Scenario Bank Taxonomy — 15 families, 50 scenarios](docs/SCENARIO_BANK_TAXONOMY.md)
 
 ---
 
@@ -111,7 +121,7 @@ src/
   pages/
     Home.jsx
     ScenarioBrowser.jsx
-    JudgmentBank.jsx      # 50-scenario bank (new in V1.1)
+    JudgmentBank.jsx      # 50-scenario bank (V1.1)
     Progress.jsx
     Unlock.jsx
     About.jsx
@@ -122,6 +132,11 @@ src/
   App.jsx
   main.jsx
   index.css              # CSS variable theme system (light + dark)
+docs/
+  PRODUCT_ANALYTICS_SYSTEMS_LAB_PRD.md
+  ROADMAP.md
+  CONTENT_QUALITY_BAR.md
+  SCENARIO_BANK_TAXONOMY.md
 ```
 
 ---
@@ -149,7 +164,7 @@ src/
 
 ## Private Beta Unlock
 
-QA unlock code for all 4 paid scenarios:
+QA unlock code for all 4 beta scenarios:
 
 ```
 EXP-LAB-DEV-2026
@@ -170,9 +185,12 @@ CSS custom properties on `:root` (light, default) and `:root[data-theme="dark"]`
 | Version | Scope |
 |---------|-------|
 | **V1** (shipped) | 8 scenarios · Free + beta tiers |
-| **V1.1** (current) | Light/dark theme · 50-scenario Judgment Bank architecture |
+| **V1.1** (current) | Light/dark theme · 50-scenario Judgment Bank architecture · Documentation |
 | V1.5 | 20 scenarios · Geo-holdout, CUPED, switchback, cannibalization, right-censored metrics |
-| V2 | 50-scenario Experiment Judgment Bank · 15 scenario families fully playable |
+| V2 | Experiment Design Room · 50-scenario Judgment Bank complete |
+| V3+ | Stats & Inference Lab · RCA Room · Full Platform |
+
+See [docs/ROADMAP.md](docs/ROADMAP.md) for full detail.
 
 ---
 
