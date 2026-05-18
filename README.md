@@ -1,8 +1,8 @@
-# Experimentation Systems Lab
+# Product Analytics Lab
 
 **"You know the formulas. Now practice the calls."**
 
-A static decision simulator for product analysts and data scientists who already understand A/B testing basics — and want to practice making judgment calls under messy, realistic experiment data.
+An interactive analytics judgment gym for metrics, experiments, RCA, and product decisions. Practice designing A/B tests from scratch, reviewing messy readouts, and making the calls that separate analysts from seniors.
 
 Built for product analysts, data scientists, growth analysts, and PMs.
 
@@ -10,7 +10,11 @@ Built for product analysts, data scientists, growth analysts, and PMs.
 
 ## What this is
 
-Not a statistics course. No primers, no glossary, no certificate. You're dropped into a fictional experiment review meeting with real-looking data and asked to make the call: ship, rollback, or investigate? After you decide, you see how a senior analyst would have read the same data.
+Not a statistics course. No primers, no glossary, no certificate. Two rooms:
+
+**Review Room** — You're dropped into a fictional experiment readout with real-looking data. Make the call: ship, rollback, or investigate? Then see how a senior analyst would have read the same data.
+
+**Design Room** — You're given a fictional product scenario and asked to design the experiment before any data exists. Set the primary metric, randomization unit, trust checks, and decision rule. Scored across 4 dimensions, compared to a senior analyst standard.
 
 The answer is rarely "p < 0.05, ship it."
 
@@ -18,7 +22,9 @@ The answer is rarely "p < 0.05, ship it."
 
 ---
 
-## V1.1 — Current
+## V1.2 — Current
+
+### Review Room (8 scenarios)
 
 | Tier | Scenario | Difficulty | Theme |
 |------|----------|------------|-------|
@@ -31,11 +37,21 @@ The answer is rarely "p < 0.05, ship it."
 | Beta | The Two-Sided Spill | Staff | Marketplace Interference / SUTVA |
 | Beta | False Rigor | Senior | When Not to Experiment |
 
-**V1.1 additions:**
-- Light/dark theme toggle (default light, persists in localStorage)
-- Judgment Bank page — 50-scenario architecture across 15 families (8 playable + 42 planned cards)
-- Improved homepage, scenario browser, and runner
-- Full CSS variable design system
+### Design Room (4 scenarios, all paired with Review Room counterparts)
+
+| Tier | Scenario | Difficulty | Paired With |
+|------|----------|------------|-------------|
+| Free | Design the Checkout Test | Analyst | The Checkout Trap |
+| Free | Design the Onboarding Assignment | Analyst | The Ghost Assignment |
+| Beta | Design the Mobile Feature Test | Senior | The Mobile Winners |
+| Beta | Design the Multi-Metric Launch | Senior | The Five Metrics Problem |
+
+**V1.2 additions:**
+- **Design Room** — 4 playable design scenarios with 5-phase forms and 4-dimension weighted scoring
+- **Contextual concept cards** — inline `[SRM ↗]` chips open reference drawers (14 concepts)
+- **Paired Design ↔ Review loop** — bidirectional CTAs between paired scenarios
+- **Judgment Bank multi-room** — room filter (Review / Design / Roadmap), paired badges
+- **Platform rename** — Experimentation Systems Lab → Product Analytics Lab
 
 ---
 

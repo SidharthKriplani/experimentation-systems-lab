@@ -1,15 +1,19 @@
 import { useState, useEffect } from 'react';
 import { scenarios } from './data/scenarios.js';
+import { designScenarios } from './data/designScenarios.js';
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
 import { Home } from './pages/Home.jsx';
 import { ScenarioBrowser } from './pages/ScenarioBrowser.jsx';
+import { DesignBrowser } from './pages/DesignBrowser.jsx';
 import { Progress } from './pages/Progress.jsx';
 import { Unlock } from './pages/Unlock.jsx';
 import { About } from './pages/About.jsx';
 import { JudgmentBank } from './pages/JudgmentBank.jsx';
 import { ScenarioRunner } from './components/scenario/ScenarioRunner.jsx';
+import { DesignRunner } from './components/design/DesignRunner.jsx';
 import { getAllProgress } from './utils/progress.js';
+import { getDesignProgress } from './utils/designProgress.js';
 import { isUnlocked } from './utils/unlock.js';
 
 function getInitialTheme() {
@@ -23,6 +27,7 @@ function getInitialTheme() {
 export default function App() {
   const [page, setPage] = useState('home');
   const [activeScenarioId, setActiveScenarioId] = useState(null);
+  const [activeDesignScenarioId, setActiveDesignScenarioId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
   const [theme, setTheme] = useState(getInitialTheme);
@@ -43,6 +48,19 @@ export default function App() {
   function navigate(target) {
     setPage(target);
     setActiveScenarioId(null);
+    setActiveDesignScenarioId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openDesignScenario(id) {
+    const scenario = designScenarios.find(s => s.id === id);
+    if (!scenario) return;
+    if (!scenario.isFree && !unlocked) {
+      setPage('unlock');
+      return;
+    }
+    setActiveDesignScenarioId(id);
+    setPage('design-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -72,6 +90,13 @@ export default function App() {
 
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
   const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
+  const activeDesignScenario = designScenarios.find(s => s.id === activeDesignScenarioId);
+
+  // Paired design scenario for a given review scenario id
+  function getPairedDesignId(reviewScenarioId) {
+    const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
+    return d?.id || null;
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
@@ -79,6 +104,22 @@ export default function App() {
       <main style={{ flex: 1 }}>
         {page === 'home' && (
           <Home onNavigate={navigate} onStartScenario={openScenario} />
+        )}
+        {page === 'design' && (
+          <DesignBrowser
+            onSelectScenario={openDesignScenario}
+            unlocked={unlocked}
+            onUnlock={() => navigate('unlock')}
+          />
+        )}
+        {page === 'design-runner' && activeDesignScenario && (
+          <DesignRunner
+            key={activeDesignScenarioId}
+            scenario={activeDesignScenario}
+            savedProgress={getDesignProgress(activeDesignScenarioId)}
+            onBack={() => navigate('design')}
+            onGoToReview={id => openScenario(id)}
+          />
         )}
         {page === 'browser' && (
           <ScenarioBrowser
@@ -96,6 +137,8 @@ export default function App() {
             onBack={() => { navigate('browser'); refreshProgress(); }}
             onNext={nextScenarioId ? () => { openScenario(nextScenarioId); refreshProgress(); } : null}
             hasNext={!!nextScenarioId}
+            pairedDesignId={getPairedDesignId(activeScenarioId)}
+            onGoToDesign={openDesignScenario}
           />
         )}
         {page === 'progress' && (

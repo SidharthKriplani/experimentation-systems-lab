@@ -1,7 +1,8 @@
 export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme }) {
   const navItems = [
     { id: 'home', label: 'Home' },
-    { id: 'browser', label: 'Scenarios' },
+    { id: 'design', label: 'Design' },
+    { id: 'browser', label: 'Review' },
     { id: 'bank', label: 'Judgment Bank' },
     { id: 'progress', label: 'Progress' },
     { id: 'about', label: 'Methodology' },
@@ -43,38 +44,43 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
           }}>⚗</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
             <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-              Experimentation Systems Lab
+              Product Analytics Lab
             </span>
             <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)', letterSpacing: '0.02em', lineHeight: 1.1 }}>
-              Experiment Review Room · V1.1
+              Analytics judgment gym · V1.2
             </span>
           </div>
         </button>
 
         {/* Nav */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: '0.15rem' }}>
-          {navItems.map(item => (
-            <button
-              key={item.id}
-              onClick={() => onNavigate(item.id)}
-              style={{
-                background: currentPage === item.id ? 'var(--surface-2)' : 'none',
-                border: 'none',
-                borderRadius: '5px',
-                padding: '0.35rem 0.7rem',
-                color: currentPage === item.id ? 'var(--text)' : 'var(--text-muted)',
-                fontWeight: currentPage === item.id ? 600 : 400,
-                fontSize: '0.83rem',
-                cursor: 'pointer',
-                transition: 'color 0.12s, background 0.12s',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={e => { if (currentPage !== item.id) e.currentTarget.style.color = 'var(--text-secondary)'; }}
-              onMouseLeave={e => { if (currentPage !== item.id) e.currentTarget.style.color = 'var(--text-muted)'; }}
-            >
-              {item.label}
-            </button>
-          ))}
+          {navItems.map(item => {
+            const isActive = currentPage === item.id
+              || (item.id === 'design' && currentPage === 'design-runner')
+              || (item.id === 'browser' && currentPage === 'runner');
+            return (
+              <button
+                key={item.id}
+                onClick={() => onNavigate(item.id)}
+                style={{
+                  background: isActive ? 'var(--surface-2)' : 'none',
+                  border: 'none',
+                  borderRadius: '5px',
+                  padding: '0.35rem 0.7rem',
+                  color: isActive ? 'var(--text)' : 'var(--text-muted)',
+                  fontWeight: isActive ? 600 : 400,
+                  fontSize: '0.83rem',
+                  cursor: 'pointer',
+                  transition: 'color 0.12s, background 0.12s',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-muted)'; }}
+              >
+                {item.label}
+              </button>
+            );
+          })}
 
           <div style={{ width: '1px', height: '18px', background: 'var(--border)', margin: '0 0.35rem' }} />
 

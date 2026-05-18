@@ -42,7 +42,7 @@ const TABS = [
   { id: 'Flags',   label: 'Flags',   hint: 'Warning signs' },
 ];
 
-export function ScenarioRunner({ scenario, onBack, onNext, hasNext }) {
+export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesignId, onGoToDesign }) {
   const [leftTab, setLeftTab] = useState('Context');
   const [selectedDecision, setSelectedDecision] = useState(null);
   const [checkedFlags, setCheckedFlags] = useState([]);
@@ -343,6 +343,39 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext }) {
             </div>
           </div>
           <DebriefPanel scenario={scenario} selectedDecisionId={selectedDecision} />
+
+          {/* Paired Design Room CTA */}
+          {pairedDesignId && onGoToDesign && (
+            <div style={{
+              marginTop: '2rem',
+              background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+              borderRadius: 'var(--radius)', padding: '1rem 1.1rem',
+            }}>
+              <div style={{
+                fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+                color: 'var(--teal)', marginBottom: '0.4rem',
+              }}>
+                Paired Design Room scenario
+              </div>
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.55, margin: '0 0 0.75rem' }}>
+                You read the result. Want to go back and design this experiment from scratch?
+              </p>
+              <button
+                onClick={() => onGoToDesign(pairedDesignId)}
+                style={{
+                  padding: '0.5rem 0.95rem',
+                  background: 'var(--teal)', color: '#fff',
+                  border: 'none', borderRadius: 'var(--radius-sm)',
+                  fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer',
+                  transition: 'opacity 0.1s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+              >
+                Go to Design Room →
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

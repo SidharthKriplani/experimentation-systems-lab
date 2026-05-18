@@ -11,7 +11,7 @@ export function Home({ onNavigate, onStartScenario }) {
           marginBottom: '1.75rem', fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 600,
           letterSpacing: '0.02em',
         }}>
-          Private Beta · 8 Playable Scenarios
+          Product Analytics Lab · V1.2
         </div>
 
         <h1 style={{
@@ -56,10 +56,10 @@ export function Home({ onNavigate, onStartScenario }) {
               letterSpacing: '-0.01em', boxShadow: 'var(--shadow)',
             }}
           >
-            Open the Review Room →
+            Review Room →
           </button>
           <button
-            onClick={() => onStartScenario('s01-checkout-trap')}
+            onClick={() => onNavigate('design')}
             style={{
               background: 'var(--surface)', color: 'var(--text-secondary)',
               border: '1px solid var(--border)',
@@ -68,7 +68,7 @@ export function Home({ onNavigate, onStartScenario }) {
               boxShadow: 'var(--shadow-sm)',
             }}
           >
-            Start with The Checkout Trap
+            Design Room →
           </button>
         </div>
       </div>

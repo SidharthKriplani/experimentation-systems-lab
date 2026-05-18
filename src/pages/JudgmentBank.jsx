@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { scenarios } from '../data/scenarios.js';
+import { designScenarios } from '../data/designScenarios.js';
 import { plannedScenarios, SCENARIO_FAMILIES } from '../data/scenarioBank.js';
 
 const DIFFICULTY_COLORS = {
@@ -16,6 +17,16 @@ function DiffBadge({ difficulty }) {
       color: c.color, background: c.bg, border: `1px solid ${c.border}`,
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
     }}>{difficulty}</span>
+  );
+}
+
+function PairedBadge() {
+  return (
+    <span style={{
+      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      color: 'var(--accent)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+      borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
+    }}>◆ Paired</span>
   );
 }
 
@@ -53,7 +64,7 @@ function PlannedCard({ scenario }) {
   );
 }
 
-function PlayableCard({ scenario, onClick }) {
+function ReviewCard({ scenario, onClick }) {
   return (
     <div
       onClick={() => onClick(scenario.id)}
@@ -79,13 +90,15 @@ function PlayableCard({ scenario, onClick }) {
         <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.3, flex: 1 }}>
           {scenario.title}
         </span>
-        <span style={{
-          flexShrink: 0, fontSize: '0.6rem', fontWeight: 700,
-          color: '#fff',
-          background: scenario.isFree ? 'var(--accent)' : 'var(--teal)',
-          borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
-          textTransform: 'uppercase', letterSpacing: '0.04em',
-        }}>{scenario.isFree ? 'Free' : 'Beta'}</span>
+        <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          <span style={{
+            fontSize: '0.6rem', fontWeight: 700,
+            color: '#fff',
+            background: scenario.isFree ? 'var(--accent)' : 'var(--teal)',
+            borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
+            textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}>{scenario.isFree ? 'Free' : 'Beta'}</span>
+        </div>
       </div>
       <p style={{ fontSize: '0.775rem', color: 'var(--text-muted)', margin: '0 0 0.55rem', lineHeight: 1.5 }}>
         {scenario.subtitle}
@@ -97,21 +110,100 @@ function PlayableCard({ scenario, onClick }) {
           background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{scenario.industry}</span>
-        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--green)', fontWeight: 700 }}>▶ Play</span>
+        {scenario.pairedDesignScenarioId && <PairedBadge />}
+        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--green)', fontWeight: 700 }}>▶ Review</span>
+      </div>
+    </div>
+  );
+}
+
+function DesignCard({ scenario, onClick }) {
+  return (
+    <div
+      onClick={() => onClick(scenario.id)}
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)',
+        padding: '0.95rem 1rem',
+        cursor: 'pointer',
+        transition: 'border-color 0.13s, box-shadow 0.13s',
+        boxShadow: 'var(--shadow-sm)',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = 'var(--teal)';
+        e.currentTarget.style.boxShadow = '0 0 0 3px var(--teal-bg)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = 'var(--border)';
+        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
+        <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.3, flex: 1 }}>
+          {scenario.title}
+        </span>
+        <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          <span style={{
+            fontSize: '0.6rem', fontWeight: 700,
+            color: '#fff',
+            background: scenario.isFree ? 'var(--accent)' : 'var(--teal)',
+            borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
+            textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}>{scenario.isFree ? 'Free' : 'Beta'}</span>
+        </div>
+      </div>
+      <p style={{ fontSize: '0.775rem', color: 'var(--text-muted)', margin: '0 0 0.55rem', lineHeight: 1.5 }}>
+        {scenario.subtitle}
+      </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
+        <DiffBadge difficulty={scenario.difficulty} />
+        <span style={{
+          fontSize: '0.6rem', color: 'var(--text-dim)',
+          background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
+        }}>{scenario.industry}</span>
+        {scenario.pairedReviewScenarioId && <PairedBadge />}
+        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--teal)', fontWeight: 700 }}>✏ Design</span>
       </div>
     </div>
   );
 }
 
 export function JudgmentBank({ onNavigate }) {
+  const [roomFilter, setRoomFilter] = useState('all');
   const [familyFilter, setFamilyFilter] = useState('all');
   const [diffFilter, setDiffFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  const playable = scenarios.map(s => ({ ...s, status: 'playable', scenarioFamily: s.theme }));
-  const allCards = [...playable, ...plannedScenarios];
+  // Enrich review scenarios with pairedDesignScenarioId for badge lookup
+  const designIdByReview = Object.fromEntries(
+    designScenarios
+      .filter(d => d.pairedReviewScenarioId)
+      .map(d => [d.pairedReviewScenarioId, d.id])
+  );
+
+  const reviewCards = scenarios.map(s => ({
+    ...s,
+    status: 'playable',
+    room: 'review',
+    scenarioFamily: s.theme,
+    pairedDesignScenarioId: designIdByReview[s.id] || null,
+  }));
+
+  const designCards = designScenarios.map(s => ({
+    ...s,
+    status: 'playable',
+    room: 'design',
+  }));
+
+  const allPlayable = [...reviewCards, ...designCards];
+  const allCards = [...allPlayable, ...plannedScenarios.map(s => ({ ...s, room: 'planned' }))];
 
   const filtered = allCards.filter(s => {
+    if (roomFilter === 'review' && s.room !== 'review') return false;
+    if (roomFilter === 'design' && s.room !== 'design') return false;
+    if (roomFilter === 'planned' && s.room !== 'planned') return false;
     if (statusFilter === 'playable' && s.status !== 'playable') return false;
     if (statusFilter === 'planned' && s.status !== 'planned') return false;
     if (diffFilter !== 'all' && s.difficulty !== diffFilter) return false;
@@ -132,39 +224,46 @@ export function JudgmentBank({ onNavigate }) {
     }}>{children}</button>
   );
 
+  function handleCardClick(card) {
+    if (card.room === 'review') {
+      onNavigate('browser');
+    } else if (card.room === 'design') {
+      onNavigate('design');
+    }
+  }
+
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <div style={{ maxWidth: '680px', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.025em', marginBottom: '0.5rem' }}>
-          Experiment Judgment Bank
+          Judgment Bank
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '0.75rem' }}>
-          50 scenarios across 15 failure-mode families. Each case teaches one decision trap
-          from real product analytics work.
+          50+ scenarios across Design and Review rooms. Each case teaches one decision trap from real product analytics work.
         </p>
-        {/* Callout */}
         <div style={{
           background: 'var(--surface)', border: '1px solid var(--border)',
           borderLeft: '3px solid var(--accent)', borderRadius: 'var(--radius)',
           padding: '0.7rem 0.875rem',
           fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6,
         }}>
-          <strong style={{ color: 'var(--text)', fontWeight: 600 }}>8 are playable now.</strong>
-          {' '}The remaining 42 are roadmap cards — the architecture and core trap are defined,
-          full readouts and debriefs ship with V1.5 and V2.
-          Planned cards are shown with a dashed border.
+          <strong style={{ color: 'var(--text)', fontWeight: 600 }}>12 playable now</strong> — 8 Review Room + 4 Design Room.
+          {' '}Paired scenarios (◆) appear in both rooms.
+          Roadmap cards ship with V1.5 and V2.
         </div>
       </div>
 
       {/* ── Filters ─────────────────────────────────────────────────────── */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem', alignItems: 'center' }}>
-        {/* Status */}
+
+        {/* Room filter */}
         <div style={{ display: 'flex', gap: '0.25rem' }}>
-          <FilterBtn active={statusFilter === 'all'} onClick={() => setStatusFilter('all')}>All ({allCards.length})</FilterBtn>
-          <FilterBtn active={statusFilter === 'playable'} onClick={() => setStatusFilter('playable')}>▶ Playable ({playable.length})</FilterBtn>
-          <FilterBtn active={statusFilter === 'planned'} onClick={() => setStatusFilter('planned')}>Roadmap ({plannedScenarios.length})</FilterBtn>
+          <FilterBtn active={roomFilter === 'all'} onClick={() => setRoomFilter('all')}>All rooms</FilterBtn>
+          <FilterBtn active={roomFilter === 'review'} onClick={() => setRoomFilter('review')}>▶ Review ({reviewCards.length})</FilterBtn>
+          <FilterBtn active={roomFilter === 'design'} onClick={() => setRoomFilter('design')}>✏ Design ({designCards.length})</FilterBtn>
+          <FilterBtn active={roomFilter === 'planned'} onClick={() => setRoomFilter('planned')}>Roadmap ({plannedScenarios.length})</FilterBtn>
         </div>
 
         <div style={{ width: '1px', height: '20px', background: 'var(--border)' }} />
@@ -211,11 +310,15 @@ export function JudgmentBank({ onNavigate }) {
         gap: '0.65rem',
         marginBottom: '3rem',
       }}>
-        {filtered.map(s =>
-          s.status === 'playable'
-            ? <PlayableCard key={s.id} scenario={s} onClick={() => onNavigate('browser')} />
-            : <PlannedCard key={s.id} scenario={s} />
-        )}
+        {filtered.map(s => {
+          if (s.room === 'design') {
+            return <DesignCard key={`design-${s.id}`} scenario={s} onClick={() => onNavigate('design')} />;
+          }
+          if (s.room === 'review') {
+            return <ReviewCard key={`review-${s.id}`} scenario={s} onClick={() => onNavigate('browser')} />;
+          }
+          return <PlannedCard key={`planned-${s.id}`} scenario={s} />;
+        })}
         {filtered.length === 0 && (
           <div style={{
             gridColumn: '1/-1', textAlign: 'center', padding: '3rem',
@@ -237,7 +340,7 @@ export function JudgmentBank({ onNavigate }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '0.3rem' }}>
           {Object.entries(SCENARIO_FAMILIES).map(([key, label]) => {
             const count = allCards.filter(s => s.scenarioFamily === key).length;
-            const playableCount = playable.filter(s => s.scenarioFamily === key).length;
+            const playableCount = allPlayable.filter(s => s.scenarioFamily === key).length;
             const active = familyFilter === key;
             return (
               <button
