@@ -52,6 +52,23 @@ export function StatsDecisionCard({ module, selectedId, onSelect, submitted }) {
         </div>
       </div>
 
+      {/* Claim to Evaluate (STAT01-04 only) */}
+      {module.claim && (
+        <div style={{
+          background: 'var(--teal-bg)', border: '1.5px solid var(--teal-border)',
+          borderRadius: 'var(--radius)', padding: '1rem 1.2rem',
+        }}>
+          <div style={{
+            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.09em', color: 'var(--teal)', marginBottom: '0.5rem',
+          }}>Claim to evaluate</div>
+          <p style={{
+            fontSize: '0.92rem', fontWeight: 600, color: 'var(--text)',
+            lineHeight: 1.55, margin: 0, fontStyle: 'italic',
+          }}>{module.claim}</p>
+        </div>
+      )}
+
       {/* Question + Options */}
       <div>
         <p style={{

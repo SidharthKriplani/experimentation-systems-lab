@@ -11,7 +11,7 @@ export function Home({ onNavigate, onStartScenario }) {
           marginBottom: '1.75rem', fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 600,
           letterSpacing: '0.02em',
         }}>
-          Product Analytics Lab · V1.5
+          Product Analytics Lab · V1.6
         </div>
 
         <h1 style={{
@@ -33,9 +33,9 @@ export function Home({ onNavigate, onStartScenario }) {
           marginBottom: '0.6rem',
           maxWidth: '580px',
         }}>
-          An interactive analytics judgment gym. Design experiments before data exists,
-          then review the messy results after they run. Make the call — then see how a
-          senior analyst would have read the same situation.
+          Practice the full product analytics loop: evaluate statistical claims, design
+          valid experiments before data exists, then read the messy results honestly
+          after they run. Make the call — then see how a senior analyst would frame the same situation.
         </p>
 
         <p style={{ fontSize: '0.84rem', color: 'var(--text-dim)', marginBottom: '2.25rem' }}>
@@ -98,14 +98,14 @@ export function Home({ onNavigate, onStartScenario }) {
             <div style={{
               fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
               color: 'var(--blue-text)', marginBottom: '0.6rem',
-            }}>Stats Room · New V1.5</div>
+            }}>Stats Room · V1.6</div>
             <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 0.5rem', letterSpacing: '-0.01em' }}>
-              Do you understand the stat only when it affects the call?
+              A stakeholder makes a claim. You evaluate it against the evidence.
             </h3>
             <p style={{ fontSize: '0.845rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: '0 0 1rem' }}>
               p-values, CIs, power, SRM, multiple testing, guardrails, novelty effects, SUTVA —
-              each concept introduced through a product decision, not a textbook definition.
-              Multiple-choice. Senior analyst debrief after every answer.
+              each concept taught through structured claim evaluation, not textbook definitions.
+              Senior analyst debrief after every answer.
             </p>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginBottom: '1.1rem' }}>
               8 modules · 4 free + 4 beta · Foundational → Senior
@@ -141,7 +141,7 @@ export function Home({ onNavigate, onStartScenario }) {
               Scored across 4 dimensions against the senior analyst standard.
             </p>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginBottom: '1.1rem' }}>
-              4 scenarios · Free + Beta · Analyst → Senior
+              8 scenarios · Free + Beta · Analyst → Senior
             </div>
             <button
               onClick={() => onNavigate('design')}
@@ -174,7 +174,7 @@ export function Home({ onNavigate, onStartScenario }) {
               or investigate call — then see how a senior analyst read the same data.
             </p>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginBottom: '1.1rem' }}>
-              8 scenarios · Free + Beta · Analyst → Staff
+              12 scenarios · Free + Beta · Analyst → Staff
             </div>
             <button
               onClick={() => onNavigate('browser')}
@@ -200,7 +200,7 @@ export function Home({ onNavigate, onStartScenario }) {
           display: 'flex', alignItems: 'center', gap: '0.5rem',
         }}>
           <span style={{ color: 'var(--accent)', fontWeight: 700 }}>◆</span>
-          4 paired scenarios — design the test in Design, review the result in Review. Stats Room modules link to both rooms.
+          8 paired scenarios — design the test in Design Room, then review the result in Review Room. Stats Room modules link to both.
         </div>
       </div>
 
@@ -337,13 +337,13 @@ export function Home({ onNavigate, onStartScenario }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
             <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)' }}>
-              Review Room · 8 Scenarios
+              Review Room · 12 Scenarios
             </span>
             <span style={{
               fontSize: '0.6rem', fontWeight: 700, color: 'var(--green-text)',
               background: 'var(--green-bg)', border: '1px solid var(--green-border)',
               borderRadius: '4px', padding: '0.1rem 0.4rem', letterSpacing: '0.04em',
-            }}>AVAILABLE</span>
+            }}>NEW V1.6</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {[
@@ -355,11 +355,15 @@ export function Home({ onNavigate, onStartScenario }) {
               ['Beta', 'The Five Metrics Problem', 'Multiple Testing'],
               ['Beta', 'The Two-Sided Spill', 'Marketplace / SUTVA'],
               ['Beta', 'False Rigor', 'When Not to Experiment'],
+              ['Beta', 'The Clickbait Ranking Win', 'Proxy Metric'],
+              ['Beta', 'The Push Open Rate Trap', 'Metric Gaming'],
+              ['Beta', 'The Seller Speed Spillover', 'Marketplace Interference'],
+              ['Beta', 'The Checklist Completion Illusion', 'Activation'],
             ].map(([tier, title, theme], i) => (
               <div key={i} style={{
                 display: 'flex', alignItems: 'center', gap: '0.5rem',
                 padding: '0.42rem 0',
-                borderBottom: i < 7 ? '1px solid var(--border-subtle)' : 'none',
+                borderBottom: i < 11 ? '1px solid var(--border-subtle)' : 'none',
                 fontSize: '0.82rem',
               }}>
                 <span style={{
@@ -396,13 +400,13 @@ export function Home({ onNavigate, onStartScenario }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
             <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)' }}>
-              Design Room · 4 Scenarios
+              Design Room · 8 Scenarios
             </span>
             <span style={{
               fontSize: '0.6rem', fontWeight: 700, color: 'var(--green-text)',
               background: 'var(--green-bg)', border: '1px solid var(--green-border)',
               borderRadius: '4px', padding: '0.1rem 0.4rem', letterSpacing: '0.04em',
-            }}>NEW V1.2</span>
+            }}>NEW V1.6</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '0.75rem' }}>
             {[
@@ -410,11 +414,15 @@ export function Home({ onNavigate, onStartScenario }) {
               ['Free', 'Design the Onboarding Assignment', 'Randomization Unit'],
               ['Beta', 'Design the Mobile Feature Test', 'Pre-registration'],
               ['Beta', 'Design the Multi-Metric Launch', 'Multiple Testing'],
+              ['Beta', 'Design the Search Ranking Test', 'Proxy Metric'],
+              ['Beta', 'Design the Notification Timing Test', 'Metric Gaming'],
+              ['Beta', 'Design the Seller Incentive Test', 'SUTVA / Marketplace'],
+              ['Beta', 'Design the Onboarding Checklist Test', 'Activation'],
             ].map(([tier, title, theme], i) => (
               <div key={i} style={{
                 display: 'flex', alignItems: 'center', gap: '0.5rem',
                 padding: '0.42rem 0',
-                borderBottom: i < 3 ? '1px solid var(--border-subtle)' : 'none',
+                borderBottom: i < 7 ? '1px solid var(--border-subtle)' : 'none',
                 fontSize: '0.82rem',
               }}>
                 <span style={{
@@ -435,7 +443,7 @@ export function Home({ onNavigate, onStartScenario }) {
             display: 'flex', alignItems: 'center', gap: '0.3rem',
           }}>
             <span>◆</span>
-            <span>All 4 paired with Review Room counterparts</span>
+            <span>All 8 paired with Review Room counterparts</span>
           </div>
           <button
             onClick={() => onNavigate('design')}
@@ -456,12 +464,13 @@ export function Home({ onNavigate, onStartScenario }) {
         <div className="label-caps" style={{ marginBottom: '1rem' }}>Roadmap</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
           {[
-            { v: 'V1',   desc: 'Experiment Review Room · 8 scenarios · Free + Beta',          done: true,  current: false },
-            { v: 'V1.1', desc: 'Judgment Bank · 50-scenario architecture · theme system',      done: true,  current: false },
-            { v: 'V1.2', desc: 'Product Analytics Lab · Design Room · 14 concept cards',       done: true,  current: false },
-            { v: 'V1.5', desc: 'Stats Room MVP · 8 modules · p-value to SUTVA',                done: false, current: true  },
-            { v: 'V2',   desc: 'KPI Playground · metric tradeoff simulator',                   done: false, current: false },
-            { v: 'V2.5', desc: 'RCA Room · root cause analysis cases',                         done: false, current: false },
+            { v: 'V1',   desc: 'Experiment Review Room · 8 scenarios · Free + Beta',                        done: true,  current: false },
+            { v: 'V1.1', desc: 'Judgment Bank · 50-scenario architecture · theme system',                  done: true,  current: false },
+            { v: 'V1.2', desc: 'Product Analytics Lab · Design Room · 14 concept cards',                   done: true,  current: false },
+            { v: 'V1.5', desc: 'Stats Room MVP · 8 modules · p-value to SUTVA',                            done: true,  current: false },
+            { v: 'V1.6', desc: 'Core loop depth · 8 paired scenarios · claim evaluation mechanic',         done: false, current: true  },
+            { v: 'V2',   desc: 'KPI Playground · metric tradeoff simulator',                               done: false, current: false },
+            { v: 'V2.5', desc: 'RCA Room · root cause analysis cases',                                     done: false, current: false },
           ].map(({ v, desc, done, current }) => (
             <div key={v} style={{
               display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
@@ -493,7 +502,7 @@ export function Home({ onNavigate, onStartScenario }) {
           ))}
         </div>
         <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.85rem', lineHeight: 1.55 }}>
-          V1.5+ rooms are roadmap only. No empty nav items — rooms ship when they're ready.
+          V1.6+ items are roadmap only. No empty nav items — rooms ship when they're ready.
         </p>
       </div>
 

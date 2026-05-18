@@ -4,7 +4,7 @@ export function About() {
       title: 'What this is',
       body: `Product Analytics Lab is an interactive judgment gym for product analysts and data scientists who already understand the basics of A/B testing. The gap it fills: there are many resources for learning experimental statistics, but very few that give you practice making judgment calls under messy, realistic product data.
 
-The lab has three rooms. The Stats Room introduces statistical concepts through product decisions — not textbook definitions. The Design Room tests pre-experiment judgment: set the metric, randomization unit, guardrails, and decision rule before data exists. The Review Room drops you into a messy experiment readout and asks you to make the call.
+The lab has three rooms. The Stats Room teaches statistical concepts through structured claim evaluation — a stakeholder or PM makes a specific claim about the data, and you evaluate whether it is valid, incomplete, unsupported, or inconclusive. The Design Room tests pre-experiment judgment: set the metric, randomization unit, guardrails, and decision rule before data exists. The Review Room drops you into a messy experiment readout and asks you to make the call.
 
 The answer is rarely "p < 0.05, ship it." This is where you practice the harder calls.`,
     },
@@ -61,7 +61,9 @@ V1.1 (shipped): Judgment Bank · 50-scenario architecture · theme system.
 
 V1.2 (shipped): Product Analytics Lab rebrand · Design Room · 14 concept cards.
 
-V1.5 (current): Stats Room MVP · 8 modules covering p-value, CI, power, SRM, multiple testing, guardrail metrics, novelty effect, and SUTVA. Each concept taught through a product decision, not a textbook definition.
+V1.5 (shipped): Stats Room MVP · 8 modules covering p-value, CI, power, SRM, multiple testing, guardrail metrics, novelty effect, and SUTVA.
+
+V1.6 (current): Core loop depth · 4 new paired Design scenarios (D05–D08) · 4 new Review scenarios (S09–S12) · STAT01–04 redesigned to structured claim evaluation mechanic · 4 new concept chips (proxy metric, metric gaming, activation, marketplace interference) · 28 playable items total.
 
 V2 (planned): KPI Playground · metric tradeoff simulator.
 

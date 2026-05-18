@@ -317,7 +317,7 @@ export function JudgmentBank({ onNavigate }) {
           padding: '0.7rem 0.875rem',
           fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6,
         }}>
-          <strong style={{ color: 'var(--text)', fontWeight: 600 }}>20 playable now</strong> — 8 Stats + 8 Review + 4 Design.
+          <strong style={{ color: 'var(--text)', fontWeight: 600 }}>28 playable now</strong> — 8 Stats + 12 Review + 8 Design.
           {' '}Paired scenarios (◆) appear in both Design and Review rooms.
           Roadmap cards ship in V2+.
         </div>

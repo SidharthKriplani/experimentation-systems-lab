@@ -2105,6 +2105,1989 @@ The notification volume check is the most important trust check specific to this
       fromReview: 'You read the Five Metrics Problem. Go back and design this experiment — decide before seeing the data how many metrics can count as "success."',
     },
   },
+
+  // ─────────────────────────────────────────────
+  // D05 — Design the Search Ranking Test (BETA · Analyst)
+  // Paired with: s09-clickbait-ranking-win
+  // Core trap: CTR as primary metric is gameable; downstream quality metrics are the real signal
+  // ─────────────────────────────────────────────
+  {
+    id: 'd05-search-ranking-test',
+    title: 'Design the Search Ranking Test',
+    subtitle: 'Vela wants to test a new ML search ranking algorithm. Design the experiment before the team locks in CTR as the primary metric.',
+    isFree: false,
+    difficulty: 'analyst',
+    industry: 'ecommerce',
+    scenarioFamily: 'proxy_metric',
+    pairedReviewScenarioId: 's09-clickbait-ranking-win',
+
+    context: {
+      company: 'Vela',
+      product: 'B2C e-commerce marketplace — handmade and independent goods, ~$80M GMV',
+      team: 'Search & Discovery team',
+      background: 'Vela\'s current search ranking uses a rule-based algorithm built three years ago. The team has spent a quarter training a new ML model that boosts results with higher historical click-through rates. Early offline evaluation looks promising. Engineering is ready to ship a staged rollout. The PM is enthusiastic: "We built CTR into the training objective — we should use it as the primary metric."',
+      featureProposal: 'Replace the rule-based search ranking with the new ML model. Hypothesis: ML-ranked results will be more relevant to user intent and improve discovery of matching products.',
+      businessPressure: 'The ML team has been working on this for a quarter. The Head of Product wants to show an "AI win" for the roadmap review next month. The PM has already drafted a CTR-based success metric into the project tracker.',
+      constraints: [
+        '~190,000 search queries per day across ~60,000 daily active searchers',
+        '14–21 day runtime target before the next sprint planning',
+        'User-level assignment is feasible; query-level is not recommended by engineering due to caching',
+        'Purchase and add-to-cart events are attributed to specific search sessions in the data warehouse',
+      ],
+    },
+
+    designPhases: [
+      {
+        id: 'framing',
+        label: 'Framing',
+        hint: 'What decision does this experiment inform? What is the real hypothesis?',
+        fields: [
+          {
+            id: 'businessDecision',
+            label: 'What is the business decision this experiment informs?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'bd-a',
+                label: 'Whether to replace the rule-based ranking with the ML model platform-wide',
+                scoreValue: 2,
+                rationale: 'Correct. The decision is binary and specific: deploy or don\'t deploy this particular model. This scopes the test and makes the ship/hold decision rule straightforward.',
+              },
+              {
+                id: 'bd-b',
+                label: 'Whether the ML model produces better click-through rates than the rule-based system',
+                scoreValue: 0,
+                rationale: 'CTR is a metric, not a business decision. A model could produce dramatically higher CTR while degrading product quality (clickbait results). The business decision is about value delivery, not a single proxy metric.',
+              },
+              {
+                id: 'bd-c',
+                label: 'Whether search ranking is a worthwhile area to invest ML resources in',
+                scoreValue: 0,
+                rationale: 'Too broad. This question was already answered by the team\'s decision to build the model. The experiment\'s job is to evaluate this specific model — not re-litigate the investment decision.',
+              },
+              {
+                id: 'bd-d',
+                label: 'Whether the ML model or a future iteration of it should be deployed',
+                scoreValue: 1,
+                rationale: 'Reasonable framing of uncertainty, but slightly too broad. This experiment tests this model. A future iteration would need its own test. The decision at hand is the current model vs. current baseline.',
+              },
+            ],
+          },
+          {
+            id: 'hypothesis',
+            label: 'Select the strongest hypothesis formulation',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'hyp-a',
+                label: 'The ML model will increase click-through rate on search results by surfacing more engaging listings first.',
+                scoreValue: 0,
+                rationale: 'This is only one side of the story. CTR optimized by ML can be gamed by clickbait titles. A hypothesis that only covers CTR ignores whether users actually find and purchase what they searched for.',
+              },
+              {
+                id: 'hyp-b',
+                label: 'The ML ranking will improve search success rate (add-to-cart or purchase from search) and reduce reformulation rate, because users find more relevant results without needing to refine their query.',
+                scoreValue: 2,
+                rationale: 'Strong. This captures the real business outcome (successful search = user found what they wanted) and includes a mechanism check (reformulation rate = user had to rephrase, suggesting initial results failed). Both metrics are hard to game and reflect genuine quality.',
+              },
+              {
+                id: 'hyp-c',
+                label: 'The ML model will outperform the rule-based system on at least one search quality metric.',
+                scoreValue: 0,
+                rationale: '"At least one metric" is not a hypothesis — it\'s a hope. This formulation allows the team to declare success on any convenient metric after data arrives. Pre-commit to the most important metric before seeing results.',
+              },
+              {
+                id: 'hyp-d',
+                label: 'The ML model will improve conversion from search without increasing zero-result or reformulation rates.',
+                scoreValue: 1,
+                rationale: 'Good direction — includes the quality constraint. But "conversion from search" is slightly ambiguous. Adding clarity about what counts as conversion (add-to-cart? purchase?) and stating the mechanism more explicitly would strengthen it.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'setup',
+        label: 'Setup',
+        hint: 'Who gets treated and at what level?',
+        fields: [
+          {
+            id: 'eligiblePopulation',
+            label: 'Who should be included in this experiment?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'ep-a',
+                label: 'All users who perform at least one search query during the test window',
+                scoreValue: 2,
+                rationale: 'Correct. The treatment applies to all search results. Restricting to a subgroup (power users, new users) would limit generalizability and the result wouldn\'t hold across the full user base.',
+              },
+              {
+                id: 'ep-b',
+                label: 'Only users who perform more than 5 searches per day, as they drive most search GMV',
+                scoreValue: 0,
+                rationale: 'High-volume searchers may already be sophisticated enough to find results under the old system. The ML model may have a larger impact on casual searchers who rely more on ranking quality. Restricting to power users underestimates the full deployment effect.',
+              },
+              {
+                id: 'ep-c',
+                label: 'New users only — fresh users have no pre-formed expectations about search quality',
+                scoreValue: 0,
+                rationale: 'Restricting to new users produces a result that can\'t be generalized to the full user base. Ranking quality for returning users (who may search for specific sellers or categories) is different. This also reduces power significantly.',
+              },
+              {
+                id: 'ep-d',
+                label: 'All users except those in active seller promotions, to avoid confounding with promoted listings',
+                scoreValue: 1,
+                rationale: 'Reasonable precaution — promoted listings interfere with organic ranking signals. But excluding these users may reduce power and may not be necessary if promoted listings are ranked separately in both arms. Clarify whether the ML model applies to promoted positions before deciding.',
+              },
+            ],
+          },
+          {
+            id: 'randomizationUnit',
+            label: 'What should the randomization unit be?',
+            type: 'single_select',
+            conceptLinks: ['randomization-unit'],
+            options: [
+              {
+                id: 'ru-a',
+                label: 'User (each user consistently sees one ranking system)',
+                scoreValue: 2,
+                rationale: 'Correct. User-level assignment ensures consistent experience — the same user won\'t see ML-ranked results for one query and rule-based for another. This also avoids within-user contamination and is technically feasible given engineering constraints.',
+              },
+              {
+                id: 'ru-b',
+                label: 'Query (each search query is independently ranked by one system)',
+                scoreValue: 0,
+                rationale: 'Query-level randomization means the same user sees different ranking systems in the same session. This creates within-user contamination (user learns what the ML ranking shows, forms expectations, then sees old system). Engineering also flagged caching issues with query-level assignment.',
+              },
+              {
+                id: 'ru-c',
+                label: 'Session (each session uses one ranking system)',
+                scoreValue: 1,
+                rationale: 'Better than query-level — at least one session is consistent. But within-user sessions are correlated. If a user has 3 sessions (ML, rule-based, ML), the observed effect is attenuated and standard errors are underestimated. User-level is cleaner.',
+              },
+              {
+                id: 'ru-d',
+                label: 'Seller (treat the seller\'s listings in one system, control in another)',
+                scoreValue: 0,
+                rationale: 'Wrong unit. The ranking experience is a buyer-side feature. Sellers don\'t experience the ranking — buyers do. Seller-level randomization would expose the same buyer to both systems (treatment sellers appearing in search alongside control sellers), which is not a valid design.',
+              },
+            ],
+          },
+          {
+            id: 'unitOfAnalysis',
+            label: 'What is the unit of analysis for computing metrics?',
+            type: 'single_select',
+            conceptLinks: ['unit-of-analysis'],
+            options: [
+              {
+                id: 'ua-a',
+                label: 'User — compute success rate as users with at least one successful search / total users assigned',
+                scoreValue: 2,
+                rationale: 'Matches the randomization unit. Computing at the user level avoids the inflation from treating multiple queries per user as independent observations.',
+              },
+              {
+                id: 'ua-b',
+                label: 'Query — compute success rate as converting queries / total queries',
+                scoreValue: 0,
+                rationale: 'Mismatches the user-level randomization. Queries from the same user are correlated — treating them as independent deflates standard errors and overstates confidence. A user who performs 20 searches contributes 20 "units" but was only randomized once.',
+              },
+              {
+                id: 'ua-c',
+                label: 'Session — compute success as converting sessions / total sessions',
+                scoreValue: 1,
+                rationale: 'Slightly better than query-level, but still mismatches user-level randomization. One user can have many sessions. Use delta method or cluster at the user level for session-based metrics if needed for specific analyses.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'metrics',
+        label: 'Metrics',
+        hint: 'What actually measures successful search — not just activity?',
+        fields: [
+          {
+            id: 'primaryMetric',
+            label: 'What is the primary metric for this experiment?',
+            type: 'single_select',
+            conceptLinks: ['primary-metric', 'proxy-metric'],
+            options: [
+              {
+                id: 'pm-a',
+                label: 'Click-through rate on search results (clicks / impressions)',
+                scoreValue: 0,
+                rationale: 'The ML model was trained on CTR — optimizing for CTR in the test validates the training signal, not the quality of the product. CTR can be gamed by listings with compelling thumbnails and misleading titles. A ranking that maximizes CTR while degrading purchase conversion is a bad ranking.',
+              },
+              {
+                id: 'pm-b',
+                label: 'Search-to-add-to-cart rate (users adding to cart from a search session / users who searched)',
+                scoreValue: 2,
+                rationale: 'Strong. This captures whether users actually find and want the products the search returns. Add-to-cart is downstream of CTR — it requires both clicking and deciding the product is relevant. Harder to game by clickbait than pure CTR.',
+              },
+              {
+                id: 'pm-c',
+                label: 'Revenue per searcher (total GMV from users who searched / total users who searched)',
+                scoreValue: 2,
+                rationale: 'Also strong. Captures the downstream business value of better search. A ranking that improves CTR but doesn\'t convert to purchases doesn\'t help Vela. Revenue per searcher makes the business case directly.',
+              },
+              {
+                id: 'pm-d',
+                label: 'Number of search sessions per user (more searching = more engagement)',
+                scoreValue: 0,
+                rationale: 'Wrong direction. More search sessions per user could mean users are failing to find what they want and retrying. Bad search quality often increases query volume. This metric conflates success with failure.',
+              },
+            ],
+          },
+          {
+            id: 'guardrailMetrics',
+            label: 'Which metrics should be pre-committed guardrails? (Select all that apply)',
+            type: 'multi_select',
+            conceptLinks: ['guardrail-metric'],
+            options: [
+              {
+                id: 'gm-a',
+                label: 'Query reformulation rate (user rewrites query after seeing initial results)',
+                scoreValue: 2,
+                rationale: 'Critical guardrail. Reformulation is a direct signal of search failure — the user found the results unsatisfactory and tried again. A ranking that increases CTR while increasing reformulations is showing attractive but wrong results.',
+              },
+              {
+                id: 'gm-b',
+                label: 'Zero-result rate (searches returning no results)',
+                scoreValue: 1,
+                rationale: 'Good guardrail. An ML model could narrow the ranking in ways that increase zero-result queries (filtering out low-CTR-history listings that would have been valid results). Zero-result rate should not increase.',
+              },
+              {
+                id: 'gm-c',
+                label: 'Post-purchase seller review score',
+                scoreValue: 0,
+                rationale: 'Too lagging. Post-purchase review scores take days or weeks to accrue. A 14–21 day test won\'t have sufficient review volume to make this a reliable guardrail. Track it as a long-run diagnostic after deployment, not as an in-experiment guardrail.',
+              },
+              {
+                id: 'gm-d',
+                label: 'Search bounce rate (user clicks a result and immediately returns to search)',
+                scoreValue: 1,
+                rationale: 'Useful signal of result quality — if users click but immediately return, the listing was deceptive. This complements reformulation rate and CTR. Worth including as a guardrail or secondary metric.',
+              },
+            ],
+          },
+          {
+            id: 'diagnosticMetrics',
+            label: 'Which metrics should be tracked as diagnostics (informational only)?',
+            type: 'multi_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'dm-a',
+                label: 'CTR on search results (treatment vs control)',
+                scoreValue: 1,
+                rationale: 'Good diagnostic. CTR is the ML training signal — understanding whether it moves (and whether it leads to conversion) explains the mechanism. Include it as diagnostic, not primary.',
+              },
+              {
+                id: 'dm-b',
+                label: 'Position of first-click listing (is the ML model surfacing relevant results higher?)',
+                scoreValue: 1,
+                rationale: 'Useful mechanism check. If the ML model improves ranking quality, users should find what they want at higher positions — fewer clicks to find the right listing.',
+              },
+              {
+                id: 'dm-c',
+                label: '30-day seller repeat listing rate',
+                scoreValue: 0,
+                rationale: 'Too lagging and too indirect. Seller listing behavior is affected by many factors beyond search quality. This metric won\'t yield actionable insight within the experiment window.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'logistics',
+        label: 'Logistics',
+        hint: 'How long, how attributed, and what are the power concerns?',
+        fields: [
+          {
+            id: 'runtime',
+            label: 'How long should this experiment run?',
+            type: 'single_select',
+            conceptLinks: ['novelty-effect'],
+            options: [
+              {
+                id: 'rt-a',
+                label: '14 days',
+                scoreValue: 1,
+                rationale: 'Acceptable minimum. 14 days captures full week cycles and gives reasonable stabilization for search behavior. But 21 days is safer — novelty effects in new search experiences can take 1–2 weeks to decay. If 14 days is the hard constraint, acknowledge the novelty risk.',
+              },
+              {
+                id: 'rt-b',
+                label: '21 days',
+                scoreValue: 2,
+                rationale: 'Correct. Three weeks ensures full week-over-week comparison, enough time for search behavior to stabilize, and adequate time for novelty effects to decay. Search habits take longer to settle than single-session features.',
+              },
+              {
+                id: 'rt-c',
+                label: '7 days',
+                scoreValue: 0,
+                rationale: 'Too short. Search behavior is influenced heavily by day-of-week effects (weekend vs. weekday query intent differs). 7 days does not capture a full behavioral cycle and is high-risk for novelty effects inflating week-1 CTR.',
+              },
+              {
+                id: 'rt-d',
+                label: 'Run until p < 0.05 on CTR',
+                scoreValue: 0,
+                rationale: 'Classic peeking problem. Stopping when CTR reaches significance without checking conversion and guardrails captures the most favorable point in the novelty window. Pre-commit the runtime before launch.',
+              },
+            ],
+          },
+          {
+            id: 'attributionWindow',
+            label: 'What attribution window should apply to conversion metrics?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'aw-a',
+                label: 'Same search session (search → purchase within the session)',
+                scoreValue: 2,
+                rationale: 'Correct for search quality. Search intent is immediate — a user searching for a product either finds it and buys it in that session, or doesn\'t. Cross-session attribution conflates search quality with factors like email reminders and retargeting.',
+              },
+              {
+                id: 'aw-b',
+                label: '7-day post-search window (any purchase within 7 days of a search)',
+                scoreValue: 1,
+                rationale: 'Reasonable for some product categories (considered purchases), but introduces confounding from non-search-related sessions. The longer the window, the more noise. Use same-session as primary and 7-day as a secondary diagnostic.',
+              },
+              {
+                id: 'aw-c',
+                label: '30-day post-search window to capture consideration purchases',
+                scoreValue: 0,
+                rationale: 'Too wide. A 30-day window can\'t be fully observed within a 21-day experiment. And search influence on a 30-day purchase is very weak — the user has had many other sessions, other entry points, and other signals. This attribution is too noisy to be meaningful.',
+              },
+            ],
+          },
+          {
+            id: 'sampleSizeConcern',
+            label: 'What is the main power concern for this experiment?',
+            type: 'single_select',
+            conceptLinks: ['power', 'mde'],
+            options: [
+              {
+                id: 'ss-a',
+                label: 'None — 60k daily searchers is plenty for any reasonable MDE',
+                scoreValue: 0,
+                rationale: 'Overconfident. 60k daily searchers gives power on the primary metric, but guardrail metrics like reformulation rate (a relatively rare event for most users) and zero-result rate may have lower base rates that require verification. Always check MDE for each metric separately.',
+              },
+              {
+                id: 'ss-b',
+                label: 'The primary metric is well-powered, but rare events (zero-result rate, reformulation rate) may have low base rates requiring careful MDE verification per metric',
+                scoreValue: 2,
+                rationale: 'Correct. Primary metric power at 60k/day is high. But guardrail metrics with low base rates may be underpowered for small effects. Run power calculations for each metric before launch — especially for the guardrails you\'ve pre-committed as blocking conditions.',
+              },
+              {
+                id: 'ss-c',
+                label: 'The experiment needs more traffic before running — search quality tests require millions of queries',
+                scoreValue: 0,
+                rationale: 'Incorrect. 60k daily searchers × 21 days = ~1.26M user-days. That is more than sufficient for user-level metrics at reasonable effect sizes. Search quality tests don\'t inherently require millions of users.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'risks',
+        label: 'Risks & Decision Rule',
+        hint: 'What invalidates this experiment, and what will you do with the result?',
+        fields: [
+          {
+            id: 'trustChecks',
+            label: 'Which trust checks should you run before interpreting results? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['srm'],
+            options: [
+              {
+                id: 'tc-a',
+                label: 'SRM check on user assignment counts',
+                scoreValue: 2,
+                rationale: 'Always first. Search experiments with caching layers and session-based eligibility checks are common sources of SRM. Verify assignment counts before reading any metric.',
+              },
+              {
+                id: 'tc-b',
+                label: 'Verify query distribution is balanced between arms (category, query length, user intent)',
+                scoreValue: 2,
+                rationale: 'Important for search. If treatment users happened to submit more high-intent queries (e.g., more specific product searches), the apparent improvement may reflect query mix, not ranking quality. Check at minimum: query length distribution, category distribution.',
+              },
+              {
+                id: 'tc-c',
+                label: 'Check that pre-experiment CTR is comparable between arms',
+                scoreValue: 1,
+                rationale: 'Good baseline check if pre-experiment data is available. Comparable pre-experiment CTR confirms the arms were balanced on the most sensitive metric before treatment started.',
+              },
+              {
+                id: 'tc-d',
+                label: 'Verify that promoted listing inventory is identical in both arms',
+                scoreValue: 1,
+                rationale: 'Valid concern. If the ML model affects where promoted listings appear, the commercial value of promotions could be different between arms. Worth checking that promoted listing exposure is consistent.',
+              },
+            ],
+          },
+          {
+            id: 'validityRisks',
+            label: 'What are the main validity risks for this experiment? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['novelty-effect', 'proxy-metric'],
+            options: [
+              {
+                id: 'vr-a',
+                label: 'Novelty effect — users may click more on new-looking results in the first week before behavior stabilizes',
+                scoreValue: 2,
+                rationale: 'High risk for search. New ranking layouts and result ordering trigger novelty-driven curiosity clicks. Week-1 CTR will likely overstate the steady-state effect. The 21-day runtime and week-over-week monitoring help control for this.',
+              },
+              {
+                id: 'vr-b',
+                label: 'Proxy metric gaming — ML model may have learned to optimize CTR at the cost of result quality',
+                scoreValue: 2,
+                rationale: 'The core risk of this experiment. The ML model was trained on CTR — which is exactly the metric the PM wants to use as primary. This creates circularity: a model that is good at getting clicks will look good on CTR even if the underlying results are misleading. Downstream metrics (conversion, reformulation) break this circularity.',
+              },
+              {
+                id: 'vr-c',
+                label: 'SUTVA violation — buyers and sellers interact through shared listings',
+                scoreValue: 0,
+                rationale: 'Lower risk here. Search ranking affects buyer experience, but the mechanism isn\'t through buyer-to-buyer interference. Sellers don\'t change their listing behavior based on which ranking algorithm a buyer sees. Unlike a marketplace incentive experiment, SUTVA is not a major concern for a buyer-side ranking test.',
+              },
+              {
+                id: 'vr-d',
+                label: 'Day-of-week confounding — search intent differs on weekends vs. weekdays',
+                scoreValue: 1,
+                rationale: 'Real concern if the test runs an odd number of days. A 21-day test covers three full weeks — this is handled. A 14-day test also covers two full cycles. Any runtime shorter than 7 days creates day-of-week bias.',
+              },
+            ],
+          },
+          {
+            id: 'decisionRule',
+            label: 'What is the pre-committed decision rule?',
+            type: 'single_select',
+            conceptLinks: ['p-value', 'guardrail-metric'],
+            options: [
+              {
+                id: 'dr-a',
+                label: 'Ship if CTR is significantly positive. Review conversion results "for context."',
+                scoreValue: 0,
+                rationale: '"For context" means the conversion and guardrail data will be rationalized away if CTR looks good. This is the exact failure mode in the paired Review scenario. A decision rule that uses a proxy metric as primary and treats quality metrics as optional context is not a decision rule.',
+              },
+              {
+                id: 'dr-b',
+                label: 'Ship if primary metric (search-to-cart rate or revenue per searcher) is significantly positive AND reformulation rate does not increase significantly AND zero-result rate does not increase. Hold if any guardrail breaches.',
+                scoreValue: 2,
+                rationale: 'Correct. This rule pre-commits to quality-based outcomes as the ship trigger, treats guardrail breaches as blocking, and leaves no room for post-hoc CTR rationalization. This is senior-level decision discipline.',
+              },
+              {
+                id: 'dr-c',
+                label: 'Ship if at least 3 of 5 metrics show positive trend.',
+                scoreValue: 0,
+                rationale: 'Multiple testing problem. "At least 3 of 5" is not pre-committed — it\'s a threshold chosen to match whatever the data shows. If 2 guardrails breach and 3 positive secondaries appear, this rule would ship. That\'s wrong.',
+              },
+              {
+                id: 'dr-d',
+                label: 'Ship if primary metric is positive AND at least one guardrail is clean. Tolerate one guardrail breach if the primary effect size is large.',
+                scoreValue: 1,
+                rationale: 'Better than no rule, but "tolerate one guardrail breach" introduces post-hoc negotiation. Guardrails should be blocking. If you want the ability to override, define the override condition before the test (e.g., "primary must be ≥X% and breach must be ≤Y%").',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+
+    scoringRubric: {
+      dimensions: [
+        { id: 'metric_selection', label: 'Metric selection', weight: 0.35, fieldIds: ['primaryMetric', 'guardrailMetrics'] },
+        { id: 'design_validity', label: 'Design validity', weight: 0.30, fieldIds: ['randomizationUnit', 'unitOfAnalysis', 'trustChecks', 'validityRisks'] },
+        { id: 'decision_discipline', label: 'Decision discipline', weight: 0.20, fieldIds: ['decisionRule', 'sampleSizeConcern'] },
+        { id: 'hypothesis_framing', label: 'Hypothesis framing', weight: 0.15, fieldIds: ['hypothesis', 'businessDecision'] },
+      ],
+      levels: {
+        incomplete:    { minScore: 0,    label: 'Incomplete' },
+        analyst_ready: { minScore: 0.45, label: 'Analyst-Ready' },
+        senior_ready:  { minScore: 0.68, label: 'Senior-Ready' },
+        staff_level:   { minScore: 0.85, label: 'Staff-Level' },
+      },
+    },
+
+    seniorDesign: {
+      rationale: `The central problem in this design is the PM\'s proposal to use CTR as the primary metric. The ML model was trained to optimize CTR — using CTR to evaluate it creates a circular test that can only validate whether the model learned its training signal. It cannot tell you whether the model improves user outcomes.
+
+The right primary metric is downstream of the click: search-to-add-to-cart rate or revenue per searcher. These measure whether users actually found and wanted what the search returned. They are much harder to game by clickbait titles and misleading thumbnails.
+
+Reformulation rate is the single most important guardrail. A user who rewrites their query after seeing results is directly telling you the first results failed. If reformulation rate rises while CTR rises, the ML model learned to surface clickbait — results that attract attention but don\'t match intent.
+
+The 21-day runtime matters. Search ranking novelty effects are real: users click new result arrangements out of curiosity. Week-1 CTR will overstate steady-state quality. Build week-over-week monitoring into the analysis plan.`,
+      commonMistakes: [
+        {
+          mistake: 'Using CTR as the primary metric for a model trained on CTR',
+          consequence: 'The test validates the training signal, not user outcomes. A model that maximizes CTR by learning which listing thumbnails are most compelling will look like a huge win while potentially degrading purchase quality.',
+          conceptLink: 'proxy-metric',
+        },
+        {
+          mistake: 'Query-level or session-level randomization',
+          consequence: 'The same user sees different ranking systems across sessions, creating within-user contamination. Results appear to show a larger, more significant effect than actually exists.',
+          conceptLink: 'randomization-unit',
+        },
+        {
+          mistake: 'Treating novelty-driven CTR as steady-state quality signal',
+          consequence: 'Week-1 CTR for a new ranking system is elevated because users explore unfamiliar result ordering. If the experiment ships on week-1 data, the deployed product may show substantially lower CTR than the test suggested.',
+          conceptLink: 'novelty-effect',
+        },
+      ],
+    },
+
+    pairedScenarioPrompt: {
+      toReview: 'You designed this search experiment. Now see what happened when Vela ran it — with CTR as the primary metric.',
+      fromReview: 'You read the clickbait ranking result. Go back and redesign this experiment to catch the proxy metric trap before data exists.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // D06 — Design the Notification Timing Test (BETA · Analyst)
+  // Paired with: s10-push-open-rate-trap
+  // Core trap: optimizing for open rate, not retention — over-notification harms trust
+  // ─────────────────────────────────────────────
+  {
+    id: 'd06-notification-timing-test',
+    title: 'Design the Notification Timing Test',
+    subtitle: 'Orion wants to test ML-personalized push notification timing. Design the experiment before the team locks in open rate as the win condition.',
+    isFree: false,
+    difficulty: 'analyst',
+    industry: 'mobile',
+    scenarioFamily: 'proxy_metric',
+    pairedReviewScenarioId: 's10-push-open-rate-trap',
+
+    context: {
+      company: 'Orion',
+      product: 'Consumer habit and task tracking app — 2.1M MAU, daily notification-driven re-engagement',
+      team: 'Growth & Engagement team',
+      background: 'Orion currently sends push notifications at fixed times (8am, 12pm, 7pm). The new proposal: use ML to personalize notification send time for each user based on their historical open patterns. The team believes this will increase engagement. The PM\'s success metric is notification open rate.',
+      featureProposal: 'Replace fixed notification timing with ML-personalized timing per user. Hypothesis: sending at each user\'s historically high-open time will increase engagement.',
+      businessPressure: 'DAU/MAU has been declining. The Head of Growth wants to show an engagement improvement this sprint. The PM has booked a "launch day" announcement for the feature.',
+      constraints: [
+        '~620,000 users with notifications enabled',
+        'Notification volume is fixed per user per day (1 per day) — the test only changes the send time',
+        'Opt-out and uninstall events are logged in real time',
+        'A 14–21 day window is available before the next sprint planning',
+      ],
+    },
+
+    designPhases: [
+      {
+        id: 'framing',
+        label: 'Framing',
+        hint: 'What is the right goal? More opens, or better engagement?',
+        fields: [
+          {
+            id: 'businessDecision',
+            label: 'What business decision does this experiment inform?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'bd-a',
+                label: 'Whether to deploy ML-personalized notification timing to all users with notifications enabled',
+                scoreValue: 2,
+                rationale: 'Correct. The decision is binary and specific: keep fixed timing or deploy personalized timing. Clear scope, clear ship/hold path.',
+              },
+              {
+                id: 'bd-b',
+                label: 'Whether notification open rate can be improved using ML',
+                scoreValue: 0,
+                rationale: 'Open rate is a proxy. A model that sends at the exact moment someone picks up their phone to do something else might spike opens without improving task completion or retention. The business decision is about durable engagement, not raw opens.',
+              },
+              {
+                id: 'bd-c',
+                label: 'Whether push notifications are an effective re-engagement channel at all',
+                scoreValue: 0,
+                rationale: 'Too broad. The channel\'s effectiveness is already validated — the question is whether timing personalization improves outcomes. Re-litigating the channel decision is out of scope for this experiment.',
+              },
+              {
+                id: 'bd-d',
+                label: 'Whether ML-personalized timing should replace fixed timing or be offered as a user preference setting',
+                scoreValue: 1,
+                rationale: 'Interesting framing of the downstream decision, but this experiment can\'t answer both simultaneously. The test should evaluate the ML model vs. fixed timing. How to deploy (forced vs. optional) is a product decision that comes after, not during, the experiment.',
+              },
+            ],
+          },
+          {
+            id: 'hypothesis',
+            label: 'Select the strongest hypothesis formulation',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'hyp-a',
+                label: 'ML-personalized timing will increase notification open rate by reaching users when they are most likely to engage.',
+                scoreValue: 0,
+                rationale: 'Open rate is the proxy. A timing model could trivially improve opens by sending at times users are already opening their phones — without improving task completion, habit formation, or retention.',
+              },
+              {
+                id: 'hyp-b',
+                label: 'ML-personalized timing will improve 7-day active session rate without increasing opt-out or uninstall rate, by making notifications feel timely rather than intrusive.',
+                scoreValue: 2,
+                rationale: 'Strong. This is the right hypothesis — it specifies the outcome that matters (retention/session quality), includes the harm constraint (opt-out/uninstall), and describes the mechanism (timeliness vs. intrusiveness).',
+              },
+              {
+                id: 'hyp-c',
+                label: 'ML timing will increase both open rate and 7-day retention.',
+                scoreValue: 1,
+                rationale: 'Better than open-rate-only, but "and" introduces ambiguity in the decision rule. If open rate rises but retention doesn\'t — or vice versa — what\'s the decision? Pre-commit to a primary.',
+              },
+              {
+                id: 'hyp-d',
+                label: 'By sending fewer low-engagement notifications, ML timing will reduce opt-outs.',
+                scoreValue: 1,
+                rationale: 'Interesting framing but the wrong direction — the test doesn\'t reduce notification volume, it changes timing. If opt-out reduction is the hypothesis, reducing volume is the mechanism, not timing.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'setup',
+        label: 'Setup',
+        hint: 'Who gets treated, and should you segment by notification behavior?',
+        fields: [
+          {
+            id: 'eligiblePopulation',
+            label: 'Who should be included in this experiment?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'ep-a',
+                label: 'All users with push notifications enabled',
+                scoreValue: 2,
+                rationale: 'Correct. The treatment is the timing model — it applies to all users who receive notifications. Restricting to a subgroup reduces generalizability and may exclude segments most affected by timing (e.g., users who receive notifications at suboptimal times currently).',
+              },
+              {
+                id: 'ep-b',
+                label: 'Only highly active users (opened at least 5 notifications in the past 30 days)',
+                scoreValue: 0,
+                rationale: 'Restricting to active openers underestimates the value of the timing model for users who currently ignore notifications. The ML model may have the largest effect on users who have been getting notifications at the wrong time — excluding them misses the point.',
+              },
+              {
+                id: 'ep-c',
+                label: 'Exclude users who signed up in the last 7 days',
+                scoreValue: 1,
+                rationale: 'Reasonable precaution. New users have no notification history for the ML model to train on, so they\'d get effectively random timing rather than personalized timing. Excluding them avoids a diluted treatment effect for new users.',
+              },
+              {
+                id: 'ep-d',
+                label: 'Only users who have opted into notifications within the last 30 days',
+                scoreValue: 0,
+                rationale: 'No reason to restrict to recent opt-ins. Long-standing notification users are exactly the population the ML model should benefit — they have the richest open history for the model to use.',
+              },
+            ],
+          },
+          {
+            id: 'randomizationUnit',
+            label: 'What should the randomization unit be?',
+            type: 'single_select',
+            conceptLinks: ['randomization-unit'],
+            options: [
+              {
+                id: 'ru-a',
+                label: 'User (each user consistently receives either fixed or personalized timing)',
+                scoreValue: 2,
+                rationale: 'Correct. The treatment is a user-specific experience — personalized timing is based on each user\'s history. A consistent assignment ensures the ML model\'s benefit is measured cleanly across each user\'s full notification sequence.',
+              },
+              {
+                id: 'ru-b',
+                label: 'Notification (each notification independently assigned to fixed or personalized timing)',
+                scoreValue: 0,
+                rationale: 'Notification-level randomization means the same user sometimes gets personalized, sometimes fixed timing. This creates within-user contamination and makes it impossible to measure habit formation or cumulative opt-out behavior correctly.',
+              },
+              {
+                id: 'ru-c',
+                label: 'Day (each day uses either fixed or personalized timing for all users)',
+                scoreValue: 0,
+                rationale: 'Day-level randomization is a switchback design — valid for some contexts but complex to analyze correctly. For this test, user-level is cleaner and sufficient. Day-level would also confound with day-of-week effects.',
+              },
+            ],
+          },
+          {
+            id: 'unitOfAnalysis',
+            label: 'What is the unit of analysis?',
+            type: 'single_select',
+            conceptLinks: ['unit-of-analysis'],
+            options: [
+              {
+                id: 'ua-a',
+                label: 'User — compute open rate as notifications opened / notifications received per user, then aggregate',
+                scoreValue: 2,
+                rationale: 'Correct. User-level analysis matches user-level randomization. Aggregating open rate at the user level first, then comparing arms, avoids treating each notification as independent when notifications from the same user are correlated.',
+              },
+              {
+                id: 'ua-b',
+                label: 'Notification — compute open rate as total opened / total sent across all users',
+                scoreValue: 0,
+                rationale: 'This treats each notification as independent, but notifications from the same user are highly correlated (a user who opens morning notifications almost always will, regardless of treatment). This inflates power artificially and produces overconfident p-values.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'metrics',
+        label: 'Metrics',
+        hint: 'What measures genuine re-engagement — not just a momentary open?',
+        fields: [
+          {
+            id: 'primaryMetric',
+            label: 'What is the primary metric for this experiment?',
+            type: 'single_select',
+            conceptLinks: ['primary-metric', 'proxy-metric'],
+            options: [
+              {
+                id: 'pm-a',
+                label: 'Notification open rate (notifications opened / notifications sent)',
+                scoreValue: 0,
+                rationale: 'The training signal, not the outcome. Open rate measures whether the timing model achieved its ML objective — not whether users got value from the notification or stayed in the app longer. A user who opens a notification and immediately closes the app is counted as a win.',
+              },
+              {
+                id: 'pm-b',
+                label: '7-day active session rate (users with ≥1 active session per day over the following week, per arm)',
+                scoreValue: 2,
+                rationale: 'Strong. This measures whether notifications are driving real re-engagement that persists. A timing model that improves opens without improving sessions isn\'t creating value — it\'s just catching users at moments of idle phone-checking.',
+              },
+              {
+                id: 'pm-c',
+                label: 'Task completion rate per notification (user completes a task within 10 minutes of opening notification)',
+                scoreValue: 2,
+                rationale: 'Also strong. This measures whether notifications are driving the app\'s core value. If personalized timing gets users to actually use the app (not just open it), this metric captures that better than open rate or session count.',
+              },
+              {
+                id: 'pm-d',
+                label: 'Click-to-session rate (users who open notification and start a session within 60 seconds)',
+                scoreValue: 1,
+                rationale: 'Better than raw open rate — it ties the notification to a session. But it doesn\'t measure session quality or whether the user accomplished anything. Task completion or weekly session rate is more meaningful.',
+              },
+            ],
+          },
+          {
+            id: 'guardrailMetrics',
+            label: 'Which metrics should be pre-committed guardrails? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['guardrail-metric'],
+            options: [
+              {
+                id: 'gm-a',
+                label: 'Notification opt-out rate',
+                scoreValue: 2,
+                rationale: 'Critical. If personalized timing sends at intrusive moments, opt-outs will rise. Opt-out is irreversible — once a user turns off notifications, re-engagement through this channel is lost. Pre-commit a maximum tolerable opt-out increase before the test.',
+              },
+              {
+                id: 'gm-b',
+                label: '14-day uninstall rate',
+                scoreValue: 2,
+                rationale: 'Essential. Notifications that feel spammy or disruptive drive uninstalls. A timing model that improves engagement in week 1 but increases uninstalls in week 2 is a net loss. The 14-day window is important to see delayed churn.',
+              },
+              {
+                id: 'gm-c',
+                label: 'Notification mute rate (user silences app notifications without opting out)',
+                scoreValue: 1,
+                rationale: 'Useful leading indicator of notification fatigue. Muting is a softer signal than opt-out but still indicates user dissatisfaction with the notification experience.',
+              },
+              {
+                id: 'gm-d',
+                label: 'App store rating',
+                scoreValue: 0,
+                rationale: 'Too noisy and too lagging for a 14–21 day experiment. App store rating is affected by many factors unrelated to notification timing. The signal would not be attributable to this change within the test window.',
+              },
+            ],
+          },
+          {
+            id: 'diagnosticMetrics',
+            label: 'Which metrics are diagnostics only?',
+            type: 'multi_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'dm-a',
+                label: 'Notification open rate (by time of day — does the ML model actually send at better times?)',
+                scoreValue: 1,
+                rationale: 'Good mechanism check. If the ML model is working, open rates should be higher during the personalized send windows. This verifies the ML model is doing what it was designed to do.',
+              },
+              {
+                id: 'dm-b',
+                label: 'Average time between notification receipt and session start',
+                scoreValue: 1,
+                rationale: 'Useful diagnostic for understanding whether personalized timing creates faster-to-engage sessions — suggesting the notifications are reaching users at receptive moments.',
+              },
+              {
+                id: 'dm-c',
+                label: 'User-reported notification satisfaction (post-test survey)',
+                scoreValue: 0,
+                rationale: 'Surveys during an A/B test are operationally difficult and prone to bias (treated users may rate notifications differently simply because they\'re being asked). Don\'t include as a primary diagnostic.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'logistics',
+        label: 'Logistics',
+        hint: 'How long to run, and what are the power concerns for rare harm events?',
+        fields: [
+          {
+            id: 'runtime',
+            label: 'How long should this experiment run?',
+            type: 'single_select',
+            conceptLinks: ['novelty-effect'],
+            options: [
+              {
+                id: 'rt-a',
+                label: '7 days',
+                scoreValue: 0,
+                rationale: 'Too short. Opt-out and uninstall rates accumulate over time — 7 days may not reveal delayed churn driven by notification fatigue. Weekly session rate also requires at least 7 days of post-notification observation per user.',
+              },
+              {
+                id: 'rt-b',
+                label: '14 days',
+                scoreValue: 1,
+                rationale: 'Acceptable. 14 days is enough to observe two full week cycles, initial opt-out behavior, and some uninstall signal. But 21 days gives better stability for the rare-event guardrails.',
+              },
+              {
+                id: 'rt-c',
+                label: '21 days',
+                scoreValue: 2,
+                rationale: 'Best. Three weeks of data gives a stable view of opt-out and uninstall behavior, which may lag the notification experience by several days. It also captures any novelty-driven engagement spike in the first week vs. stabilized behavior in week 3.',
+              },
+              {
+                id: 'rt-d',
+                label: 'Run until the primary metric is significant, then stop',
+                scoreValue: 0,
+                rationale: 'Peeking problem. Stopping when the session metric looks good will miss delayed opt-out and uninstall accumulation, which are the most important harm signals for this experiment.',
+              },
+            ],
+          },
+          {
+            id: 'sampleSizeConcern',
+            label: 'What is the main power concern for this experiment?',
+            type: 'single_select',
+            conceptLinks: ['power', 'mde'],
+            options: [
+              {
+                id: 'ss-a',
+                label: 'None — 620,000 users is more than enough for any metric',
+                scoreValue: 0,
+                rationale: 'Overconfident on the harm metrics. Uninstall rate is a rare event (maybe 0.5–2% in any 21-day window). At this rate, the MDE for detecting a meaningful uninstall increase (e.g., 20% relative increase in 1% base = 0.2pp absolute) may require verification. Run the MDE calculation for uninstalls specifically.',
+              },
+              {
+                id: 'ss-b',
+                label: 'Primary metric is well-powered, but uninstall rate is a rare event with low base rate — verify MDE for this guardrail specifically',
+                scoreValue: 2,
+                rationale: 'Correct. Uninstall rates are rare events. The absolute base rate determines how much power you have to detect a meaningful increase. Check the MDE for uninstall rate before treating it as a reliable blocking guardrail.',
+              },
+              {
+                id: 'ss-c',
+                label: 'The experiment needs more users — engagement metrics require very large samples',
+                scoreValue: 0,
+                rationale: 'Incorrect. 620,000 users is more than adequate for session-level engagement metrics. The concern is for rare harm events, not the primary metric.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'risks',
+        label: 'Risks & Decision Rule',
+        hint: 'What could invalidate this, and when do you hold?',
+        fields: [
+          {
+            id: 'trustChecks',
+            label: 'Which trust checks should you run before reading results? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['srm'],
+            options: [
+              {
+                id: 'tc-a',
+                label: 'SRM check on user assignment counts',
+                scoreValue: 2,
+                rationale: 'Always first. Notification systems with per-user opt-in state have subtle SRM failure modes (e.g., users who opt out before receiving any notification in treatment may be logged differently).',
+              },
+              {
+                id: 'tc-b',
+                label: 'Verify notification volume equivalence between arms (same number of notifications per user per day)',
+                scoreValue: 2,
+                rationale: 'Critical. If the ML model sends a different number of notifications in addition to changing timing, the open rate and engagement changes are confounded by volume. The test should isolate timing only.',
+              },
+              {
+                id: 'tc-c',
+                label: 'Check pre-experiment session rates are comparable between arms',
+                scoreValue: 1,
+                rationale: 'Good baseline check. If treatment and control had different session rates before treatment started, something went wrong with the assignment.',
+              },
+            ],
+          },
+          {
+            id: 'validityRisks',
+            label: 'What are the main validity risks? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['novelty-effect'],
+            options: [
+              {
+                id: 'vr-a',
+                label: 'Novelty effect — users may be more attentive to notifications from an app that suddenly "knows" their preferred time',
+                scoreValue: 1,
+                rationale: 'Moderate risk. Personalized timing may initially feel more relevant, driving engagement that decays as it becomes normalized. Week-over-week monitoring can detect this.',
+              },
+              {
+                id: 'vr-b',
+                label: 'Delayed harm accumulation — opt-out and uninstall rates may not peak within the 21-day window',
+                scoreValue: 2,
+                rationale: 'High risk. Notification fatigue-driven churn often has a delayed fuse — users tolerate increasing intrusiveness for a few weeks before breaking point. A 21-day window may still underestimate cumulative harm. Flag this limitation in the analysis.',
+              },
+              {
+                id: 'vr-c',
+                label: 'Segment heterogeneity — users in different time zones or with different usage patterns may respond very differently to the ML model',
+                scoreValue: 1,
+                rationale: 'Real concern. A global ML timing model may optimize for the average user while harming specific segments (e.g., early morning users who the model misclassifies). Pre-specify a segment check by time zone and activity pattern.',
+              },
+            ],
+          },
+          {
+            id: 'decisionRule',
+            label: 'What is the pre-committed decision rule?',
+            type: 'single_select',
+            conceptLinks: ['p-value', 'guardrail-metric'],
+            options: [
+              {
+                id: 'dr-a',
+                label: 'Ship if open rate is significantly positive.',
+                scoreValue: 0,
+                rationale: 'The exact trap in the paired Review scenario. Open rate is the proxy. This rule allows shipping a model that harms retention and drives opt-outs, as long as the notifications were opened more often.',
+              },
+              {
+                id: 'dr-b',
+                label: 'Ship if the primary metric (7-day session rate or task completion) is significantly positive AND opt-out rate does not increase significantly AND uninstall rate does not increase significantly. Hold if either guardrail breaches.',
+                scoreValue: 2,
+                rationale: 'Correct. This rule uses a quality outcome as the decision trigger, treats harm guardrails as blocking, and avoids open rate as the determining factor. This is the design that the paired Review scenario lacked.',
+              },
+              {
+                id: 'dr-c',
+                label: 'Ship if open rate improves and no guardrail increases by more than 10%.',
+                scoreValue: 0,
+                rationale: '"10% relative" is too weak as a guardrail threshold and the primary metric is still open rate. If base opt-out rate is 2%, a 10% relative increase = 2.2% — but whether 0.2pp is meaningful depends on the base rate and business tolerance. Pre-commit the threshold in absolute terms.',
+              },
+              {
+                id: 'dr-d',
+                label: 'Ship if open rate and at least one retention metric improve. Review opt-out trend post-launch.',
+                scoreValue: 1,
+                rationale: '"Review post-launch" makes the opt-out guardrail advisory, not blocking. In a consumer app where opt-outs are irreversible, advisory guardrails are insufficient. Pre-commit to a blocking threshold before the test.',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+
+    scoringRubric: {
+      dimensions: [
+        { id: 'metric_selection', label: 'Metric selection', weight: 0.35, fieldIds: ['primaryMetric', 'guardrailMetrics'] },
+        { id: 'design_validity', label: 'Design validity', weight: 0.30, fieldIds: ['randomizationUnit', 'unitOfAnalysis', 'trustChecks', 'validityRisks'] },
+        { id: 'decision_discipline', label: 'Decision discipline', weight: 0.20, fieldIds: ['decisionRule', 'sampleSizeConcern'] },
+        { id: 'hypothesis_framing', label: 'Hypothesis framing', weight: 0.15, fieldIds: ['hypothesis', 'businessDecision'] },
+      ],
+      levels: {
+        incomplete:    { minScore: 0,    label: 'Incomplete' },
+        analyst_ready: { minScore: 0.45, label: 'Analyst-Ready' },
+        senior_ready:  { minScore: 0.68, label: 'Senior-Ready' },
+        staff_level:   { minScore: 0.85, label: 'Staff-Level' },
+      },
+    },
+
+    seniorDesign: {
+      rationale: `The notification timing test is a proxy metric trap dressed up as an engagement experiment. The ML model was trained to maximize open rate. Using open rate as the primary metric is circular — it validates the training signal, not the user outcome.
+
+The business question is: does personalized timing increase genuine re-engagement? That means sessions, task completions, or weekly activity — not a tap on a notification. A user who opens a notification while commuting and immediately closes the app has been "engaged" by the open rate metric and not engaged at all by any meaningful definition.
+
+Opt-out and uninstall are the most important harm signals. They are irreversible. A timing model that improves engagement for 5% of users while driving 2% more opt-outs is a net negative — you\'ve permanently lost the notification channel for a meaningful portion of your user base. These must be blocking guardrails, not observations to review post-launch.
+
+The delayed harm accumulation risk is underappreciated. Notification fatigue builds slowly. A 21-day test may still underestimate long-term opt-out effects. Flag this limitation explicitly in the analysis.`,
+      commonMistakes: [
+        {
+          mistake: 'Using notification open rate as the primary metric for a model trained on open rate',
+          consequence: 'The test validates the ML training objective, not user engagement. A model that learns to send at moments of idle phone-checking will look like a massive win on opens with no improvement in sessions or task completions.',
+          conceptLink: 'proxy-metric',
+        },
+        {
+          mistake: 'Treating opt-out as an advisory metric rather than a blocking guardrail',
+          consequence: 'Opt-outs are irreversible. If the timing model ships and opt-outs rise, you\'ve permanently degraded the notification channel for those users. Post-launch monitoring doesn\'t undo this.',
+          conceptLink: 'guardrail-metric',
+        },
+        {
+          mistake: 'Not verifying notification volume equivalence between arms',
+          consequence: 'If the ML system sends a different count of notifications per user (not just at different times), the test measures volume + timing vs. fixed timing, not timing alone. The mechanism is confounded.',
+          conceptLink: 'srm',
+        },
+      ],
+    },
+
+    pairedScenarioPrompt: {
+      toReview: 'You designed this experiment. Now see what happened when Orion ran it — with open rate as the success metric.',
+      fromReview: 'You read the push open rate result. Go back and redesign this test to catch the proxy metric trap before the data arrives.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // D07 — Design the Seller Incentive Test (BETA · Senior)
+  // Paired with: s11-seller-speed-spillover
+  // Core trap: seller-level A/B in a two-sided marketplace creates SUTVA violation
+  // ─────────────────────────────────────────────
+  {
+    id: 'd07-seller-incentive-test',
+    title: 'Design the Seller Incentive Test',
+    subtitle: 'Crafted wants to incentivize faster seller response times. Design the experiment — including whether a standard A/B is even valid here.',
+    isFree: false,
+    difficulty: 'senior',
+    industry: 'marketplace',
+    scenarioFamily: 'sutva',
+    pairedReviewScenarioId: 's11-seller-speed-spillover',
+
+    context: {
+      company: 'Crafted',
+      product: 'Two-sided handmade goods marketplace — ~40,000 active sellers, ~850,000 monthly buyers',
+      team: 'Seller Success team',
+      background: 'Crafted\'s data shows that buyers who receive a seller response within 2 hours are 31% more likely to complete a purchase than those who wait longer. A new proposal: introduce a "Fast Responder" badge and algorithmic search boost for sellers who maintain a <2h median response time. Sellers who qualify will be visibly highlighted to buyers.',
+      featureProposal: 'Launch the Fast Responder incentive program. Hypothesis: incentivizing faster responses will increase platform-wide buyer-to-purchase conversion by reducing drop-off during the consideration phase.',
+      businessPressure: 'The Head of Marketplace wants to show a GMV lift before the end of the quarter. The Seller Success team has been building this for 2 months. The PM wants a 14-day A/B test to "validate it quickly."',
+      constraints: [
+        '~40,000 active sellers eligible for the test',
+        'Buyers interact with multiple sellers per purchase consideration',
+        'Seller response time and buyer inquiry data are logged in real time',
+        'Engineering recommends seller-level randomization as the simplest implementation',
+        '30-day observation window preferred for conversion metrics',
+      ],
+    },
+
+    designPhases: [
+      {
+        id: 'framing',
+        label: 'Framing',
+        hint: 'What is this experiment actually measuring — seller behavior or platform health?',
+        fields: [
+          {
+            id: 'businessDecision',
+            label: 'What business decision does this experiment inform?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'bd-a',
+                label: 'Whether to launch the Fast Responder incentive program platform-wide',
+                scoreValue: 2,
+                rationale: 'Correct scope. The decision is whether this specific program (badge + algorithmic boost) should be deployed to all eligible sellers.',
+              },
+              {
+                id: 'bd-b',
+                label: 'Whether faster seller response times improve buyer conversion',
+                scoreValue: 1,
+                rationale: 'This is the underlying causal question, but it was already answered observationally (31% correlation). The experiment\'s job is to test whether the incentive program causally improves conversion at the platform level — including potential interference effects.',
+              },
+              {
+                id: 'bd-c',
+                label: 'Whether sellers will respond to badge incentives at all',
+                scoreValue: 0,
+                rationale: 'Too narrow. Whether sellers respond to the badge is a mechanism check, not the business decision. The decision is about platform-level GMV, not seller behavior in isolation.',
+              },
+            ],
+          },
+          {
+            id: 'hypothesis',
+            label: 'Select the strongest hypothesis formulation',
+            type: 'single_select',
+            conceptLinks: ['sutva'],
+            options: [
+              {
+                id: 'hyp-a',
+                label: 'Sellers receiving the Fast Responder incentive will respond to buyers faster, and their conversion rate will improve.',
+                scoreValue: 0,
+                rationale: 'Measures treatment seller behavior in isolation. This ignores platform-level dynamics — treatment sellers responding faster may absorb buyer demand away from control sellers. A valid hypothesis must account for spillover.',
+              },
+              {
+                id: 'hyp-b',
+                label: 'The Fast Responder program will improve platform-level buyer-to-purchase conversion by reducing response latency in the buyer consideration phase, without displacing demand from non-participating sellers.',
+                scoreValue: 2,
+                rationale: 'Strong. This includes the spillover constraint explicitly. A program that improves treatment seller conversion by diverting buyers from control sellers is not a platform-level improvement — and this hypothesis pre-commits to measuring both sides.',
+              },
+              {
+                id: 'hyp-c',
+                label: 'The badge incentive will improve seller response speed by 40% and reduce buyer inquiry abandonment.',
+                scoreValue: 0,
+                rationale: 'Mechanism-level hypothesis — it tests whether the badge changes seller behavior, not whether that change improves platform outcomes. The 40% target is arbitrary and not connected to the business decision.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'setup',
+        label: 'Setup',
+        hint: 'Seller-level A/B sounds simple — but is it valid in a two-sided marketplace?',
+        fields: [
+          {
+            id: 'eligiblePopulation',
+            label: 'Who should be in the experiment?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'ep-a',
+                label: 'All active sellers with at least 5 completed transactions in the past 90 days',
+                scoreValue: 2,
+                rationale: 'Appropriate eligibility threshold. Sellers with transaction history have behavioral baselines for response time measurement. Very new sellers may not yet have stable response patterns.',
+              },
+              {
+                id: 'ep-b',
+                label: 'All active sellers regardless of transaction history',
+                scoreValue: 0,
+                rationale: 'Including sellers with no transaction history means you\'re measuring the badge effect on sellers who have no established buyer relationships. The treatment mechanism (badge improves response speed → improves conversion) can\'t operate on sellers with no inquiries.',
+              },
+              {
+                id: 'ep-c',
+                label: 'Only sellers currently responding within 4 hours — those closest to the 2h threshold',
+                scoreValue: 0,
+                rationale: 'Too narrow. The program should be tested on the full eligible population. Restricting to "close to threshold" sellers produces a result that doesn\'t generalize to sellers who currently respond in 12–24 hours.',
+              },
+            ],
+          },
+          {
+            id: 'randomizationUnit',
+            label: 'What randomization unit do you recommend, and why?',
+            type: 'single_select',
+            conceptLinks: ['randomization-unit', 'sutva'],
+            options: [
+              {
+                id: 'ru-a',
+                label: 'Seller-level — treatment sellers get the badge and boost, control sellers don\'t',
+                scoreValue: 1,
+                rationale: 'Feasible and simple — but structurally flawed for a two-sided marketplace. Buyers interact with both treatment and control sellers simultaneously. A buyer who is "won" by a faster treatment seller might have purchased from a control seller otherwise. This creates demand displacement, not additive platform GMV.',
+              },
+              {
+                id: 'ru-b',
+                label: 'Geographic market (city/region) — entire markets get the full program or serve as holdout',
+                scoreValue: 2,
+                rationale: 'Correct for this type of experiment. Geographic isolation ensures that treatment and control markets have independent supply and demand. Treatment market sellers and buyers interact only with each other. This prevents the demand displacement problem inherent in seller-level A/B. The downside: fewer independent units and reduced power. But it\'s the only design that can measure platform-level effects cleanly.',
+              },
+              {
+                id: 'ru-c',
+                label: 'Buyer-level — buyers see either Fast Responder badges or no badges',
+                scoreValue: 0,
+                rationale: 'Misaligned with the treatment. The incentive changes seller behavior, not buyer perception. If sellers in the badge program respond faster regardless of whether the buyer can see the badge, buyer-level randomization doesn\'t isolate the incentive effect.',
+              },
+              {
+                id: 'ru-d',
+                label: 'Category-level — certain product categories get the program, others serve as control',
+                scoreValue: 1,
+                rationale: 'Better than seller-level — at least buyers searching in one category can\'t easily substitute to the other. But category-level randomization still has cross-contamination if buyers browse multiple categories. Geographic is cleaner.',
+              },
+            ],
+          },
+          {
+            id: 'unitOfAnalysis',
+            label: 'What is the right unit of analysis for platform-level metrics?',
+            type: 'single_select',
+            conceptLinks: ['unit-of-analysis'],
+            options: [
+              {
+                id: 'ua-a',
+                label: 'Buyer — compute conversion rate as buyers who purchased / buyers who submitted at least one inquiry',
+                scoreValue: 2,
+                rationale: 'Correct. The business outcome is buyer conversion. Measuring at the buyer level captures whether buyers who entered the consideration phase were more likely to complete a purchase — which is the platform-level effect you care about.',
+              },
+              {
+                id: 'ua-b',
+                label: 'Transaction — compute conversion rate as completed transactions / total inquiries',
+                scoreValue: 1,
+                rationale: 'Close, but treats each inquiry as independent when buyers submit multiple inquiries. A buyer who sends 5 inquiries and converts on 2 is a different kind of "success" than one who sends 1 and converts. User-level is cleaner.',
+              },
+              {
+                id: 'ua-c',
+                label: 'Seller — compute conversion rate as treatment seller conversions vs. control seller conversions',
+                scoreValue: 0,
+                rationale: 'Seller-level analysis measures treatment seller performance, not platform health. In the presence of demand displacement, treatment sellers look better specifically because they took demand from control sellers — not because total platform conversion improved.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'metrics',
+        label: 'Metrics',
+        hint: 'What measures platform-level value — not just treatment seller success?',
+        fields: [
+          {
+            id: 'primaryMetric',
+            label: 'What is the primary metric?',
+            type: 'single_select',
+            conceptLinks: ['primary-metric'],
+            options: [
+              {
+                id: 'pm-a',
+                label: 'Treatment seller response time (median hours from inquiry to first response)',
+                scoreValue: 0,
+                rationale: 'This is the mechanism metric, not the business outcome. Response time is what the incentive is supposed to change, not the reason you care. Improving response time is only valuable if it improves conversion. This metric answers "did the badge work?" not "should we ship this?"',
+              },
+              {
+                id: 'pm-b',
+                label: 'Platform-level buyer-to-purchase conversion rate (buyers who purchased / buyers who submitted at least one inquiry)',
+                scoreValue: 2,
+                rationale: 'Correct. This measures the real outcome: did more buyers complete purchases? At the platform level (with geographic holdout design), this is the metric that distinguishes "treatment sellers win more" from "total platform GMV increases."',
+              },
+              {
+                id: 'pm-c',
+                label: 'Treatment seller GMV (total revenue from treatment sellers)',
+                scoreValue: 0,
+                rationale: 'Measuring only treatment seller GMV in a seller-level A/B will show a win even if the platform is flat — it just means treatment sellers took GMV from control sellers. This metric is only valid with geographic holdout design.',
+              },
+            ],
+          },
+          {
+            id: 'guardrailMetrics',
+            label: 'Which guardrails should be pre-committed? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['guardrail-metric'],
+            options: [
+              {
+                id: 'gm-a',
+                label: 'Control seller conversion rate (should not decline significantly)',
+                scoreValue: 2,
+                rationale: 'Critical in seller-level A/B design. If control seller conversion falls while treatment sellers rise, it\'s a zero-sum reallocation. Platform GMV hasn\'t improved — demand has just shifted. This guardrail reveals the interference effect.',
+              },
+              {
+                id: 'gm-b',
+                label: 'Order cancellation rate',
+                scoreValue: 1,
+                rationale: 'Good quality guardrail. Sellers gaming response time (sending auto-responses immediately, then taking longer to fulfill) may increase cancellations. Fast response should not come at the cost of order quality.',
+              },
+              {
+                id: 'gm-c',
+                label: 'Seller quality score (post-transaction buyer ratings)',
+                scoreValue: 1,
+                rationale: 'Useful downstream guardrail. If the badge incentivizes speed at the cost of quality — sellers rushing to respond without properly evaluating orders — quality ratings may decline.',
+              },
+              {
+                id: 'gm-d',
+                label: 'New seller sign-up rate',
+                scoreValue: 0,
+                rationale: 'Not a relevant guardrail for a response time incentive. New seller acquisition is driven by marketing and seller economics, not response time badge programs. Too distal to be causally linked to this treatment.',
+              },
+            ],
+          },
+          {
+            id: 'diagnosticMetrics',
+            label: 'What diagnostic metrics should you track?',
+            type: 'multi_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'dm-a',
+                label: 'Seller response time distribution (treatment vs. control) — mechanism check',
+                scoreValue: 2,
+                rationale: 'Essential mechanism check. If treatment sellers are not responding faster, the incentive didn\'t work and any outcome differences have alternative explanations.',
+              },
+              {
+                id: 'dm-b',
+                label: 'Buyer inquiry volume per seller (are buyers preferentially contacting faster responders?)',
+                scoreValue: 1,
+                rationale: 'Useful for understanding the demand displacement mechanism. If treatment sellers receive more inquiries (buyers use the badge to filter), that\'s the channel through which displacement operates.',
+              },
+              {
+                id: 'dm-c',
+                label: '30-day seller retention (do incentivized sellers continue to maintain fast response after the experiment ends?)',
+                scoreValue: 0,
+                rationale: 'Important long-run question, but not measureable within the test window. Flag as a post-launch monitoring metric rather than a within-experiment diagnostic.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'logistics',
+        label: 'Logistics',
+        hint: 'Marketplace dynamics take time to stabilize — what is the right window?',
+        fields: [
+          {
+            id: 'runtime',
+            label: 'How long should this experiment run?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'rt-a',
+                label: '14 days',
+                scoreValue: 0,
+                rationale: 'Too short for a marketplace incentive. Sellers need time to adapt their behavior to the badge criteria, buyers need time to discover and respond to the badges, and marketplace dynamics (supply reallocation) need time to reach a new equilibrium. 14 days measures early response, not steady state.',
+              },
+              {
+                id: 'rt-b',
+                label: '21 days',
+                scoreValue: 1,
+                rationale: 'Better than 14 days, but still short for marketplace dynamics. The 30-day attribution window for conversion metrics can\'t be fully observed within 21 days.',
+              },
+              {
+                id: 'rt-c',
+                label: '30–42 days (4–6 weeks)',
+                scoreValue: 2,
+                rationale: 'Correct for a marketplace test. The 30-day attribution window requires at least 30 days to observe. Marketplace dynamics (seller behavior change, buyer discovery of badges) need 4+ weeks to reach equilibrium. A 6-week runtime is the minimum for credible causal inference here.',
+              },
+              {
+                id: 'rt-d',
+                label: 'Run for 7 days and extrapolate to 30-day conversion using existing funnel rates',
+                scoreValue: 0,
+                rationale: 'Extrapolation from early funnel data is not valid for a test with delayed conversion effects and marketplace dynamics. The 30-day window must be observed, not estimated.',
+              },
+            ],
+          },
+          {
+            id: 'sampleSizeConcern',
+            label: 'What is the main power concern for this experiment?',
+            type: 'single_select',
+            conceptLinks: ['power', 'mde'],
+            options: [
+              {
+                id: 'ss-a',
+                label: '40,000 sellers is plenty — power is not a concern',
+                scoreValue: 0,
+                rationale: 'Wrong. With geographic holdout design, the randomization unit is the market/region, not the seller. The number of independent geographic markets may be far smaller than 40,000. Each market becomes one "observation." Power depends on the number of markets, not sellers.',
+              },
+              {
+                id: 'ss-b',
+                label: 'With geographic holdout design, power depends on the number of independent markets, not seller count — may need to limit the holdout region carefully',
+                scoreValue: 2,
+                rationale: 'Correct. Geographic holdout designs are power-constrained by the number of comparable market units. If Crafted operates in 30 cities, you may only have 15–15 treatment-control pairs. Power analysis must be done at the market level, and the MDE may be larger than you\'d like.',
+              },
+              {
+                id: 'ss-c',
+                label: 'Power is constrained by buyer inquiry volume, not seller count',
+                scoreValue: 1,
+                rationale: 'Partially right — buyer inquiry volume within each geographic market is relevant. But the key insight is that the randomization unit is the market, so market-level power analysis is what matters.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'risks',
+        label: 'Risks & Decision Rule',
+        hint: 'SUTVA is the core risk here — how do you flag it and what is the decision rule?',
+        fields: [
+          {
+            id: 'trustChecks',
+            label: 'Which trust checks should you run? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['srm'],
+            options: [
+              {
+                id: 'tc-a',
+                label: 'SRM check on seller assignment counts per market',
+                scoreValue: 2,
+                rationale: 'Standard first check. Verify treatment and control markets have comparable seller counts after assignment.',
+              },
+              {
+                id: 'tc-b',
+                label: 'Verify buyer inquiry volume is balanced between treatment and control markets before test start',
+                scoreValue: 2,
+                rationale: 'Critical for geographic holdout. If treatment markets have significantly higher pre-experiment inquiry volume, post-experiment conversion differences may reflect market characteristics, not the treatment.',
+              },
+              {
+                id: 'tc-c',
+                label: 'Check that pre-experiment seller response times are comparable between treatment and control markets',
+                scoreValue: 1,
+                rationale: 'Important baseline check. If treatment markets started with faster-responding sellers, the post-test improvement in response time is smaller than it appears.',
+              },
+              {
+                id: 'tc-d',
+                label: 'Monitor for "badge gaming" — sellers setting auto-responses to meet the <2h threshold artificially',
+                scoreValue: 1,
+                rationale: 'Real risk. Fast initial responses that don\'t actually engage the buyer will inflate the mechanism metric (response time) without improving the outcome (conversion). Monitor response quality, not just speed.',
+              },
+            ],
+          },
+          {
+            id: 'validityRisks',
+            label: 'What are the main validity risks? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['sutva'],
+            options: [
+              {
+                id: 'vr-a',
+                label: 'SUTVA violation in seller-level A/B — treatment sellers absorb demand from control sellers through shared buyer pool',
+                scoreValue: 2,
+                rationale: 'The central risk. In any seller-level A/B test in a marketplace, buyers contact both treatment and control sellers. Treatment sellers winning more conversions may simply be taking demand from control sellers rather than adding platform GMV. Geographic holdout is the mitigation.',
+              },
+              {
+                id: 'vr-b',
+                label: 'Seller gaming — sellers send auto-responses to qualify for badge without improving genuine service quality',
+                scoreValue: 2,
+                rationale: 'Real behavioral risk. Incentive programs in marketplaces frequently surface gaming behaviors. Auto-responses that game the response time metric without actually helping buyers will inflate the mechanism metric without improving outcomes.',
+              },
+              {
+                id: 'vr-c',
+                label: 'Novelty effect — buyers initially prefer Fast Responder sellers out of curiosity, not because of genuine quality',
+                scoreValue: 1,
+                rationale: 'Moderate risk. Buyers may click on Fast Responder badges out of curiosity in the first week. This would inflate early conversion rates for treatment sellers and inflate the apparent treatment effect.',
+              },
+            ],
+          },
+          {
+            id: 'decisionRule',
+            label: 'What is the pre-committed decision rule?',
+            type: 'single_select',
+            conceptLinks: ['p-value', 'guardrail-metric', 'sutva'],
+            options: [
+              {
+                id: 'dr-a',
+                label: 'Ship if treatment seller conversion rate improves significantly.',
+                scoreValue: 0,
+                rationale: 'This is the exact trap in the paired Review scenario. Treatment seller conversion improving while control seller conversion falls is not a platform win — it\'s demand displacement. This rule ignores the interference effect entirely.',
+              },
+              {
+                id: 'dr-b',
+                label: 'Ship if platform-level buyer conversion improves significantly in treatment markets AND control seller conversion rate does not decline significantly. Hold if evidence of demand displacement exists (treatment lifts while control declines).',
+                scoreValue: 2,
+                rationale: 'Correct. This rule pre-commits to measuring platform health (not just treatment seller health), explicitly tests for displacement via the control seller guardrail, and blocks the ship decision if interference is detected. This is the design that makes the experiment interpretable.',
+              },
+              {
+                id: 'dr-c',
+                label: 'Ship if treatment sellers show faster response times AND higher GMV.',
+                scoreValue: 0,
+                rationale: 'Both metrics are treatment-seller-level. GMV from treatment sellers can increase entirely through demand displacement from control sellers. This rule cannot distinguish additive platform growth from zero-sum reallocation.',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+
+    scoringRubric: {
+      dimensions: [
+        { id: 'metric_selection', label: 'Metric selection', weight: 0.30, fieldIds: ['primaryMetric', 'guardrailMetrics'] },
+        { id: 'design_validity', label: 'Design validity', weight: 0.40, fieldIds: ['randomizationUnit', 'unitOfAnalysis', 'trustChecks', 'validityRisks'] },
+        { id: 'decision_discipline', label: 'Decision discipline', weight: 0.20, fieldIds: ['decisionRule', 'sampleSizeConcern'] },
+        { id: 'hypothesis_framing', label: 'Hypothesis framing', weight: 0.10, fieldIds: ['hypothesis', 'businessDecision'] },
+      ],
+      levels: {
+        incomplete:    { minScore: 0,    label: 'Incomplete' },
+        analyst_ready: { minScore: 0.45, label: 'Analyst-Ready' },
+        senior_ready:  { minScore: 0.68, label: 'Senior-Ready' },
+        staff_level:   { minScore: 0.85, label: 'Staff-Level' },
+      },
+    },
+
+    seniorDesign: {
+      rationale: `This scenario is explicitly about recognizing that standard A/B testing is structurally invalid in certain marketplace contexts. The proposed seller-level A/B test has a SUTVA problem that cannot be fixed by adjusting the analysis — it requires a different design.
+
+The interference mechanism is specific: buyers contact multiple sellers simultaneously. A buyer who is "won" by a treatment seller (fast response, badge, algorithmic boost) is potentially a buyer who would have purchased from a control seller in the counterfactual. Treatment seller conversion increases through reallocation, not through additive platform GMV.
+
+The only design that can measure a platform-level effect is geographic holdout: entire markets get the full program or serve as holdout. Within each market, supply and demand are isolated together, so there is no cross-contamination.
+
+The tradeoff is power: the number of independent geographic markets may be small, making the MDE relatively large. This is a design constraint you must acknowledge, not a reason to fall back to seller-level A/B.
+
+The decision rule must explicitly check for demand displacement: if treatment markets lift while control markets decline, the program is redistributing GMV, not creating it. Block the ship decision on this evidence.`,
+      commonMistakes: [
+        {
+          mistake: 'Running seller-level A/B without acknowledging marketplace interference',
+          consequence: 'Treatment sellers appear to win more conversions. The team ships the program. Platform-level GMV is flat because treatment sellers absorbed demand from sellers outside the program. The "lift" was always a reallocation artifact.',
+          conceptLink: 'sutva',
+        },
+        {
+          mistake: 'Using treatment seller GMV as the primary metric',
+          consequence: 'Treatment seller GMV increases even in a zero-sum reallocation scenario. This metric cannot distinguish additive growth from displacement. Platform-level or control-seller metrics are required.',
+          conceptLink: 'primary-metric',
+        },
+        {
+          mistake: 'Running only 14 days and extrapolating to 30-day conversion',
+          consequence: 'Marketplace behavior (seller adaptation, buyer discovery, algorithmic boost propagation) takes weeks to stabilize. Early conversion effects overstate steady-state impact.',
+          conceptLink: 'novelty-effect',
+        },
+      ],
+    },
+
+    pairedScenarioPrompt: {
+      toReview: 'You designed this marketplace experiment. Now see what the data showed when Crafted ran a seller-level A/B instead.',
+      fromReview: 'You read the spillover result. Go back and design this experiment to correctly handle the marketplace interference problem.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // D08 — Design the Onboarding Checklist Test (BETA · Analyst)
+  // Paired with: s12-checklist-completion-illusion
+  // Core trap: checklist completion as primary metric; durable activation is the real signal
+  // ─────────────────────────────────────────────
+  {
+    id: 'd08-onboarding-checklist-test',
+    title: 'Design the Onboarding Checklist Test',
+    subtitle: 'Loopwise wants to add an onboarding checklist for new users. Design the experiment before checklist completion becomes the success metric.',
+    isFree: false,
+    difficulty: 'analyst',
+    industry: 'saas',
+    scenarioFamily: 'proxy_metric',
+    pairedReviewScenarioId: 's12-checklist-completion-illusion',
+
+    context: {
+      company: 'Loopwise',
+      product: 'B2B project management SaaS — 14k paying accounts, strong SMB segment',
+      team: 'Activation & Onboarding team',
+      background: 'Loopwise has low week-1 activation. Only 38% of new users complete 3+ core actions (create project, add task, invite teammate) in their first week. The new proposal: add an in-product onboarding checklist with 7 guided steps. The PM\'s proposed success metric is "checklist completion rate."',
+      featureProposal: 'Add a 7-step in-product onboarding checklist to the new user experience. Steps include: creating a project, adding a first task, setting a due date, inviting a teammate, using a template, enabling notifications, and setting personal preferences.',
+      businessPressure: 'The Head of Product has this as a Q3 priority. The checklist has been built and the team wants to ship. The PM is framing the test as a "validation" — they expect checklist completion to be a proxy for activation.',
+      constraints: [
+        '~220 new user accounts per week (B2B SaaS with longer sales cycles)',
+        'New users are defined as accounts in their first 7 days',
+        'Week-1 activation and 30-day retention are tracked in the data warehouse',
+        'Team accounts have multiple users — randomize at the account level to avoid mixed experiences within a team',
+      ],
+    },
+
+    designPhases: [
+      {
+        id: 'framing',
+        label: 'Framing',
+        hint: 'What does the business actually need to know? Is checklist completion the right answer?',
+        fields: [
+          {
+            id: 'businessDecision',
+            label: 'What is the business decision this experiment informs?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'bd-a',
+                label: 'Whether the onboarding checklist improves meaningful week-1 activation and should be deployed to all new users',
+                scoreValue: 2,
+                rationale: 'Correct. The decision is whether this checklist produces real activation improvement — not whether users will complete it. "Meaningful activation" is the key qualifier: it means durable product adoption, not checkbox completion.',
+              },
+              {
+                id: 'bd-b',
+                label: 'Whether users prefer a checklist-based onboarding over the current unguided experience',
+                scoreValue: 0,
+                rationale: 'Preference is not the business outcome. Users may prefer checklists (they feel like progress) even if they don\'t lead to better product adoption. Preference metrics are notoriously misleading when disconnected from behavior outcomes.',
+              },
+              {
+                id: 'bd-c',
+                label: 'Whether checklist completion rates can reach 60% or above',
+                scoreValue: 0,
+                rationale: 'This is a product health metric, not a business decision. Checklist completion is the mechanism, not the goal. You could reach 80% checklist completion with 0% improvement in meaningful activation if users rush through low-value steps.',
+              },
+            ],
+          },
+          {
+            id: 'hypothesis',
+            label: 'Select the strongest hypothesis',
+            type: 'single_select',
+            conceptLinks: ['proxy-metric'],
+            options: [
+              {
+                id: 'hyp-a',
+                label: 'The onboarding checklist will improve checklist completion rate and reduce time-to-first-value.',
+                scoreValue: 0,
+                rationale: 'Checklist completion rate as the primary outcome is the trap. "Time-to-first-value" is better but vague — first value at what? The hypothesis needs to specify what "value" means in terms of durable product usage.',
+              },
+              {
+                id: 'hyp-b',
+                label: 'The onboarding checklist will improve week-1 meaningful activation (creating a project, adding a task, and inviting a teammate) and 30-day retention by guiding users to core value faster than the unguided experience.',
+                scoreValue: 2,
+                rationale: 'Strong. This specifies the activation definition concretely (not just any 3 actions — specifically the ones tied to product stickiness), includes the retention outcome, and explains the mechanism (guidance to core value).',
+              },
+              {
+                id: 'hyp-c',
+                label: 'Users who complete the checklist will show higher 30-day retention than users who don\'t.',
+                scoreValue: 0,
+                rationale: 'This is not a hypothesis for the experiment — it\'s a hypothesis about checklist completers vs. non-completers, which is an observational question. Completers and non-completers self-select, so this comparison is confounded by user quality. The experiment compares users who had access to a checklist vs. those who didn\'t.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'setup',
+        label: 'Setup',
+        hint: 'B2B SaaS has team accounts — how does that affect randomization?',
+        fields: [
+          {
+            id: 'eligiblePopulation',
+            label: 'Who should be included in this experiment?',
+            type: 'single_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'ep-a',
+                label: 'New accounts in their first 7 days — all team members within a new account included',
+                scoreValue: 2,
+                rationale: 'Correct. The treatment is an account-level onboarding experience. All users within a team should see the same version — you can\'t have some team members see the checklist and others not within the same account.',
+              },
+              {
+                id: 'ep-b',
+                label: 'Individual new users within existing accounts who haven\'t been active in 30+ days',
+                scoreValue: 0,
+                rationale: 'These are dormant existing users, not new users. The onboarding checklist is designed for first-time activation. The treatment mechanism doesn\'t apply to previously inactive users in the same way.',
+              },
+              {
+                id: 'ep-c',
+                label: 'Only new accounts with 2+ team members, to ensure the "invite a teammate" step is testable',
+                scoreValue: 0,
+                rationale: 'Too restrictive. Solo users are a significant B2B SaaS segment. Excluding them produces a result that doesn\'t generalize to all new accounts. "Invite a teammate" can be adapted to solo users or excluded from their checklist.',
+              },
+            ],
+          },
+          {
+            id: 'randomizationUnit',
+            label: 'What should the randomization unit be?',
+            type: 'single_select',
+            conceptLinks: ['randomization-unit'],
+            options: [
+              {
+                id: 'ru-a',
+                label: 'Account (all users in the same account see either checklist or no checklist)',
+                scoreValue: 2,
+                rationale: 'Correct. In B2B SaaS, team members within an account collaborate and influence each other\'s behavior. If some team members see a checklist and others don\'t, you get contamination within the account. Account-level randomization avoids this.',
+              },
+              {
+                id: 'ru-b',
+                label: 'User (each new user independently sees checklist or no checklist)',
+                scoreValue: 0,
+                rationale: 'User-level randomization in a team product creates contamination. If a team admin sees the checklist and invites teammates who don\'t, the admin\'s behavior is influenced by the checklist while teammates see an inconsistent onboarding experience. This violates independence within the account.',
+              },
+              {
+                id: 'ru-c',
+                label: 'Cohort week (all new users in a given week see the same experience)',
+                scoreValue: 0,
+                rationale: 'Time-based assignment is not a valid A/B design. Users in different weeks may differ systematically (seasonality, marketing channel mix, sales team activity). This is not random assignment — it\'s a pre-post comparison with selection effects.',
+              },
+            ],
+          },
+          {
+            id: 'unitOfAnalysis',
+            label: 'What is the unit of analysis?',
+            type: 'single_select',
+            conceptLinks: ['unit-of-analysis'],
+            options: [
+              {
+                id: 'ua-a',
+                label: 'Account — compute activation rate as accounts that achieved meaningful activation / total accounts assigned',
+                scoreValue: 2,
+                rationale: 'Correct. The randomization unit is account, and activation is an account-level outcome (did the team start using the product meaningfully?). User-level analysis within accounts would require clustering to avoid inflated power.',
+              },
+              {
+                id: 'ua-b',
+                label: 'User — compute activation rate as users who activated / total users who signed up',
+                scoreValue: 0,
+                rationale: 'Mismatches the account-level randomization. Users within the same account are correlated — treating them as independent observations inflates effective sample size and produces overconfident p-values.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'metrics',
+        label: 'Metrics',
+        hint: 'What proves that users are getting real value — not just completing tasks?',
+        fields: [
+          {
+            id: 'primaryMetric',
+            label: 'What is the primary metric?',
+            type: 'single_select',
+            conceptLinks: ['primary-metric', 'proxy-metric'],
+            options: [
+              {
+                id: 'pm-a',
+                label: 'Checklist completion rate (accounts that completed all 7 steps / total accounts assigned)',
+                scoreValue: 0,
+                rationale: 'The exact trap. Checklist completion measures whether users went through the motions — not whether they got value. Users can complete all 7 steps in 3 minutes without retaining any of the behaviors. The review scenario shows exactly what happens when this is the primary metric.',
+              },
+              {
+                id: 'pm-b',
+                label: 'Week-1 meaningful activation rate (accounts that created a project, added a task, and invited a teammate within 7 days of signup)',
+                scoreValue: 2,
+                rationale: 'Strong. These three actions are the behaviors Loopwise data shows predict 30-day retention. Unlike checklist completion, this metric requires the user to actually use the product in the intended workflow — not just click through a setup experience.',
+              },
+              {
+                id: 'pm-c',
+                label: '30-day account retention rate',
+                scoreValue: 1,
+                rationale: 'Important outcome, but too lagging as a primary metric for an experiment with limited new account volume. The 30-day window means you need 30+ days of observation per account after assignment — which requires a long runtime and large sample. Use as a secondary/confirmatory metric.',
+              },
+              {
+                id: 'pm-d',
+                label: 'Time-to-first-task (hours between signup and creating the first task)',
+                scoreValue: 0,
+                rationale: 'Speed to first action is not activation. The checklist may dramatically reduce time-to-first-task simply by making the prompt more visible — without improving whether the user persists in the product. This is a vanity metric for this experiment.',
+              },
+            ],
+          },
+          {
+            id: 'guardrailMetrics',
+            label: 'Which guardrails should be pre-committed? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['guardrail-metric'],
+            options: [
+              {
+                id: 'gm-a',
+                label: '14-day account retention rate',
+                scoreValue: 2,
+                rationale: 'Critical. If the checklist produces checklist completion but not durable engagement, 14-day retention should be flat or worse despite activation improvements. This is the early signal that "activation" was artificial.',
+              },
+              {
+                id: 'gm-b',
+                label: 'Support ticket rate in the first 7 days',
+                scoreValue: 1,
+                rationale: 'Good usability guardrail. If the checklist is confusing, overwhelming, or misleading, support contacts will rise. A checklist that drives up support load while improving completion is not a net positive.',
+              },
+              {
+                id: 'gm-c',
+                label: 'Trial-to-paid conversion rate (for accounts on free trial)',
+                scoreValue: 1,
+                rationale: 'Useful downstream guardrail for free-trial accounts. If the checklist improves week-1 activation but does nothing for conversion, its business value is limited. Include as a secondary if trial accounts are a significant segment.',
+              },
+              {
+                id: 'gm-d',
+                label: 'Number of checklist steps completed per account (regardless of order)',
+                scoreValue: 0,
+                rationale: 'This is a diagnostic, not a guardrail. It measures how far accounts got in the checklist — useful for understanding drop-off patterns, but not a guardrail that should block shipping.',
+              },
+            ],
+          },
+          {
+            id: 'diagnosticMetrics',
+            label: 'Which metrics are diagnostics?',
+            type: 'multi_select',
+            conceptLinks: [],
+            options: [
+              {
+                id: 'dm-a',
+                label: 'Checklist completion rate and step-by-step funnel (where do users drop off?)',
+                scoreValue: 2,
+                rationale: 'Essential diagnostic. If the primary metric (meaningful activation) improves, understanding which checklist steps drove it helps optimize the experience. If activation doesn\'t improve, the drop-off analysis reveals where the checklist is failing.',
+              },
+              {
+                id: 'dm-b',
+                label: 'Time spent per checklist step vs. equivalent actions in control group',
+                scoreValue: 1,
+                rationale: 'Useful for understanding whether the checklist guides users through steps more efficiently than the unguided experience. Faster time-per-step may suggest the checklist is a helpful nudge, not just a gamification wrapper.',
+              },
+              {
+                id: 'dm-c',
+                label: 'Feature usage heatmap (which features do treatment vs. control users explore in week 1?)',
+                scoreValue: 1,
+                rationale: 'Good product intelligence diagnostic. If the checklist directs users to specific features, it shapes what they discover. Understanding whether checklist-directed discovery leads to better or worse product patterns is useful for future iteration.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'logistics',
+        label: 'Logistics',
+        hint: 'B2B SaaS has low new-account volume — how do you get sufficient power?',
+        fields: [
+          {
+            id: 'runtime',
+            label: 'How long should this experiment run?',
+            type: 'single_select',
+            conceptLinks: ['power', 'mde'],
+            options: [
+              {
+                id: 'rt-a',
+                label: '14 days',
+                scoreValue: 0,
+                rationale: 'At 220 new accounts per week, 14 days gives only ~440 accounts total (~220 per arm). This is likely underpowered for week-1 activation rate changes of meaningful size (e.g., 5pp lift on 38% base). Check power calculations before committing to 14 days.',
+              },
+              {
+                id: 'rt-b',
+                label: '4–6 weeks, based on power calculation for the required sample size',
+                scoreValue: 2,
+                rationale: 'Correct. B2B SaaS experiments have low new account volume. At 220/week, 6 weeks gives ~1,320 accounts (~660 per arm) — sufficient for moderate effect sizes. Run the power calculation with the specific base rate and MDE before committing to runtime.',
+              },
+              {
+                id: 'rt-c',
+                label: 'Run until p < 0.05',
+                scoreValue: 0,
+                rationale: 'Peeking problem. With low volume, you\'re especially susceptible to false positives if you stop when significance is reached. Pre-commit to the sample size based on a power calculation, not on when the p-value happens to cross 0.05.',
+              },
+              {
+                id: 'rt-d',
+                label: '90 days, to ensure we see the 30-day retention outcome',
+                scoreValue: 0,
+                rationale: 'Too long for an experiment the PM wants to use for sprint planning. A 90-day runtime is justified for 30-day retention as primary — but if you use week-1 activation as primary and 30-day retention as a secondary/post-test metric, you can run for 6 weeks and still be informative.',
+              },
+            ],
+          },
+          {
+            id: 'sampleSizeConcern',
+            label: 'What is the main power concern for this experiment?',
+            type: 'single_select',
+            conceptLinks: ['power', 'mde'],
+            options: [
+              {
+                id: 'ss-a',
+                label: 'Power is not a concern — checklist effects tend to be large',
+                scoreValue: 0,
+                rationale: 'Unfounded assumption. Onboarding changes frequently show smaller activation effects than anticipated, especially when users already know how to find the core features without a checklist. Do not assume large effects.',
+              },
+              {
+                id: 'ss-b',
+                label: 'Low new-account volume (~220/week) means the experiment may be underpowered for small-to-moderate activation effects — run explicit power calculation and set MDE before launch',
+                scoreValue: 2,
+                rationale: 'Correct. At ~220 accounts/week, the experiment is power-constrained. The MDE at 6 weeks (~660 accounts/arm) on a 38% activation base is roughly 5–7pp at 80% power. If the real effect is 2–3pp, the experiment will be underpowered. Set the MDE honestly before the test and don\'t extend it post-hoc.',
+              },
+              {
+                id: 'ss-c',
+                label: 'Power is sufficient since checklist completion will show large differences between arms',
+                scoreValue: 0,
+                rationale: 'Checklist completion is only a diagnostic — it\'s not the primary metric. Large differences in checklist completion (which you\'d expect trivially, since control has no checklist) do not indicate adequate power for meaningful activation differences.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'risks',
+        label: 'Risks & Decision Rule',
+        hint: 'The biggest risk is shipping on the wrong metric — how do you prevent it?',
+        fields: [
+          {
+            id: 'trustChecks',
+            label: 'Which trust checks should you run before reading results? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['srm'],
+            options: [
+              {
+                id: 'tc-a',
+                label: 'SRM check on account assignment counts',
+                scoreValue: 2,
+                rationale: 'Standard first check. Verify assignment counts match the intended split. Onboarding experiments with eligibility logic (first 7 days only) are common SRM sources.',
+              },
+              {
+                id: 'tc-b',
+                label: 'Exclude staff/demo accounts from analysis',
+                scoreValue: 2,
+                rationale: 'Important for SaaS. Internal test accounts and demo accounts created by sales teams will behave differently. Including them inflates completion rates and biases results. Exclude by email domain or account type before analysis.',
+              },
+              {
+                id: 'tc-c',
+                label: 'Verify pre-experiment week-1 activation rates are comparable between arms',
+                scoreValue: 1,
+                rationale: 'Good baseline check. If treatment and control accounts had different pre-experiment activation patterns, randomization may have failed.',
+              },
+            ],
+          },
+          {
+            id: 'validityRisks',
+            label: 'What are the main validity risks? (Select all)',
+            type: 'multi_select',
+            conceptLinks: ['novelty-effect', 'proxy-metric'],
+            options: [
+              {
+                id: 'vr-a',
+                label: 'Checklist gaming — users rush through low-value steps to clear the checklist badge without genuinely engaging with the product',
+                scoreValue: 2,
+                rationale: 'The central risk. Checklists activate completion psychology (gamification effect) which drives step completion independent of actual value. Users will complete "set personal preferences" in 10 seconds to see the progress bar move. This is exactly the failure mode in the paired Review scenario.',
+              },
+              {
+                id: 'vr-b',
+                label: 'Novelty effect — treatment users are more engaged simply because the onboarding is new and different, regardless of checklist quality',
+                scoreValue: 1,
+                rationale: 'Moderate risk. New onboarding experiences prompt exploration that decays over time. Week-1 activation may be inflated by novelty that doesn\'t translate to week-4 retention.',
+              },
+              {
+                id: 'vr-c',
+                label: 'Low statistical power — small effect sizes on a modest new-account volume may not reach significance',
+                scoreValue: 1,
+                rationale: 'Real risk, especially if the true activation effect is 2–3pp on a 38% base. An underpowered experiment risks both false negatives (missing real activation improvement) and the temptation to ship on checklist completion instead.',
+              },
+            ],
+          },
+          {
+            id: 'decisionRule',
+            label: 'What is the pre-committed decision rule?',
+            type: 'single_select',
+            conceptLinks: ['p-value', 'guardrail-metric'],
+            options: [
+              {
+                id: 'dr-a',
+                label: 'Ship if checklist completion rate improves significantly.',
+                scoreValue: 0,
+                rationale: 'Explicitly wrong. Checklist completion is a diagnostic in this design. Shipping on completion rate alone is the paired Review scenario failure mode — high completion, flat or negative activation.',
+              },
+              {
+                id: 'dr-b',
+                label: 'Ship if week-1 meaningful activation rate is significantly positive AND 14-day retention is not significantly worse. Do not ship if activation improves but retention declines — that would indicate checklist gaming.',
+                scoreValue: 2,
+                rationale: 'Correct. This rule uses the right primary metric, explicitly guards against the checklist-gaming failure mode (activation up, retention down), and treats the retention guardrail as blocking. This is the decision structure that separates real activation improvement from gamified completion.',
+              },
+              {
+                id: 'dr-c',
+                label: 'Ship if week-1 activation rate and checklist completion both improve significantly.',
+                scoreValue: 0,
+                rationale: 'Using checklist completion as a co-condition is not meaningful — of course completion will be higher in treatment (the control has no checklist). This adds no signal and dilutes the decision rule.',
+              },
+              {
+                id: 'dr-d',
+                label: 'Ship if any activation metric improves without a significant guardrail breach.',
+                scoreValue: 1,
+                rationale: '"Any activation metric" introduces multiple testing without a pre-committed primary. Better to pre-commit to one activation metric (week-1 meaningful activation) and treat the others as secondary.',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+
+    scoringRubric: {
+      dimensions: [
+        { id: 'metric_selection', label: 'Metric selection', weight: 0.35, fieldIds: ['primaryMetric', 'guardrailMetrics'] },
+        { id: 'design_validity', label: 'Design validity', weight: 0.30, fieldIds: ['randomizationUnit', 'unitOfAnalysis', 'trustChecks', 'validityRisks'] },
+        { id: 'decision_discipline', label: 'Decision discipline', weight: 0.20, fieldIds: ['decisionRule', 'sampleSizeConcern'] },
+        { id: 'hypothesis_framing', label: 'Hypothesis framing', weight: 0.15, fieldIds: ['hypothesis', 'businessDecision'] },
+      ],
+      levels: {
+        incomplete:    { minScore: 0,    label: 'Incomplete' },
+        analyst_ready: { minScore: 0.45, label: 'Analyst-Ready' },
+        senior_ready:  { minScore: 0.68, label: 'Senior-Ready' },
+        staff_level:   { minScore: 0.85, label: 'Staff-Level' },
+      },
+    },
+
+    seniorDesign: {
+      rationale: `The central design challenge is defining what activation actually means. "Checklist completion" is not activation — it\'s a proxy for it, and a gameable one. The 7-step checklist includes "set personal preferences" — a step users can complete in 10 seconds with no product engagement. If completion is the success metric, the team will ship a checklist that teaches users to clear a progress bar, not use the product.
+
+The right primary metric is the specific set of behaviors that Loopwise data shows predict 30-day retention: creating a project, adding a task, and inviting a teammate. All three, in the first 7 days. These require actual product engagement, not just UI interaction.
+
+The retention guardrail is the most important signal for catching checklist gaming. If treatment accounts show higher week-1 activation but flat or worse 14-day retention, users went through the checklist motions without forming product habits. That is a false positive. The decision rule must block shipping in this case.
+
+B2B SaaS volume constraint: at 220 new accounts per week, you need 6+ weeks for adequate power at reasonable effect sizes. Be honest about this upfront — don\'t start the experiment with a 14-day timeline and then extend post-hoc.`,
+      commonMistakes: [
+        {
+          mistake: 'Using checklist completion as the primary metric',
+          consequence: 'Users optimize for progress bars, not product value. High checklist completion coexists with flat activation. The team ships a feature that looks good in the experiment and produces no long-term retention improvement.',
+          conceptLink: 'proxy-metric',
+        },
+        {
+          mistake: 'User-level rather than account-level randomization in B2B team product',
+          consequence: 'Team members within the same account see inconsistent onboarding experiences. The admin sees a checklist; their teammate doesn\'t. Within-account correlation inflates apparent power and contaminates the treatment effect.',
+          conceptLink: 'randomization-unit',
+        },
+        {
+          mistake: 'Running only 14 days given low new-account volume',
+          consequence: 'Sample is too small to detect realistic 5pp activation improvements at 80% power. The experiment returns null result. Team ships on checklist completion as consolation prize.',
+          conceptLink: 'power',
+        },
+      ],
+    },
+
+    pairedScenarioPrompt: {
+      toReview: 'You designed this experiment. Now see what the data showed when Loopwise ran the checklist test with completion as the primary metric.',
+      fromReview: 'You read the checklist completion illusion. Go back and design this experiment to avoid shipping on the wrong metric.',
+    },
+  },
 ];
 
 export const designScenariosById = Object.fromEntries(designScenarios.map(s => [s.id, s]));

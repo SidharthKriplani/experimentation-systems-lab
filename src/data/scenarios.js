@@ -1604,6 +1604,754 @@ One more thing: the VP of Customer Success wanting to demo this to a strategic a
     interviewTakeaway: "The correct response to 'design an A/B test for this' is first to check whether a valid A/B test is possible — low sample size, slow-moving metrics, or short timelines can make A/B testing invalid, and proposing rigorous alternatives (instrumented rollout, pre/post with success criteria, qualitative research) is more valuable than running an underpowered experiment.",
 
     relatedConcepts: ["statistical power", "minimum detectable effect", "sample size", "quasi-experimental design", "propensity score matching", "instrumented rollout", "pre/post analysis", "when not to experiment"]
+  },
+
+  // ─────────────────────────────────────────────
+  // SCENARIO 09 — The Clickbait Ranking Win (BETA)
+  // Theme: Proxy Metric / Metric Gaming
+  // Paired with: d05-search-ranking-test
+  // ─────────────────────────────────────────────
+  {
+    id: "s09-clickbait-ranking-win",
+    title: "The Clickbait Ranking Win",
+    subtitle: "CTR is up 14%. Add-to-cart is flat. Reformulations are climbing. The PM wants to ship.",
+    isFree: false,
+    industry: "ecommerce",
+    difficulty: "analyst",
+    theme: "proxy_metric",
+
+    context: {
+      company: "Vela",
+      product: "B2C e-commerce marketplace — handmade and independent goods, ~$80M GMV",
+      team: "Search & Discovery team",
+      background: `Vela deployed a new ML-based search ranking algorithm in an A/B test three weeks ago. The ML model was trained on historical click-through rate data. The PM chose CTR as the primary metric because it was "the training signal and the most direct measure of relevance."
+
+The experiment ran 21 days on 50% of users. Today is the readout. The PM sent a message at 8am: "CTR is up 14% — that's enormous. I'm drafting the ship announcement."`,
+      businessPressure: `The ML team spent a quarter building this model. The Head of Product wants an "AI win" for the roadmap review, which happens on Friday. Engineering has the deployment PR ready to merge. The PM has already briefed the CEO that search improvements are coming.`
+    },
+
+    hypothesis: "The ML ranking algorithm will improve search relevance by surfacing more engaging results, increasing CTR and downstream search-driven purchases.",
+
+    experimentDesign: {
+      type: "a/b",
+      allocation: "50/50",
+      runtime: "21 days",
+      targetPopulation: "All users who performed at least one search query",
+      primaryMetric: "Click-through rate on search results",
+      guardrailMetrics: ["Add-to-cart from search", "Query reformulation rate"],
+      sampleSizeContext: "~60,000 daily active searchers per arm. 21 days. User-level randomization."
+    },
+
+    metricReadout: [
+      {
+        metric: "Click-through rate on search results",
+        type: "primary",
+        direction: "up",
+        delta: "+14.2%",
+        pValue: 0.001,
+        confidenceInterval: "[+11.1%, +17.3%]",
+        significant: true,
+        note: "Highly significant. The ML model substantially increases the proportion of search results that get clicked."
+      },
+      {
+        metric: "Add-to-cart from search (users adding to cart within same search session)",
+        type: "guardrail",
+        direction: "down",
+        delta: "-3.8%",
+        pValue: 0.019,
+        confidenceInterval: "[-6.9%, -0.7%]",
+        significant: true,
+        note: "GUARDRAIL BREACH. Users are clicking more results but adding fewer items to cart. The clicks aren't converting to purchase intent."
+      },
+      {
+        metric: "Query reformulation rate (user rewrites query after seeing initial results)",
+        type: "guardrail",
+        direction: "up",
+        delta: "+9.1%",
+        pValue: 0.003,
+        confidenceInterval: "[+3.2%, +15.0%]",
+        significant: true,
+        note: "GUARDRAIL BREACH. More users are rewriting their queries after seeing results — a direct signal that the initial results were not satisfying."
+      },
+      {
+        metric: "Search bounce rate (user clicks a result and immediately returns to search)",
+        type: "secondary",
+        direction: "up",
+        delta: "+6.3%",
+        pValue: 0.028,
+        confidenceInterval: "[+0.7%, +11.9%]",
+        significant: true,
+        note: "Elevated. Users are clicking results, finding them not what they expected, and returning to search. Consistent with clickbait effect."
+      },
+      {
+        metric: "Revenue per searcher (total GMV from users who searched / users who searched)",
+        type: "secondary",
+        direction: "down",
+        delta: "-2.1%",
+        pValue: 0.061,
+        confidenceInterval: "[-4.3%, +0.1%]",
+        significant: false,
+        note: "Trending negative but not significant. The add-to-cart decline and bounce rate increase are consistent with this directional revenue softness."
+      }
+    ],
+
+    warningFlags: [
+      {
+        id: "wf-ctr-proxy",
+        label: "CTR is the training signal, not the outcome",
+        description: "The ML model was trained on CTR. Using CTR as the primary metric tests whether the model learned its training objective — not whether it improves user outcomes. A model that maximizes CTR will get this result even if it degrades purchase quality.",
+        severity: "critical"
+      },
+      {
+        id: "wf-reformulation-breach",
+        label: "Reformulation rate rising is a search quality failure signal",
+        description: "Query reformulation directly indicates that initial results failed the user's intent. Rising reformulation alongside rising CTR means the ML model is surfacing clickable but irrelevant results. Users click, find the wrong thing, and restate their query.",
+        severity: "critical"
+      },
+      {
+        id: "wf-cart-breach",
+        label: "Add-to-cart breach: clicks aren't converting to intent",
+        description: "If the ML model improved result relevance, CTR and add-to-cart should rise together. CTR rising while add-to-cart falls is the signature of clickbait — results that attract attention but don't match the user's actual purchase intent.",
+        severity: "critical"
+      },
+      {
+        id: "wf-business-pressure",
+        label: "Business pressure on a technically impressive metric",
+        description: "The ML team invested a quarter in this model. A 14% CTR lift is a visible number that will be cited in the all-hands. The decision to hold requires naming a technically impressive result as a product failure — which is analytically correct but organizationally difficult.",
+        severity: "warning"
+      }
+    ],
+
+    decisions: [
+      {
+        id: "ship",
+        label: "Ship it — CTR +14% with p < 0.001 is definitive. The guardrail movements are small.",
+        description: "CTR is the primary metric and it's up significantly. Ship.",
+        score: "junior_miss",
+        feedback: "Both guardrails are breached. The add-to-cart decline (-3.8%, p = 0.019) and the reformulation rate increase (+9.1%, p = 0.003) are statistically significant and directionally coherent. They tell the same story: users are clicking more results that don't match their intent, then reformulating. The 14% CTR lift is real — it just doesn't measure what you care about."
+      },
+      {
+        id: "hold_investigate",
+        label: "Hold. Both guardrails breach. CTR gain with add-to-cart loss and rising reformulations means the model is surfacing clickbait. Do not ship.",
+        description: "The ML model optimized its training objective (CTR) at the cost of actual search quality.",
+        score: "senior_ready",
+        feedback: "This is the right call. The pattern is coherent: CTR up, add-to-cart down, reformulations up, bounce rate up. The ML model learned to surface listings that get clicks — but the wrong kind. Users click, find irrelevant results, and restate their query. The model optimized its training signal at the cost of the outcome. The decision: don't ship this version. Retrain with downstream quality signals (add-to-cart, purchase) as part of the objective, not just CTR."
+      },
+      {
+        id: "ship_monitor",
+        label: "Ship with close post-launch monitoring — the CTR win is real and guardrail movements are within tolerance.",
+        description: "Ship and watch the guardrails closely for 30 days post-launch.",
+        score: "analyst_ready",
+        feedback: "The guardrail breaches are statistically significant and directionally coherent with a quality problem — they're not noise to monitor. Post-launch monitoring doesn't undo a ship decision. Once the ML ranking is deployed to 100% of users, reformulation rates and add-to-cart rates will reflect the same dynamics you're seeing here. 'We'll watch it' is not an analytical response to two pre-committed guardrail breaches."
+      },
+      {
+        id: "retrain",
+        label: "Do not ship. Ask the ML team to retrain the model using add-to-cart and purchase as training signals rather than CTR alone.",
+        description: "The model is optimizing the wrong objective. Fix the objective function.",
+        score: "staff_level",
+        feedback: "This is the complete answer. Not only is the ship decision wrong — you're identifying the root cause and the correct fix. The model was trained on CTR, which can be gamed by listings with appealing thumbnails and titles regardless of actual product relevance. Retraining with downstream quality signals (add-to-cart, purchase, session quality) as the training objective will produce a model that optimizes for what users actually want. The 14% CTR lift validates that the model architecture works — it just needs a better objective."
+      }
+    ],
+
+    idealDecision: "retrain",
+    secondBestDecision: "hold_investigate",
+
+    juniorMistake: "Ships on the 14% CTR result. Treats guardrail breaches as minor. Frames the reformulation increase as 'users exploring more results' rather than 'search quality failure.' Is anchored by the ML team investment and the CEO briefing.",
+
+    seniorFlags: [
+      "The CTR/add-to-cart divergence is the clearest signal in this readout. When they move in opposite directions, the likely cause is that the ranking is optimizing for clicks rather than intent match. Every senior search analyst knows this pattern.",
+      "Reformulation rate is the most honest signal in search quality. A user who rewrites their query is explicitly telling you the results failed. Rising reformulation alongside rising CTR is the definition of a model that learned the wrong objective.",
+      "The correct action is not just 'hold' — it's to diagnose why the model is doing this and retrain. The issue is the training objective, not the architecture."
+    ],
+
+    staffFlags: [
+      "Would have caught this in the design phase by refusing to use CTR as the primary metric for a model trained on CTR. The circular logic is obvious before the experiment runs.",
+      "Would have flagged the novelty risk explicitly: users explore new result orderings in week 1. The week-over-week CTR trend should be monitored to see if it's partly a novelty artifact."
+    ],
+
+    debrief: `Let's be direct about what happened here.
+
+The ML model did exactly what it was trained to do: maximize click-through rate. The CTR result is not a mistake — it's the model performing correctly on its training objective. The mistake was choosing CTR as both the training signal and the success metric.
+
+When the same metric is used to train the model and validate the model, you're testing whether the model learned its training objective, not whether it produces good outcomes. That's a circular test. Any sufficiently flexible ML model will pass it.
+
+The guardrail data tells the complete story: users are clicking more results (+14% CTR), finding the wrong things (search bounce rate +6.3%), and giving up and retrying (+9.1% reformulation rate). Add-to-cart is falling (-3.8%). The model learned which listing thumbnails and titles are most compelling — which is not the same as which listings are most relevant to what the user wants to buy.
+
+The right next step is not "hold and monitor" — it's retrain. The model architecture is fine. The objective function is wrong. Add-to-cart and purchase-from-search events need to be part of the training signal. A model that is rewarded for generating clicks that convert will learn fundamentally different ranking patterns than one rewarded only for generating clicks.
+
+There's an organizational challenge here. Telling the ML team that their quarter's work needs to be retrained is difficult, especially with a 14% CTR lift visible in the readout. Your job as an analyst is to make the case clearly: the lift is real, the problem is the objective, and the fix is well-defined. That's actually a better outcome than "the model doesn't work."`,
+
+    interviewTakeaway: "When a model is trained on a proxy metric and validated on the same metric, the test confirms the model achieved its training objective — not that it's good for users. CTR and search quality diverge when the model learns to surface clickable but irrelevant results. Guardrail metrics (reformulation rate, add-to-cart) break the circularity.",
+
+    relatedConcepts: ["proxy metric", "metric gaming", "guardrail metric", "novelty effect", "multiple testing"],
+    scenarioFamily: "proxy_metric",
+    tags: ["search ranking", "ML model evaluation", "CTR", "proxy metric", "clickbait"]
+  },
+
+  // ─────────────────────────────────────────────
+  // SCENARIO 10 — The Push Open Rate Trap (BETA)
+  // Theme: Proxy Metric / User Trust Guardrail
+  // Paired with: d06-notification-timing-test
+  // ─────────────────────────────────────────────
+  {
+    id: "s10-push-open-rate-trap",
+    title: "The Push Open Rate Trap",
+    subtitle: "Notification opens are up 22%. Opt-outs are climbing. Uninstalls are climbing. The PM says the opens prove it works.",
+    isFree: false,
+    industry: "mobile",
+    difficulty: "analyst",
+    theme: "proxy_metric",
+
+    context: {
+      company: "Orion",
+      product: "Consumer habit and task tracking app — 2.1M MAU, notification-driven re-engagement",
+      team: "Growth & Engagement team",
+      background: `Orion deployed a test of ML-personalized notification timing two weeks ago. The ML model uses each user's historical open patterns to send at their highest-engagement time of day, replacing the previous fixed 8am/12pm/7pm schedule.
+
+The PM pre-specified notification open rate as the primary metric. "If people are opening the notification, the timing is working." Results arrived this morning.`,
+      businessPressure: `DAU/MAU has been declining for two quarters. The Head of Growth has this experiment on the leadership dashboard. The PM has pre-booked a "ship day" — three days from now — and has told the team to be ready to deploy. The Head of Growth wants to announce a re-engagement win in the all-hands.`
+    },
+
+    hypothesis: "ML-personalized notification timing will increase notification open rate by reaching users at their most receptive moments.",
+
+    experimentDesign: {
+      type: "a/b",
+      allocation: "50/50",
+      runtime: "21 days",
+      targetPopulation: "All users with push notifications enabled (excluding users signed up <7 days)",
+      primaryMetric: "Notification open rate",
+      guardrailMetrics: ["Notification opt-out rate", "14-day uninstall rate"],
+      sampleSizeContext: "~310,000 users per arm. User-level randomization. 1 notification per user per day in both arms."
+    },
+
+    metricReadout: [
+      {
+        metric: "Notification open rate",
+        type: "primary",
+        direction: "up",
+        delta: "+22.4%",
+        pValue: 0.001,
+        confidenceInterval: "[+19.1%, +25.7%]",
+        significant: true,
+        note: "Highly significant. The ML timing model dramatically increases the proportion of notifications opened."
+      },
+      {
+        metric: "7-day active session rate (users with ≥1 session in the 7 days following notification)",
+        type: "secondary",
+        direction: "up",
+        delta: "+2.1%",
+        pValue: 0.11,
+        confidenceInterval: "[-0.5%, +4.7%]",
+        significant: false,
+        note: "Directionally positive but not significant. Notifications are being opened more, but the session uplift is marginal and noisy."
+      },
+      {
+        metric: "Notification opt-out rate",
+        type: "guardrail",
+        direction: "up",
+        delta: "+18.3%",
+        pValue: 0.001,
+        confidenceInterval: "[+12.7%, +23.9%]",
+        significant: true,
+        note: "GUARDRAIL BREACH. Users in treatment are opting out of notifications at a significantly higher rate. Once opted out, they cannot be re-engaged through this channel."
+      },
+      {
+        metric: "14-day uninstall rate",
+        type: "guardrail",
+        direction: "up",
+        delta: "+8.7%",
+        pValue: 0.024,
+        confidenceInterval: "[+1.2%, +16.2%]",
+        significant: true,
+        note: "GUARDRAIL BREACH. Treatment users are uninstalling at a significantly elevated rate. CI is wide but clearly above zero."
+      },
+      {
+        metric: "Task completion per notification-driven session",
+        type: "secondary",
+        direction: "down",
+        delta: "-4.2%",
+        pValue: 0.038,
+        confidenceInterval: "[-8.2%, -0.2%]",
+        significant: true,
+        note: "Significant. Users opened notifications more but completed fewer tasks per session entered from a notification. Suggests the ML model is catching users at moments when they open the notification but aren't actually ready to engage."
+      }
+    ],
+
+    warningFlags: [
+      {
+        id: "wf-optin-breach",
+        label: "Opt-out rate breach: irreversible channel loss",
+        description: "An 18.3% relative increase in notification opt-outs is not a minor guardrail nudge — it's a signal that the ML timing model is making notifications feel intrusive at scale. Once a user opts out, the notification re-engagement channel is permanently closed for them.",
+        severity: "critical"
+      },
+      {
+        id: "wf-uninstall-breach",
+        label: "Uninstall rate breach: elevated churn",
+        description: "An 8.7% relative increase in 14-day uninstalls is a severe long-term user quality signal. Personalized timing may be sending at moments that feel surveillance-like (e.g., late at night, early morning) for some users.",
+        severity: "critical"
+      },
+      {
+        id: "wf-session-quality",
+        label: "Task completion per notification session declining",
+        description: "The ML model finds users when they will open a notification — not when they're ready to actually use the app. Opening a notification from the gym locker room is not the same as opening it at a desk with 10 minutes to complete a task.",
+        severity: "warning"
+      },
+      {
+        id: "wf-proxy-trap",
+        label: "Open rate is the ML training signal — not the user outcome",
+        description: "The model was trained to maximize opens. Using open rate to validate it confirms the training objective was achieved, not that users benefit. The session and opt-out data reveal the divergence.",
+        severity: "critical"
+      }
+    ],
+
+    decisions: [
+      {
+        id: "ship",
+        label: "Ship it — open rate +22% with tight CI. Guardrail movements are within acceptable range.",
+        description: "The primary metric is the win condition. Ship.",
+        score: "junior_miss",
+        feedback: "Both guardrails are statistically significant breaches. The opt-out rate increase (+18.3%, p < 0.001) and uninstall rate increase (+8.7%, p = 0.024) are not marginal — they are significant, directionally coherent harm signals. 'Within acceptable range' would need to be defined before the test. These exceed any reasonable pre-committed threshold."
+      },
+      {
+        id: "hold",
+        label: "Hold. Both guardrails are significantly breached. High opens from a model that drives opt-outs and uninstalls is not an engagement win.",
+        description: "The model is reaching users at non-receptive moments, driving notification fatigue at scale.",
+        score: "senior_ready",
+        feedback: "Correct. The guardrail pattern tells a coherent story: the ML model sends notifications when users are most likely to physically open them — but not when they're ready to engage. The result: more opens, same or worse sessions, and dramatically more opt-outs and uninstalls. The model is optimizing for a fleeting interaction that damages the long-term channel. Pre-committed guardrails are blocking conditions. Do not ship."
+      },
+      {
+        id: "ship_segment",
+        label: "Ship to users with healthy open history and exclude users showing early opt-out signals.",
+        description: "Target only the users for whom the model is working.",
+        score: "analyst_ready",
+        feedback: "Post-hoc segmentation based on experiment outcomes is selection bias. You don't know which users 'work well' for the model without seeing the data — and seeing the data means the segment is already defined by the outcome. Additionally, opt-outs have already accumulated in the 21-day test window and cannot be reversed. The harm has already started."
+      },
+      {
+        id: "retrain_objective",
+        label: "Do not ship. Retrain the ML model with task completion or session quality as the training objective, not raw open rate.",
+        description: "The model optimized opens at the cost of engagement quality and channel health.",
+        score: "staff_level",
+        feedback: "This is the complete answer. The model found when users will open notifications — which is different from when they'll productively engage with the app. A model trained on task completion or session depth after notification would learn different timing patterns: times when users are actually ready to act. The current model is technically successful (maximized its objective) but practically harmful (the objective was wrong). This is the same issue as the search ranking case — the fix is the training objective, not the architecture."
+      }
+    ],
+
+    idealDecision: "retrain_objective",
+    secondBestDecision: "hold",
+
+    juniorMistake: "Ships on the 22% open rate result. Dismisses guardrail breaches as 'we can monitor post-launch.' Anchored by the Head of Growth's ship timeline and the visible metric win.",
+
+    seniorFlags: [
+      "An 18% opt-out increase is catastrophic channel damage if shipped at scale. The opt-out rate in the experiment reflects ~310k users. At full deployment, that's ~600k users on a path to opting out. Channel damage is the most expensive outcome in push notification strategy.",
+      "Task completion per notification session declining while opens increase is the clearest possible evidence that the model is optimizing momentary attention, not productive engagement. These two metrics moving in opposite directions define the proxy metric trap.",
+      "The correct framing to leadership: 'The model architecture works. The training objective was wrong. Retraining with session quality signals will likely outperform this version significantly.'"
+    ],
+
+    staffFlags: [
+      "Would have caught this in design by refusing to accept open rate as the primary metric for a model trained on open rate. The proxy trap is visible before the data exists.",
+      "Would have flagged that opt-out harms are irreversible and asymmetric — they compound over time. A 21-day test with 18% elevated opt-outs is already meaningful channel damage that does not undo when the feature is rolled back."
+    ],
+
+    debrief: `The open rate result is exactly what you'd expect from a model trained on open rate. The model found when users pick up their phones and are likely to tap a notification. That is not the same as finding when they're ready to engage with your product.
+
+The divergence between opens and task completion is the most important signal in this readout. If the model had found genuinely receptive moments — times when users wanted to work on their tasks — you'd see opens AND completions rise. Opens rising while completions fall means the model is catching users in distracted or passive moments. They tap the notification out of habit or curiosity and don't actually do anything.
+
+The opt-out and uninstall numbers are the most serious findings here. An 18% opt-out increase is not a guardrail nudge — it's evidence that the personalized timing is making notifications feel intrusive to a significant portion of users. For some, this is probably because the model sends at unusual times (very early morning, very late night, during commutes) that feel surveillance-like. Once opted out, those users cannot be re-engaged through push notifications — the channel is permanently closed.
+
+What should happen next: don't ship this model. Retrain it with downstream engagement signals — task completions, session depth, D7 retention from notification entry — as the training objective. A model that learns to send when users will engage rather than when they'll tap will produce very different timing patterns and, likely, much better actual outcomes.
+
+The good news for the ML team: the architecture is fine. The objective function is wrong. That's a fixable problem, and a model trained on the right signal will be genuinely more valuable than this one.`,
+
+    interviewTakeaway: "Notification open rate is a proxy for user receptiveness — not for productive engagement. A model that maximizes opens by finding when users will tap a notification teaches an entirely different skill than finding when users are ready to use the product. Opt-out and uninstall rates are the guardrails that reveal the difference.",
+
+    relatedConcepts: ["proxy metric", "guardrail metric", "notification opt-out", "user trust", "ML training objective"],
+    scenarioFamily: "proxy_metric",
+    tags: ["push notifications", "ML timing model", "open rate", "opt-out", "engagement"]
+  },
+
+  // ─────────────────────────────────────────────
+  // SCENARIO 11 — The Seller Speed Spillover (BETA)
+  // Theme: Marketplace Interference / SUTVA
+  // Paired with: d07-seller-incentive-test
+  // ─────────────────────────────────────────────
+  {
+    id: "s11-seller-speed-spillover",
+    title: "The Seller Speed Spillover",
+    subtitle: "Treatment sellers are converting 19% better. Control sellers are converting 11% worse. The PM wants to ship based on the treatment result.",
+    isFree: false,
+    industry: "marketplace",
+    difficulty: "senior",
+    theme: "sutva",
+
+    context: {
+      company: "Crafted",
+      product: "Two-sided handmade goods marketplace — ~40,000 active sellers, ~850,000 monthly buyers",
+      team: "Seller Success team",
+      background: `Crafted ran a 6-week A/B test of the Fast Responder program: a badge and algorithmic search boost for sellers who maintain a <2h median response time. 50% of eligible sellers received the program (treatment); 50% did not (control). Buyers were not randomized — all buyers could see and purchase from both treatment and control sellers.
+
+The Seller Success team is presenting results today. The PM leads with: "Treatment sellers are converting 19% better than pre-experiment. This is our biggest seller program result ever."`,
+      businessPressure: `The Head of Marketplace wants to announce this program at the quarterly seller summit next month. The Seller Success team has been building this for two months. The VP of GMV growth is already calling it a win on Slack.`
+    },
+
+    hypothesis: "The Fast Responder badge and algorithmic boost will improve platform-level buyer-to-purchase conversion by incentivizing faster seller response times.",
+
+    experimentDesign: {
+      type: "a/b",
+      allocation: "50/50 (seller-level randomization)",
+      runtime: "42 days",
+      targetPopulation: "Active sellers with 5+ transactions in past 90 days",
+      primaryMetric: "Treatment seller conversion rate",
+      guardrailMetrics: ["Control seller conversion rate", "Order cancellation rate"],
+      sampleSizeContext: "~20,000 sellers per arm. Buyer-level metrics computed from all buyer interactions with each seller arm."
+    },
+
+    metricReadout: [
+      {
+        metric: "Treatment seller conversion rate (buyers who purchased from treatment sellers / buyers who contacted treatment sellers)",
+        type: "primary",
+        direction: "up",
+        delta: "+19.2%",
+        pValue: 0.001,
+        confidenceInterval: "[+14.8%, +23.6%]",
+        significant: true,
+        note: "Treatment sellers are converting significantly more of the buyers they interact with."
+      },
+      {
+        metric: "Control seller conversion rate (buyers who purchased from control sellers / buyers who contacted control sellers)",
+        type: "guardrail",
+        direction: "down",
+        delta: "-11.4%",
+        pValue: 0.002,
+        confidenceInterval: "[-17.8%, -5.0%]",
+        significant: true,
+        note: "GUARDRAIL BREACH. Control sellers are converting significantly fewer buyers. This is the demand displacement signal."
+      },
+      {
+        metric: "Platform-level buyer conversion rate (total purchases / total buyer inquiries, all sellers combined)",
+        type: "secondary",
+        direction: "up",
+        delta: "+2.8%",
+        pValue: 0.18,
+        confidenceInterval: "[-1.3%, +6.9%]",
+        significant: false,
+        note: "Platform-level conversion is nearly flat and not significant. The treatment seller lift and control seller decline partially cancel out."
+      },
+      {
+        metric: "Seller response time (median hours — treatment arm)",
+        type: "secondary",
+        direction: "down",
+        delta: "-42%",
+        pValue: 0.001,
+        confidenceInterval: "[-49%, -35%]",
+        significant: true,
+        note: "The incentive worked: treatment sellers responded dramatically faster. Mechanism is confirmed."
+      },
+      {
+        metric: "Order cancellation rate",
+        type: "guardrail",
+        direction: "up",
+        delta: "+4.1%",
+        pValue: 0.041,
+        confidenceInterval: "[+0.2%, +8.0%]",
+        significant: true,
+        note: "GUARDRAIL BREACH. Cancellation rate is slightly elevated, possibly from sellers sending fast initial responses and then struggling to fulfill orders that were accepted impulsively."
+      },
+      {
+        metric: "Buyer inquiry volume per seller (treatment vs. control)",
+        type: "secondary",
+        direction: "up",
+        delta: "+28.1% (treatment vs. control)",
+        pValue: 0.001,
+        confidenceInterval: "[+22%, +34%]",
+        significant: true,
+        note: "Buyers are preferentially sending inquiries to Fast Responder sellers. This is the demand displacement mechanism — buyers are routing away from control sellers toward treatment sellers."
+      }
+    ],
+
+    warningFlags: [
+      {
+        id: "wf-sutva",
+        label: "SUTVA violation: buyers contact both arms — demand displacement is the mechanism",
+        description: "Buyers in this marketplace contact multiple sellers simultaneously for the same purchase. Treatment sellers converting better doesn't mean new buyers are appearing — it means treatment sellers are winning buyers who might otherwise have purchased from control sellers. The +28% inquiry routing to treatment sellers quantifies the displacement.",
+        severity: "critical"
+      },
+      {
+        id: "wf-control-decline",
+        label: "Control seller conversion declining is the demand displacement signal",
+        description: "A genuine platform-level improvement would show treatment sellers lifting without control sellers declining. Control sellers declining while treatment sellers rise is the definition of zero-sum reallocation in a shared buyer pool.",
+        severity: "critical"
+      },
+      {
+        id: "wf-platform-flat",
+        label: "Platform-level conversion is flat — the aggregate tells the truth",
+        description: "Platform-level buyer conversion (+2.8%, p = 0.18) is not significant. This is the correct metric for evaluating whether the program adds GMV to the platform or merely redistributes it.",
+        severity: "critical"
+      },
+      {
+        id: "wf-cancellation",
+        label: "Cancellation rate increase suggests quality gaming",
+        description: "Sellers responding faster may be accepting orders before properly evaluating fit, leading to higher cancellations. Fast response without quality fulfillment is a hollow win.",
+        severity: "warning"
+      }
+    ],
+
+    decisions: [
+      {
+        id: "ship",
+        label: "Ship it — treatment sellers improved 19%. This is a strong seller-level result.",
+        description: "Treatment sellers show significant improvement. Ship the program.",
+        score: "junior_miss",
+        feedback: "The +19% is a demand displacement effect, not a platform GMV improvement. Treatment sellers gained conversions because buyers routed away from control sellers — the buyer inquiry routing data confirms this (+28% more inquiries to treatment sellers). When all sellers are in treatment, there are no control sellers to displace demand from. The net effect at full deployment would approximate the flat platform-level result you see now."
+      },
+      {
+        id: "hold_investigate",
+        label: "Hold. The design has a structural interference problem. Treatment lifts and control declines simultaneously — the program redistributes demand, it doesn't create it.",
+        description: "Seller-level A/B cannot distinguish additive GMV from demand reallocation in a marketplace.",
+        score: "senior_ready",
+        feedback: "Correct. The evidence for demand displacement is clear: control conversion falls significantly, inquiry routing shifts toward treatment sellers, and platform-level conversion is flat. The SUTVA violation makes the treatment seller result uninterpretable as a platform-level effect. The program needs to be retested with a valid design (geographic holdout) before the ship decision can be made."
+      },
+      {
+        id: "ship_partial",
+        label: "Ship to 25% of sellers and monitor for cancellation and control seller impact.",
+        description: "Partial rollout reduces risk while allowing learning.",
+        score: "analyst_ready",
+        feedback: "Partial rollout doesn't fix the design problem. At 25% of sellers in the program, the same SUTVA violation exists — buyers route toward the 25% with badges, control sellers still face demand displacement. The cancellation guardrail is already breached. A partial rollout with monitoring doesn't change the structural interpretation issue."
+      },
+      {
+        id: "redesign_geo",
+        label: "Do not ship. Recommend rerunning with geographic holdout design — randomize markets, not individual sellers, so supply and demand are isolated together.",
+        description: "The valid design for two-sided marketplace experiments.",
+        score: "staff_level",
+        feedback: "This is the complete answer. Geographic holdout is the only design that can measure a true platform-level effect in this context. Within a treatment market, all buyers interact only with treatment sellers, and vice versa. There is no cross-market demand displacement. The market-level conversion rate is an unconfounded estimate of the program's platform-level value. Seller-level A/B is structurally invalid for this type of experiment, and no amount of monitoring or partial rollout fixes that."
+      }
+    ],
+
+    idealDecision: "redesign_geo",
+    secondBestDecision: "hold_investigate",
+
+    juniorMistake: "Ships on the treatment seller lift. Does not check control seller performance. Treats the +19% as a platform-level win. Is anchored by the seller summit announcement timeline.",
+
+    seniorFlags: [
+      "The treatment lift + control decline pattern is the definitive diagnostic for demand displacement in marketplace A/B tests. If you see it, the design is structurally invalid for measuring platform-level effects.",
+      "The correct framing: the incentive mechanism works (sellers respond faster, treatment conversion rises), but the experiment design can't tell you if the program adds GMV or just redistributes it. That's a design problem, not an outcome problem.",
+      "Geographic holdout is the only valid design here. Seller-level A/B in two-sided markets with shared buyer pools is a known structural failure mode."
+    ],
+
+    staffFlags: [
+      "Would have caught this in design by refusing seller-level randomization for a marketplace experiment. The SUTVA violation is predictable before the experiment runs.",
+      "Would have noted that the demand displacement effect would be larger in high-density markets (where buyers have many seller options) than in thin markets. The aggregate result averages across this heterogeneity."
+    ],
+
+    debrief: `Let's talk about what this data actually shows.
+
+The treatment sellers improved. The program worked exactly as designed: sellers responded faster, and buyers preferred them. The mechanism is validated. That part is not in question.
+
+The problem is the design. Buyers in this marketplace contact multiple sellers when considering a purchase. When 50% of sellers have the Fast Responder badge and an algorithmic boost, buyers route their inquiries toward them. The treatment sellers gain conversions — but some of those conversions came from buyers who would have purchased from control sellers in the absence of the program. The control seller decline confirms this directly: -11.4% conversion, p = 0.002.
+
+When all sellers are in the program, there are no control sellers to displace demand from. The steady-state platform effect is approximately what you see in the platform-level metric: +2.8%, p = 0.18. Not significant.
+
+This is not a reason to abandon the program. It's a reason to test it correctly. Geographic holdout design isolates treatment and control markets so that within each market, all buyers interact with all sellers under the same conditions. The market-level conversion rate in treatment markets vs. control markets gives you an unconfounded platform-level estimate.
+
+The honest answer for the seller summit: "The mechanism works — our sellers respond faster, and buyers prefer them. We found a design limitation in how we tested platform-level impact and we're running the right measurement now. We'll have a definitive answer in 6 weeks." That's not a failure. That's credible analytics.`,
+
+    interviewTakeaway: "Seller-level A/B in two-sided marketplaces creates demand displacement — treatment sellers win conversions from buyers who route away from control sellers, not from new demand. The only valid platform-level test is geographic holdout, where treatment and control markets have isolated supply and demand pools.",
+
+    relatedConcepts: ["SUTVA", "marketplace interference", "demand displacement", "geographic holdout", "two-sided markets"],
+    scenarioFamily: "sutva",
+    tags: ["marketplace", "seller incentive", "SUTVA", "demand displacement", "geographic holdout"]
+  },
+
+  // ─────────────────────────────────────────────
+  // SCENARIO 12 — The Checklist Completion Illusion (BETA)
+  // Theme: Proxy Metric / Activation Measurement
+  // Paired with: d08-onboarding-checklist-test
+  // ─────────────────────────────────────────────
+  {
+    id: "s12-checklist-completion-illusion",
+    title: "The Checklist Completion Illusion",
+    subtitle: "Checklist completion is up 47%. Week-1 meaningful activation is flat. 14-day retention is slightly worse.",
+    isFree: false,
+    industry: "saas",
+    difficulty: "analyst",
+    theme: "proxy_metric",
+
+    context: {
+      company: "Loopwise",
+      product: "B2B project management SaaS — 14k paying accounts",
+      team: "Activation & Onboarding team",
+      background: `Loopwise added a 7-step in-product onboarding checklist for new users six weeks ago. Steps include: creating a project, adding a task, setting a due date, inviting a teammate, using a template, enabling notifications, and setting personal preferences.
+
+The experiment ran for 6 weeks with account-level randomization. The PM pre-specified checklist completion rate as the primary success metric. "If users complete the checklist, they know how to use the product."
+
+Results arrived this morning. The PM is presenting to the Head of Product in an hour.`,
+      businessPressure: `The Head of Product has the onboarding checklist as a Q3 priority. The Activation team has been building it for 2 months. The PM's presentation already has a "ship recommendation" slide prepared. The Head of Product has told the team that "we need an activation win this quarter."`
+    },
+
+    hypothesis: "A structured onboarding checklist will guide new users to core value faster, improving week-1 activation and 30-day retention.",
+
+    experimentDesign: {
+      type: "a/b",
+      allocation: "50/50 (account-level)",
+      runtime: "42 days",
+      targetPopulation: "New accounts in first 7 days (excluding staff and demo accounts)",
+      primaryMetric: "Checklist completion rate",
+      guardrailMetrics: ["14-day account retention", "Support ticket rate in first 7 days"],
+      sampleSizeContext: "~660 accounts per arm over 42 days (~220 new accounts/week). Powered to detect ~7pp activation change at 80% power."
+    },
+
+    metricReadout: [
+      {
+        metric: "Checklist completion rate (accounts completing all 7 steps / treatment accounts)",
+        type: "primary",
+        direction: "up",
+        delta: "+47pp (from 0% baseline to 47% completion)",
+        pValue: 0.001,
+        confidenceInterval: "[+43pp, +51pp]",
+        significant: true,
+        note: "Highly significant. 47% of treatment accounts completed all 7 checklist steps. Control has no checklist, so baseline is 0%."
+      },
+      {
+        metric: "Week-1 meaningful activation (created project + added task + invited teammate within 7 days)",
+        type: "secondary",
+        direction: "up",
+        delta: "+1.9pp (38.2% → 40.1%)",
+        pValue: 0.28,
+        confidenceInterval: "[-1.6pp, +5.4pp]",
+        significant: false,
+        note: "Directionally positive but not significant. The experiment is near the power limit for detecting this effect size. The pre-specified MDE was 7pp — the observed effect is well below that."
+      },
+      {
+        metric: "14-day account retention",
+        type: "guardrail",
+        direction: "down",
+        delta: "-2.4pp",
+        pValue: 0.09,
+        confidenceInterval: "[-5.2pp, +0.4pp]",
+        significant: false,
+        note: "Trending negative and approaching significance. The CI lower bound at -5.2pp is concerning — the experiment may be underpowered to detect a real retention decline.",
+      },
+      {
+        metric: "Support ticket rate in first 7 days",
+        type: "guardrail",
+        direction: "up",
+        delta: "+11.8%",
+        pValue: 0.031,
+        confidenceInterval: "[+1.1%, +22.5%]",
+        significant: true,
+        note: "GUARDRAIL BREACH. Treatment accounts are creating significantly more support tickets in the first week. CI is wide but significant."
+      },
+      {
+        metric: "Checklist completion time (average minutes to complete all 7 steps)",
+        type: "secondary",
+        direction: "neutral",
+        delta: "Median: 4.2 minutes",
+        pValue: null,
+        confidenceInterval: null,
+        significant: false,
+        note: "Descriptive only. The median completion time for all 7 checklist steps is 4.2 minutes — approximately 36 seconds per step. This speed suggests many completions are click-throughs, not genuine engagement."
+      },
+      {
+        metric: "Week-2 product usage depth (features used in week 2 among week-1 activators)",
+        type: "secondary",
+        direction: "down",
+        delta: "-6.3%",
+        pValue: 0.048,
+        confidenceInterval: "[-12.4%, -0.2%]",
+        significant: true,
+        note: "Significant. Treatment accounts that activated in week 1 show lower product depth in week 2 — suggesting checklist completion drove surface-level actions that didn't translate to genuine engagement."
+      }
+    ],
+
+    warningFlags: [
+      {
+        id: "wf-completion-proxy",
+        label: "Checklist completion is a gameable proxy — 4.2 minute median completion is the signal",
+        description: "The average completion time of 4.2 minutes across 7 steps (36 seconds per step) is not genuine product engagement. Users are completing the checklist to clear the UI element, not to learn the product. This is the completion psychology effect — progress bars motivate task completion independent of actual value.",
+        severity: "critical"
+      },
+      {
+        id: "wf-activation-flat",
+        label: "Meaningful activation is flat — the outcome that matters is not moving",
+        description: "Week-1 meaningful activation (+1.9pp, p=0.28) is below the MDE and not significant. The checklist improved completion rate without improving the product behaviors that predict retention.",
+        severity: "critical"
+      },
+      {
+        id: "wf-week2-depth",
+        label: "Week-2 product depth declining among activators — quality signal",
+        description: "Treatment accounts that activated show lower week-2 depth. This is the checklist gamification effect: users went through the setup motions, 'activated', and then returned to shallow engagement because the core value wasn't genuinely internalized.",
+        severity: "critical"
+      },
+      {
+        id: "wf-retention-trending",
+        label: "14-day retention trending negative with wide CI — possible underpowered harm",
+        description: "The retention guardrail is at p=0.09 with lower bound -5.2pp. At n=660 accounts/arm, this experiment may be underpowered to detect a real retention decline. The direction and the support ticket breach both suggest the checklist may be creating friction, not value.",
+        severity: "warning"
+      }
+    ],
+
+    decisions: [
+      {
+        id: "ship",
+        label: "Ship it — checklist completion is up 47pp and activation is trending positive.",
+        description: "Large completion lift with positive activation trend. Ship.",
+        score: "junior_miss",
+        feedback: "Checklist completion is not an outcome — it's a mechanism metric. The pre-specified success condition should have been meaningful activation, not checklist completion. Completion +47pp with no checklist in control is not a comparison — it's trivially true that more treatment users completed a checklist that doesn't exist in control. The meaningful activation result is not significant, week-2 depth is declining, and support tickets are significantly elevated. The evidence does not support shipping."
+      },
+      {
+        id: "hold_redesign",
+        label: "Hold. Checklist completion is the wrong metric. Meaningful activation didn't move. Week-2 depth declined. The checklist may be creating friction without delivering value.",
+        description: "Revisit the checklist design to focus on genuine value delivery, not UI completion.",
+        score: "senior_ready",
+        feedback: "Correct. The data pattern is: high completion, flat activation, declining depth, elevated support tickets. This is the checklist gamification failure mode — users complete it to clear the interface without genuinely engaging with the product. The 4.2-minute median completion time confirms this. A checklist that takes 4 minutes to complete and doesn't improve meaningful activation needs to be redesigned around the specific behaviors that drive retention, not around generic setup steps."
+      },
+      {
+        id: "ship_monitor",
+        label: "Ship with retention monitoring. The activation trend is positive and the retention decline is not significant.",
+        description: "Directionally positive — ship and confirm retention doesn't worsen.",
+        score: "analyst_ready",
+        feedback: "The retention guardrail at p=0.09 with lower bound -5.2pp is concerning, not reassuring. At this sample size, p=0.09 may reflect genuine underpowering rather than a null effect. Shipping on 'not significant' when the experiment is near its power limit and the direction is negative is accepting a real risk. The support ticket breach is significant and unexplained. 'Monitor retention post-launch' doesn't retroactively fix shipped harm."
+      },
+      {
+        id: "redesign",
+        label: "Do not ship this version. Redesign the checklist to focus on the 3 behaviors that predict retention: create project, add task, invite teammate. Remove gamification steps that don't drive real activation.",
+        description: "The checklist structure is the problem — not the concept.",
+        score: "staff_level",
+        feedback: "This is the complete response. The checklist concept is sound — guided onboarding can improve activation. The execution is wrong: 7 steps including 'enable notifications' and 'set personal preferences' are low-value setup actions that complete quickly and leave no behavioral residue. The redesigned checklist should include only the 3 actions that Loopwise data shows predict 30-day retention. Every step should require genuine product engagement, not a settings toggle. This version of the checklist is teaching users to clear a progress bar."
+      }
+    ],
+
+    idealDecision: "redesign",
+    secondBestDecision: "hold_redesign",
+
+    juniorMistake: "Ships on the 47pp completion lift. Treats the positive activation trend as a win. Doesn't investigate the 4.2-minute median completion time or the week-2 depth decline. Anchored by the 'activation win this quarter' framing.",
+
+    seniorFlags: [
+      "The 4.2-minute median completion time is the smoking gun. 7 steps in 4 minutes is not product learning — it's UI clearing. If users were genuinely engaging with each step (creating a real project, adding a real task, actually inviting a colleague), this would take 20+ minutes per account.",
+      "The correct comparison for checklist completion is not treatment vs. control — it's completion rate among treatment accounts vs. meaningful activation rate in the same group. If 47% complete the checklist but only 40% achieve meaningful activation, some completers are not actually activating. That's the quality gap.",
+      "Week-2 depth declining among week-1 activators is the most diagnostic signal. These are accounts that 'passed' the activation threshold — but their subsequent depth is lower in treatment than control. The checklist directed them through motions that didn't create product habits."
+    ],
+
+    staffFlags: [
+      "Would have caught this in design by refusing checklist completion as the primary metric. The completion vs. activation gap is predictable before the experiment runs.",
+      "Would have added a checklist quality metric: of accounts that completed the checklist, what fraction also achieved meaningful activation? If this rate is lower in treatment than the base activation rate in control, the checklist is actively creating false positives."
+    ],
+
+    debrief: `The 47-point checklist completion lift is real, and it means nothing.
+
+Here's why: the control group has no checklist, so the baseline is 0%. Any improvement from 0% to any positive number is a trivially true result. The comparison isn't "47% completed vs. some other completion rate" — it's "47% completed a set of arbitrary setup steps vs. 0% who completed those same steps in a group that never saw them." That tells you nothing about value.
+
+The number that matters is week-1 meaningful activation: +1.9pp, not significant. The checklist improved completion of setup steps without improving the behaviors that actually predict whether a user will still be in the product in 30 days.
+
+The 4.2-minute median completion time is the tell. Seven steps in four minutes is not learning to use a project management tool — it's clicking through a setup wizard. Users are completing the checklist to make it go away. "Enable notifications" and "set personal preferences" take about 8 seconds each. "Using a template" might take 30 seconds if the user just clicks the first template they see. None of these are the same as actually creating a project you care about, adding tasks you need to track, and inviting a colleague who will depend on the tool.
+
+The week-2 depth decline among week-1 activators is the most diagnostic signal in this readout. These are accounts that passed the activation threshold — but they're using the product less deeply in week 2 than their counterparts in control. The checklist directed them through surface-level actions that didn't create the product habits that drive retention.
+
+What should happen: don't ship this. Redesign the checklist to contain only the 3 steps that Loopwise data shows predict 30-day retention — and make each step require genuine product engagement, not a settings toggle. The onboarding checklist as a concept is sound. This specific implementation is teaching users to complete a progress bar.`,
+
+    interviewTakeaway: "Checklist completion is a gameable proxy for activation. Completion psychology (people like to clear progress bars) drives step completion independent of product value. The correct activation metric is the specific set of durable behaviors that predict retention — not task completion in a guided setup flow.",
+
+    relatedConcepts: ["proxy metric", "activation", "retention", "gamification effect", "checklist gaming"],
+    scenarioFamily: "proxy_metric",
+    tags: ["onboarding", "activation", "checklist", "SaaS", "B2B", "proxy metric"]
   }
 
 ];
