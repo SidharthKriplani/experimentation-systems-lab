@@ -15,7 +15,7 @@ export function Footer() {
         gap: '0.75rem',
       }}>
         <span style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>
-          Experimentation Systems Lab — V1.1 · 8 Playable Scenarios
+          Product Analytics Lab — V1.2 · 12 Playable Scenarios
         </span>
         <span style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>
           Static · No backend · No API calls · localStorage only

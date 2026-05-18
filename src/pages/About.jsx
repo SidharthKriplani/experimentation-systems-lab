@@ -2,7 +2,7 @@ export function About() {
   const sections = [
     {
       title: 'What this is',
-      body: `Experimentation Systems Lab is a static decision simulator for product analysts and data scientists who already understand the basics of A/B testing. The gap it fills: there are many resources for learning experimental statistics, but very few that give you practice making judgment calls under messy, realistic product data.
+      body: `Product Analytics Lab is an interactive judgment gym for product analysts and data scientists who already understand the basics of A/B testing. The gap it fills: there are many resources for learning experimental statistics, but very few that give you practice making judgment calls under messy, realistic product data.
 
 Each scenario is a synthetic experiment readout — a fictional company, a fictional experiment, but the data patterns, decision tensions, and failure modes are drawn from real recurring problems in product analytics: guardrail breaches, sample ratio mismatches, marketplace interference, post-hoc subgroup fishing, novelty effects, underpowered tests.
 
