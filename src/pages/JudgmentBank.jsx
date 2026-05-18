@@ -5,9 +5,10 @@ import { statsModules } from '../data/statsModules.js';
 import { plannedScenarios, SCENARIO_FAMILIES } from '../data/scenarioBank.js';
 
 const DIFFICULTY_COLORS = {
-  analyst: { color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
-  senior:  { color: 'var(--yellow)',    bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
-  staff:   { color: 'var(--purple)',    bg: 'var(--purple-bg)', border: 'var(--purple-border)' },
+  foundational: { color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
+  analyst:      { color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
+  senior:       { color: 'var(--yellow)',    bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
+  staff:        { color: 'var(--purple)',    bg: 'var(--purple-bg)', border: 'var(--purple-border)' },
 };
 
 function DiffBadge({ difficulty }) {
@@ -171,6 +172,61 @@ function DesignCard({ scenario, onClick }) {
   );
 }
 
+function StatsCard({ module, onClick }) {
+  return (
+    <div
+      onClick={() => onClick(module.id)}
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)',
+        padding: '0.95rem 1rem',
+        cursor: 'pointer',
+        transition: 'border-color 0.13s, box-shadow 0.13s',
+        boxShadow: 'var(--shadow-sm)',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = 'var(--blue-border)';
+        e.currentTarget.style.boxShadow = '0 0 0 3px var(--blue-bg)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = 'var(--border)';
+        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
+        <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.3, flex: 1 }}>
+          {module.title}
+        </span>
+        <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          <span style={{
+            fontSize: '0.6rem', fontWeight: 700,
+            color: '#fff',
+            background: module.isFree ? 'var(--accent)' : 'var(--teal)',
+            borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
+            textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}>{module.isFree ? 'Free' : 'Beta'}</span>
+        </div>
+      </div>
+      <p style={{ fontSize: '0.775rem', color: 'var(--text-muted)', margin: '0 0 0.55rem', lineHeight: 1.5 }}>
+        {module.situation?.context?.length > 90
+          ? module.situation.context.slice(0, 90) + '…'
+          : module.situation?.context}
+      </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
+        <DiffBadge difficulty={module.difficulty} />
+        <span style={{
+          fontSize: '0.6rem', color: 'var(--text-dim)',
+          background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
+          textTransform: 'uppercase', letterSpacing: '0.03em',
+        }}>{module.concept}</span>
+        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--blue-text)', fontWeight: 700 }}>⊕ Stats</span>
+      </div>
+    </div>
+  );
+}
+
 export function JudgmentBank({ onNavigate }) {
   const [roomFilter, setRoomFilter] = useState('all');
   const [familyFilter, setFamilyFilter] = useState('all');
@@ -198,10 +254,19 @@ export function JudgmentBank({ onNavigate }) {
     room: 'design',
   }));
 
-  const allPlayable = [...reviewCards, ...designCards];
+  const statsCards = statsModules.map(m => ({
+    ...m,
+    status: 'playable',
+    room: 'stats',
+    scenarioFamily: m.concept,
+    subtitle: m.situation?.context?.slice(0, 90) + '…',
+  }));
+
+  const allPlayable = [...statsCards, ...reviewCards, ...designCards];
   const allCards = [...allPlayable, ...plannedScenarios.map(s => ({ ...s, room: 'planned' }))];
 
   const filtered = allCards.filter(s => {
+    if (roomFilter === 'stats' && s.room !== 'stats') return false;
     if (roomFilter === 'review' && s.room !== 'review') return false;
     if (roomFilter === 'design' && s.room !== 'design') return false;
     if (roomFilter === 'planned' && s.room !== 'planned') return false;
@@ -226,7 +291,9 @@ export function JudgmentBank({ onNavigate }) {
   );
 
   function handleCardClick(card) {
-    if (card.room === 'review') {
+    if (card.room === 'stats') {
+      onNavigate('stats');
+    } else if (card.room === 'review') {
       onNavigate('browser');
     } else if (card.room === 'design') {
       onNavigate('design');
@@ -242,7 +309,7 @@ export function JudgmentBank({ onNavigate }) {
           Judgment Bank
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '0.75rem' }}>
-          50+ scenarios across Design and Review rooms. Each case teaches one decision trap from real product analytics work.
+          Stats, Design, and Review rooms. Each case teaches one decision trap from real product analytics work.
         </p>
         <div style={{
           background: 'var(--surface)', border: '1px solid var(--border)',
@@ -250,9 +317,9 @@ export function JudgmentBank({ onNavigate }) {
           padding: '0.7rem 0.875rem',
           fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6,
         }}>
-          <strong style={{ color: 'var(--text)', fontWeight: 600 }}>12 playable now</strong> — 8 Review Room + 4 Design Room.
-          {' '}Paired scenarios (◆) appear in both rooms.
-          Roadmap cards ship with V1.5 and V2.
+          <strong style={{ color: 'var(--text)', fontWeight: 600 }}>20 playable now</strong> — 8 Stats + 8 Review + 4 Design.
+          {' '}Paired scenarios (◆) appear in both Design and Review rooms.
+          Roadmap cards ship in V2+.
         </div>
       </div>
 
@@ -260,8 +327,9 @@ export function JudgmentBank({ onNavigate }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem', alignItems: 'center' }}>
 
         {/* Room filter */}
-        <div style={{ display: 'flex', gap: '0.25rem' }}>
+        <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
           <FilterBtn active={roomFilter === 'all'} onClick={() => setRoomFilter('all')}>All rooms</FilterBtn>
+          <FilterBtn active={roomFilter === 'stats'} onClick={() => setRoomFilter('stats')}>⊕ Stats ({statsCards.length})</FilterBtn>
           <FilterBtn active={roomFilter === 'review'} onClick={() => setRoomFilter('review')}>▶ Review ({reviewCards.length})</FilterBtn>
           <FilterBtn active={roomFilter === 'design'} onClick={() => setRoomFilter('design')}>✏ Design ({designCards.length})</FilterBtn>
           <FilterBtn active={roomFilter === 'planned'} onClick={() => setRoomFilter('planned')}>Roadmap ({plannedScenarios.length})</FilterBtn>
@@ -270,8 +338,9 @@ export function JudgmentBank({ onNavigate }) {
         <div style={{ width: '1px', height: '20px', background: 'var(--border)' }} />
 
         {/* Difficulty */}
-        <div style={{ display: 'flex', gap: '0.25rem' }}>
+        <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
           <FilterBtn active={diffFilter === 'all'} onClick={() => setDiffFilter('all')}>All levels</FilterBtn>
+          <FilterBtn active={diffFilter === 'foundational'} onClick={() => setDiffFilter('foundational')}>Foundational</FilterBtn>
           <FilterBtn active={diffFilter === 'analyst'} onClick={() => setDiffFilter('analyst')}>Analyst</FilterBtn>
           <FilterBtn active={diffFilter === 'senior'} onClick={() => setDiffFilter('senior')}>Senior</FilterBtn>
           <FilterBtn active={diffFilter === 'staff'} onClick={() => setDiffFilter('staff')}>Staff</FilterBtn>
@@ -312,6 +381,9 @@ export function JudgmentBank({ onNavigate }) {
         marginBottom: '3rem',
       }}>
         {filtered.map(s => {
+          if (s.room === 'stats') {
+            return <StatsCard key={`stats-${s.id}`} module={s} onClick={() => onNavigate('stats')} />;
+          }
           if (s.room === 'design') {
             return <DesignCard key={`design-${s.id}`} scenario={s} onClick={() => onNavigate('design')} />;
           }

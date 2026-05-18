@@ -4,7 +4,7 @@ export function About() {
       title: 'What this is',
       body: `Product Analytics Lab is an interactive judgment gym for product analysts and data scientists who already understand the basics of A/B testing. The gap it fills: there are many resources for learning experimental statistics, but very few that give you practice making judgment calls under messy, realistic product data.
 
-Each scenario is a synthetic experiment readout — a fictional company, a fictional experiment, but the data patterns, decision tensions, and failure modes are drawn from real recurring problems in product analytics: guardrail breaches, sample ratio mismatches, marketplace interference, post-hoc subgroup fishing, novelty effects, underpowered tests.
+The lab has three rooms. The Stats Room introduces statistical concepts through product decisions — not textbook definitions. The Design Room tests pre-experiment judgment: set the metric, randomization unit, guardrails, and decision rule before data exists. The Review Room drops you into a messy experiment readout and asks you to make the call.
 
 The answer is rarely "p < 0.05, ship it." This is where you practice the harder calls.`,
     },
@@ -55,15 +55,17 @@ Built with React, Vite, and Tailwind CSS v4. Deployable to any static host (Verc
     },
     {
       title: 'Roadmap',
-      body: `V1 (shipped): 8 scenarios across 6 failure mode themes. Free tier (4 scenarios) + private beta tier (4 scenarios).
+      body: `V1 (shipped): Review Room · 8 scenarios · Free + Beta.
 
-V1.1 (current): Visual polish with light/dark theme system. 50-scenario architecture pass — all 42 roadmap scenarios have metadata, family, and core trap defined in the Judgment Bank. No new playable scenarios.
+V1.1 (shipped): Judgment Bank · 50-scenario architecture · theme system.
 
-V1.5 (planned): 20 playable scenarios. Adds coverage of geo-holdout design, switchback experiments, CUPED, cannibalization framing, right-censored metrics, and B2B-specific constraints.
+V1.2 (shipped): Product Analytics Lab rebrand · Design Room · 14 concept cards.
 
-V2 (planned): Experiment Design Room. Design-your-own-test cases alongside the judgment scenarios. Full 50-scenario Judgment Bank.
+V1.5 (current): Stats Room MVP · 8 modules covering p-value, CI, power, SRM, multiple testing, guardrail metrics, novelty effect, and SUTVA. Each concept taught through a product decision, not a textbook definition.
 
-V3+ (planned): Stats & Inference Lab, RCA Room, Full Platform.
+V2 (planned): KPI Playground · metric tradeoff simulator.
+
+V2.5 (planned): RCA Room · root cause analysis cases.
 
 Full roadmap documented in docs/ROADMAP.md.`,
     },

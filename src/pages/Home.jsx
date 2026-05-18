@@ -11,7 +11,7 @@ export function Home({ onNavigate, onStartScenario }) {
           marginBottom: '1.75rem', fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 600,
           letterSpacing: '0.02em',
         }}>
-          Product Analytics Lab · V1.2
+          Product Analytics Lab · V1.5
         </div>
 
         <h1 style={{
@@ -44,12 +44,24 @@ export function Home({ onNavigate, onStartScenario }) {
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <button
-            onClick={() => onNavigate('design')}
+            onClick={() => onNavigate('stats')}
             style={{
               background: 'var(--accent)', color: '#fff', border: 'none',
               borderRadius: 'var(--radius)', padding: '0.7rem 1.4rem',
               fontWeight: 700, fontSize: '0.92rem', cursor: 'pointer',
               letterSpacing: '-0.01em', boxShadow: 'var(--shadow)',
+            }}
+          >
+            Stats Room →
+          </button>
+          <button
+            onClick={() => onNavigate('design')}
+            style={{
+              background: 'var(--surface)', color: 'var(--text-secondary)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)', padding: '0.7rem 1.4rem',
+              fontWeight: 500, fontSize: '0.92rem', cursor: 'pointer',
+              boxShadow: 'var(--shadow-sm)',
             }}
           >
             Design Room →
@@ -69,20 +81,53 @@ export function Home({ onNavigate, onStartScenario }) {
         </div>
       </div>
 
-      {/* ── The two rooms ────────────────────────────────────────────────── */}
+      {/* ── Three rooms ──────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
-        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>Two rooms. One loop.</div>
+        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>Three rooms. One loop.</div>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '1px',
-          background: 'var(--border)',
-          border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '0.65rem',
         }}>
+          {/* Stats Room */}
+          <div style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)', padding: '1.5rem 1.6rem',
+            boxShadow: 'var(--shadow-sm)',
+          }}>
+            <div style={{
+              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+              color: 'var(--blue-text)', marginBottom: '0.6rem',
+            }}>Stats Room · New V1.5</div>
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 0.5rem', letterSpacing: '-0.01em' }}>
+              Do you understand the stat only when it affects the call?
+            </h3>
+            <p style={{ fontSize: '0.845rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: '0 0 1rem' }}>
+              p-values, CIs, power, SRM, multiple testing, guardrails, novelty effects, SUTVA —
+              each concept introduced through a product decision, not a textbook definition.
+              Multiple-choice. Senior analyst debrief after every answer.
+            </p>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginBottom: '1.1rem' }}>
+              8 modules · 4 free + 4 beta · Foundational → Senior
+            </div>
+            <button
+              onClick={() => onNavigate('stats')}
+              style={{
+                background: 'var(--blue-text)', color: '#fff', border: 'none',
+                borderRadius: 'var(--radius)', padding: '0.55rem 1rem',
+                fontWeight: 700, fontSize: '0.84rem', cursor: 'pointer',
+              }}
+            >
+              Open Stats Room →
+            </button>
+          </div>
+
           {/* Design Room */}
-          <div style={{ background: 'var(--surface)', padding: '1.5rem 1.6rem' }}>
+          <div style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)', padding: '1.5rem 1.6rem',
+            boxShadow: 'var(--shadow-sm)',
+          }}>
             <div style={{
               fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
               color: 'var(--teal)', marginBottom: '0.6rem',
@@ -96,7 +141,7 @@ export function Home({ onNavigate, onStartScenario }) {
               Scored across 4 dimensions against the senior analyst standard.
             </p>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginBottom: '1.1rem' }}>
-              4 scenarios · Free + Beta · Analyst → Senior difficulty
+              4 scenarios · Free + Beta · Analyst → Senior
             </div>
             <button
               onClick={() => onNavigate('design')}
@@ -111,7 +156,11 @@ export function Home({ onNavigate, onStartScenario }) {
           </div>
 
           {/* Review Room */}
-          <div style={{ background: 'var(--surface)', padding: '1.5rem 1.6rem' }}>
+          <div style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)', padding: '1.5rem 1.6rem',
+            boxShadow: 'var(--shadow-sm)',
+          }}>
             <div style={{
               fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
               color: 'var(--accent)', marginBottom: '0.6rem',
@@ -125,7 +174,7 @@ export function Home({ onNavigate, onStartScenario }) {
               or investigate call — then see how a senior analyst read the same data.
             </p>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginBottom: '1.1rem' }}>
-              8 scenarios · Free + Beta · Analyst → Staff difficulty
+              8 scenarios · Free + Beta · Analyst → Staff
             </div>
             <button
               onClick={() => onNavigate('browser')}
@@ -142,18 +191,16 @@ export function Home({ onNavigate, onStartScenario }) {
 
         {/* Loop callout */}
         <div style={{
-          marginTop: '1px',
+          marginTop: '0.65rem',
           background: 'var(--surface-2)',
           border: '1px solid var(--border)',
-          borderTop: 'none',
-          borderBottomLeftRadius: 'var(--radius-lg)',
-          borderBottomRightRadius: 'var(--radius-lg)',
+          borderRadius: 'var(--radius)',
           padding: '0.75rem 1.2rem',
           fontSize: '0.8rem', color: 'var(--text-dim)',
           display: 'flex', alignItems: 'center', gap: '0.5rem',
         }}>
           <span style={{ color: 'var(--accent)', fontWeight: 700 }}>◆</span>
-          4 paired scenarios — design the test in the Design Room, then review the real result in the Review Room. Both directions available.
+          4 paired scenarios — design the test in Design, review the result in Review. Stats Room modules link to both rooms.
         </div>
       </div>
 
@@ -217,11 +264,70 @@ export function Home({ onNavigate, onStartScenario }) {
       {/* ── Scenario list ──────────────────────────────────────────────── */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
         gap: '1.25rem',
         marginBottom: '4.5rem',
         alignItems: 'start',
       }}>
+
+        {/* Stats Room modules */}
+        <div style={{
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)', padding: '1.5rem',
+          boxShadow: 'var(--shadow-sm)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)' }}>
+              Stats Room · 8 Modules
+            </span>
+            <span style={{
+              fontSize: '0.6rem', fontWeight: 700, color: 'var(--blue-text)',
+              background: 'var(--blue-bg)', border: '1px solid var(--blue-border)',
+              borderRadius: '4px', padding: '0.1rem 0.4rem', letterSpacing: '0.04em',
+            }}>NEW V1.5</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '0.75rem' }}>
+            {[
+              ['Free', 'p < 0.05. Ship it?', 'p-value'],
+              ['Free', 'The 95% Confidence Trap', 'confidence interval'],
+              ['Free', 'We Ran It — Results Were Flat', 'statistical power'],
+              ['Free', 'The Uneven Split', 'SRM'],
+              ['Beta', 'Five Wins, One Test', 'multiple testing'],
+              ['Beta', 'Revenue Holds, Engagement Tanks', 'guardrail metrics'],
+              ['Beta', 'The Week-One Surge', 'novelty effect'],
+              ['Beta', 'The Marketplace Spill', 'SUTVA'],
+            ].map(([tier, title, concept], i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                padding: '0.42rem 0',
+                borderBottom: i < 7 ? '1px solid var(--border-subtle)' : 'none',
+                fontSize: '0.82rem',
+              }}>
+                <span style={{
+                  fontSize: '0.58rem', fontWeight: 700,
+                  color: tier === 'Free' ? 'var(--accent)' : 'var(--teal)',
+                  background: tier === 'Free' ? 'var(--accent-bg)' : 'var(--teal-bg)',
+                  border: `1px solid ${tier === 'Free' ? 'var(--accent-border)' : 'var(--teal-border)'}`,
+                  borderRadius: '3px', padding: '0.08rem 0.3rem',
+                  whiteSpace: 'nowrap', flexShrink: 0, textTransform: 'uppercase', letterSpacing: '0.04em',
+                }}>{tier}</span>
+                <span style={{ color: 'var(--text-secondary)', fontWeight: 500, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</span>
+                <span style={{ color: 'var(--text-dim)', whiteSpace: 'nowrap', fontSize: '0.72rem', flexShrink: 0 }}>{concept}</span>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => onNavigate('stats')}
+            style={{
+              width: '100%',
+              background: 'var(--blue-text)', color: '#fff', border: 'none',
+              borderRadius: 'var(--radius)', padding: '0.6rem',
+              fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer',
+            }}
+          >
+            Open Stats Room →
+          </button>
+        </div>
 
         {/* Review Room scenarios */}
         <div style={{
@@ -352,8 +458,8 @@ export function Home({ onNavigate, onStartScenario }) {
           {[
             { v: 'V1',   desc: 'Experiment Review Room · 8 scenarios · Free + Beta',          done: true,  current: false },
             { v: 'V1.1', desc: 'Judgment Bank · 50-scenario architecture · theme system',      done: true,  current: false },
-            { v: 'V1.2', desc: 'Product Analytics Lab · Design Room · 14 concept cards',       done: false, current: true  },
-            { v: 'V1.5', desc: 'Stats Room MVP · more Review + Design scenarios · CUPED',      done: false, current: false },
+            { v: 'V1.2', desc: 'Product Analytics Lab · Design Room · 14 concept cards',       done: true,  current: false },
+            { v: 'V1.5', desc: 'Stats Room MVP · 8 modules · p-value to SUTVA',                done: false, current: true  },
             { v: 'V2',   desc: 'KPI Playground · metric tradeoff simulator',                   done: false, current: false },
             { v: 'V2.5', desc: 'RCA Room · root cause analysis cases',                         done: false, current: false },
           ].map(({ v, desc, done, current }) => (
