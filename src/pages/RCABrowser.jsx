@@ -1,0 +1,205 @@
+import { rcaCases } from '../data/rcaCases.js';
+import { getRCAProgress } from '../utils/rcaProgress.js';
+
+const DIFF_CFG = {
+  analyst: { label: 'Analyst', color: 'var(--accent)', bg: 'var(--accent-bg)', border: 'var(--accent-border)' },
+  senior:  { label: 'Senior',  color: 'var(--teal)',   bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
+  staff:   { label: 'Staff',   color: 'var(--yellow)',  bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
+};
+
+const DOMAIN_CFG = {
+  growth:   { label: 'Growth',   color: 'var(--blue-text)', bg: 'var(--blue-bg)' },
+  search:   { label: 'Search',   color: 'var(--teal)',      bg: 'var(--teal-bg)' },
+  engagement: { label: 'Engagement', color: 'var(--accent)', bg: 'var(--accent-bg)' },
+  marketplace: { label: 'Marketplace', color: 'var(--purple)', bg: 'var(--purple-bg)' },
+  retention: { label: 'Retention', color: 'var(--green)',  bg: 'var(--green-bg)' },
+  monetization: { label: 'Monetization', color: 'var(--yellow)', bg: 'var(--yellow-bg)' },
+};
+
+const LEVEL_LABEL = {
+  staff:   'Staff-Level',
+  senior:  'Senior',
+  analyst: 'Analyst',
+  junior:  'Junior',
+};
+
+const LEVEL_COLOR = {
+  staff:   'var(--teal)',
+  senior:  'var(--accent)',
+  analyst: 'var(--yellow)',
+  junior:  'var(--red)',
+};
+
+const LEVEL_BG = {
+  staff:   'var(--teal-bg)',
+  senior:  'var(--accent-bg)',
+  analyst: 'var(--yellow-bg)',
+  junior:  'var(--red-bg)',
+};
+
+function Tag({ label, color, bg, border }) {
+  return (
+    <span style={{
+      fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
+      color, background: bg, border: `1px solid ${border || color}`,
+      borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem',
+    }}>
+      {label}
+    </span>
+  );
+}
+
+export function RCABrowser({ onSelectCase, unlocked, onUnlock }) {
+  const freeCount = rcaCases.filter(c => c.isFree).length;
+  const completedCount = rcaCases.filter(c => getRCAProgress(c.id)).length;
+
+  return (
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
+
+      {/* Header */}
+      <div style={{ marginBottom: '1.75rem' }}>
+        <div style={{
+          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          color: 'var(--yellow)', marginBottom: '0.4rem',
+        }}>
+          RCA Room
+        </div>
+        <h1 style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--text)', margin: '0 0 0.5rem', letterSpacing: '-0.02em' }}>
+          Root Cause Analysis
+        </h1>
+        <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem', lineHeight: 1.6, maxWidth: '540px' }}>
+          Diagnose metric movements step by step. Each case gives you context, then walks you through
+          the exact reasoning process a senior analyst would use to find the root cause.
+        </p>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          <span style={{
+            fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+            color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
+            borderRadius: 'var(--radius-sm)', padding: '0.2rem 0.55rem',
+          }}>
+            RCA · {rcaCases.length} Cases
+          </span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            {freeCount} free · {completedCount} completed
+          </span>
+        </div>
+      </div>
+
+      {/* Case cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+        {rcaCases.map((c) => {
+          const progress = getRCAProgress(c.id);
+          const isLocked = !c.isFree && !unlocked;
+          const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.analyst;
+          const domainCfg = DOMAIN_CFG[c.domain] || DOMAIN_CFG.growth;
+
+          return (
+            <CaseCard
+              key={c.id}
+              rcaCase={c}
+              progress={progress}
+              isLocked={isLocked}
+              diffCfg={diffCfg}
+              domainCfg={domainCfg}
+              onSelectCase={onSelectCase}
+              onUnlock={onUnlock}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCase, onUnlock }) {
+  const levelColor = progress ? LEVEL_COLOR[progress.level] : null;
+  const levelBg = progress ? LEVEL_BG[progress.level] : null;
+
+  function handleClick() {
+    if (isLocked) {
+      onUnlock && onUnlock();
+    } else {
+      onSelectCase(rcaCase.id);
+    }
+  }
+
+  return (
+    <div
+      onClick={handleClick}
+      style={{
+        background: 'var(--surface)',
+        border: '1.5px solid var(--border)',
+        borderRadius: 'var(--radius)',
+        padding: '1.1rem 1.25rem',
+        cursor: 'pointer',
+        opacity: isLocked ? 0.65 : 1,
+        transition: 'border-color 0.12s, box-shadow 0.12s',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = 'var(--yellow-border)';
+        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = 'var(--border)';
+        e.currentTarget.style.boxShadow = 'none';
+      }}
+    >
+      {/* Top row: tags + status */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.55rem', flexWrap: 'wrap' }}>
+        <Tag label={domainCfg.label} color={domainCfg.color} bg={domainCfg.bg} />
+        <Tag label={diffCfg.label} color={diffCfg.color} bg={diffCfg.bg} border={diffCfg.border} />
+        {rcaCase.isFree && (
+          <Tag label="Free" color="var(--green)" bg="var(--green-bg)" border="var(--green-border)" />
+        )}
+        {!rcaCase.isFree && (
+          <Tag label="Beta" color="var(--text-muted)" bg="var(--surface-2)" border="var(--border-subtle)" />
+        )}
+        {isLocked && (
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginLeft: 'auto' }}>🔒 Unlock to access</span>
+        )}
+        {progress && !isLocked && (
+          <span style={{
+            marginLeft: 'auto', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            color: levelColor, background: levelBg, border: `1px solid ${levelColor}`,
+            borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem',
+          }}>
+            {LEVEL_LABEL[progress.level]} · {progress.score}/{progress.maxScore ?? 10}
+          </span>
+        )}
+      </div>
+
+      {/* Title + subtitle */}
+      <div style={{ marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1.3 }}>
+          {rcaCase.title}
+        </div>
+        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+          {rcaCase.subtitle}
+        </div>
+      </div>
+
+      {/* Metric movement callout */}
+      <div style={{
+        background: 'var(--yellow-bg)',
+        border: '1px solid var(--yellow-border)',
+        borderRadius: 'var(--radius-sm)',
+        padding: '0.5rem 0.75rem',
+        fontSize: '0.8rem',
+        color: 'var(--text)',
+        lineHeight: 1.5,
+      }}>
+        <span style={{ fontWeight: 700, color: 'var(--yellow)', marginRight: '0.4rem', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          Movement
+        </span>
+        {rcaCase.context.metricMovement}
+      </div>
+
+      {/* Completion indicator */}
+      {progress && (
+        <div style={{ marginTop: '0.6rem', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+          Completed {progress.attempts} time{progress.attempts !== 1 ? 's' : ''} · Click to review
+        </div>
+      )}
+    </div>
+  );
+}

@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { scenarios } from '../data/scenarios.js';
 import { designScenarios } from '../data/designScenarios.js';
 import { statsModules } from '../data/statsModules.js';
+import { metricCases } from '../data/metricCases.js';
+import { rcaCases } from '../data/rcaCases.js';
+import { businessCases } from '../data/businessCases.js';
 import { plannedScenarios, SCENARIO_FAMILIES } from '../data/scenarioBank.js';
 
 const DIFFICULTY_COLORS = {
@@ -94,8 +97,7 @@ function ReviewCard({ scenario, onClick }) {
         </span>
         <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700,
-            color: '#fff',
+            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
             background: scenario.isFree ? 'var(--accent)' : 'var(--teal)',
             borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
             textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -113,7 +115,7 @@ function ReviewCard({ scenario, onClick }) {
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{scenario.industry}</span>
         {scenario.pairedDesignScenarioId && <PairedBadge />}
-        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--green)', fontWeight: 700 }}>▶ Review</span>
+        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 700 }}>▶ Review</span>
       </div>
     </div>
   );
@@ -147,8 +149,7 @@ function DesignCard({ scenario, onClick }) {
         </span>
         <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700,
-            color: '#fff',
+            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
             background: scenario.isFree ? 'var(--accent)' : 'var(--teal)',
             borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
             textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -200,8 +201,7 @@ function StatsCard({ module, onClick }) {
         </span>
         <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700,
-            color: '#fff',
+            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
             background: module.isFree ? 'var(--accent)' : 'var(--teal)',
             borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
             textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -222,6 +222,163 @@ function StatsCard({ module, onClick }) {
           textTransform: 'uppercase', letterSpacing: '0.03em',
         }}>{module.concept}</span>
         <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--blue-text)', fontWeight: 700 }}>⊕ Stats</span>
+      </div>
+    </div>
+  );
+}
+
+function MetricsCard({ metricCase, onClick }) {
+  return (
+    <div
+      onClick={() => onClick(metricCase.id)}
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)',
+        padding: '0.95rem 1rem',
+        cursor: 'pointer',
+        transition: 'border-color 0.13s, box-shadow 0.13s',
+        boxShadow: 'var(--shadow-sm)',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = 'var(--teal)';
+        e.currentTarget.style.boxShadow = '0 0 0 3px var(--teal-bg)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = 'var(--border)';
+        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
+        <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.3, flex: 1 }}>
+          {metricCase.title}
+        </span>
+        <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          <span style={{
+            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
+            background: metricCase.isFree ? 'var(--accent)' : 'var(--teal)',
+            borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
+            textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}>{metricCase.isFree ? 'Free' : 'Beta'}</span>
+        </div>
+      </div>
+      <p style={{ fontSize: '0.775rem', color: 'var(--text-muted)', margin: '0 0 0.55rem', lineHeight: 1.5 }}>
+        {metricCase.subtitle}
+      </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
+        <DiffBadge difficulty={metricCase.difficulty} />
+        <span style={{
+          fontSize: '0.6rem', color: 'var(--text-dim)',
+          background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
+        }}>{metricCase.domain}</span>
+        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--teal)', fontWeight: 700 }}>⊗ Metrics</span>
+      </div>
+    </div>
+  );
+}
+
+function RCACard({ rcaCase, onClick }) {
+  return (
+    <div
+      onClick={() => onClick(rcaCase.id)}
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)',
+        padding: '0.95rem 1rem',
+        cursor: 'pointer',
+        transition: 'border-color 0.13s, box-shadow 0.13s',
+        boxShadow: 'var(--shadow-sm)',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = 'var(--yellow-border)';
+        e.currentTarget.style.boxShadow = '0 0 0 3px var(--yellow-bg)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = 'var(--border)';
+        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
+        <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.3, flex: 1 }}>
+          {rcaCase.title}
+        </span>
+        <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          <span style={{
+            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
+            background: rcaCase.isFree ? 'var(--accent)' : 'var(--teal)',
+            borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
+            textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}>{rcaCase.isFree ? 'Free' : 'Beta'}</span>
+        </div>
+      </div>
+      <p style={{ fontSize: '0.775rem', color: 'var(--text-muted)', margin: '0 0 0.55rem', lineHeight: 1.5 }}>
+        {rcaCase.context?.metricMovement
+          ? rcaCase.context.metricMovement.length > 85
+            ? rcaCase.context.metricMovement.slice(0, 85) + '…'
+            : rcaCase.context.metricMovement
+          : rcaCase.subtitle}
+      </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
+        <DiffBadge difficulty={rcaCase.difficulty} />
+        <span style={{
+          fontSize: '0.6rem', color: 'var(--text-dim)',
+          background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
+        }}>{rcaCase.domain}</span>
+        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--yellow)', fontWeight: 700 }}>⊘ RCA</span>
+      </div>
+    </div>
+  );
+}
+
+function CasesCard({ businessCase, onClick }) {
+  return (
+    <div
+      onClick={() => onClick(businessCase.id)}
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)',
+        padding: '0.95rem 1rem',
+        cursor: 'pointer',
+        transition: 'border-color 0.13s, box-shadow 0.13s',
+        boxShadow: 'var(--shadow-sm)',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = 'var(--purple-border)';
+        e.currentTarget.style.boxShadow = '0 0 0 3px var(--purple-bg)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = 'var(--border)';
+        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
+        <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.3, flex: 1 }}>
+          {businessCase.title}
+        </span>
+        <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          <span style={{
+            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
+            background: businessCase.isFree ? 'var(--accent)' : 'var(--teal)',
+            borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
+            textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}>{businessCase.isFree ? 'Free' : 'Beta'}</span>
+        </div>
+      </div>
+      <p style={{ fontSize: '0.775rem', color: 'var(--text-muted)', margin: '0 0 0.55rem', lineHeight: 1.5 }}>
+        {businessCase.subtitle}
+      </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
+        <DiffBadge difficulty={businessCase.difficulty} />
+        <span style={{
+          fontSize: '0.6rem', color: 'var(--text-dim)',
+          background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
+        }}>{businessCase.domain}</span>
+        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--purple)', fontWeight: 700 }}>◈ Cases</span>
       </div>
     </div>
   );
@@ -262,13 +419,29 @@ export function JudgmentBank({ onNavigate }) {
     subtitle: m.situation?.context?.slice(0, 90) + '…',
   }));
 
-  const allPlayable = [...statsCards, ...reviewCards, ...designCards];
+  const metricsCards = metricCases.map(c => ({
+    ...c,
+    status: 'playable',
+    room: 'metrics',
+  }));
+
+  const rcaCards = rcaCases.map(c => ({
+    ...c,
+    status: 'playable',
+    room: 'rca',
+  }));
+
+  const casesCards = businessCases.map(c => ({
+    ...c,
+    status: 'playable',
+    room: 'cases',
+  }));
+
+  const allPlayable = [...statsCards, ...metricsCards, ...reviewCards, ...designCards, ...rcaCards, ...casesCards];
   const allCards = [...allPlayable, ...plannedScenarios.map(s => ({ ...s, room: 'planned' }))];
 
   const filtered = allCards.filter(s => {
-    if (roomFilter === 'stats' && s.room !== 'stats') return false;
-    if (roomFilter === 'review' && s.room !== 'review') return false;
-    if (roomFilter === 'design' && s.room !== 'design') return false;
+    if (roomFilter !== 'all' && roomFilter !== 'planned' && s.room !== roomFilter) return false;
     if (roomFilter === 'planned' && s.room !== 'planned') return false;
     if (statusFilter === 'playable' && s.status !== 'playable') return false;
     if (statusFilter === 'planned' && s.status !== 'planned') return false;
@@ -291,25 +464,24 @@ export function JudgmentBank({ onNavigate }) {
   );
 
   function handleCardClick(card) {
-    if (card.room === 'stats') {
-      onNavigate('stats');
-    } else if (card.room === 'review') {
-      onNavigate('browser');
-    } else if (card.room === 'design') {
-      onNavigate('design');
-    }
+    if (card.room === 'stats') onNavigate('stats');
+    else if (card.room === 'review') onNavigate('browser');
+    else if (card.room === 'design') onNavigate('design');
+    else if (card.room === 'metrics') onNavigate('metrics');
+    else if (card.room === 'rca') onNavigate('rca');
+    else if (card.room === 'cases') onNavigate('cases');
   }
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
-      <div style={{ maxWidth: '680px', marginBottom: '2rem' }}>
+      <div style={{ maxWidth: '720px', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.025em', marginBottom: '0.5rem' }}>
           Judgment Bank
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '0.75rem' }}>
-          Stats, Design, and Review rooms. Each case teaches one decision trap from real product analytics work.
+          All 6 rooms in one view. Each case teaches one decision trap from real product analytics work.
         </p>
         <div style={{
           background: 'var(--surface)', border: '1px solid var(--border)',
@@ -317,9 +489,9 @@ export function JudgmentBank({ onNavigate }) {
           padding: '0.7rem 0.875rem',
           fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6,
         }}>
-          <strong style={{ color: 'var(--text)', fontWeight: 600 }}>28 playable now</strong> — 8 Stats + 12 Review + 8 Design.
+          <strong style={{ color: 'var(--text)', fontWeight: 600 }}>44 playable now</strong>
+          {' '}— 8 Stats + 6 Metrics + 12 Review + 8 Design + 6 RCA + 4 Cases.
           {' '}Paired scenarios (◆) appear in both Design and Review rooms.
-          Roadmap cards ship in V2+.
         </div>
       </div>
 
@@ -330,8 +502,11 @@ export function JudgmentBank({ onNavigate }) {
         <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
           <FilterBtn active={roomFilter === 'all'} onClick={() => setRoomFilter('all')}>All rooms</FilterBtn>
           <FilterBtn active={roomFilter === 'stats'} onClick={() => setRoomFilter('stats')}>⊕ Stats ({statsCards.length})</FilterBtn>
+          <FilterBtn active={roomFilter === 'metrics'} onClick={() => setRoomFilter('metrics')}>⊗ Metrics ({metricsCards.length})</FilterBtn>
           <FilterBtn active={roomFilter === 'review'} onClick={() => setRoomFilter('review')}>▶ Review ({reviewCards.length})</FilterBtn>
           <FilterBtn active={roomFilter === 'design'} onClick={() => setRoomFilter('design')}>✏ Design ({designCards.length})</FilterBtn>
+          <FilterBtn active={roomFilter === 'rca'} onClick={() => setRoomFilter('rca')}>⊘ RCA ({rcaCards.length})</FilterBtn>
+          <FilterBtn active={roomFilter === 'cases'} onClick={() => setRoomFilter('cases')}>◈ Cases ({casesCards.length})</FilterBtn>
           <FilterBtn active={roomFilter === 'planned'} onClick={() => setRoomFilter('planned')}>Roadmap ({plannedScenarios.length})</FilterBtn>
         </div>
 
@@ -368,7 +543,7 @@ export function JudgmentBank({ onNavigate }) {
 
       {/* Results label */}
       <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '1rem' }}>
-        {filtered.length} scenario{filtered.length !== 1 ? 's' : ''}
+        {filtered.length} item{filtered.length !== 1 ? 's' : ''}
         {familyFilter !== 'all' ? ` · ${SCENARIO_FAMILIES[familyFilter] || familyFilter}` : ''}
         {diffFilter !== 'all' ? ` · ${diffFilter}` : ''}
       </div>
@@ -381,15 +556,12 @@ export function JudgmentBank({ onNavigate }) {
         marginBottom: '3rem',
       }}>
         {filtered.map(s => {
-          if (s.room === 'stats') {
-            return <StatsCard key={`stats-${s.id}`} module={s} onClick={() => onNavigate('stats')} />;
-          }
-          if (s.room === 'design') {
-            return <DesignCard key={`design-${s.id}`} scenario={s} onClick={() => onNavigate('design')} />;
-          }
-          if (s.room === 'review') {
-            return <ReviewCard key={`review-${s.id}`} scenario={s} onClick={() => onNavigate('browser')} />;
-          }
+          if (s.room === 'stats') return <StatsCard key={`stats-${s.id}`} module={s} onClick={() => onNavigate('stats')} />;
+          if (s.room === 'metrics') return <MetricsCard key={`metrics-${s.id}`} metricCase={s} onClick={() => onNavigate('metrics')} />;
+          if (s.room === 'design') return <DesignCard key={`design-${s.id}`} scenario={s} onClick={() => onNavigate('design')} />;
+          if (s.room === 'review') return <ReviewCard key={`review-${s.id}`} scenario={s} onClick={() => onNavigate('browser')} />;
+          if (s.room === 'rca') return <RCACard key={`rca-${s.id}`} rcaCase={s} onClick={() => onNavigate('rca')} />;
+          if (s.room === 'cases') return <CasesCard key={`cases-${s.id}`} businessCase={s} onClick={() => onNavigate('cases')} />;
           return <PlannedCard key={`planned-${s.id}`} scenario={s} />;
         })}
         {filtered.length === 0 && (
@@ -397,7 +569,7 @@ export function JudgmentBank({ onNavigate }) {
             gridColumn: '1/-1', textAlign: 'center', padding: '3rem',
             color: 'var(--text-dim)', fontSize: '0.875rem',
           }}>
-            No scenarios match this filter.
+            No items match this filter.
           </div>
         )}
       </div>
@@ -408,7 +580,7 @@ export function JudgmentBank({ onNavigate }) {
         borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.5rem',
       }}>
         <div className="label-caps" style={{ marginBottom: '0.875rem' }}>
-          15 Scenario Families
+          Scenario Families
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '0.3rem' }}>
           {Object.entries(SCENARIO_FAMILIES).map(([key, label]) => {

@@ -2,8 +2,11 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'stats', label: 'Stats' },
+    { id: 'metrics', label: 'Metrics' },
     { id: 'design', label: 'Design' },
     { id: 'browser', label: 'Review' },
+    { id: 'rca', label: 'RCA' },
+    { id: 'cases', label: 'Cases' },
     { id: 'bank', label: 'Judgment Bank' },
     { id: 'progress', label: 'Progress' },
     { id: 'about', label: 'Methodology' },
@@ -48,7 +51,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               Product Analytics Lab
             </span>
             <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)', letterSpacing: '0.02em', lineHeight: 1.1 }}>
-              Analytics judgment gym · V1.5
+              Analytics judgment gym · V2.0
             </span>
           </div>
         </button>
@@ -58,8 +61,11 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
           {navItems.map(item => {
             const isActive = currentPage === item.id
               || (item.id === 'stats' && currentPage === 'stats-runner')
+              || (item.id === 'metrics' && currentPage === 'metrics-runner')
               || (item.id === 'design' && currentPage === 'design-runner')
-              || (item.id === 'browser' && currentPage === 'runner');
+              || (item.id === 'browser' && currentPage === 'runner')
+              || (item.id === 'rca' && currentPage === 'rca-runner')
+              || (item.id === 'cases' && currentPage === 'cases-runner');
             return (
               <button
                 key={item.id}

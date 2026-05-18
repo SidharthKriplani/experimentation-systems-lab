@@ -2,12 +2,18 @@ import { useState, useEffect } from 'react';
 import { scenarios } from './data/scenarios.js';
 import { designScenarios } from './data/designScenarios.js';
 import { statsModules } from './data/statsModules.js';
+import { metricCases } from './data/metricCases.js';
+import { rcaCases } from './data/rcaCases.js';
+import { businessCases } from './data/businessCases.js';
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
 import { Home } from './pages/Home.jsx';
 import { ScenarioBrowser } from './pages/ScenarioBrowser.jsx';
 import { DesignBrowser } from './pages/DesignBrowser.jsx';
 import { StatsBrowser } from './pages/StatsBrowser.jsx';
+import { MetricsBrowser } from './pages/MetricsBrowser.jsx';
+import { RCABrowser } from './pages/RCABrowser.jsx';
+import { CasesBrowser } from './pages/CasesBrowser.jsx';
 import { Progress } from './pages/Progress.jsx';
 import { Unlock } from './pages/Unlock.jsx';
 import { About } from './pages/About.jsx';
@@ -15,9 +21,15 @@ import { JudgmentBank } from './pages/JudgmentBank.jsx';
 import { ScenarioRunner } from './components/scenario/ScenarioRunner.jsx';
 import { DesignRunner } from './components/design/DesignRunner.jsx';
 import { StatsRunner } from './components/stats/StatsRunner.jsx';
+import { MetricsRunner } from './components/metrics/MetricsRunner.jsx';
+import { RCARunner } from './components/rca/RCARunner.jsx';
+import { CaseRunner } from './components/cases/CaseRunner.jsx';
 import { getAllProgress } from './utils/progress.js';
 import { getDesignProgress } from './utils/designProgress.js';
 import { getStatsProgress } from './utils/statsProgress.js';
+import { getMetricsProgress } from './utils/metricsProgress.js';
+import { getRCAProgress } from './utils/rcaProgress.js';
+import { getCaseProgress } from './utils/caseProgress.js';
 import { isUnlocked } from './utils/unlock.js';
 
 function getInitialTheme() {
@@ -33,6 +45,9 @@ export default function App() {
   const [activeScenarioId, setActiveScenarioId] = useState(null);
   const [activeDesignScenarioId, setActiveDesignScenarioId] = useState(null);
   const [activeStatsModuleId, setActiveStatsModuleId] = useState(null);
+  const [activeMetricsCaseId, setActiveMetricsCaseId] = useState(null);
+  const [activeRCACaseId, setActiveRCACaseId] = useState(null);
+  const [activeBusinessCaseId, setActiveBusinessCaseId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
   const [theme, setTheme] = useState(getInitialTheme);
@@ -55,6 +70,9 @@ export default function App() {
     setActiveScenarioId(null);
     setActiveDesignScenarioId(null);
     setActiveStatsModuleId(null);
+    setActiveMetricsCaseId(null);
+    setActiveRCACaseId(null);
+    setActiveBusinessCaseId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -70,10 +88,7 @@ export default function App() {
   function openDesignScenario(id) {
     const scenario = designScenarios.find(s => s.id === id);
     if (!scenario) return;
-    if (!scenario.isFree && !unlocked) {
-      setPage('unlock');
-      return;
-    }
+    if (!scenario.isFree && !unlocked) { setPage('unlock'); return; }
     setActiveDesignScenarioId(id);
     setPage('design-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -82,12 +97,36 @@ export default function App() {
   function openScenario(id) {
     const scenario = scenarios.find(s => s.id === id);
     if (!scenario) return;
-    if (!scenario.isFree && !unlocked) {
-      setPage('unlock');
-      return;
-    }
+    if (!scenario.isFree && !unlocked) { setPage('unlock'); return; }
     setActiveScenarioId(id);
     setPage('runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openMetricsCase(id) {
+    const c = metricCases.find(m => m.id === id);
+    if (!c) return;
+    if (!c.isFree && !unlocked) { setPage('unlock'); return; }
+    setActiveMetricsCaseId(id);
+    setPage('metrics-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openRCACase(id) {
+    const c = rcaCases.find(r => r.id === id);
+    if (!c) return;
+    if (!c.isFree && !unlocked) { setPage('unlock'); return; }
+    setActiveRCACaseId(id);
+    setPage('rca-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openBusinessCase(id) {
+    const c = businessCases.find(b => b.id === id);
+    if (!c) return;
+    if (!c.isFree && !unlocked) { setPage('unlock'); return; }
+    setActiveBusinessCaseId(id);
+    setPage('cases-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -107,8 +146,10 @@ export default function App() {
   const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
   const activeDesignScenario = designScenarios.find(s => s.id === activeDesignScenarioId);
   const activeStatsModule = statsModules.find(m => m.id === activeStatsModuleId);
+  const activeMetricsCase = metricCases.find(m => m.id === activeMetricsCaseId);
+  const activeRCACase = rcaCases.find(r => r.id === activeRCACaseId);
+  const activeBusinessCase = businessCases.find(b => b.id === activeBusinessCaseId);
 
-  // Paired design scenario for a given review scenario id
   function getPairedDesignId(reviewScenarioId) {
     const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
     return d?.id || null;
@@ -121,12 +162,10 @@ export default function App() {
         {page === 'home' && (
           <Home onNavigate={navigate} onStartScenario={openScenario} />
         )}
+
+        {/* ── Stats Room ── */}
         {page === 'stats' && (
-          <StatsBrowser
-            onSelectModule={openStatsModule}
-            unlocked={unlocked}
-            onUnlock={() => navigate('unlock')}
-          />
+          <StatsBrowser onSelectModule={openStatsModule} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
         )}
         {page === 'stats-runner' && activeStatsModule && (
           <StatsRunner
@@ -138,12 +177,26 @@ export default function App() {
             onGoToDesign={id => openDesignScenario(id)}
           />
         )}
-        {page === 'design' && (
-          <DesignBrowser
-            onSelectScenario={openDesignScenario}
+
+        {/* ── Metrics Room ── */}
+        {page === 'metrics' && (
+          <MetricsBrowser onSelectCase={openMetricsCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
+        )}
+        {page === 'metrics-runner' && activeMetricsCase && (
+          <MetricsRunner
+            key={activeMetricsCaseId}
+            metricCase={activeMetricsCase}
+            savedProgress={getMetricsProgress(activeMetricsCaseId)}
             unlocked={unlocked}
-            onUnlock={() => navigate('unlock')}
+            onBack={() => navigate('metrics')}
+            onGoToDesign={id => openDesignScenario(id)}
+            onGoToReview={id => openScenario(id)}
           />
+        )}
+
+        {/* ── Design Room ── */}
+        {page === 'design' && (
+          <DesignBrowser onSelectScenario={openDesignScenario} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
         )}
         {page === 'design-runner' && activeDesignScenario && (
           <DesignRunner
@@ -154,6 +207,8 @@ export default function App() {
             onGoToReview={id => openScenario(id)}
           />
         )}
+
+        {/* ── Review Room ── */}
         {page === 'browser' && (
           <ScenarioBrowser
             scenarios={scenarios}
@@ -174,20 +229,48 @@ export default function App() {
             onGoToDesign={openDesignScenario}
           />
         )}
+
+        {/* ── RCA Room ── */}
+        {page === 'rca' && (
+          <RCABrowser onSelectCase={openRCACase} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
+        )}
+        {page === 'rca-runner' && activeRCACase && (
+          <RCARunner
+            key={activeRCACaseId}
+            rcaCase={activeRCACase}
+            savedProgress={getRCAProgress(activeRCACaseId)}
+            unlocked={unlocked}
+            onBack={() => navigate('rca')}
+          />
+        )}
+
+        {/* ── Cases Room ── */}
+        {page === 'cases' && (
+          <CasesBrowser onSelectCase={openBusinessCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
+        )}
+        {page === 'cases-runner' && activeBusinessCase && (
+          <CaseRunner
+            key={activeBusinessCaseId}
+            businessCase={activeBusinessCase}
+            savedProgress={getCaseProgress(activeBusinessCaseId)}
+            unlocked={unlocked}
+            onBack={() => navigate('cases')}
+          />
+        )}
+
+        {/* ── Support pages ── */}
         {page === 'progress' && (
           <Progress
             scenarios={scenarios}
             allProgress={progressSnapshot}
             onSelect={openScenario}
             onClear={refreshProgress}
+            onNavigate={navigate}
+            unlocked={unlocked}
           />
         )}
         {page === 'unlock' && (
-          <Unlock
-            onUnlocked={handleUnlocked}
-            alreadyUnlocked={unlocked}
-            onNavigate={navigate}
-          />
+          <Unlock onUnlocked={handleUnlocked} alreadyUnlocked={unlocked} onNavigate={navigate} />
         )}
         {page === 'about' && <About />}
         {page === 'bank' && <JudgmentBank onNavigate={navigate} />}

@@ -1,0 +1,62 @@
+// Product Analytics Lab — Learning Paths
+export const learningPaths = [
+  {
+    id: 'beginner',
+    title: 'Beginner Path',
+    subtitle: 'Build your analytics foundations',
+    color: 'var(--blue-text)',
+    bg: 'var(--blue-bg)',
+    border: 'var(--blue-border)',
+    sequence: [
+      { room: 'stats', itemId: 'stat01-pvalue-decision', label: 'p < 0.05. Ship it?' },
+      { room: 'stats', itemId: 'stat02-ci-reality', label: 'The +3.2% That Might Be Nothing' },
+      { room: 'metrics', itemId: 'M01', label: 'What Defines a Successful Search?' },
+      { room: 'design', itemId: 'd01-checkout-test', label: 'Design the Checkout Test' },
+      { room: 'review', itemId: 's01-checkout-trap', label: 'The Checkout Trap' },
+    ],
+  },
+  {
+    id: 'experimentation',
+    title: 'Experimentation Path',
+    subtitle: 'From experiment design to results interpretation',
+    color: 'var(--accent)',
+    bg: 'var(--accent-bg)',
+    border: 'var(--accent-border)',
+    sequence: [
+      { room: 'stats', itemId: 'stat01-pvalue-decision', label: 'p < 0.05. Ship it?' },
+      { room: 'stats', itemId: 'stat04-srm-first', label: 'Check This First.' },
+      { room: 'design', itemId: 'd05-search-ranking-test', label: 'Design the Search Ranking Test' },
+      { room: 'review', itemId: 's09-clickbait-ranking-win', label: 'The Clickbait Ranking Win' },
+      { room: 'design', itemId: 'd07-seller-incentive-test', label: 'Design the Seller Incentive Test' },
+      { room: 'review', itemId: 's11-seller-speed-spillover', label: 'The Seller Speed Spillover' },
+    ],
+  },
+  {
+    id: 'product-analytics',
+    title: 'Product Analytics Path',
+    subtitle: 'Metrics, diagnosis, and business cases',
+    color: 'var(--teal)',
+    bg: 'var(--teal-bg)',
+    border: 'var(--teal-border)',
+    sequence: [
+      { room: 'metrics', itemId: 'M02', label: 'When Is a New User Actually Activated?' },
+      { room: 'rca', itemId: 'RCA02', label: 'Zero-Result Spike' },
+      { room: 'rca', itemId: 'RCA05', label: 'Revenue Up, Margin Down' },
+      { room: 'cases', itemId: 'C02', label: 'Why Did Our Retention Fall?' },
+      { room: 'cases', itemId: 'C01', label: 'Should We Launch Same-Day Delivery?' },
+    ],
+  },
+  {
+    id: 'genai-analytics',
+    title: 'GenAI Product Analytics Path',
+    subtitle: 'Metrics and judgment for AI-powered products',
+    color: 'var(--purple)',
+    bg: 'var(--purple-bg)',
+    border: 'var(--purple-border)',
+    sequence: [
+      { room: 'metrics', itemId: 'M06', label: 'What Proves the Support Bot Is Actually Helping?' },
+      { room: 'rca', itemId: 'RCA06', label: 'Bot Deflection Up, Escalations Climbing' },
+      { room: 'cases', itemId: 'C03', label: 'Should We Replace Tier-1 Support With GenAI?' },
+    ],
+  },
+];

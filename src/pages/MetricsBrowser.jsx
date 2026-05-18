@@ -1,0 +1,214 @@
+import { metricCases } from '../data/metricCases.js';
+import { getMetricsProgress } from '../utils/metricsProgress.js';
+
+const DIFF_CFG = {
+  foundational: { label: 'Foundational', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
+  analyst:      { label: 'Analyst',      color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
+  senior:       { label: 'Senior',       color: 'var(--yellow)',    bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
+  staff:        { label: 'Staff',        color: 'var(--teal)',      bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
+};
+
+const LEVEL_CFG = {
+  staff:   { label: 'Staff-level',   color: 'var(--purple)',    bg: 'var(--purple-bg)',  border: 'var(--purple-border)' },
+  senior:  { label: 'Senior-ready',  color: 'var(--teal)',      bg: 'var(--teal-bg)',    border: 'var(--teal-border)' },
+  analyst: { label: 'Analyst-ready', color: 'var(--blue-text)', bg: 'var(--blue-bg)',    border: 'var(--blue-border)' },
+  junior:  { label: 'Junior miss',   color: 'var(--yellow)',    bg: 'var(--yellow-bg)',  border: 'var(--yellow-border)' },
+};
+
+export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
+  const freeCount = metricCases.filter(c => c.isFree).length;
+  const completedCount = metricCases.filter(c => getMetricsProgress(c.id)).length;
+
+  return (
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
+
+      {/* Header */}
+      <div style={{ marginBottom: '1.75rem' }}>
+        <div style={{
+          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          color: 'var(--teal)', marginBottom: '0.4rem',
+        }}>
+          Metrics Room
+        </div>
+        <h1 style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--text)', margin: '0 0 0.5rem', letterSpacing: '-0.02em' }}>
+          Metric Design
+        </h1>
+        <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem', lineHeight: 1.6, maxWidth: '540px' }}>
+          Design the right metric before you measure the wrong thing. Choose your primary metric,
+          diagnostics, guardrails, grain, and decision rule — then see the senior standard.
+        </p>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          <RoomBadge />
+          <StatPill n={freeCount} label="free" />
+          <StatPill n={completedCount} label="completed" color="var(--teal)" />
+        </div>
+      </div>
+
+      {/* Case cards grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+        gap: '0.85rem',
+      }}>
+        {metricCases.map(mc => {
+          const progress = getMetricsProgress(mc.id);
+          const isLocked = !mc.isFree && !unlocked;
+          const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
+          const diffCfg = DIFF_CFG[mc.difficulty] || DIFF_CFG.analyst;
+
+          return (
+            <div
+              key={mc.id}
+              onClick={() => {
+                if (isLocked) { onUnlock(); return; }
+                onSelectCase(mc.id);
+              }}
+              style={{
+                background: 'var(--surface)',
+                border: '1.5px solid var(--border)',
+                borderRadius: 'var(--radius)',
+                padding: '1.25rem',
+                cursor: isLocked ? 'default' : 'pointer',
+                opacity: isLocked ? 0.65 : 1,
+                transition: 'all 0.12s',
+                display: 'flex', flexDirection: 'column', gap: '0.6rem',
+              }}
+              onMouseEnter={e => {
+                if (!isLocked) {
+                  e.currentTarget.style.borderColor = 'var(--teal-border)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                }
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'var(--border)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              {/* Badges row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+                <span style={{
+                  fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                  color: diffCfg.color, background: diffCfg.bg, border: `1px solid ${diffCfg.border}`,
+                  borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
+                }}>{diffCfg.label}</span>
+                <span style={{
+                  fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                  color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
+                }}>{mc.domain}</span>
+                {mc.isFree ? (
+                  <span style={{
+                    fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                    color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
+                    borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
+                  }}>Free</span>
+                ) : (
+                  <span style={{
+                    fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                    color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+                    borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
+                  }}>Beta</span>
+                )}
+                {levelCfg && (
+                  <span style={{
+                    fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                    color: levelCfg.color, background: levelCfg.bg, border: `1px solid ${levelCfg.border}`,
+                    borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
+                  }}>✓ {levelCfg.label}</span>
+                )}
+              </div>
+
+              {/* Title + subtitle */}
+              <div>
+                <h3 style={{ fontSize: '0.97rem', fontWeight: 800, color: 'var(--text)', margin: '0 0 0.2rem', letterSpacing: '-0.01em', lineHeight: 1.35 }}>
+                  {mc.title}
+                </h3>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.4 }}>
+                  {mc.subtitle}
+                </p>
+              </div>
+
+              {/* Context trap hint */}
+              <p style={{
+                fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5,
+                borderLeft: '2px solid var(--border-subtle)', paddingLeft: '0.6rem',
+              }}>
+                {mc.context.trap}
+              </p>
+
+              {/* Bottom row */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
+                {isLocked ? (
+                  <button
+                    onClick={e => { e.stopPropagation(); onUnlock(); }}
+                    style={{
+                      background: 'var(--surface-2)', border: '1px solid var(--border)',
+                      borderRadius: 'var(--radius-sm)', padding: '0.25rem 0.55rem',
+                      fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer',
+                    }}
+                  >Lock Unlock beta</button>
+                ) : progress ? (
+                  <span style={{ fontSize: '0.73rem', color: 'var(--text-dim)' }}>
+                    {progress.attempts} attempt{progress.attempts !== 1 ? 's' : ''} · Resume →
+                  </span>
+                ) : (
+                  <span style={{ fontSize: '0.73rem', color: 'var(--text-dim)' }}>Not started</span>
+                )}
+                {!isLocked && (
+                  <span style={{ fontSize: '0.78rem', color: 'var(--teal)', fontWeight: 600 }}>→</span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Beta unlock note */}
+      {!unlocked && (
+        <div style={{
+          marginTop: '1.5rem',
+          background: 'var(--surface-2)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem',
+          fontSize: '0.8rem', color: 'var(--text-muted)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
+        }}>
+          <span>🔒 {metricCases.filter(c => !c.isFree).length} beta cases require the unlock code.</span>
+          <button
+            onClick={onUnlock}
+            style={{
+              background: 'none', border: '1px solid var(--teal-border)',
+              borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.65rem',
+              color: 'var(--teal)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
+            }}
+          >Enter unlock code</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RoomBadge() {
+  return (
+    <div style={{
+      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+      background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+      borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.6rem',
+      fontSize: '0.75rem', color: 'var(--teal)', fontWeight: 700,
+    }}>
+      Metrics · {metricCases.length} Cases
+    </div>
+  );
+}
+
+function StatPill({ n, label, color }) {
+  return (
+    <div style={{
+      background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.7rem',
+      display: 'flex', alignItems: 'baseline', gap: '0.3rem',
+    }}>
+      <span style={{ fontSize: '1rem', fontWeight: 800, color: color || 'var(--teal)', lineHeight: 1 }}>{n}</span>
+      <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{label}</span>
+    </div>
+  );
+}
