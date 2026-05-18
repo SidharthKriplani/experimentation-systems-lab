@@ -1,0 +1,102 @@
+import { useState } from 'react';
+import { scenarios } from './data/scenarios.js';
+import { Header } from './components/layout/Header.jsx';
+import { Footer } from './components/layout/Footer.jsx';
+import { Home } from './pages/Home.jsx';
+import { ScenarioBrowser } from './pages/ScenarioBrowser.jsx';
+import { Progress } from './pages/Progress.jsx';
+import { Unlock } from './pages/Unlock.jsx';
+import { About } from './pages/About.jsx';
+import { ScenarioRunner } from './components/scenario/ScenarioRunner.jsx';
+import { getAllProgress } from './utils/progress.js';
+import { isUnlocked } from './utils/unlock.js';
+
+export default function App() {
+  const [page, setPage] = useState('home');
+  const [activeScenarioId, setActiveScenarioId] = useState(null);
+  const [unlocked, setUnlocked] = useState(() => isUnlocked());
+  const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
+
+  function refreshProgress() {
+    setProgressSnapshot(getAllProgress());
+  }
+
+  function navigate(target) {
+    setPage(target);
+    setActiveScenarioId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openScenario(id) {
+    const scenario = scenarios.find(s => s.id === id);
+    if (!scenario) return;
+    if (!scenario.isFree && !unlocked) {
+      setPage('unlock');
+      return;
+    }
+    setActiveScenarioId(id);
+    setPage('runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function handleUnlocked() {
+    setUnlocked(true);
+    navigate('browser');
+  }
+
+  function getNextScenarioId(currentId) {
+    const accessible = scenarios.filter(s => s.isFree || unlocked);
+    const idx = accessible.findIndex(s => s.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
+  const activeScenario = scenarios.find(s => s.id === activeScenarioId);
+  const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Header currentPage={page} onNavigate={navigate} unlockedStatus={unlocked} />
+      <main style={{ flex: 1 }}>
+        {page === 'home' && (
+          <Home onNavigate={navigate} onStartScenario={openScenario} />
+        )}
+        {page === 'browser' && (
+          <ScenarioBrowser
+            scenarios={scenarios}
+            allProgress={progressSnapshot}
+            onSelect={id => { openScenario(id); refreshProgress(); }}
+            unlocked={unlocked}
+            onUnlock={() => navigate('unlock')}
+          />
+        )}
+        {page === 'runner' && activeScenario && (
+          <ScenarioRunner
+            key={activeScenarioId}
+            scenario={activeScenario}
+            onBack={() => { navigate('browser'); refreshProgress(); }}
+            onNext={nextScenarioId ? () => { openScenario(nextScenarioId); refreshProgress(); } : null}
+            hasNext={!!nextScenarioId}
+          />
+        )}
+        {page === 'progress' && (
+          <Progress
+            scenarios={scenarios}
+            allProgress={progressSnapshot}
+            onSelect={openScenario}
+            onClear={refreshProgress}
+          />
+        )}
+        {page === 'unlock' && (
+          <Unlock
+            onUnlocked={handleUnlocked}
+            alreadyUnlocked={unlocked}
+            onNavigate={navigate}
+          />
+        )}
+        {page === 'about' && <About />}
+      </main>
+      <Footer />
+    </div>
+  );
+}
