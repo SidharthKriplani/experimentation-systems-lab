@@ -4,6 +4,44 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.5 — Stat Foundations Room + Blog Layer + New Learning Paths + Content Completions
+**Date:** May 2026
+**Commit message:** "feat: V3.5 — Stat Foundations Room, Blog layer fully populated, new learning paths, stats next-case nav, completionMap, playbook worked examples"
+**Files changed:** `src/data/statsFoundationsModules.js` (NEW), `src/utils/statsFoundationsProgress.js` (NEW), `src/pages/StatsFoundationsBrowser.jsx` (NEW), `src/components/statsFoundations/StatsFoundationsRunner.jsx` (NEW), `src/components/statsFoundations/modules/Module01_WhatIsData.jsx` through `Module12_Power.jsx` (NEW), `src/pages/BlogBrowser.jsx`, `src/data/learningPaths.js`, `src/components/stats/StatsRunner.jsx`, `src/App.jsx`, `src/components/layout/Header.jsx`, `src/pages/Progress.jsx`, `CHANGELOG.md`, `IDEAS.md`
+
+### Why
+Three categories of work: a brand-new foundational statistics education room (the "learn before you practice" layer for stats concepts), full population of the Blog / Learn layer (was 0/80 articles with content), and several V3.5 backlog items (stats next-case nav, completionMap gaps, new learning paths, playbook worked examples).
+
+### Stat Foundations Room (NEW)
+- 12 sequential interactive modules: What is Data → Mean/Median/Mode → Variance/SD → Normal Distribution → Z-Scores → Areas Under the Curve → Sampling → Standard Error → CLT → Confidence Intervals → Hypothesis Testing → Power & Effect Size
+- Each module has a live SVG/recharts visualization with sliders and real-time calculations
+- Sequential learning path browser with progress tracking
+- Files: `src/data/statsFoundationsModules.js`, `src/utils/statsFoundationsProgress.js`, `src/pages/StatsFoundationsBrowser.jsx`, `src/components/statsFoundations/StatsFoundationsRunner.jsx`, `src/components/statsFoundations/modules/Module01_WhatIsData.jsx` through `Module12_Power.jsx`
+- "Foundations" nav item added to header
+
+### Blog / Learn Layer
+- `src/pages/BlogBrowser.jsx` fully populated: all ~80 articles now have full narrative content (was 0/80 with content before)
+- Inline post reader built inside BlogBrowser — clicking an article opens it inline; stubs show "Coming Soon"
+- CTAs at end of each article link to the corresponding practice room
+- Nav updated: "Learn" (Blog) is now a separate nav item from "Playbook"
+
+### New Learning Paths
+- **"Code Track"**: Funnel SQL → Mix Shift SQL → CUPED SQL → Bootstrap Python
+- **"Full-Stack DS Interview"**: Stats → RCA → Business Case → Behavioral → Estimation
+
+### Stats Room next-case nav
+- `StatsRunner` now receives an `onNext` prop — "Next module →" button appears after the debrief, matching all other rooms
+- `getNextStatsId()` helper added to `App.jsx`
+
+### Progress page completionMap
+- Added 6 missing rooms: Code, ProductDesign, Prioritization, Behavioral, Estimation, StatFoundations
+
+### Playbook worked examples
+- All ~47 framework articles now have worked examples (heading + example block appended to content)
+- 39 articles added in this release; 8 were done in V3.4
+
+---
+
 ## V3.4 — Gap-Fill: 6 New Rooms / Expansions + 2 New Room Types
 **Date:** May 2026
 **Commit message:** "feat: V3.4 — RCA/Cases expansion, causal inference stats, interview SQL, Behavioral + Estimation rooms"

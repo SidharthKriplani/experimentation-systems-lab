@@ -53,23 +53,21 @@ Running list of product, content, and feature ideas. Not prioritized — just ca
 
 ---
 
-## Horizon: V3.5 Candidates
+## ✅ V3.5 Candidates — Shipped V3.5
 
-**Stats Room next-case nav** — StatsRunner uses a different flow (MCQ, not debrief panel). Would need a "Next module →" button after the `seniorRead` section. Lower priority.
+**Stats Room next-case nav** — StatsRunner now receives `onNext` prop; "Next module →" button appears after debrief. `getNextStatsId()` added to App.jsx. ✅ Shipped
 
-**Progress page: completionMap for newer rooms** — Code, ProductDesign, Prioritization, Behavioral, Estimation excluded from completionMap. Non-issue until learning paths reference those rooms.
+**Progress page: completionMap for newer rooms** — Added 6 missing rooms: Code, ProductDesign, Prioritization, Behavioral, Estimation, StatFoundations. ✅ Shipped
 
-**New learning path: "Code Track"** — C01→C04→C07→C08 walking funnel → retention → CUPED → bootstrap. For SQL/Python focus.
+**New learning path: "Code Track"** — Funnel SQL → Mix Shift SQL → CUPED SQL → Bootstrap Python. ✅ Shipped
 
-**New learning path: "Full-Stack DS Interview"** — Stats + RCA + Cases + Behavioral + Estimation for comprehensive senior DS prep across all question types.
-
-**V4.0: DS/ML Engineering Lab** — Separate product, different audience (MLEs, data engineers). Model evaluation, feature stores, PySpark, production ML. Build trigger: PAL has stable traffic + validated monetization.
+**New learning path: "Full-Stack DS Interview"** — Stats → RCA → Cases → Behavioral → Estimation. ✅ Shipped
 
 ---
 
-## Blog / Learn Layer
+## ✅ Blog / Learn Layer — Shipped V3.5
 
-**Status:** Placeholder page built (BlogBrowser.jsx). Content not written yet.
+**Status:** Fully shipped. All ~80 articles have full narrative content. Inline post reader built inside BlogBrowser. CTAs at end of each article link to corresponding practice room. "Learn" nav item separated from "Playbook".
 
 ### The Idea
 Add a blog/articles section that teaches the frameworks and concepts behind each room — before people try to practice them. The loop becomes:
@@ -228,4 +226,16 @@ Model query: window function over `payments` table, segmented by `platform` and 
 
 ---
 
-*Last updated: May 2026 (V3.2)*
+---
+
+## Horizon: V4.0+ / Future
+
+**DS/ML Engineering Lab** — Separate product, different audience (MLEs, data engineers). Covers model evaluation, feature stores, PySpark, production ML monitoring, ML system design. Build trigger: PAL has stable traffic + validated monetization. Do not start until PAL V4.0 is stable.
+
+**Monetization / pricing experiment on PAL itself** — Introduce a paid tier once usage data, retention signal, and testimonials exist. Run as a structured experiment: holdout group, conversion funnel instrumented via PostHog, pre-committed decision rule on conversion rate.
+
+**SEO optimization of Blog layer** — Organic discovery via the Learn layer is the highest-leverage growth channel at zero marginal cost. Priorities: title/meta tags, canonical URLs, structured data markup for articles, sitemap generation, internal linking from blog posts to practice rooms.
+
+**Mobile-responsive audit** — Full audit of all rooms on narrow viewports (375px). Known issue: horizontal nav scroll works but room runner layouts (multi-column debrief panels, wide SQL code blocks) are not optimized for mobile. Track as a V4.x quality item once traffic warrants it.
+
+*Last updated: May 2026 (V3.5)*
