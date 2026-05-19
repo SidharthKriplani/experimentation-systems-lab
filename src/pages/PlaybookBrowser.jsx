@@ -636,6 +636,18 @@ const POSTS = [
       { label: 'Multi-Metric Launch', room: 'review', id: 's04' },
       { label: 'Five Metrics Problem', room: 'review', id: 's06-five-metrics-problem' },
     ],
+    content: [
+      { type: 'text', text: 'You ran a clean experiment. GMV is up 3% (statistically significant). But refund rate is up 8% (also significant). This is the real-world scenario that most interview questions are building toward. There is no universal rule — but there is a structured decision process.' },
+      { type: 'heading', text: 'Step 1: Is the Guardrail Movement Real?' },
+      { type: 'text', text: 'Before any decision: check the guardrail result\'s validity. Is the refund rate movement statistically significant with enough power? Is it driven by the same user segment as the GMV lift? Or is it noise in a small subgroup? If the guardrail movement is marginal or concentrated in an outlier segment, the weight you give it changes.' },
+      { type: 'heading', text: 'Step 2: Quantify the Tradeoff' },
+      { type: 'text', text: 'Translate both movements to the same unit. +3% GMV = X incremental dollars. +8% refund rate on Y% refund base = Z additional refund cost. If X >> Z, the math might support shipping even with the guardrail hit. If Z approaches X, it\'s not a win. Finance can help with this translation.' },
+      { type: 'heading', text: 'Step 3: Understand the Mechanism' },
+      { type: 'text', text: 'Why did refund rate increase? If the treatment made it easier to buy (reducing friction) and some of those marginal purchases turned out to be wrong-fit orders, the mechanism is: lower friction → more purchases including low-intent ones → more returns. This is different from: the treatment caused delivery errors or product quality issues. The mechanism determines whether it\'s fixable.' },
+      { type: 'callout', label: 'The decision framework', text: 'If: (1) the guardrail movement is real, (2) the magnitude materially erodes the north star gain, or (3) the mechanism suggests downstream trust damage — do not ship. Investigate and iterate. Escalate to PM + leadership with the tradeoff quantified. Never make this call solo.' },
+      { type: 'heading', text: 'In Interviews' },
+      { type: 'text', text: '"Would you ship?" is the wrong question to answer immediately. The right answer: "I wouldn\'t make that call without: (1) verifying the guardrail significance, (2) quantifying the tradeoff in business terms, (3) understanding the mechanism. If the mechanism is marginal-purchase returns, it might be fixable with a product change. If it\'s quality degradation, I\'d recommend a rollback."' },
+    ],
   },
   {
     id: 'multiple-testing',
@@ -699,6 +711,22 @@ const POSTS = [
     relatedItems: [
       { label: 'Power/MDE (Stats)', room: 'stats', id: 'stat03' },
     ],
+    content: [
+      { type: 'text', text: 'CUPED (Controlled-experiment Using Pre-Experiment Data) is a variance reduction technique developed by Microsoft Research and now standard at Netflix, Spotify, Airbnb, and most mature experimentation platforms. The core idea: use what you already know about users to reduce noise in your estimate.' },
+      { type: 'heading', text: 'The Intuition' },
+      { type: 'text', text: 'Your experiment metric has variance because users are different from each other. A heavy user and a light user in the same group contribute wildly different metric values. This variance makes it harder to detect a real treatment effect.\n\nCUPED says: if you know a user\'s pre-experiment behavior (their metric value before the experiment started), you can use that to "adjust" their experiment metric — removing the part of their behavior explained by who they already were. What remains is the treatment effect, with much less noise.' },
+      { type: 'callout', label: 'What CUPED actually does', text: 'CUPED replaces your raw metric with: Y_adjusted = Y - θ × (X - E[X]), where X is the pre-experiment covariate (same metric, pre-period) and θ is estimated by regression. The adjusted metric has lower variance → same statistical power at smaller sample sizes or shorter runtimes.' },
+      { type: 'heading', text: 'How Much Does It Help?' },
+      { type: 'text', text: 'Variance reduction of 20-50% is typical for behavioral metrics that are stable over time (revenue per user, sessions per user). This translates to: you can detect the same effect size with 20-50% fewer observations, or run the experiment for 20-50% less time. For Booking.com, CUPED reportedly cut required experiment runtimes by 30-40%.' },
+      { type: 'heading', text: 'When CUPED Works Best' },
+      { type: 'list', items: [
+        'Metric is stable over time: Sessions last month predicts sessions this month well → high variance reduction',
+        'Sufficient pre-period data: Needs at least 1-2 weeks of pre-experiment data per user',
+        'Same user population: Works best when the experiment population is similar to the pre-period population',
+      ]},
+      { type: 'heading', text: 'In Interviews' },
+      { type: 'text', text: '"How would you improve the power of this experiment?" — if runtime is fixed, mention CUPED as a variance reduction approach. "I\'d use CUPED with pre-experiment behavioral data as a covariate to reduce variance and improve detection at the same sample size."' },
+    ],
   },
   {
     id: 'experiment-design-primary-metric',
@@ -745,6 +773,26 @@ const POSTS = [
     source: null,
     relatedItems: [
       { label: 'Mobile Feature Test (HTE)', room: 'review', id: 's05' },
+    ],
+    content: [
+      { type: 'text', text: 'The average treatment effect is a weighted average of treatment effects across all your users. When those effects are heterogeneous — different for different segments — the average obscures what\'s actually happening. Sometimes the average being null is the least interesting thing about the experiment.' },
+      { type: 'heading', text: 'When to Look for HTE' },
+      { type: 'list', items: [
+        'Average result is null but you have strong prior that the treatment should help some users',
+        'Feature is clearly more relevant to some segments (power users, mobile users, new users)',
+        'Average result shows harm — are there segments that benefited enough to justify a targeted rollout?',
+        'The mechanism of the feature logically differs by user type',
+      ]},
+      { type: 'example', label: 'Classic HTE pattern', text: 'Mobile-only feature: Average result null.\nCut by platform:\n  Mobile: +8% engagement (statistically significant)\n  Desktop: -4% engagement (statistically significant)\n\nAverage: ~0%. The feature worked on the intended platform. Don\'t kill it — ship it mobile-only.' },
+      { type: 'heading', text: 'How to Do HTE Analysis Correctly' },
+      { type: 'text', text: 'HTE analysis is exploratory by default — you\'re looking at multiple subgroups, which inflates false positive risk. To make HTE findings credible:' },
+      { type: 'list', items: [
+        'Pre-register your HTE segments before the experiment starts (e.g., "we expect this to differ by platform")',
+        'Apply multiple testing corrections when looking at many subgroups post-hoc',
+        'Use HTE findings to generate hypotheses for future experiments, not to make ship decisions on their own',
+        'The most credible HTE finding: pre-registered, with a mechanistic reason why the segment would differ',
+      ]},
+      { type: 'callout', label: 'The interview move', text: 'When an experiment returns null or inconclusive, and the interviewer asks "what would you do next?" — HTE analysis is one of three strong answers: (1) look for HTE by segment, (2) extend runtime if novelty effect is suspected, (3) check whether the metric choice was correct.' },
     ],
   },
   {
@@ -1137,6 +1185,39 @@ const POSTS = [
       { label: 'Checkout Conversion Drop', room: 'rca', id: 'rca01' },
       { label: 'Zero-Result Search Spike', room: 'rca', id: 'rca02' },
     ],
+    content: [
+      { type: 'text', text: 'Funnel analysis is one of the most common analytical tasks in product analytics. The goal: understand how users move through a multi-step flow, where they drop off, and how that differs across segments or time periods.' },
+      { type: 'heading', text: 'The Core Pattern' },
+      { type: 'example', label: 'Basic funnel query', text: `SELECT
+  COUNT(DISTINCT CASE WHEN event = 'session_start' THEN user_id END) AS step_1,
+  COUNT(DISTINCT CASE WHEN event = 'product_view' THEN user_id END) AS step_2,
+  COUNT(DISTINCT CASE WHEN event = 'add_to_cart' THEN user_id END) AS step_3,
+  COUNT(DISTINCT CASE WHEN event = 'checkout_start' THEN user_id END) AS step_4,
+  COUNT(DISTINCT CASE WHEN event = 'purchase_complete' THEN user_id END) AS step_5
+FROM events
+WHERE event_date BETWEEN '2025-01-01' AND '2025-01-31'
+  AND session_date = event_date  -- same-session constraint` },
+      { type: 'callout', label: 'The grain question', text: 'Before writing a funnel query, decide: is this user-level (did the user ever hit this step?) or session-level (did they hit it in this session)? Most product funnels are session-level. Using COUNT(DISTINCT user_id) across sessions conflates users who completed across multiple sessions with in-session conversion — make sure you know which you want.' },
+      { type: 'heading', text: 'Step-Level Conversion Rates' },
+      { type: 'example', label: 'Conversion rate at each step', text: `SELECT
+  step_2 / NULLIF(step_1, 0) AS view_rate,
+  step_3 / NULLIF(step_2, 0) AS cart_rate,
+  step_4 / NULLIF(step_3, 0) AS checkout_rate,
+  step_5 / NULLIF(step_4, 0) AS payment_rate,
+  step_5 / NULLIF(step_1, 0) AS overall_cvr
+FROM (funnel_query_above)` },
+      { type: 'heading', text: 'Segmented Funnel (The RCA Version)' },
+      { type: 'text', text: 'For RCA, run the same funnel query segmented by platform, geography, or cohort, then compare the step-level rates across segments. The step where one segment diverges is your candidate root cause location.' },
+      { type: 'example', label: 'Segmented funnel by platform', text: `SELECT
+  platform,
+  COUNT(DISTINCT CASE WHEN event = 'session_start' THEN user_id END) AS step_1,
+  COUNT(DISTINCT CASE WHEN event = 'purchase_complete' THEN user_id END) AS step_5,
+  COUNT(DISTINCT CASE WHEN event = 'purchase_complete' THEN user_id END) * 1.0 /
+    NULLIF(COUNT(DISTINCT CASE WHEN event = 'session_start' THEN user_id END), 0) AS cvr
+FROM events
+WHERE event_date BETWEEN '2025-01-01' AND '2025-01-31'
+GROUP BY platform` },
+    ],
   },
   {
     id: 'retention-sql',
@@ -1148,6 +1229,37 @@ const POSTS = [
     relatedItems: [
       { label: 'D7 Retention Drop', room: 'rca', id: 'rca04' },
       { label: 'Why Did Retention Fall?', room: 'cases', id: 'c02' },
+    ],
+    content: [
+      { type: 'text', text: 'Retention analysis answers: of the users who signed up in a given week, what fraction returned X days later? The cohort approach is critical — without it, you\'re measuring the average across users at very different lifecycle stages.' },
+      { type: 'heading', text: 'The Core Retention Query' },
+      { type: 'example', label: 'D7 retention by signup cohort', text: `SELECT
+  DATE_TRUNC('week', u.signup_date) AS cohort_week,
+  COUNT(DISTINCT u.user_id) AS cohort_size,
+  COUNT(DISTINCT CASE
+    WHEN e.event_date BETWEEN u.signup_date + 6
+                          AND u.signup_date + 8
+    THEN u.user_id END) AS returned_d7,
+  COUNT(DISTINCT CASE
+    WHEN e.event_date BETWEEN u.signup_date + 6
+                          AND u.signup_date + 8
+    THEN u.user_id END) * 1.0
+    / COUNT(DISTINCT u.user_id) AS d7_retention
+FROM users u
+LEFT JOIN events e ON u.user_id = e.user_id
+WHERE u.signup_date >= '2025-01-01'
+GROUP BY 1
+ORDER BY 1` },
+      { type: 'callout', label: 'The D7 window', text: 'D7 retention is typically defined as: the user was active on day 6, 7, or 8 after signup (a 3-day window around day 7). This accounts for daily variation and users who might return on adjacent days. Some companies use a strict day-7-only definition — always clarify which your team uses.' },
+      { type: 'heading', text: 'Reading the Retention Curve Shape' },
+      { type: 'list', items: [
+        'Steep drop then flat plateau: Typical healthy product. Users either find value quickly (retained) or churn early. The plateau level is your "sticky" user base.',
+        'No plateau / continuous decline: Engagement is not habit-forming. Core value isn\'t being delivered consistently.',
+        'Improving retention by cohort (newer cohorts retain better): Product improvements are working.',
+        'Degrading retention by cohort (newer cohorts worse): Acquisition quality declining, or recent product change hurting new users.',
+      ]},
+      { type: 'heading', text: 'Comparing Cohorts for RCA' },
+      { type: 'text', text: 'When D7 retention drops, plot the cohort curves for the last 4-8 signup weeks. If only the most recent cohort is degraded, it\'s a product or acquisition change from the past week. If multiple recent cohorts are degrading, it\'s a longer-running problem. If all cohorts are degrading at their respective D7s, it\'s a current product regression affecting everyone.' },
     ],
   },
   {
@@ -1210,6 +1322,20 @@ const POSTS = [
     relatedItems: [
       { label: 'What Defines a Successful Search?', room: 'metrics', id: 'm01' },
       { label: 'Checkout Conversion Drop', room: 'rca', id: 'rca01' },
+    ],
+    content: [
+      { type: 'text', text: 'Most analytical knowledge can be looked up. These five habits can\'t — they\'re behavioral patterns that separate analysts who produce correct outputs from analysts who produce correct decisions. They compound over a career because they become automatic.' },
+      { type: 'heading', text: '1. Denominator Discipline' },
+      { type: 'text', text: 'Before stating any rate metric, name the denominator explicitly. "Conversion rate of what?" is the senior analyst\'s first reflex. Sessions vs users vs intent-qualified visitors produce completely different numbers with completely different implications. The denominator conversation separates a precise metric from a vague one.' },
+      { type: 'heading', text: '2. Decompose Before Diagnosing' },
+      { type: 'text', text: 'Never form a hypothesis before mathematically decomposing the metric. Decomposition narrows the hypothesis space from 20 guesses to 3 structured candidates. The decomposition step is not optional — it\'s the analytical equivalent of checking your work before submitting.' },
+      { type: 'heading', text: '3. Segment Before Aggregating' },
+      { type: 'text', text: 'The aggregate is always a weighted average of segment movements. Every metric investigation starts with cuts — platform, geography, cohort, traffic source — before anything else. Diagnosing the aggregate directly is trying to fix a weighted average instead of the components driving it.' },
+      { type: 'heading', text: '4. Pre-Commit to Guardrails' },
+      { type: 'text', text: 'Name the guardrail metric before seeing results. Not after. The senior analyst\'s reflex when anyone proposes a success metric: "What could this improve while something else breaks?" Then pre-commit to a threshold. Guardrails defined after seeing the data are just post-hoc rationalization dressed up as rigor.' },
+      { type: 'heading', text: '5. Translate to Business Impact' },
+      { type: 'text', text: 'Never stop at the metric. "CVR improved 0.4pp" means nothing to a PM or executive. "CVR improved 0.4pp on current traffic volume = ~$2.3M additional annual revenue at average AOV" is a decision input. The habit: every metric movement gets translated to the business unit that leadership cares about. Always.' },
+      { type: 'callout', label: 'Why these compound', text: 'Each habit takes 30 seconds. Together, they make every analysis more precise, more interpretable, and more actionable. In interviews, demonstrating all five in a single answer is the clearest signal of senior-level readiness.' },
     ],
   },
   {
@@ -1276,6 +1402,20 @@ const POSTS = [
     relatedItems: [
       { label: 'Power/MDE (Stats)', room: 'stats', id: 'stat03' },
       { label: 'Launch Same-Day Delivery?', room: 'cases', id: 'c01' },
+    ],
+    content: [
+      { type: 'text', text: 'Relative changes without the base rate are almost meaningless. "We improved conversion by 50%!" is exciting until you learn the base rate was 0.2% and is now 0.3%. That\'s 1 additional conversion per 1000 users. The absolute impact determines whether this matters.' },
+      { type: 'heading', text: 'The Pattern' },
+      { type: 'list', items: [
+        'High relative lift, low base rate: Sounds impressive, may not be actionable. A 100% lift on a 0.01% rate = 0.02% rate. Negligible in absolute terms.',
+        'Low relative lift, high base rate: Sounds boring, often very valuable. A 2% improvement to a 60% checkout completion rate = 1.2 percentage points = massive GMV impact at scale.',
+        'Framing trap: Teams present relative lifts because they look larger. Always ask for the absolute base.',
+      ]},
+      { type: 'callout', label: 'The anchor habit', text: 'Every time you see a relative change, immediately ask: "What\'s the base rate?" Then compute: what does this mean in absolute terms? Per day? Per 1M users? Translate to the unit the business cares about.' },
+      { type: 'heading', text: 'In Power Analysis' },
+      { type: 'text', text: 'Base rate neglect directly affects experiment design. Your MDE (minimum detectable effect) should be specified in absolute terms, not relative. "Detect a 10% relative lift" on a 1% base rate requires detecting a 0.1 percentage point change — which requires far more sample than detecting a 10% relative lift on a 20% base rate (2 percentage points).' },
+      { type: 'heading', text: 'In Interviews' },
+      { type: 'text', text: 'When presented with a result like "we improved the metric by 35%," always anchor before interpreting: "What was the base rate? What does 35% mean in absolute terms? And how does that translate to business impact at the current user volume?" This one habit signals analytical maturity consistently.' },
     ],
   },
   {
@@ -1439,6 +1579,27 @@ const POSTS = [
       { label: 'Design the Search Ranking Test', room: 'design', id: 'd05' },
       { label: 'Clickbait Ranking Win', room: 'review', id: 's09' },
     ],
+    content: [
+      { type: 'text', text: 'Discover Weekly is Spotify\'s personalized playlist — 30 songs, refreshed every Monday, designed to surface artists and tracks you haven\'t heard but will love. It\'s been called one of the most successful product features in streaming history. Measuring it correctly is a genuinely hard problem.' },
+      { type: 'heading', text: 'The Goal Clarification' },
+      { type: 'text', text: 'Before proposing any metric, establish what Discover Weekly is trying to do: (1) help users discover artists they wouldn\'t find otherwise, (2) increase long-term engagement by expanding their musical taste graph, (3) differentiate Spotify from competitors through personalization quality. The metrics follow from this ordering.' },
+      { type: 'heading', text: 'North Star Candidates and Why Each Is Incomplete' },
+      { type: 'list', items: [
+        'Streams per playlist: measures engagement but not discovery. A playlist of familiar artists scores well.',
+        'Save rate (tracks saved to library): measures preference signal but biased toward already-known artists.',
+        'New artist plays / total plays: captures discovery but not quality of recommendation.',
+        'D30 return to Discover Weekly: measures habit formation — strong predictor of long-term value.',
+      ]},
+      { type: 'callout', label: 'The recommended north star', text: 'Discovery depth: % of listeners who played tracks from ≥ 3 artists they had not heard in the prior 90 days AND gave a positive engagement signal (save, repeat listen, or playlist add) on at least 1 of them. This measures genuine discovery + quality in one metric.' },
+      { type: 'heading', text: 'Guardrails' },
+      { type: 'list', items: [
+        'Overall streams: Discover Weekly must not cannibalize streams from the rest of the platform',
+        'Skip rate: High skip rates signal poor recommendation quality masking behind high volume',
+        'D30 retention: A Discover Weekly that drives short-term engagement but hurts long-term retention is a failure',
+      ]},
+      { type: 'heading', text: 'Experiment Design Consideration' },
+      { type: 'text', text: 'Testing a change to Discover Weekly requires novelty effect controls — users get genuinely excited about a new playlist experience for 1-2 weeks regardless of quality. Minimum 3-4 week runtime. Also flag: the algorithm personalizes per user, so user-level randomization is the correct unit and you\'d need to confirm no interference through shared catalog popularity signals.' },
+    ],
   },
   {
     id: 'netflix-content-engagement',
@@ -1478,6 +1639,28 @@ const POSTS = [
       { label: 'Multiple Testing (Stats)', room: 'stats', id: 'stat05' },
       { label: 'Clickbait Ranking Win', room: 'review', id: 's09' },
       { label: 'Five Metrics Problem', room: 'review', id: 's06-five-metrics-problem' },
+    ],
+    content: [
+      { type: 'text', text: 'A feed ranking change at Meta scale is one of the most complex experiment readouts in the industry. The signals are noisy, the metrics conflict, user segments behave differently, and novelty effect is significant. Here\'s the complete evaluation framework.' },
+      { type: 'heading', text: 'Step 1: Validity Checks Before Any Metric' },
+      { type: 'list', items: [
+        'SRM check: Feed changes often affect logging disproportionately across variants. Check first.',
+        'Runtime: Feed experiments need ≥ 2 weeks minimum to see past novelty. Was this run long enough?',
+        'Segment exposure: Did all user types see the new ranking? New users, returning users, mobile vs web?',
+      ]},
+      { type: 'heading', text: 'Step 2: The Metric Hierarchy' },
+      { type: 'text', text: 'Feed ranking has inherently conflicting metrics. You need a pre-committed hierarchy:' },
+      { type: 'framework_box', label: 'Metric Hierarchy for Feed Ranking', items: [
+        '1. North star: Long-form content consumption (time spent on meaningful content, not just any content)',
+        '2. Primary guardrail: D30 retention and weekly active rate',
+        '3. Secondary: Comment and share rates (quality engagement signals)',
+        '4. Watch-out: Passive scroll time without interaction — this is not a success metric',
+      ]},
+      { type: 'heading', text: 'Step 3: Novelty Effect Analysis' },
+      { type: 'text', text: 'Plot engagement metrics by day and by exposure cohort. If day-1 users show steadily declining engagement over 14 days while day-7 users show the same pattern at their day 1, the lift is entirely novelty. Look for the stabilization plateau — that\'s the real signal.' },
+      { type: 'heading', text: 'Step 4: Heterogeneous Treatment Effects' },
+      { type: 'text', text: 'Feed ranking changes almost never affect all users equally. Segment by: (1) content consumption style (passive scroller vs active commenter), (2) account age (new users have different ranking needs), (3) geography (cultural norms around content types vary significantly). An average null result can mask a 10% improvement for power users and a 10% degradation for new users.' },
+      { type: 'callout', label: 'The ship decision', text: 'If the north star improved, guardrail held, no novelty effect after 2 weeks, no harmful HTE in key segments — ship. If north star improved but guardrail degraded, don\'t ship — escalate the tradeoff to leadership. Never make that call solo on a feed ranking change.' },
     ],
   },
   {
@@ -1529,6 +1712,30 @@ const POSTS = [
     relatedItems: [
       { label: 'Checkout Conversion Drop', room: 'rca', id: 'rca01' },
       { label: 'Zero-Result Search Spike', room: 'rca', id: 'rca02' },
+    ],
+    content: [
+      { type: 'text', text: 'Payment success rate dropping 3% at Stripe means billions of dollars in transaction volume at risk. This RCA is uniquely complex because Stripe sits between merchants and card networks — the root cause could be on Stripe\'s side, the issuing bank\'s side, the card network\'s side, or the merchant\'s side.' },
+      { type: 'heading', text: 'Step 1: Define the Metric' },
+      { type: 'text', text: 'Payment success rate = successful charges / attempted charges. "Successful" means authorized and settled, not just authorized. Clarify: is this across all payment methods (card, ACH, SEPA, wallets) or card-only? A drop in overall PSR could be driven entirely by one payment method.' },
+      { type: 'heading', text: 'Step 2: Decompose by Payment Infrastructure Layer' },
+      { type: 'framework_box', label: 'Stripe Payment Funnel', items: [
+        'Charge attempt received by Stripe',
+        'Stripe fraud/risk check (Radar)',
+        'Card network routing (Visa / Mastercard / Amex)',
+        'Issuing bank authorization',
+        'Settlement',
+      ]},
+      { type: 'text', text: 'Which step failed? A Radar model change affects step 2. A network outage affects step 3. A bank risk policy change affects step 4. Each has a completely different remediation path.' },
+      { type: 'heading', text: 'Step 3: Segment Cuts' },
+      { type: 'list', items: [
+        'Card network: Is the drop concentrated on Visa, Mastercard, or Amex? (Network-specific issue)',
+        'Issuing bank: Top 10 issuers by volume — is one bank responsible for the drop?',
+        'Merchant vertical: Is the drop concentrated in one industry? (Travel, gaming, crypto have different issuer decline rates)',
+        'Geography: US vs international? (Issuer policies differ significantly)',
+        'Card type: Credit vs debit? Consumer vs corporate? (Different authorization paths)',
+        'Time pattern: Did it start at a specific time? (Deployment or network event)',
+      ]},
+      { type: 'callout', label: 'The non-obvious hypothesis', text: 'At Stripe, a common cause of sudden PSR drops is an issuing bank\'s fraud model update — they start declining a category of transactions that they previously approved. This shows up as a spike in "do_not_honor" decline codes from specific BINs (Bank Identification Numbers). Always check decline code distribution before forming other hypotheses.' },
     ],
   },
   {
@@ -1610,6 +1817,21 @@ const POSTS = [
       { label: 'Launch Same-Day Delivery?', room: 'cases', id: 'c01' },
       { label: 'Replace Tier-1 Support with AI?', room: 'cases', id: 'c03' },
     ],
+    content: [
+      { type: 'text', text: '"It depends" is the most common closing line in analytics interviews — and the most damaging. It signals that you can analyze but can\'t decide. Decision-making under uncertainty is the job. Here\'s how to close every answer with a clear recommendation, even when the data isn\'t definitive.' },
+      { type: 'heading', text: 'The Closing Structure' },
+      { type: 'framework_box', label: 'The 4-Part Close', items: [
+        '1. Recommendation: State it directly. "I would ship / not ship / run a follow-up experiment."',
+        '2. Confidence level: "I\'m moderately confident because [strongest supporting data point]."',
+        '3. Key assumption: "This recommendation rests on [assumption]. If [assumption] is wrong, the recommendation changes."',
+        '4. Next step: "To increase confidence, I\'d want to [specific action: longer runtime / additional segment cut / qual research]."',
+      ]},
+      { type: 'heading', text: 'What It Looks Like in Practice' },
+      { type: 'example', label: 'Example close: experiment with mixed signals', text: 'Weak version: "It depends on the business context and how much we value long-term vs short-term metrics."\n\nStrong version: "My recommendation is to hold and investigate before shipping. Confidence: moderate. The guardrail degradation is real and the mechanism isn\'t clear yet. Key assumption: that the refund rate increase is not just noise — if it is, I\'d revise to ship. Next step: pull the refund cohort and identify whether these are new users or existing users making different purchase decisions."' },
+      { type: 'heading', text: 'When You Genuinely Don\'t Have Enough Data' },
+      { type: 'text', text: 'Even then, you can close with a directed recommendation: "Based on what I know, I lean toward X because Y. But the data needed to be confident is Z. In the absence of that, I\'d default to the more conservative option [ship or don\'t ship] because the downside of being wrong is [lower/higher]."' },
+      { type: 'callout', label: 'The mindset shift', text: 'An analyst\'s job isn\'t to have certainty — it\'s to give the best possible recommendation given available information, with honest uncertainty quantification. "I don\'t know" is never the answer. "Here\'s my best judgment and here\'s what would change it" always is.' },
+    ],
   },
   {
     id: 'rapid-revision',
@@ -1621,6 +1843,244 @@ const POSTS = [
     relatedItems: [
       { label: 'p-Value Decision (Stats)', room: 'stats', id: 'stat01' },
       { label: 'Checkout Conversion Drop', room: 'rca', id: 'rca01' },
+    ],
+    content: [
+      { type: 'text', text: 'Don\'t learn new things in the 30 minutes before an interview. Read this instead — it primes your opening moves for every question type so you don\'t freeze on the first sentence.' },
+      { type: 'heading', text: 'Metric Design Questions' },
+      { type: 'callout', label: 'Opening move', text: '"Before proposing metrics, let me clarify the product goal. We\'re optimizing for [X]. Given that, my north star would be [Y], because it directly measures [value delivered]. I\'d also want [diagnostic] to explain why it moves, and [guardrail] to make sure we don\'t optimize at the expense of [downstream harm]."' },
+      { type: 'heading', text: 'RCA Questions' },
+      { type: 'callout', label: 'Opening move', text: '"First I\'d get context: when did this start, how big is the drop, what changed recently? Then I\'d decompose the metric mathematically before forming any hypothesis. Then cut by platform, geography, and cohort. Only then would I rank hypotheses by volume affected and data available to validate."' },
+      { type: 'heading', text: 'Experiment Design Questions' },
+      { type: 'callout', label: 'Opening move', text: '"I\'d start by defining the primary metric and pre-committing to it. Then: randomization unit (user-level unless there\'s a SUTVA risk), guardrails, minimum detectable effect, required sample size and runtime. I\'d also flag any novelty effect risk given the nature of the change."' },
+      { type: 'heading', text: 'Ambiguous Problems' },
+      { type: 'callout', label: 'Opening move', text: '"Let me make sure I understand the business context before diving in. [Clarify goal, user, and what success looks like.] I\'ll structure my answer as: [frame the problem] → [identify what data I\'d need] → [propose an approach] → [name the risks and assumptions]."' },
+      { type: 'heading', text: 'Business Cases' },
+      { type: 'callout', label: 'Opening move', text: '"I\'ll close with a clear recommendation with a confidence level. But first let me structure the analysis: [what\'s the decision?] → [what does the data say?] → [what are the key risks?] → [recommendation + next step if uncertain]."' },
+      { type: 'heading', text: 'The Meta Rule' },
+      { type: 'text', text: 'Every question: state your framework out loud before executing it. This buys you thinking time, signals structure, and tells the interviewer what to expect. It\'s not stalling — it\'s what senior analysts do in real meetings.' },
+    ],
+  },
+
+  // ══════════════════════════════════════════════════════════════════
+  // THE BIG PICTURE
+  // ══════════════════════════════════════════════════════════════════
+  {
+    id: 'salary-guide',
+    category: 'The Big Picture',
+    title: 'DS & Product Analytics Salary Guide: What the Market Actually Pays in 2025-2026',
+    summary: 'Level-by-level comp bands at FAANG, tier-2 tech, and startups. Base vs total comp, equity vs cash tradeoffs, and the factors that move your number up or down.',
+    readMin: 8,
+    source: 'Compiled from Levels.fyi, Glassdoor, H1B data, and community reports',
+    relatedItems: [
+      { label: 'Launch Same-Day Delivery?', room: 'cases', id: 'c01' },
+    ],
+    content: [
+      { type: 'text', text: 'Compensation data in this space is notoriously opaque. Most job listings don\'t post ranges. Most people don\'t share numbers. What follows is a synthesized picture from Levels.fyi, H1B disclosure data, Glassdoor, and industry community reports. Ranges are approximate and vary by location, negotiation, and timing.' },
+      { type: 'callout', label: 'Important caveat', text: 'These figures are US market, 2025-2026. Non-US markets are typically 40-60% lower for base, with equity upside concentrated at pre-IPO startups. Negotiate everything — the first offer is rarely the best offer.' },
+      { type: 'heading', text: 'FAANG / Tier-1 Tech (Meta, Google, Amazon, Apple, Netflix, Airbnb, Uber, Stripe, DoorDash)' },
+      { type: 'list', items: [
+        'Entry (L3/IC1, 0-2 yrs): $140-180k base, $220-320k total comp (TC). Strong new grad offers.',
+        'Mid (L4/IC2, 2-5 yrs): $175-220k base, $280-450k TC. Where most DS/PA roles live.',
+        'Senior (L5/IC3, 5-9 yrs): $220-280k base, $380-650k TC. Requires ownership + strategic impact.',
+        'Staff (L6/IC4, 8+ yrs): $270-380k base, $550k-1M+ TC. Rare, requires cross-org influence.',
+        'Principal (L7+): $350k+ base, $1M+ TC at top companies. Fewer than 2% of ICs reach here.',
+      ]},
+      { type: 'heading', text: 'Tier-2 Tech (Shopify, Snowflake, Databricks, Figma, Notion, Canva, growth-stage startups)' },
+      { type: 'list', items: [
+        'Entry (0-2 yrs): $110-145k base, $140-220k TC (lower cash, more equity upside)',
+        'Mid (2-5 yrs): $140-180k base, $200-320k TC',
+        'Senior (5-9 yrs): $170-230k base, $280-500k TC (equity upside higher at pre-IPO)',
+        'Note: Pre-IPO equity is illiquid — discount heavily until liquidity event',
+      ]},
+      { type: 'heading', text: 'Tier-3 / Traditional Tech / Non-Tech (banks, retail, healthcare, media)' },
+      { type: 'list', items: [
+        'Entry (0-2 yrs): $75-100k base, minimal equity',
+        'Mid (2-5 yrs): $100-130k base',
+        'Senior (5+ yrs): $130-175k base, some bonus',
+        'Note: Lower comp, but often better work-life balance and more cross-functional scope',
+      ]},
+      { type: 'heading', text: 'What Moves Your Number' },
+      { type: 'list', items: [
+        'Company tier: The single biggest lever. Meta L4 ≈ Startup L5-L6 in total comp.',
+        'Location: SF/NYC base premium ~15-25% vs Seattle/Austin; remote roles converging.',
+        'Specialization: Experimentation and ML-adjacent DS roles command a ~10-20% premium over pure analytics.',
+        'Negotiation: First offers are routinely 10-25% below ceiling. Always counter. Use competing offers.',
+        'Level: Getting leveled up at offer time (from L4 to L5) can be worth $100k+ in TC.',
+      ]},
+      { type: 'heading', text: 'Base vs Total Comp' },
+      { type: 'text', text: 'Always negotiate on total comp, not just base. At tier-1 companies, equity refreshes and annual bonuses often exceed base salary over a 4-year period. A $200k base with a $300k equity grant over 4 years = $275k TC annually — very different from a $200k base with no equity.' },
+    ],
+  },
+  {
+    id: 'role-evolution',
+    category: 'The Big Picture',
+    title: 'How the DS & Analytics Role Has Evolved: 2010 to Today',
+    summary: 'From "Data Analyst = Excel + SQL" to a fragmented landscape of Product Analytics, Applied DS, Analytics Engineering, and MLE. Understanding the lineage explains why the job is what it is now.',
+    readMin: 9,
+    source: null,
+    relatedItems: [],
+    content: [
+      { type: 'text', text: 'The title "Data Scientist" was Harvard Business Review\'s sexiest job of the 21st century in 2012. Fourteen years later, the role has split into at least five distinct career tracks, each with different skill requirements, compensation, and organizational positioning. Here\'s the full arc.' },
+      { type: 'heading', text: '2008-2014: The Analyst Era' },
+      { type: 'text', text: 'Before "data science" became a category, most analytical roles were called Data Analyst or Business Analyst. The job was: build dashboards in Excel, write SQL queries, summarize trends in PowerPoint. The output was reporting. The organizational positioning was support function — analytics served the business but didn\'t shape it.\n\nThink of this era as: what happened? Analytics teams described past performance.' },
+      { type: 'heading', text: '2014-2018: The Data Scientist Hype Cycle' },
+      { type: 'text', text: 'Silicon Valley\'s success stories (Netflix recommendations, Facebook News Feed ranking, Google search) created enormous demand for "data scientists" who could build ML models. Companies hired PhDs for roles that turned out to be 80% data cleaning and SQL. The hype created a supply-demand mismatch that peaked around 2017-2018.\n\nOrganizational change: analytics moved from support to embedded — DSs sitting inside product teams rather than in a central analytics function.' },
+      { type: 'heading', text: '2018-2022: The Specialization Split' },
+      { type: 'text', text: 'The hype-driven "one data scientist does everything" role proved unsustainable. The function split into distinct tracks:' },
+      { type: 'list', items: [
+        'Product Analytics / Data Analyst: metrics, experimentation, dashboards, RCA. No ML required.',
+        'Applied Data Scientist: ML model building, feature engineering, A/B test design for ML systems.',
+        'Analytics Engineer (dbt era): Data modeling, pipeline reliability, semantic layer. SQL-heavy, no ML.',
+        'ML Engineer: Model deployment, infrastructure, serving. Closer to SWE than analyst.',
+      ]},
+      { type: 'text', text: 'The dbt revolution (2018-2022) was particularly significant: it created a new profession (analytics engineering) and dramatically raised the data quality bar for analytical work.' },
+      { type: 'heading', text: '2022-Present: The GenAI Disruption' },
+      { type: 'text', text: 'LLMs automated the most commoditized analytical work: basic SQL queries, dashboard creation, ad hoc report generation. This shifted the value proposition upward: the analyst role that survived is the one that requires judgment — experiment design, business framing, cross-functional influence, metric strategy. The analyst who only writes queries is increasingly competing with AI. The analyst who shapes what questions get asked is not.' },
+      { type: 'callout', label: 'The key insight', text: 'Every automation wave in analytics history has eliminated the most mechanical work and elevated the remaining role. The "Data Analyst" of 2010 was automated into obsolescence. The "Product Analytics" role of today is much harder to automate because it requires business judgment, not pattern matching.' },
+      { type: 'heading', text: 'Where the Tracks Are Converging' },
+      { type: 'text', text: 'In 2025-2026, the clearest career signal is: Python + SQL fluency is now the baseline for all tracks. The differentiation is judgment and domain expertise, not technical tools. A strong product analyst with deep experimentation knowledge is more valuable than a weak ML practitioner — the tooling gap has narrowed faster than the judgment gap.' },
+    ],
+  },
+  {
+    id: 'analytics-in-ai-era',
+    category: 'The Big Picture',
+    title: 'Analytics in the AI Era: What Got Automated, What Got More Important',
+    summary: 'LLMs changed what analysts spend time on. Understanding what moved — and what didn\'t — is how you position yourself for the next 5 years.',
+    readMin: 7,
+    source: null,
+    relatedItems: [
+      { label: 'GenAI Support Bot', room: 'metrics', id: 'm06' },
+      { label: 'Replace Tier-1 Support with AI?', room: 'cases', id: 'c03' },
+    ],
+    content: [
+      { type: 'text', text: 'The most common anxiety among analysts in 2024-2025: "Will AI replace my job?" The honest answer: parts of it, yes. But the parts that got automated were never the highest-leverage parts to begin with.' },
+      { type: 'heading', text: 'What Got Automated (or Dramatically Accelerated)' },
+      { type: 'list', items: [
+        'Basic SQL generation: LLMs write competent SELECT queries from natural language prompts. Most one-off data pulls no longer require a human to write SQL from scratch.',
+        'Dashboard creation: Tools like Looker AI, Tableau Pulse, and internal AI assistants generate first-pass dashboards from schema descriptions.',
+        'Ad hoc report summarization: "Summarize what happened with this metric last week" is now a prompting task, not an analyst task.',
+        'Standard documentation: Query documentation, metric definitions, and data dictionaries increasingly auto-generated from schemas.',
+      ]},
+      { type: 'heading', text: 'What Got More Important' },
+      { type: 'list', items: [
+        'Experiment design: LLMs can\'t decide what to test, what metric to care about, or whether the randomization unit is valid for this specific product context.',
+        'Business framing: Translating a noisy data signal into a recommendation that accounts for org dynamics, risk tolerance, and strategic context is irreducibly human.',
+        'Metric strategy: Deciding which north star to optimize, what the guardrails should be, and how to game-proof the measurement system requires deep product understanding.',
+        'Cross-functional influence: Getting engineering to instrument the right events, getting product to pre-commit to a decision rule, getting leadership to trust the experiment — none of this is automatable.',
+        'Judgment under ambiguity: When the data doesn\'t give a clear answer, what do you recommend? This is where senior analysts earn their compensation.',
+      ]},
+      { type: 'heading', text: 'New Skills That Matter Now' },
+      { type: 'list', items: [
+        'Prompt engineering for analytical workflows: writing effective prompts for data questions, knowing when to trust LLM output and when to verify',
+        'LLM system evaluation: if your company is building AI products, measuring their quality is now an analytics problem (the m06 GenAI Support Bot case is a direct example)',
+        'AI-assisted speed: analysts who use AI tools to 5x their throughput on routine work can focus more time on high-judgment tasks — this is a real competitive advantage',
+      ]},
+      { type: 'callout', label: 'The positioning takeaway', text: 'The analyst who competes on SQL speed is competing with AI and losing. The analyst who competes on measurement strategy and analytical judgment is becoming more valuable as AI handles the mechanical work. This platform trains the latter — which is exactly why it exists.' },
+    ],
+  },
+  {
+    id: 'how-decisions-get-made',
+    category: 'The Big Picture',
+    title: 'How a Product Decision Actually Gets Made: The Full Chain',
+    summary: 'From first signal to shipped feature — where analytics sits in the loop, what it owns vs influences, and where the chain most commonly breaks.',
+    readMin: 8,
+    source: null,
+    relatedItems: [
+      { label: 'Launch Same-Day Delivery?', room: 'cases', id: 'c01' },
+      { label: 'Replace Tier-1 Support with AI?', room: 'cases', id: 'c03' },
+    ],
+    content: [
+      { type: 'text', text: 'Most product decisions are made in messy, non-linear ways. But the underlying structure is consistent enough to map. Here\'s the full chain — and where analytics contributes at each step.' },
+      { type: 'framework_box', label: 'The Decision Chain', items: [
+        '1. Signal: A metric moves, user research surfaces a pattern, or a PM has an intuition',
+        '2. Framing: Analytics defines the question precisely and builds the data context',
+        '3. Hypothesis: PM proposes the intervention; analytics assesses plausibility and scope',
+        '4. Experiment Design: Analytics owns this — primary metric, randomization unit, runtime, guardrails',
+        '5. Execution: Engineering ships the variant; analytics monitors for SRM and early signals',
+        '6. Readout: Analytics presents results — what moved, by how much, with what confidence',
+        '7. Decision: PM + leadership decide to ship, kill, or iterate. Analytics provides recommendation.',
+        '8. Monitoring: Analytics sets up post-ship dashboards and guardrail alerts',
+      ]},
+      { type: 'heading', text: 'Where Analytics Has Authority vs Influence' },
+      { type: 'text', text: 'Analytics owns steps 2, 4, 6, and 8. It influences steps 3, 5, and 7. It does not own step 7 — that\'s a leadership call. The biggest failure mode for analysts is either (a) not asserting enough in steps 2 and 4, letting poor framing and poor design produce uninterpretable results, or (b) overreaching in step 7, treating a recommendation as a mandate.' },
+      { type: 'callout', label: 'The framing trap', text: 'Step 2 is where most value is lost. If the question is framed wrong — wrong metric, wrong comparison group, wrong time window — the rest of the chain produces a precise answer to the wrong question. The analyst who pushes back on question framing adds more value than the one who executes fast on a bad question.' },
+      { type: 'heading', text: 'The Most Common Breaking Points' },
+      { type: 'list', items: [
+        'Instrumentation not in place before experiment starts: No events → no data → no readout. Fix: analytics must review instrumentation at design time, not after launch.',
+        'Primary metric not pre-committed: PM decides to ship based on the secondary metric that moved. Fix: decision rule documented before experiment starts.',
+        'Readout without SRM check: Results presented without verifying experiment validity. Fix: SRM check is the first line of every readout template.',
+        'No monitoring after ship: A regression appears 3 weeks post-launch with no alert. Fix: automated guardrail alerts as part of every ship checklist.',
+      ]},
+      { type: 'heading', text: 'What "Decision Partner" Actually Means' },
+      { type: 'text', text: 'The analyst who says "here is what the data shows" is a reporter. The analyst who says "here is what the data shows, here is what I recommend, and here is what I\'d need to be more confident" is a decision partner. The distinction is not about having opinions — it\'s about taking ownership of the recommendation while being honest about uncertainty.' },
+    ],
+  },
+  {
+    id: 'cross-functional-collab',
+    category: 'The Big Picture',
+    title: 'Cross-Functional Collaboration: How Analytics Works With Product, Engineering, DS, and Finance',
+    summary: 'Who owns what, who gets pulled in when, where the friction lives, and how senior analysts navigate each relationship differently.',
+    readMin: 9,
+    source: null,
+    relatedItems: [],
+    content: [
+      { type: 'text', text: 'Analytics sits at the intersection of every major function in a product org. Understanding the different relationship modes — not just the mechanics, but the org dynamics — is what separates a strong individual contributor from someone who actually shapes outcomes.' },
+      { type: 'heading', text: 'Analytics × Product Management' },
+      { type: 'text', text: 'The core relationship. PM owns the roadmap; analytics owns the measurement. The healthiest dynamic: PM and analyst co-own experiment design, with the analyst pushing back on vague success criteria and the PM providing business context that shapes metric prioritization.\n\nCommon friction: PM wants results yesterday; analyst needs runtime. PM wants to ship on early positive signals; analyst flags novelty effect and peeking risk. Resolution: pre-committed decision rules eliminate most of these conflicts — both parties agree before results are visible.' },
+      { type: 'heading', text: 'Analytics × Engineering' },
+      { type: 'text', text: 'The instrumentation relationship. Analytics needs events logged; engineering implements them. The breakdown: analytics asks for logging too late (after launch), engineering implements it inconsistently, analytics discovers gaps at readout time.\n\nBest practice: analytics reviews the instrumentation spec before any experiment-related engineering work begins. A one-page "measurement plan" documenting required events, grain, and expected volumes eliminates most post-hoc logging gaps.' },
+      { type: 'callout', label: 'The trust dynamic', text: 'Engineers trust analysts who understand data infrastructure constraints. If you know why event deduplication is hard, why session definitions are tricky, and why backfilling historical data is expensive — you get better data. If you just make requests, you get whatever is easiest to implement.' },
+      { type: 'heading', text: 'Analytics × Data Science / MLE' },
+      { type: 'text', text: 'The intelligence amplification relationship. Analytics identifies opportunities and measures outcomes; DS builds the models that capture them.\n\nTypical flow: Analytics surfaces a pattern ("users who do X retain at 2x the rate"). DS investigates whether this is causal and builds a model to drive X behavior. Analytics measures whether the model intervention improved retention.\n\nFriction: DS teams often don\'t invest in outcome measurement — they optimize for model performance metrics (AUC, precision) rather than business outcomes. Analysts bridge this gap.' },
+      { type: 'heading', text: 'Analytics × Finance' },
+      { type: 'text', text: 'The revenue attribution relationship. Finance owns P&L; analytics owns the product metrics that drive it. They meet at: revenue forecasting, unit economics, and ROI measurement for product investments.\n\nKey skill: being able to translate product metric changes into revenue impact. "A 5% improvement in D30 retention → X more users active at 30 days → Y more purchases at average Z AOV = $W incremental revenue." This kind of back-of-envelope connects product work to finance\'s language.' },
+      { type: 'heading', text: 'Analytics × Design / User Research' },
+      { type: 'text', text: 'The qual-quant bridge. Design does the qual work (why are users behaving this way?); analytics does the quant work (how many users, how often, what impact?). The best product decisions combine both: qual explains the mechanism, quant validates the scale.\n\nWhere analysts add most value here: being skeptical of small qualitative samples that suggest product changes, while also recognizing that pure quantitative analysis can miss the behavioral mechanism that explains the pattern.' },
+    ],
+  },
+  {
+    id: 'what-senior-means',
+    category: 'The Big Picture',
+    title: 'What "Senior" Actually Means in Product Analytics — Level by Level',
+    summary: 'Junior analysts answer questions accurately. Senior analysts ask better questions. Staff analysts decide which questions matter. The behavioral markers at each level — and what interviewers are actually testing.',
+    readMin: 8,
+    source: null,
+    relatedItems: [
+      { label: 'Launch Same-Day Delivery?', room: 'cases', id: 'c01' },
+      { label: 'Why Did Retention Fall?', room: 'cases', id: 'c02' },
+    ],
+    content: [
+      { type: 'text', text: 'The level system in data science and analytics feels abstract until you see it in behavioral terms. Here\'s what each level actually looks like in practice — what you hear, what you don\'t hear, and what interviewers are specifically testing for.' },
+      { type: 'heading', text: 'Junior (L3 / 0-2 years)' },
+      { type: 'text', text: 'The junior analyst executes accurately. They write correct queries, build correct dashboards, and answer the question they were asked. The gap: they answer the question as literally stated, not the underlying question the PM needed answered.' },
+      { type: 'list', items: [
+        'What you hear: "The query returned X. Here\'s the chart."',
+        'What\'s missing: Context, interpretation, recommendation, caveats about data quality',
+        'Interview tells: Jumps to metrics before framing, doesn\'t name denominator, lists hypotheses without decomposing',
+      ]},
+      { type: 'heading', text: 'Mid-Level (L4 / 2-5 years)' },
+      { type: 'text', text: 'The mid-level analyst asks clarifying questions and adds interpretation. They push back on ambiguous requests, add context to numbers, and occasionally offer a recommendation. The gap: still reactive — they wait for someone to bring them a question.' },
+      { type: 'list', items: [
+        'What you hear: "The query returned X. This likely means Y, because of Z context. I\'d recommend..."',
+        'What\'s missing: Proactive surfacing of problems PM didn\'t think to ask about, strategic framing',
+        'Interview tells: Gets frameworks right, sometimes misses the meta-question or the business implication',
+      ]},
+      { type: 'heading', text: 'Senior (L5 / 5-9 years)' },
+      { type: 'text', text: 'The senior analyst defines the measurement strategy, not just executes it. They push back on the experiment before it\'s designed, shape what questions the team is asking, and connect metric movements to business outcomes unprompted.' },
+      { type: 'list', items: [
+        'What you hear: "Before we design this experiment, I want to make sure we\'re asking the right question. The PM framed this as X, but the real decision is Y, which requires a different primary metric and a longer runtime."',
+        'What\'s missing (at this level): Org-level influence, mentoring, driving measurement culture',
+        'Interview tells: Demonstrates proactive framing, names tradeoffs before being asked, closes with a recommendation under uncertainty',
+      ]},
+      { type: 'heading', text: 'Staff (L6 / 8+ years)' },
+      { type: 'text', text: 'The staff analyst shapes how an entire product area thinks about measurement. They write the measurement standards, mentor the team, and are the person PMs and engineering leaders bring into strategic discussions — not just readouts.' },
+      { type: 'callout', label: 'The key progression', text: 'Junior: answers questions. Mid: interprets answers. Senior: shapes questions. Staff: shapes how the org thinks about questions. This is not about seniority — it\'s about scope of influence on outcomes.' },
+      { type: 'heading', text: 'What Interviewers Are Specifically Testing' },
+      { type: 'list', items: [
+        'L3/L4 bar: Technical accuracy. Can you execute correctly? Do you know the frameworks?',
+        'L5 bar: Strategic framing + recommendation quality. Do you close with a clear recommendation under uncertainty? Do you proactively name tradeoffs?',
+        'L6 bar: Org influence + meta-level thinking. Do you identify what\'s wrong with the question before answering it? Can you articulate a measurement philosophy, not just a measurement?',
+      ]},
     ],
   },
 ];
@@ -1637,6 +2097,7 @@ const CATEGORY_CONFIG = {
   'Company Questions':   { color: 'var(--red)',       bg: 'var(--red-bg)',      border: 'var(--red-border)',     icon: '🏢' },
   'Mental Models':       { color: 'var(--purple)',    bg: 'var(--purple-bg)',   border: 'var(--purple-border)',  icon: '🧠' },
   'Career & Interview':  { color: 'var(--text-muted)',bg: 'var(--surface-2)',   border: 'var(--border)',         icon: '🎯' },
+  'The Big Picture':     { color: 'var(--blue-text)', bg: 'var(--blue-bg)',     border: 'var(--blue-border)',    icon: '🌐' },
 };
 
 const ROOM_CONFIG = {
