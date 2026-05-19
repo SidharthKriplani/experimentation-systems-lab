@@ -50,6 +50,15 @@ export function Home({ onNavigate, onStartScenario }) {
       cta: 'Open Cases Room →',
       nav: 'cases',
     },
+    {
+      id: 'product-design', label: 'Product Design Room', color: 'var(--purple)', bg: 'var(--purple-bg)', border: 'var(--purple-border)',
+      tagline: 'Design a real product feature — from first principles.',
+      description: 'PM-style product design questions from Spotify, Airbnb, Slack, LinkedIn, and more. Work through 5 phases: Clarify, Users, Goals, Solutions, Prioritize. Self-score against a senior PM model answer.',
+      meta: '8 scenarios · 1 free + 7 beta · PM / DS-PM',
+      badge: '✦ New',
+      cta: 'Open Product Design Room →',
+      nav: 'product-design',
+    },
   ];
 
   return (
@@ -86,8 +95,8 @@ export function Home({ onNavigate, onStartScenario }) {
           marginBottom: '0.6rem',
           maxWidth: '560px',
         }}>
-          44 practice cases across six rooms. Each one puts you in a real product scenario —
-          messy data, stakeholder pressure, no clean answer — then shows you how a senior analyst read it.
+          52 practice cases across seven rooms. Each one puts you in a real product scenario —
+          messy data, stakeholder pressure, no clean answer — then shows you how a senior analyst or PM read it.
         </p>
 
         <p style={{ fontSize: '0.84rem', color: 'var(--text-dim)', marginBottom: '2.25rem' }}>
@@ -123,7 +132,7 @@ export function Home({ onNavigate, onStartScenario }) {
 
       {/* ── Six rooms ──────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
-        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>Six rooms. Six judgment muscles.</div>
+        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>Seven rooms. Seven judgment muscles.</div>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
@@ -239,7 +248,7 @@ export function Home({ onNavigate, onStartScenario }) {
 
       {/* ── 44 playable items ──────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
-        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>44 playable items — what's inside</div>
+        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>52 playable items — what's inside</div>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -350,6 +359,25 @@ export function Home({ onNavigate, onStartScenario }) {
             btnColor="var(--purple)"
             btnLabel="Open Cases Room →"
             onOpen={() => onNavigate('cases')}
+          />
+          {/* Product Design Room */}
+          <RoomList
+            label="✦ Product Design Room · 8 Scenarios · New"
+            labelColor="var(--purple)" labelBg="var(--purple-bg)" labelBorder="var(--purple-border)"
+            items={[
+              ['Free', 'Spotify — Improve Podcast Discovery', 'product design'],
+              ['Beta', 'Airbnb — Reduce Host Response Lag', 'marketplace'],
+              ['Beta', 'Slack — Reduce Notification Fatigue', 'B2B / productivity'],
+              ['Beta', 'Google Maps — Design for EV Drivers', 'utility / new segment'],
+              ['Beta', 'LinkedIn — Improve Application Quality', 'two-sided platform'],
+              ['Beta', 'DoorDash — Reduce Post-Order Cancellations', 'delivery ops'],
+              ['Beta', 'Stripe — Help SMBs Understand Revenue', 'fintech / B2B'],
+              ['Beta', 'Instagram — Help Creators Grow', 'social / creator economy'],
+            ]}
+            btnColor="var(--purple)"
+            btnLabel="Open Product Design Room →"
+            onOpen={() => onNavigate('product-design')}
+            footer="5-phase open-ended framework · Self-scored with model PM answers"
           />
         </div>
       </div>

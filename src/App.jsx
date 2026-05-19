@@ -32,7 +32,11 @@ import { getStatsProgress } from './utils/statsProgress.js';
 import { getMetricsProgress } from './utils/metricsProgress.js';
 import { getRCAProgress } from './utils/rcaProgress.js';
 import { getCaseProgress } from './utils/caseProgress.js';
+import { getProductDesignProgress } from './utils/productDesignProgress.js';
 import { isUnlocked } from './utils/unlock.js';
+import { productDesignScenarios } from './data/productDesignScenarios.js';
+import { ProductDesignBrowser } from './pages/ProductDesignBrowser.jsx';
+import { ProductDesignRunner } from './components/productDesign/ProductDesignRunner.jsx';
 
 function getInitialTheme() {
   try {
@@ -50,6 +54,7 @@ export default function App() {
   const [activeMetricsCaseId, setActiveMetricsCaseId] = useState(null);
   const [activeRCACaseId, setActiveRCACaseId] = useState(null);
   const [activeBusinessCaseId, setActiveBusinessCaseId] = useState(null);
+  const [activePDScenarioId, setActivePDScenarioId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
   const [theme, setTheme] = useState(getInitialTheme);
@@ -75,6 +80,7 @@ export default function App() {
     setActiveMetricsCaseId(null);
     setActiveRCACaseId(null);
     setActiveBusinessCaseId(null);
+    setActivePDScenarioId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -132,6 +138,15 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function openPDScenario(id) {
+    const s = productDesignScenarios.find(s => s.id === id);
+    if (!s) return;
+    if (!s.isFree && !unlocked) { setPage('unlock'); return; }
+    setActivePDScenarioId(id);
+    setPage('product-design-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function handleUnlocked() {
     setUnlocked(true);
     navigate('browser');
@@ -151,6 +166,7 @@ export default function App() {
   const activeMetricsCase = metricCases.find(m => m.id === activeMetricsCaseId);
   const activeRCACase = rcaCases.find(r => r.id === activeRCACaseId);
   const activeBusinessCase = businessCases.find(b => b.id === activeBusinessCaseId);
+  const activePDScenario = productDesignScenarios.find(s => s.id === activePDScenarioId);
 
   function getPairedDesignId(reviewScenarioId) {
     const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
@@ -257,6 +273,23 @@ export default function App() {
             savedProgress={getCaseProgress(activeBusinessCaseId)}
             unlocked={unlocked}
             onBack={() => navigate('cases')}
+          />
+        )}
+
+        {/* ── Product Design Room ── */}
+        {page === 'product-design' && (
+          <ProductDesignBrowser
+            onSelectScenario={openPDScenario}
+            unlocked={unlocked}
+            onUnlock={() => navigate('unlock')}
+          />
+        )}
+        {page === 'product-design-runner' && activePDScenario && (
+          <ProductDesignRunner
+            key={activePDScenarioId}
+            scenario={activePDScenario}
+            savedProgress={getProductDesignProgress(activePDScenarioId)}
+            onBack={() => navigate('product-design')}
           />
         )}
 
