@@ -4,6 +4,39 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.2.2 — Bug Fix Pass (Routing, Paywall, Reset, Nav, Color)
+**Date:** May 2026
+**Commit message:** "V3.2.2: Bug fixes — routing, paywall, reset progress, nav active state, color variable"
+**Files changed:** `src/App.jsx`, `src/pages/CasesBrowser.jsx`, `src/components/layout/Header.jsx`, `src/components/metrics/MetricsRunner.jsx`
+
+### Why
+Full internal audit (spawned agent cross-check) surfaced five actionable bugs: two silent routing failures, a broken paywall display, an incomplete progress reset, a missing nav item, and a lingering wrong color variable. All fixed.
+
+### What changed
+
+**BUG-01 — `App.jsx` `onOpenItem` routing (silent failure):**
+- Both `onOpenItem` callbacks (PlaybookBrowser and QADashboard) were missing `product-design` and `prioritization` branches.
+- Effect: Playbook articles linking to PD or Prioritization scenarios via "Now practice it" would silently do nothing.
+- Fix: Added `else if (room === 'product-design') openPDScenario(id)` and `else if (room === 'prioritization') openPrioritizationScenario(id)` to both callbacks.
+
+**BUG-02 — `CasesBrowser.jsx` hardcoded `isLocked={false}`:**
+- `CasesBrowser` did not accept `unlocked` or `onUnlock` props. All cards had `isLocked={false}`, so C03 and C04 (non-free cases) showed no paywall indicator for locked users.
+- Fix: Added `unlocked` and `onUnlock` to props. Computed `isLocked={!bc.isFree && !unlocked}` in `.map()`. Passed `onUnlock` to `CaseCard`.
+
+**BUG-03 — `App.jsx` `onResetAllProgress` missing keys:**
+- Reset function was missing `pal-code-progress-v1` and `pal-pri-progress-v1`. Product Design uses a per-scenario prefix (`pd-progress-*`) that requires iterating localStorage keys.
+- Fix: Added both missing flat keys. Added `Object.keys(localStorage).filter(k => k.startsWith('pd-progress-')).forEach(k => localStorage.removeItem(k))` for product design.
+
+**BUG-04 — `Header.jsx` missing `product-design` nav item and active state:**
+- `product-design` had no nav entry — the room was unreachable from the header. `product-design-runner` had no active-state condition.
+- Fix: Added `{ id: 'product-design', label: 'PM Design' }` to navItems. Added `|| (item.id === 'product-design' && currentPage === 'product-design-runner')` to isActive.
+
+**BUG-05 — `MetricsRunner.jsx` `--teal` color remnant:**
+- Two references to `var(--teal)` and `var(--teal-border)` remained in the case header label and submit button (missed in V2.2 teal→green migration).
+- Fix: Replaced all instances with `var(--green)` and `var(--green-border)`.
+
+---
+
 ## V3.2.1 — Playbook Content Quality Pass
 **Date:** May 2026
 **Commit message:** "V3.2.1: Playbook content quality pass — story-first rewrites of thin articles"

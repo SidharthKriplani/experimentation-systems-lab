@@ -409,7 +409,7 @@ treatment_adj = df.loc[df['variant'] == 'treatment', 'post_revenue_cuped']
 t_stat, p_value = stats.ttest_ind(treatment_adj, control_adj)
 lift = treatment_adj.mean() - control_adj.mean()
 
-print(f"\\nCUPED-adjusted lift: ${lift:.2f}")
+print(f"\\nCUPED-adjusted lift: \${lift:.2f}")
 print(f"p-value: {p_value:.4f}")
 
 # 5. Report variance reduction
@@ -442,7 +442,7 @@ treatment_adj = df.loc[df['variant'] == 'treatment', 'post_revenue_cuped']
 t_stat, p_value = stats.ttest_ind(treatment_adj, control_adj)
 lift           = treatment_adj.mean() - control_adj.mean()
 
-print(f"\\nCUPED-adjusted lift:  ${lift:.2f}")
+print(f"\\nCUPED-adjusted lift:  \${lift:.2f}")
 print(f"T-statistic:          {t_stat:.3f}")
 print(f"p-value:              {p_value:.4f}")
 

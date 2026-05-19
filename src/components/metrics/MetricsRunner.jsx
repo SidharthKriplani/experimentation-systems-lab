@@ -81,7 +81,7 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
       <div style={{ marginBottom: '1.5rem' }}>
         <div style={{
           fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
-          letterSpacing: '0.09em', color: 'var(--teal)', marginBottom: '0.35rem',
+          letterSpacing: '0.09em', color: 'var(--green)', marginBottom: '0.35rem',
         }}>
           {metricCase.id} · {metricCase.domain}
         </div>
@@ -120,8 +120,8 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
                 onClick={handleSubmit}
                 disabled={!allAnswered}
                 style={{
-                  background: allAnswered ? 'var(--teal)' : 'var(--surface-2)',
-                  border: `1.5px solid ${allAnswered ? 'var(--teal-border)' : 'var(--border)'}`,
+                  background: allAnswered ? 'var(--green)' : 'var(--surface-2)',
+                  border: `1.5px solid ${allAnswered ? 'var(--green-border)' : 'var(--border)'}`,
                   borderRadius: 'var(--radius)',
                   padding: '0.75rem 1.5rem',
                   fontSize: '0.9rem', fontWeight: 700,

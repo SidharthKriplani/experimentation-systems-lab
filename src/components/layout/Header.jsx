@@ -8,6 +8,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     { id: 'rca', label: 'RCA' },
     { id: 'cases', label: 'Cases' },
     { id: 'code', label: 'Code' },
+    { id: 'product-design', label: 'PM Design' },
     { id: 'prioritization', label: 'Prioritize' },
     { id: 'blog', label: 'Playbook' },
     { id: 'bank', label: 'Library' },
@@ -70,6 +71,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               || (item.id === 'rca' && currentPage === 'rca-runner')
               || (item.id === 'cases' && currentPage === 'cases-runner')
               || (item.id === 'code' && currentPage === 'code-runner')
+              || (item.id === 'product-design' && currentPage === 'product-design-runner')
               || (item.id === 'prioritization' && currentPage === 'prioritization-runner');
             return (
               <button

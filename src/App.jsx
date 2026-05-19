@@ -381,6 +381,8 @@ export default function App() {
             else if (room === 'review') openScenario(id);
             else if (room === 'rca') openRCACase(id);
             else if (room === 'cases') openBusinessCase(id);
+            else if (room === 'product-design') openPDScenario(id);
+            else if (room === 'prioritization') openPrioritizationScenario(id);
           }} />
         )}
         {page === 'qa' && (
@@ -394,13 +396,22 @@ export default function App() {
               else if (room === 'review') openScenario(id);
               else if (room === 'rca') openRCACase(id);
               else if (room === 'cases') openBusinessCase(id);
+              else if (room === 'product-design') openPDScenario(id);
+              else if (room === 'prioritization') openPrioritizationScenario(id);
             }}
             onUnlock={() => setUnlocked(true)}
             onLock={() => setUnlocked(false)}
             onResetAllProgress={() => {
               ['exp-lab-progress-v1', 'pal-design-progress-v1', 'pal-stats-progress-v1',
-               'pal-metrics-progress-v2', 'pal-rca-progress-v2', 'pal-cases-progress-v2'
+               'pal-metrics-progress-v2', 'pal-rca-progress-v2', 'pal-cases-progress-v2',
+               'pal-code-progress-v1', 'pal-pri-progress-v1'
               ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
+              // Clear per-scenario product-design progress (prefix: pd-progress-)
+              try {
+                Object.keys(localStorage)
+                  .filter(k => k.startsWith('pd-progress-'))
+                  .forEach(k => localStorage.removeItem(k));
+              } catch {}
               refreshProgress();
             }}
           />

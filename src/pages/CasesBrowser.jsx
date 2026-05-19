@@ -1,7 +1,7 @@
 import { businessCases } from '../data/businessCases.js';
 import { getCaseProgress } from '../utils/caseProgress.js';
 
-export function CasesBrowser({ onSelectCase }) {
+export function CasesBrowser({ onSelectCase, unlocked, onUnlock }) {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
@@ -40,8 +40,9 @@ export function CasesBrowser({ onSelectCase }) {
               key={bc.id}
               businessCase={bc}
               progress={progress}
-              isLocked={false}
+              isLocked={!bc.isFree && !unlocked}
               onSelect={() => onSelectCase(bc.id)}
+              onUnlock={onUnlock}
             />
           );
         })}
