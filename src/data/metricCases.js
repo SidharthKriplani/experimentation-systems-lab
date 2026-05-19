@@ -1891,9 +1891,6 @@ export const metricCases = [
       connectsTo: ['marketplace-interference', 'guardrail-metric', 'primary-metric'],
     },
   },
-];
-
-export const metricCasesById = Object.fromEntries(metricCases.map(c => [c.id, c]));
 
   // ─────────────────────────────────────────────
   // M09 — Creator Monetization Health
@@ -2608,3 +2605,6 @@ export const metricCasesById = Object.fromEntries(metricCases.map(c => [c.id, c]
       seniorRead: 'The measurement sophistication required for navigation quality is the same as for any model-generated metric: you must separate model performance from model prediction. A model that predicts its own performance will always look good. The right measurement structure is: (1) measure model output against real-world outcomes (ETA accuracy), (2) use user behavior as an implicit quality signal that the model cannot influence (deviation rate), (3) segment by conditions where the model might be systematically miscalibrated. This framework generalizes to any ML-driven product feature — recommendation engines, fraud models, search ranking — anywhere a model both generates the outcome and predicts whether it was good.',
     },
   },
+];
+
+export const metricCasesById = Object.fromEntries(metricCases.map(c => [c.id, c]));
