@@ -255,6 +255,83 @@ export const concepts = [
     linkedRooms: ['review', 'design'],
     statsRoomModuleId: null,
   },
+
+  // ── V2.0 concepts — RCA, Metrics, Cases rooms ────────────────────────────
+
+  {
+    id: 'retention',
+    title: 'Retention',
+    abbreviation: null,
+    category: 'metrics',
+    plainEnglish: 'The fraction of users who return to a product after their first visit, over a defined time window (D1, D7, D30, etc.). High retention means users find ongoing value; low retention means you\'re filling a leaky bucket.',
+    whyItMatters: 'Retention is the compounding engine of most consumer and B2B products. Acquisition without retention is expensive growth that evaporates. Most valuation models for SaaS and consumer apps are more sensitive to retention than to acquisition rate.',
+    commonMistake: 'Measuring raw return rate without cohort analysis. A rising D7 retention number can hide a deteriorating baseline if your acquisition mix is shifting toward higher-quality users. Always compare retention across cohorts, not just in aggregate.',
+    interviewPhrase: '"I\'d look at cohort-level retention curves rather than aggregate retention numbers. An improving aggregate can mask a declining baseline if your user mix is changing."',
+    linkedScenarioIds: [],
+    linkedDesignFieldIds: [],
+    linkedRooms: ['metrics', 'rca', 'cases'],
+    statsRoomModuleId: null,
+  },
+
+  {
+    id: 'funnel-decomposition',
+    title: 'Funnel Decomposition',
+    abbreviation: null,
+    category: 'analysis',
+    plainEnglish: 'Breaking a top-level metric into its multiplicative components to locate where the drop-off occurs. If checkout conversion falls, decompose: did traffic change? Did add-to-cart rate change? Did payment completion change? Each step isolates the locus of the problem.',
+    whyItMatters: 'A metric movement at the aggregate level is rarely actionable. Decomposition turns "checkout conversion dropped 4%" into "payment completion on mobile dropped 12% while everything else is flat." That\'s a diagnosis, not just a measurement.',
+    commonMistake: 'Stopping at the top-level metric and hypothesizing causes without decomposing. If you guess the cause before decomposing, you often investigate the wrong step and miss the actual issue.',
+    interviewPhrase: '"I\'d decompose the funnel step by step before hypothesizing a root cause. The goal is to isolate which stage moved before I investigate why."',
+    linkedScenarioIds: [],
+    linkedDesignFieldIds: [],
+    linkedRooms: ['rca', 'cases'],
+    statsRoomModuleId: null,
+  },
+
+  {
+    id: 'segmentation',
+    title: 'Segmentation',
+    abbreviation: null,
+    category: 'analysis',
+    plainEnglish: 'Splitting a metric or dataset by a dimension (device, geography, user cohort, plan tier, channel, etc.) to check whether the overall pattern holds across subgroups or is driven by a specific segment.',
+    whyItMatters: 'Aggregate metrics hide diverging subgroup behavior. A flat overall conversion rate can mask a 20% drop in mobile users offset by a 15% lift in desktop. Segmentation is both a diagnostic tool and a pre-ship check for heterogeneous treatment effects.',
+    commonMistake: 'Segmenting after seeing an unexpected result without pre-registration. Post-hoc segmentation with many cuts inflates false positive risk. Treat unexpected segment findings as hypotheses for confirmation, not conclusions.',
+    interviewPhrase: '"I\'d segment by the dimensions most likely to explain the movement — device, platform version, acquisition cohort, geography — and check whether the effect is concentrated or broad."',
+    linkedScenarioIds: [],
+    linkedDesignFieldIds: [],
+    linkedRooms: ['rca', 'cases', 'review'],
+    statsRoomModuleId: null,
+  },
+
+  {
+    id: 'data-quality-check',
+    title: 'Data Quality Check',
+    abbreviation: null,
+    category: 'validity',
+    plainEnglish: 'Verifying that the data pipeline, logging, and instrumentation are working correctly before interpreting metric movements. Includes checking for logging gaps, schema changes, backfills, upstream changes, and event deduplication.',
+    whyItMatters: 'Many apparent metric drops are data artifacts — a logging bug, a tracking change, a pipeline delay, or a schema migration that silently changed how events are counted. Reading a data quality issue as a product issue leads to wrong diagnoses and wasted engineering time.',
+    commonMistake: 'Jumping to product hypotheses before ruling out data explanations. The first RCA question is always: "Is the data correct?" especially when the drop is sudden, large, or concentrated in a specific platform or region.',
+    interviewPhrase: '"My first step is always to validate the data. I\'d check for logging changes, pipeline issues, or instrumentation bugs — especially for sudden drops — before forming product hypotheses."',
+    linkedScenarioIds: [],
+    linkedDesignFieldIds: [],
+    linkedRooms: ['rca'],
+    statsRoomModuleId: null,
+  },
+
+  {
+    id: 'cohort-analysis',
+    title: 'Cohort Analysis',
+    abbreviation: null,
+    category: 'analysis',
+    plainEnglish: 'Tracking a group of users who share a defining characteristic — usually acquisition date — through time to compare behavior across cohorts. Isolates the effect of time from the effect of mix changes.',
+    whyItMatters: 'Aggregate metrics mix users at different lifecycle stages. A rising D30 retention in aggregate can be entirely explained by a shift toward users with lower churn risk, not by product improvement. Cohort analysis separates real behavioral change from composition effects.',
+    commonMistake: 'Comparing aggregate retention across time periods without cohort controls. If your Q4 cohorts have higher intent than Q2 cohorts (e.g., because of a different acquisition channel), comparing raw retention numbers is misleading.',
+    interviewPhrase: '"I\'d look at like-for-like cohorts — same acquisition period, same channel — rather than aggregate retention. Aggregate mixes lifecycle stage and cohort quality, which confounds the comparison."',
+    linkedScenarioIds: [],
+    linkedDesignFieldIds: [],
+    linkedRooms: ['rca', 'cases'],
+    statsRoomModuleId: null,
+  },
 ];
 
 export const conceptsById = Object.fromEntries(concepts.map(c => [c.id, c]));

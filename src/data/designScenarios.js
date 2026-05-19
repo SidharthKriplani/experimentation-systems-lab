@@ -1609,7 +1609,7 @@ Novelty effect is the main runtime risk. 4 weeks with weekly breakdowns is the m
     difficulty: 'senior',
     industry: 'saas',
     scenarioFamily: 'multiple_testing',
-    pairedReviewScenarioId: 's06-five-metrics',
+    pairedReviewScenarioId: 's06-five-metrics-problem',
 
     context: {
       company: 'Loopwise',

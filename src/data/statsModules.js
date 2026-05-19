@@ -11,6 +11,7 @@ export const statsModules = [
   {
     id: 'stat01-pvalue-decision',
     title: 'p < 0.05. Ship it?',
+    subtitle: 'Experiment significance vs product decision',
     concept: 'p-value',
     difficulty: 'foundational',
     isFree: true,
@@ -83,6 +84,7 @@ export const statsModules = [
   {
     id: 'stat02-ci-reality',
     title: 'The +3.2% That Might Be Nothing',
+    subtitle: 'Confidence intervals and downside risk',
     concept: 'confidence-interval',
     difficulty: 'foundational',
     isFree: true,
@@ -155,6 +157,7 @@ export const statsModules = [
   {
     id: 'stat03-power-mde',
     title: 'No Effect Found. Roll Back?',
+    subtitle: 'Power, MDE, and false "no effect" reads',
     concept: 'power',
     difficulty: 'foundational',
     isFree: true,
@@ -227,6 +230,7 @@ export const statsModules = [
   {
     id: 'stat04-srm-first',
     title: 'The Numbers Look Great. Check This First.',
+    subtitle: 'Sample ratio mismatch before outcome reads',
     concept: 'srm',
     difficulty: 'foundational',
     isFree: true,
@@ -299,6 +303,7 @@ export const statsModules = [
   {
     id: 'stat05-multiple-testing',
     title: 'One of Seven Metrics Is Significant',
+    subtitle: 'Multiple testing and false positives',
     concept: 'multiple-testing',
     difficulty: 'analyst',
     isFree: false,
@@ -371,6 +376,7 @@ export const statsModules = [
   {
     id: 'stat06-guardrail-breach',
     title: 'The Primary Won. The Guardrail Didn\'t.',
+    subtitle: 'Primary wins blocked by guardrail harm',
     concept: 'guardrail-metric',
     difficulty: 'analyst',
     isFree: false,
@@ -443,6 +449,7 @@ export const statsModules = [
   {
     id: 'stat07-novelty-effect',
     title: 'The Feature That Peaked on Day One',
+    subtitle: 'Novelty effects and durability risk',
     concept: 'novelty-effect',
     difficulty: 'analyst',
     isFree: false,
@@ -515,6 +522,7 @@ export const statsModules = [
   {
     id: 'stat08-sutva-interference',
     title: 'The Experiment That Contaminated Itself',
+    subtitle: 'Interference and contaminated control groups',
     concept: 'sutva',
     difficulty: 'senior',
     isFree: false,
