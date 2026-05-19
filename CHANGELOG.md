@@ -4,6 +4,26 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.2.1 — Playbook Content Quality Pass
+**Date:** May 2026
+**Commit message:** "V3.2.1: Playbook content quality pass — story-first rewrites of thin articles"
+**Files changed:** `src/pages/PlaybookBrowser.jsx`
+
+### Why
+Content audit across all 117 Playbook articles revealed several articles that were structurally complete but lacked the narrative depth and story-first voice of the best articles. Four articles were genuinely thin (framework/checklist only, no opening story, no depth). Rewrote those with concrete scenarios, richer examples, and stronger interview applications.
+
+### What changed
+**Full rewrites (thin → substantial):**
+- `take-rate` (Metrics): Expanded from 3 items to 6 with a Q2 earnings story opening, mix-shift section, double-axis analysis, and interview framing. readMin 3 → 5.
+- `data-quality` (SQL & Data): Expanded from a bare checklist + callout to a full article with a story opening (silent join fanout error), six documented checks, a worked SQL example showing the fanout fix, and workflow guidance. Added relatedItems.
+- `search-ranking-metrics` (Product Sense): Expanded from framework_box + callout to a full article with a concrete ranking regression story, explanation of why CTR/CVR are insufficient, a gaming hierarchy (easy to game → hard to game), and offline evaluation guidance.
+
+**Opening narrative improvements:**
+- `guardrails` (Metrics): Replaced dry "A guardrail is a metric..." opener with a concrete marketplace story (GMV up 4%, return rate up 12%, late discovery).
+- `segment-before-aggregate` (RCA): Added a concrete 9:47am Slack message scenario that grounds the aggregate/segment concept in a real investigation moment.
+
+---
+
 ## V3.2 — PM Playbook Articles + Prioritization Room + Home Role Toggle
 **Date:** May 2026
 **Commit message:** "V3.2: PM playbook, Prioritization Room, role toggle"

@@ -115,10 +115,10 @@ const POSTS = [
       { label: 'Five Metrics Problem', room: 'review', id: 's06-five-metrics-problem' },
     ],
     content: [
-      { type: 'text', text: 'A guardrail is a metric you don\'t optimize for but commit to not harming. The experiment won\'t ship if the guardrail degrades beyond a threshold, even if the north star improves.' },
+      { type: 'text', text: 'A product team runs an experiment on their marketplace checkout flow. The primary metric — GMV — improves 4%. Statistically significant. The team ships. Three weeks later, finance flags a spike in customer refund costs. The return rate had risen 12% during the experiment. The 4% GMV gain was partially illusory — some of it came back as returns, with processing costs attached and customer trust eroded.\n\nThis is the classic guardrail failure: optimizing one metric into the ground while ignoring what breaks downstream. A guardrail is a metric you don\'t optimize for but commit to not harming. The experiment doesn\'t ship if the guardrail degrades beyond a threshold, even when the north star looks like a win.' },
       { type: 'heading', text: 'Why Guardrails Exist' },
-      { type: 'text', text: 'Product teams optimize for a primary metric. Without guardrails, the fastest path to improving the primary metric often involves harming something else. A clickbait recommendation improves CTR but degrades content quality and long-term retention. Without a guardrail rule pre-committed, the team ships the clickbait and calls it a win.' },
-      { type: 'callout', label: 'Real example', text: 'GMV is up 4% but return rate is up 12%. This is not a ship. The 4% GMV gain will be partially reversed by return costs, and the long-term trust impact is negative. A pre-committed return rate guardrail would have caught this before it shipped.' },
+      { type: 'text', text: 'Product teams optimize for what gets measured. Without guardrails, the fastest path to improving a primary metric often involves harming something adjacent. A recommendation algorithm that promotes clickbait titles gets CTR improvements — and silently erodes content quality and D30 retention. A checkout that removes friction increases CVR — and quietly increases return rate among the marginal purchasers who now complete transactions they weren\'t fully committed to. Without a guardrail pre-committed, both of those ship. Both look like wins. Neither is.' },
+      { type: 'callout', label: 'The pattern', text: 'Every optimization has a downstream cost. The senior move is naming that cost before the experiment starts — not discovering it three weeks after shipping. "What could improve while something else breaks?" is the question that produces a guardrail.' },
       { type: 'heading', text: 'How to Choose Guardrails' },
       { type: 'list', items: [
         'Cover downstream consequences: if optimizing for engagement, guardrail on satisfaction/content quality',
@@ -354,24 +354,35 @@ JOIN orders o ON u.user_id = o.user_id` },
     id: 'take-rate',
     category: 'Metrics',
     title: 'Take Rate in Marketplace Analytics: The Metric That Hides Compression',
-    summary: 'Take rate = revenue / GMV. A rising take rate on falling GMV is a warning sign most analysts miss.',
-    readMin: 3,
+    summary: 'Take rate = revenue / GMV. A rising take rate on falling GMV is a warning sign most analysts miss — and it\'s one of the clearest early signals of platform extraction before seller churn appears.',
+    readMin: 5,
     source: null,
     relatedItems: [
       { label: 'Revenue Up, Margin Down', room: 'rca', id: 'rca05' },
       { label: 'Marketplace Seller Quality', room: 'metrics', id: 'm04' },
     ],
     content: [
-      { type: 'text', text: 'Take rate is the platform\'s cut of transaction value: Revenue / GMV. For a marketplace charging sellers a 10% commission, take rate = 10%. It sounds simple. But take rate is one of the most diagnostically rich metrics for understanding marketplace health — and it\'s where many analysts stop too early.' },
-      { type: 'callout', label: 'Formula', text: 'Take Rate = Revenue / GMV. A 10% take rate means for every $100 in goods/services transacted, the platform keeps $10. Changes to take rate can come from pricing changes, product mix shifts, or promotional discounts to sellers.' },
-      { type: 'heading', text: 'What Rising Take Rate Can Hide' },
+      { type: 'text', text: 'Q2 earnings drop. Revenue is up 8%. The finance team is satisfied. But somewhere in that 8% gain is a story the P&L doesn\'t tell: GMV fell 6% that same quarter. The take rate rose from 12% to 14% because the platform raised commission rates on the top seller tier. Revenue looks healthy. Marketplace health is quietly deteriorating.\n\nTake rate is the lens that separates these two realities. It\'s the platform\'s cut of transaction value — Revenue ÷ GMV — and it\'s one of the most diagnostically rich metrics in marketplace analytics precisely because it can tell you things are going right and wrong simultaneously.' },
+      { type: 'callout', label: 'The formula', text: 'Take Rate = Revenue / GMV. A 10% take rate means for every $100 in goods or services transacted on the platform, the platform keeps $10. Changes in take rate come from three places: (1) pricing changes — the platform charged more per transaction, (2) product mix shifts — higher-margin transaction types grew faster, (3) promotional pullbacks — fee waivers or discounts were removed.' },
+      { type: 'heading', text: 'The Three Things a Rising Take Rate Can Actually Mean' },
+      { type: 'text', text: 'A rising take rate looks like good news in an executive summary — "platform monetization improved." But the interpretation depends entirely on what\'s happening to GMV at the same time.' },
       { type: 'list', items: [
-        'GMV compression: Revenue grew 5% via take rate increase, but GMV fell 10% — sellers are transacting less',
-        'Mix shift: High-take-rate product lines growing faster than low-take-rate ones inflates average take rate without pricing action',
-        'Promotional pullback: Removing seller fee waivers appears as take rate increase, not pricing action',
+        'Rising take rate + rising GMV: Pricing power. The platform raised rates and sellers stayed. Business is healthy.',
+        'Rising take rate + flat GMV: Mixed signal. Revenue is growing but transaction volume isn\'t. Monitor seller satisfaction — this often precedes a gradual GMV decline as sellers reduce activity.',
+        'Rising take rate + falling GMV: Extraction. The platform is charging more per transaction as sellers transact less. This predicts seller churn 1-2 quarters ahead of when GMV decline accelerates.',
       ]},
-      { type: 'heading', text: 'The Double-Axis Analysis' },
-      { type: 'text', text: 'Never report take rate alone. Report it alongside GMV volume. A rising take rate on rising GMV is pricing power. A rising take rate on flat or falling GMV is extraction — the platform is charging more per transaction as sellers transact less. The second pattern predicts seller churn before it shows up in GMV.' },
+      { type: 'heading', text: 'Mix Shift: The Invisible Take Rate Driver' },
+      { type: 'text', text: 'One of the trickiest take rate patterns is mix shift — when the average take rate changes not because of pricing decisions but because transaction composition changed. Imagine a marketplace that charges 8% on physical goods and 18% on digital goods. If digital goods grow from 20% to 35% of GMV in a quarter, average take rate rises by 2+ percentage points with zero pricing action. The finance team celebrates "improved monetization." The real story is category mix.\n\nAlways decompose take rate changes by category and transaction type before attributing any movement to a pricing decision.' },
+      { type: 'heading', text: 'The Double-Axis Rule' },
+      { type: 'text', text: 'Never report take rate in isolation. Report it on a dual axis with GMV volume. Plot both over time on the same chart. The visual is immediately diagnostic: two lines rising together mean pricing power; take rate climbing while GMV sinks is the extraction pattern. Any analyst who presents take rate without GMV context is presenting half the story.' },
+      { type: 'callout', label: 'In interviews', text: '"How do you evaluate marketplace monetization health?" — take rate vs GMV is the right answer. "Take rate alone tells you what percentage the platform keeps. Paired with GMV trend, it tells you whether the platform is earning more because it\'s facilitating more value, or because it\'s extracting more from a shrinking base. The second pattern predicts seller churn before it shows up in the GMV line itself."' },
+    ],
+    keyTakeaways: [
+      'Take Rate = Revenue / GMV — a rising take rate is not inherently good news; it depends entirely on what GMV is doing simultaneously.',
+      'Rising take rate + falling GMV is extraction: the platform charges more per transaction as sellers transact less. This predicts seller churn 1-2 quarters before GMV accelerates its decline.',
+      'Mix shift moves take rate without any pricing decision — always decompose by category and transaction type before attributing changes to monetization strategy.',
+      'Always pair take rate with GMV on a dual-axis chart: the visual pattern immediately distinguishes pricing power from extraction.',
+      'Promotional pullback (removing fee waivers) appears as a take rate increase in reporting — confirm the mechanism before declaring improved monetization.',
     ],
   },
   {
@@ -514,7 +525,7 @@ JOIN orders o ON u.user_id = o.user_id` },
       { label: 'GenAI Bot Escalation Spike', room: 'rca', id: 'rca06' },
     ],
     content: [
-      { type: 'text', text: 'The aggregate is a weighted average. A flat aggregate is segment movements that net to zero. A falling aggregate is segments where the negative outweighs the positive. Diagnosing the aggregate directly means trying to find one cause for multiple things happening simultaneously.' },
+      { type: 'text', text: 'The message comes through at 9:47am: "Retention is down 3% this week. Do you know what\'s going on?"\n\nYou look at the aggregate and start forming hypotheses. Maybe the new push notification cadence? Maybe the Android release last Tuesday? Maybe the change to the onboarding flow? You have five reasonable guesses and no way to rank them.\n\nThen you do the one thing that should have been first: cut by platform. iOS is down 2%. Web is actually up 4%. Android is down 8%. The "3% decline" is three completely different stories averaged into one number that describes none of them. The real problem is Android — probably that release. The rest of your hypothesis list was noise.\n\nThis is why the aggregate is almost always the wrong place to start an RCA. The aggregate is a weighted average. A flat aggregate is segments moving in opposite directions and canceling out. A falling aggregate is segments where the losses outweigh the gains. Diagnosing the aggregate directly is trying to find one cause for what are usually multiple things happening simultaneously.' },
       { type: 'heading', text: 'The Pattern' },
       { type: 'text', text: 'Retention fell 3% overall. Cut by platform: iOS fell 2%, Android fell 8%, Web grew 4%. The 3% decline is an average of three different stories. Diagnosing the aggregate, you\'re trying to explain one number that is actually three different problems averaged together. The real cause is the Android regression.' },
       { type: 'callout', label: 'The standard cuts', text: 'For any metric movement: (1) platform / device, (2) geography / market, (3) user cohort (new vs returning, signup period), (4) feature version (if experiment running), (5) traffic source (organic vs paid vs referral). Do all five before forming hypotheses.' },
@@ -1932,8 +1943,8 @@ JOIN orders o ON u.user_id = o.user_id` },
     id: 'search-ranking-metrics',
     category: 'Product Sense',
     title: 'Measuring Search Ranking Quality: Beyond CTR and CVR',
-    summary: 'A ranking change that improves CTR on bad results is a regression. How to build a metric system that captures quality, not just clicks.',
-    readMin: 5,
+    summary: 'A ranking change that improves CTR on bad results is not a win — it\'s a regression with a lag. The metrics that capture search quality resist gaming and measure what users actually got, not just what they clicked.',
+    readMin: 6,
     source: 'eBay, Google, Airbnb search team pattern',
     relatedItems: [
       { label: 'What Defines a Successful Search?', room: 'metrics', id: 'm01' },
@@ -1941,16 +1952,22 @@ JOIN orders o ON u.user_id = o.user_id` },
       { label: 'Design the Search Ranking Test', room: 'design', id: 'd05' },
     ],
     content: [
-      { type: 'text', text: 'CTR and CVR measure user click and purchase behavior — not whether the results were good. A clickbait title gets high CTR on an irrelevant result. A deceptively cheap listing converts on first click but leads to a return. Good search ranking metrics must capture downstream outcomes, not just upstream engagement.' },
-      { type: 'framework_box', label: 'Search Quality Metric System', items: [
-        'MRR (Mean Reciprocal Rank): For navigational queries, did the right result appear in position 1-3?',
-        'NDCG (Normalized Discounted Cumulative Gain): Does the ranking order match relevance scores?',
-        'Post-click satisfaction: Purchase + no return, or purchase + positive review. Measures outcome quality.',
-        'Search refinement rate: % of queries where user immediately refines/reformulates. High = results weren\'t relevant.',
-        'Zero-result rate: % of queries returning no results. Direct measure of coverage gap.',
-        'Session CVR from search: Did the user who searched eventually convert in the session?',
+      { type: 'text', text: 'A search team ships a new ranking algorithm. CTR at position 1 goes up 12%. Conversion rate improves 4%. Everyone celebrates. Six weeks later: return rates are up 18%, negative reviews mention "item not as described," and D30 retention for users who converted from search is down 8 points.\n\nWhat happened? The new algorithm promoted listings with aggressive titles and low prices — gaming the CTR and short-term CVR signal. The searches "worked" by narrow metrics while delivering worse outcomes for users. The team optimized the measurement system, not the user experience.\n\nSearch ranking quality is hard to measure because clicks and purchases happen immediately, but whether the result was actually good is only knowable downstream. The right metric system captures the downstream.' },
+      { type: 'heading', text: 'Why CTR and CVR Alone Are Insufficient' },
+      { type: 'text', text: 'CTR measures whether users clicked — not whether the result was relevant. A clickbait title on an irrelevant result can outperform a clear title on the right result. CVR measures whether users purchased — not whether they were satisfied with what they bought. A deceptively cheap listing converts and then generates a return. These metrics look at the tap, not at what happened after.' },
+      { type: 'framework_box', label: 'Search Quality Metric Hierarchy', items: [
+        'Offline relevance: MRR (Mean Reciprocal Rank) and NDCG (Normalized Discounted Cumulative Gain) against human-rated query-result pairs. Measures ranking quality before any user behavior.',
+        'Behavioral: Post-click engagement — did the user spend time on the result page, or immediately bounce back to results? High bounce = irrelevant click.',
+        'Outcome quality: Post-click satisfaction = purchase + no return + positive review within N days. The metric most resistant to gaming. Hard to fake, directly captures user value.',
+        'Refinement signal: Search reformulation rate — % of queries immediately followed by a modified search. High = the results didn\'t answer the question.',
+        'Coverage: Zero-result rate — % of queries that returned no results. A direct gap in supply or indexing.',
+        'Long-horizon: D30 retention for users who searched and purchased vs benchmark. Searches that deliver bad purchases erode retention over time.',
       ]},
-      { type: 'callout', label: 'The quality trap', text: 'CTR at position 1 can be gamed by clickbait. CVR can be inflated by cheap listings that generate returns. The metric that resists gaming: post-click satisfaction = purchase + no return + positive review within N days. Hard to fake, directly reflects user value.' },
+      { type: 'heading', text: 'The Gaming Hierarchy' },
+      { type: 'text', text: 'Different search metrics have different susceptibility to gaming by sellers optimizing their listings:\n\n— Easiest to game: CTR (clickbait titles), position-1 share (keyword stuffing)\n— Harder to game: CVR (must actually get a purchase)\n— Hardest to game: Post-click satisfaction (must survive the return window and review), reformulation rate (user behavior is harder to fake), D30 retention impact (takes months to manipulate)\n\nBuild your primary search quality metric around the bottom of this hierarchy. When a ranking change improves CTR but worsens post-click satisfaction, the algorithm got worse, not better.' },
+      { type: 'callout', label: 'The interview signal', text: '"What metrics would you use to evaluate a search ranking experiment?" — the weak answer lists CTR and CVR. The strong answer: "CTR measures engagement, not relevance. My primary metric would be post-click satisfaction — purchase + no return within 7 days — because it captures whether the result was actually good. I\'d use CTR and CVR as diagnostics but not as the ship/no-ship criterion. And I\'d also check zero-result rate and reformulation rate as supply and relevance gap signals."' },
+      { type: 'heading', text: 'Offline Evaluation as a Pre-Experiment Filter' },
+      { type: 'text', text: 'Before running a live experiment on a ranking change, run offline evaluation against a held-out set of human-rated query-result pairs. Calculate NDCG or MRR for the new ranking vs the baseline. If the new algorithm is worse on offline quality, don\'t run the live experiment — you already know the direction. Offline evaluation is cheap; live experiment regressions are expensive.' },
     ],
   },
   {
@@ -2231,23 +2248,46 @@ FROM sessions` },
     id: 'data-quality',
     category: 'SQL & Data',
     title: 'Data Quality Checks Before You Start Any Analysis',
-    summary: 'Nulls, duplicates, grain mismatches, timestamp anomalies. The checks that catch silent errors before they become wrong conclusions.',
+    summary: 'Nulls, duplicates, grain mismatches, timestamp anomalies. The checks that catch silent errors before they become wrong conclusions — and that you\'ll skip exactly once before regretting it.',
     readMin: 5,
     source: null,
     relatedItems: [
       { label: 'SRM First (Stats)', room: 'stats', id: 'stat04' },
+      { label: 'Checkout Conversion Drop', room: 'rca', id: 'rca01' },
     ],
     content: [
-      { type: 'text', text: 'Data quality errors rarely announce themselves. They produce plausible-looking numbers that are silently wrong. The checks below take 5-10 minutes and have caught more errors than any statistical sophistication in the analysis itself.' },
+      { type: 'text', text: 'The most expensive data quality error is not the one that throws a syntax error. It\'s the one that runs successfully, returns a plausible number, and gets presented to leadership as fact. You\'ve seen this happen: a query returns 840,000 "users" on a platform with 600,000 registered users. Nobody notices because 840,000 looks like aggressive growth. It\'s actually a join fanout — the query was joining at order grain and counting order rows as users.\n\nData quality errors are silent. They don\'t announce themselves. They produce confident-looking outputs that only unravel when someone asks the one question you didn\'t anticipate. These six checks take 5-10 minutes and have caught more real errors than any statistical sophistication in the analysis itself.' },
+      { type: 'heading', text: 'The Six Non-Negotiable Checks' },
       { type: 'framework_box', label: 'Pre-Analysis Data Quality Checklist', items: [
-        '1. Row count check: Does the count match your expectation? Too few (filter error) or too many (join fanout)?',
-        '2. NULL scan: SELECT COUNT(*) WHERE key_field IS NULL — what % of your join keys and metric fields are null?',
-        '3. Duplicate check: SELECT id, COUNT(*) GROUP BY id HAVING COUNT(*) > 1 — are there duplicate records at the grain?',
-        '4. Date range check: MIN(event_date) and MAX(event_date) — does the range match your intention?',
-        '5. Extreme value check: SELECT MAX, MIN, AVG, STDDEV for numeric fields — are there obvious outliers?',
-        '6. Grain verification: SELECT COUNT(*) vs COUNT(DISTINCT user_id) — are these equal (user grain) or different (session grain)?',
+        '1. Row count check: Does the total row count match your expectation? Too few = filter error. Too many = join fanout. Run this before and after every join.',
+        '2. NULL scan: SELECT COUNT(*) WHERE key_field IS NULL — what % of your join keys and metric values are null? High null rates on join keys mean silent data loss.',
+        '3. Duplicate check: SELECT id, COUNT(*) GROUP BY id HAVING COUNT(*) > 1 — are there duplicate records at the grain? Duplicates inflate every aggregate downstream.',
+        '4. Date range check: MIN(event_date) and MAX(event_date) — does the range actually match your intention? Off-by-one timezone errors are far more common than anyone admits.',
+        '5. Extreme value check: SELECT MAX, MIN, AVG, STDDEV for numeric fields — does MAX(revenue) = $4.3 billion or $4.30? Outliers corrupt averages and mask real distributions.',
+        '6. Grain verification: SELECT COUNT(*) vs COUNT(DISTINCT user_id) — are these equal (user grain) or different (you have session or event grain)? Mismatched grain means your metric denominators are wrong.',
       ]},
-      { type: 'callout', label: 'The join fanout trap', text: 'A LEFT JOIN from users to orders, when users have multiple orders, creates multiple rows per user. COUNT(user_id) is now inflated. Always check: did my row count change after the join? If users table had 10,000 rows and the joined result has 50,000 rows — you have a fanout, and all your aggregates are wrong.' },
+      { type: 'heading', text: 'The Join Fanout: The Most Common Silent Error' },
+      { type: 'text', text: 'The join fanout is the most common and most dangerous data quality error. It happens when you join a one-to-many relationship without aggregating first — a users table joined to an orders table, where one user has 8 orders, produces 8 rows for that user. If you then COUNT(user_id), you get 8 users. Multiply across all users and your "user count" is your order count.\n\nThe check is simple: what was the row count before the join? What is it after? If it increased, you have a fanout. Fix it by aggregating the many-side table before joining.' },
+      { type: 'example', label: 'Detecting and fixing a fanout', text: `-- WRONG: inflated by orders per user
+SELECT COUNT(u.user_id) AS user_count   -- returns order count, not user count
+FROM users u
+JOIN orders o ON u.user_id = o.user_id
+
+-- RIGHT: deduplicate before counting
+SELECT COUNT(DISTINCT u.user_id) AS user_count
+FROM users u
+JOIN orders o ON u.user_id = o.user_id
+
+-- BEST: aggregate at order grain first, then join
+SELECT COUNT(u.user_id) AS user_count
+FROM users u
+JOIN (
+  SELECT user_id, COUNT(*) AS order_count
+  FROM orders GROUP BY user_id
+) o ON u.user_id = o.user_id` },
+      { type: 'heading', text: 'Building the Check Into Your Workflow' },
+      { type: 'text', text: 'Senior analysts don\'t run these checks because they\'re paranoid — they run them because they\'ve been burned once and never again. A 10-minute quality check at the start of an analysis saves you from a 2-hour debugging session at 11pm before a board presentation. Build it into muscle memory: before any analysis goes in a doc or deck, the six checks have passed.' },
+      { type: 'callout', label: 'Interview application', text: 'When asked "how would you validate your query results?" — the checklist is your answer. Name it in order: row count before and after joins, null rate on key fields, duplicate check at grain, date range sanity, extreme value scan. Interviewers are testing whether you know that analysis starts with validating the data, not with statistical methods.' },
     ],
   },
   {
