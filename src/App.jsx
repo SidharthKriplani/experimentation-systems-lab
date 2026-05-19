@@ -10,6 +10,8 @@ import { businessCases } from './data/businessCases.js';
 import { productDesignScenarios } from './data/productDesignScenarios.js';
 import { codeModules } from './data/codeModules.js';
 import { prioritizationScenarios } from './data/prioritizationScenarios.js';
+import { behavioralQuestions } from './data/behavioralQuestions.js';
+import { estimationProblems } from './data/estimationProblems.js';
 // Layout (always needed — not lazy)
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -23,6 +25,8 @@ import { getCaseProgress } from './utils/caseProgress.js';
 import { getProductDesignProgress } from './utils/productDesignProgress.js';
 import { getCodeProgress } from './utils/codeProgress.js';
 import { getPrioritizationProgress } from './utils/prioritizationProgress.js';
+import { getBehavioralProgress } from './utils/behavioralProgress.js';
+import { getEstimationProgress } from './utils/estimationProgress.js';
 import { isUnlocked } from './utils/unlock.js';
 
 // Pages — lazy-loaded for code splitting
@@ -53,6 +57,10 @@ const CaseRunner            = lazy(() => import('./components/cases/CaseRunner.j
 const ProductDesignRunner   = lazy(() => import('./components/productDesign/ProductDesignRunner.jsx').then(m => ({ default: m.ProductDesignRunner })));
 const CodeRunner            = lazy(() => import('./components/code/CodeRunner.jsx').then(m => ({ default: m.CodeRunner })));
 const PrioritizationRunner  = lazy(() => import('./components/prioritization/PrioritizationRunner.jsx').then(m => ({ default: m.PrioritizationRunner })));
+const BehavioralBrowser     = lazy(() => import('./pages/BehavioralBrowser.jsx').then(m => ({ default: m.BehavioralBrowser })));
+const BehavioralRunner      = lazy(() => import('./components/behavioral/BehavioralRunner.jsx').then(m => ({ default: m.BehavioralRunner })));
+const EstimationBrowser     = lazy(() => import('./pages/EstimationBrowser.jsx').then(m => ({ default: m.EstimationBrowser })));
+const EstimationRunner      = lazy(() => import('./components/estimation/EstimationRunner.jsx').then(m => ({ default: m.EstimationRunner })));
 
 function getInitialTheme() {
   try {
@@ -73,6 +81,8 @@ export default function App() {
   const [activePDScenarioId, setActivePDScenarioId] = useState(null);
   const [activeCodeModuleId, setActiveCodeModuleId] = useState(null);
   const [activePrioritizationId, setActivePrioritizationId] = useState(null);
+  const [activeBehavioralId, setActiveBehavioralId] = useState(null);
+  const [activeEstimationId, setActiveEstimationId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
   const [theme, setTheme] = useState(getInitialTheme);
@@ -101,6 +111,8 @@ export default function App() {
     setActiveBusinessCaseId(null);
     setActivePDScenarioId(null);
     setActiveCodeModuleId(null);
+    setActiveBehavioralId(null);
+    setActiveEstimationId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -184,6 +196,26 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function openBehavioralQuestion(id) {
+    const q = behavioralQuestions.find(q => q.id === id);
+    if (!q) return;
+    if (!q.isFree && !unlocked) { track('paywall_hit', { room: 'behavioral', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'behavioral', id, title: q.title });
+    setActiveBehavioralId(id);
+    setPage('behavioral-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openEstimationProblem(id) {
+    const p = estimationProblems.find(p => p.id === id);
+    if (!p) return;
+    if (!p.isFree && !unlocked) { track('paywall_hit', { room: 'estimation', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'estimation', id, title: p.title });
+    setActiveEstimationId(id);
+    setPage('estimation-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function openPDScenario(id) {
     const s = productDesignScenarios.find(s => s.id === id);
     if (!s) return;
@@ -249,6 +281,20 @@ export default function App() {
     return accessible[idx + 1].id;
   }
 
+  function getNextBehavioralId(currentId) {
+    const accessible = behavioralQuestions.filter(q => q.isFree || unlocked);
+    const idx = accessible.findIndex(q => q.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
+  function getNextEstimationId(currentId) {
+    const accessible = estimationProblems.filter(p => p.isFree || unlocked);
+    const idx = accessible.findIndex(p => p.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
   function getNextPrioritizationId(currentId) {
     const accessible = prioritizationScenarios.filter(s => s.isFree || unlocked);
     const idx = accessible.findIndex(s => s.id === currentId);
@@ -273,6 +319,10 @@ export default function App() {
   const nextCodeModuleId = activeCodeModuleId ? getNextCodeModuleId(activeCodeModuleId) : null;
   const activePrioritizationScenario = prioritizationScenarios.find(s => s.id === activePrioritizationId);
   const nextPrioritizationId = activePrioritizationId ? getNextPrioritizationId(activePrioritizationId) : null;
+  const activeBehavioralQuestion = behavioralQuestions.find(q => q.id === activeBehavioralId);
+  const nextBehavioralId = activeBehavioralId ? getNextBehavioralId(activeBehavioralId) : null;
+  const activeEstimationProblem = estimationProblems.find(p => p.id === activeEstimationId);
+  const nextEstimationId = activeEstimationId ? getNextEstimationId(activeEstimationId) : null;
 
   function getPairedDesignId(reviewScenarioId) {
     const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
@@ -444,6 +494,32 @@ export default function App() {
           />
         )}
 
+        {/* ── Behavioral Room ── */}
+        {page === 'behavioral' && (
+          <BehavioralBrowser onStart={openBehavioralQuestion} unlocked={unlocked} />
+        )}
+        {page === 'behavioral-runner' && activeBehavioralQuestion && (
+          <BehavioralRunner
+            key={activeBehavioralId}
+            question={activeBehavioralQuestion}
+            onBack={() => navigate('behavioral')}
+            onNext={nextBehavioralId ? () => openBehavioralQuestion(nextBehavioralId) : undefined}
+          />
+        )}
+
+        {/* ── Estimation Room ── */}
+        {page === 'estimation' && (
+          <EstimationBrowser onStart={openEstimationProblem} unlocked={unlocked} />
+        )}
+        {page === 'estimation-runner' && activeEstimationProblem && (
+          <EstimationRunner
+            key={activeEstimationId}
+            problem={activeEstimationProblem}
+            onBack={() => navigate('estimation')}
+            onNext={nextEstimationId ? () => openEstimationProblem(nextEstimationId) : undefined}
+          />
+        )}
+
         {/* ── Support pages ── */}
         {page === 'progress' && (
           <Progress
@@ -491,7 +567,8 @@ export default function App() {
             onResetAllProgress={() => {
               ['exp-lab-progress-v1', 'pal-design-progress-v1', 'pal-stats-progress-v1',
                'pal-metrics-progress-v2', 'pal-rca-progress-v2', 'pal-cases-progress-v2',
-               'pal-code-progress-v1', 'pal-pri-progress-v1'
+               'pal-code-progress-v1', 'pal-pri-progress-v1',
+               'pal-behavioral-progress-v1', 'pal-estimation-progress-v1'
               ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
               // Clear per-scenario product-design progress (prefix: pd-progress-)
               try {

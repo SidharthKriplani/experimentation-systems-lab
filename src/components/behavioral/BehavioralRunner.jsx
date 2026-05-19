@@ -1,0 +1,281 @@
+import { useState } from 'react';
+import { saveBehavioralAttempt, getBehavioralProgress } from '../../utils/behavioralProgress.js';
+
+const RATINGS = [
+  { id: 'strong',  label: 'Nailed the structure + insight',        sub: 'Strong STAR structure and hit the key principle' },
+  { id: 'partial', label: 'Had the structure, missed a key principle', sub: 'Solid framework but missing a nuance or a key move' },
+  { id: 'miss',    label: 'Needs more practice',                   sub: 'Story was unclear or missing the most important part' },
+];
+
+const RATING_STYLE = {
+  strong:  { color: 'var(--green)',  bg: 'var(--green-bg)',  border: 'var(--green-border)' },
+  partial: { color: 'var(--yellow)', bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
+  miss:    { color: 'var(--red)',    bg: 'var(--red-bg)',    border: 'var(--red-border)' },
+};
+
+const STAR_LABEL_COLOR = {
+  situation: 'var(--accent)',
+  task:      'var(--purple)',
+  action:    'var(--teal)',
+  result:    'var(--green)',
+};
+
+const STAR_LABEL = {
+  situation: 'Situation',
+  task:      'Task',
+  action:    'Action',
+  result:    'Result',
+};
+
+export function BehavioralRunner({ question, onBack, onNext }) {
+  const existing = getBehavioralProgress(question.id);
+  const [response, setResponse] = useState(existing?.response || '');
+  const [revealed, setRevealed] = useState(!!existing?.rating);
+  const [rating, setRating] = useState(existing?.rating || null);
+  const [starOpen, setStarOpen] = useState(false);
+
+  const canReveal = response.trim().length >= 60;
+
+  function handleReveal() {
+    if (!canReveal) return;
+    setRevealed(true);
+  }
+
+  function handleRate(r) {
+    setRating(r);
+    saveBehavioralAttempt(question.id, response, r);
+  }
+
+  function handleRetry() {
+    setResponse('');
+    setRevealed(false);
+    setRating(null);
+    setStarOpen(false);
+  }
+
+  return (
+    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+      {/* Back */}
+      <button
+        onClick={onBack}
+        style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.85rem', marginBottom: '1.5rem', padding: 0 }}
+      >
+        ← Back to Behavioral & Leadership
+      </button>
+
+      {/* Question header */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-dim)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+            {question.id}
+          </span>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>·</span>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'capitalize' }}>{question.category}</span>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>·</span>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{question.difficulty}</span>
+        </div>
+        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 0.3rem', letterSpacing: '-0.02em' }}>
+          {question.title}
+        </h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>{question.subtitle}</p>
+      </div>
+
+      {/* The interview prompt */}
+      <div style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: '10px', padding: '1rem 1.25rem', marginBottom: '1rem' }}>
+        <div style={{ fontWeight: 700, fontSize: '0.82rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
+          Interview Question
+        </div>
+        <p style={{ color: 'var(--text)', fontSize: '0.95rem', lineHeight: 1.65, margin: 0, fontWeight: 500 }}>
+          {question.prompt}
+        </p>
+      </div>
+
+      {/* STAR Guide collapsible */}
+      <button
+        onClick={() => setStarOpen(o => !o)}
+        style={{
+          width: '100%', textAlign: 'left', background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: '8px', padding: '0.75rem 1rem', cursor: 'pointer', marginBottom: '1rem',
+          color: 'var(--text-muted)', fontSize: '0.84rem', fontWeight: 500,
+        }}
+      >
+        {starOpen ? '▾' : '▸'} STAR Guide
+        {!starOpen && <span style={{ marginLeft: '0.5rem', fontSize: '0.78rem', color: 'var(--text-dim)' }}>(try first, then check)</span>}
+      </button>
+      {starOpen && (
+        <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {Object.entries(question.starGuide).map(([key, text]) => (
+              <div key={key} style={{ display: 'flex', gap: '0.75rem' }}>
+                <span style={{
+                  fontSize: '0.72rem', fontWeight: 700,
+                  color: STAR_LABEL_COLOR[key],
+                  textTransform: 'uppercase', letterSpacing: '0.05em',
+                  minWidth: '72px', flexShrink: 0, paddingTop: '0.1rem',
+                }}>
+                  {STAR_LABEL[key]}
+                </span>
+                <span style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Response area */}
+      {!revealed && (
+        <>
+          <textarea
+            value={response}
+            onChange={e => setResponse(e.target.value)}
+            placeholder="Walk through your answer using STAR — Situation, Task, Action, Result. The Action part is the most important: how did you approach it, what was your thinking, how did you handle pushback?"
+            rows={11}
+            style={{
+              width: '100%', boxSizing: 'border-box',
+              background: 'var(--surface)', border: '1px solid var(--border)',
+              borderRadius: '8px', padding: '0.85rem 1rem',
+              color: 'var(--text)', fontSize: '0.9rem', lineHeight: 1.65,
+              resize: 'vertical', outline: 'none',
+              fontFamily: 'inherit',
+            }}
+          />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.75rem' }}>
+            <span style={{ fontSize: '0.8rem', color: response.trim().length < 60 ? 'var(--text-dim)' : 'var(--green)' }}>
+              {response.trim().length < 60 ? `${response.trim().length}/60 characters to unlock` : '✓ Ready to reveal'}
+            </span>
+            <button
+              onClick={handleReveal}
+              disabled={!canReveal}
+              style={{
+                background: canReveal ? 'var(--accent)' : 'var(--surface-2)',
+                color: canReveal ? '#fff' : 'var(--text-dim)',
+                border: 'none', borderRadius: '7px', padding: '0.55rem 1.25rem',
+                fontWeight: 600, fontSize: '0.88rem', cursor: canReveal ? 'pointer' : 'not-allowed',
+              }}
+            >
+              See Model Answer →
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* Revealed state */}
+      {revealed && (
+        <div>
+          {/* Your answer */}
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem' }}>
+            <div style={{ fontWeight: 600, fontSize: '0.78rem', color: 'var(--text-dim)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Your Answer</div>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.87rem', lineHeight: 1.65, margin: 0, whiteSpace: 'pre-wrap' }}>{response}</p>
+          </div>
+
+          {/* Model Answer — STAR blocks */}
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
+            <div style={{ fontWeight: 700, fontSize: '0.82rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '1.25rem' }}>
+              Model Answer
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+              {Object.entries(question.modelAnswer).map(([key, text]) => (
+                <div key={key} style={{ display: 'flex', gap: '1rem' }}>
+                  <div style={{
+                    fontSize: '0.7rem', fontWeight: 700,
+                    color: STAR_LABEL_COLOR[key],
+                    textTransform: 'uppercase', letterSpacing: '0.06em',
+                    minWidth: '72px', flexShrink: 0, paddingTop: '0.15rem',
+                  }}>
+                    {STAR_LABEL[key]}
+                  </div>
+                  <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.72 }}>{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Strong Answer Markers */}
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
+            <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
+              What a Strong Answer Includes
+            </div>
+            <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
+              {question.strongAnswerMarkers.map((marker, i) => <li key={i}>{marker}</li>)}
+            </ul>
+          </div>
+
+          {/* Key Principles */}
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
+            <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
+              Key Principles
+            </div>
+            <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
+              {question.keyPrinciples.map((p, i) => <li key={i}>{p}</li>)}
+            </ul>
+          </div>
+
+          {/* What to Avoid */}
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--red-border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+            <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--red)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
+              What to Avoid
+            </div>
+            <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
+              {question.antiPatterns.map((ap, i) => <li key={i}>{ap}</li>)}
+            </ul>
+          </div>
+
+          {/* Self-rating */}
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+            <div style={{ fontWeight: 600, fontSize: '0.87rem', color: 'var(--text)', marginBottom: '0.75rem' }}>
+              How did you do?
+            </div>
+            <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+              {RATINGS.map(r => {
+                const s = RATING_STYLE[r.id];
+                const selected = rating === r.id;
+                return (
+                  <button
+                    key={r.id}
+                    onClick={() => handleRate(r.id)}
+                    style={{
+                      background: selected ? s.bg : 'var(--surface-2)',
+                      border: `1px solid ${selected ? s.border : 'var(--border)'}`,
+                      borderRadius: '8px', padding: '0.55rem 1rem',
+                      color: selected ? s.color : 'var(--text-muted)',
+                      fontWeight: selected ? 700 : 500, fontSize: '0.86rem',
+                      cursor: 'pointer', textAlign: 'left',
+                    }}
+                  >
+                    {r.label}
+                    <div style={{ fontSize: '0.72rem', fontWeight: 400, opacity: 0.8, marginTop: '0.15rem' }}>{r.sub}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <button onClick={handleRetry} style={{
+              background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '7px',
+              padding: '0.5rem 1rem', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer',
+            }}>
+              ↺ Try again
+            </button>
+            <button onClick={onBack} style={{
+              background: 'none', border: '1px solid var(--border)', borderRadius: '7px',
+              padding: '0.5rem 1.1rem', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer',
+            }}>
+              ← Back to Room
+            </button>
+            {onNext && (
+              <button onClick={onNext} style={{
+                background: 'var(--accent)', border: 'none', borderRadius: '7px',
+                padding: '0.5rem 1.2rem', color: '#fff', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
+                marginLeft: 'auto',
+              }}>
+                Next question →
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

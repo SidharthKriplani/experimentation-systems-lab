@@ -1596,6 +1596,1653 @@ hallucination_rate_pct broken by intent_category + confidence_bucket → expecte
       ],
       interviewPhrase: 'For any AI support system, I always ask: does our deflection metric measure non-escalation or actual resolution? Because if it\'s the former, we\'re probably celebrating the bot closing tickets the user didn\'t feel were worth escalating — not tickets that were actually resolved.'
     }
+  },
+
+  {
+    id: 'RCA07',
+    title: 'Seller Fraud Rate Tripled in 72 Hours',
+    subtitle: 'Crafted · Marketplace · Trust & Safety',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'marketplace',
+    linkedConceptIds: ['segmentation', 'data-quality-check', 'funnel-decomposition'],
+    context: {
+      metricMovement: 'Seller fraud rate spiked from 0.8% to 3.1% of orders flagged fraudulent (+2.3pp) in 72 hours',
+      businessImpact: '~$85k in chargebacks at risk; sustained rate could trigger payment processor risk escalation and higher processing fees',
+      timeWindow: 'Spike began 4 days ago, coinciding with the Express Seller onboarding tier launch',
+      knownFacts: [
+        'A new "Express Seller" onboarding tier launched 4 days ago with reduced identity verification steps',
+        '89% of fraudulent orders are from sellers onboarded in the last 5 days',
+        'Fraudulent orders concentrated in high-value categories: Electronics and Collectibles',
+        'Buyer accounts placing these orders are 1-3 days old',
+        'No change to buyer-side verification or fraud detection models',
+      ],
+    },
+    diagnosisSteps: [
+      {
+        id: 'system_check',
+        stepNumber: 1,
+        label: 'System / Data Check',
+        prompt: 'Before diagnosing, what do you check first?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Verify fraud flag definition is unchanged — confirm the payment processor has not altered its flagging thresholds or model',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Fraud rate spikes can be real increases in fraud or an artifact of a changed detection threshold. If the payment processor updated its risk model or lowered its flagging threshold 4 days ago, you would see a rate spike with no actual increase in fraudulent behavior. Confirming the flag definition is unchanged is the fastest way to establish whether you are looking at a real fraud increase or a measurement shift — and it takes minutes to verify with the processor or your payments team.',
+          },
+          {
+            id: 'b',
+            label: 'Pull chargeback volumes from the finance team to validate the processor flag data',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Chargeback volume is useful corroborating evidence that the fraud is real, but chargebacks lag fraud flags by days to weeks. Waiting for chargebacks to confirm the flag data delays response time significantly. Verifying the flag definition itself is faster and more direct as a first check.',
+          },
+          {
+            id: 'c',
+            label: 'Immediately pause Express Seller onboarding to stop new fraudulent sellers from joining',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Taking action before confirming the measurement is valid risks shutting down a legitimate product feature based on a potential false alarm. If the fraud flag definition changed, pausing onboarding would harm the business unnecessarily. Always validate the data before escalating to an operational response.',
+          },
+        ],
+      },
+      {
+        id: 'decompose',
+        stepNumber: 2,
+        label: 'Metric Decomposition',
+        prompt: 'Fraud flag definition confirmed unchanged — the spike is real. How do you decompose the fraud rate metric?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Decompose fraud rate by seller cohort age (0-7 days, 8-30 days, 30+ days) to isolate whether fraud is concentrated in new vs. established sellers',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Given that 89% of flagged orders come from sellers onboarded in the last 5 days, decomposing by seller cohort age will confirm this concentration immediately. This decomposition separates the new-seller fraud signal from the established-seller baseline, quantifying exactly how much of the rate increase is attributable to new accounts. It also tells you whether the problem is growing (if new cohorts each week show increasing fraud) or was a one-time entry.',
+          },
+          {
+            id: 'b',
+            label: 'Decompose by product category to find which categories have the highest fraud rates',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Category decomposition is relevant — and you already know Electronics and Collectibles are the concentrated categories — but category alone does not identify who is committing the fraud or how they got onto the platform. Seller cohort decomposition directly connects to the onboarding change that happened simultaneously with the spike, making it the more diagnostic first cut.',
+          },
+          {
+            id: 'c',
+            label: 'Compare total order volume before and after the Express Seller launch to see if volume growth explains the spike',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Fraud rate is already a percentage of orders, so volume growth does not explain a rate increase — if total orders doubled and fraud doubled proportionally, the rate would stay flat. The question is why the rate changed, not whether volume changed. Volume analysis would not surface the seller-cohort mechanism driving the spike.',
+          },
+        ],
+      },
+      {
+        id: 'segment',
+        stepNumber: 3,
+        label: 'Segmentation',
+        prompt: 'Cohort decomposition confirms fraud is concentrated in sellers onboarded in the last 5 days. Which segmentation finds the root cause fastest?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Cross-segment by seller onboarding tier (Express vs. Standard) × product category × buyer account age',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'This three-way segmentation tests the full fraud ring hypothesis in one pass: Express Seller tier identifies the low-friction entry point, category identifies the high-value targets, and buyer account age identifies the synthetic buyer accounts. If fraud rate is concentrated almost entirely in Express × Electronics/Collectibles × buyer accounts <7 days old, you have confirmed a coordinated fraud pattern using all three vectors simultaneously — that level of specificity is sufficient to act on.',
+          },
+          {
+            id: 'b',
+            label: 'Segment by seller geographic location to check if fraud is concentrated in specific regions',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Geographic segmentation can reveal fraud rings that operate from specific locations, but it is a secondary cut. Geographic clustering may be present, but the primary mechanism here is the onboarding tier change — which is platform-internal and does not require geographic analysis to identify. Start with the variable that changed (onboarding tier) before adding geographic dimensions.',
+          },
+          {
+            id: 'c',
+            label: 'Segment by payment method used in fraudulent orders',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Payment method segmentation is useful for payment fraud investigations but does not address the seller-supply-side attack vector here. The fraud is being committed by fraudulent sellers, not payment credential theft. Payment method analysis would tell you how the fraud is being executed, not why the fraud rate increased — which is the root cause question.',
+          },
+        ],
+      },
+      {
+        id: 'hypothesis',
+        stepNumber: 4,
+        label: 'Root Cause Hypothesis',
+        prompt: 'Fraud is concentrated in Express Seller accounts (0-5 days old) × Electronics/Collectibles × buyers with accounts <3 days old. Which hypothesis best explains the root cause?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Coordinated fraud ring exploiting Express Seller tier: fraudsters created thin seller accounts under reduced verification and paired them with synthetic buyer accounts to process high-value fraudulent orders',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'The three-way concentration pattern — new sellers, new buyers, high-value categories — is the diagnostic signature of a coordinated account-takeover or synthetic identity fraud ring, not organic fraud. Individual opportunistic fraudsters do not create buyer and seller accounts simultaneously; organized rings do. The Express Seller tier reduced friction enough that the ring could spin up accounts at scale within 72 hours of the tier launching — suggesting they were monitoring for low-friction onboarding opportunities. This hypothesis explains the speed and concentration of the spike.',
+          },
+          {
+            id: 'b',
+            label: 'New sellers are inexperienced and accidentally triggering fraud flags by mishandling orders',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Inexperienced sellers might generate higher dispute rates, but accidental order mishandling does not explain the concentration in the most lucrative categories (Electronics, Collectibles) with brand-new buyer accounts. Legitimate new sellers sell across a variety of categories and their buyers are not disproportionately 1-3 days old. The category and buyer age pattern is inconsistent with accidental fraud and consistent with intentional coordinated activity.',
+          },
+          {
+            id: 'c',
+            label: 'The fraud detection model has a bias against new accounts that flags legitimate new-seller transactions at a higher rate',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Model bias was already ruled out in step 1 by confirming the flag definition is unchanged. Even if model recency bias existed, it would produce a gradual, diffuse elevation in new-seller flags across all categories — not the sharp concentration in Electronics/Collectibles with buyer accounts under 3 days old. The specificity of the signal contradicts a model bias explanation.',
+          },
+        ],
+      },
+      {
+        id: 'validate',
+        stepNumber: 5,
+        label: 'Validation Approach',
+        prompt: 'Your hypothesis is a coordinated fraud ring using Express Seller accounts. How do you confirm this?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Graph the seller account creation timestamps vs. paired buyer account creation timestamps, and check for shared device fingerprints, IP addresses, or payment credentials across flagged accounts',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Coordinated fraud rings leave infrastructure traces: shared IP addresses, device fingerprints, or payment credential clusters that reveal accounts created by the same actors. Plotting account creation timestamps will show whether the seller and buyer accounts were created in tight temporal clusters — a hallmark of coordinated ring operations. If 30 seller accounts and 30 buyer accounts were created in the same 4-hour window from the same IP range, you have confirmation sufficient to act and to share with law enforcement or your payment processor.',
+          },
+          {
+            id: 'b',
+            label: 'Contact a sample of new Express Sellers directly to verify their identity and the legitimacy of their orders',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Direct outreach to suspected fraudulent accounts will likely go unanswered or return false identity information — fraudsters do not respond honestly to identity verification requests. Infrastructure analysis (device, IP, timing) is faster and more reliable. Outreach is appropriate for borderline-suspicious accounts, not for confirming an active fraud ring where you already have strong data signals.',
+          },
+          {
+            id: 'c',
+            label: 'Run a holdout experiment where half of Express Seller applicants get full verification and compare fraud rates',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Running an experiment on active fraud is dangerous: you would be deliberately allowing additional fraud in the holdout group to generate data you already effectively have. The existing data — fraud rate 3.1% vs. 0.8% baseline, 89% of fraud from sellers onboarded in the last 5 days under the new tier — is already sufficient evidence that the Express tier is the entry vector. Experimentation is for optimization, not for confirming active security incidents.',
+          },
+        ],
+      },
+    ],
+    sqlStep: {
+      prompt: `You've confirmed that 89% of fraudulent orders come from Express Seller accounts created in the last 5 days, concentrated in Electronics and Collectibles, with buyer accounts under 3 days old.\n\nWrite a SQL query that compares fraud rates by seller onboarding tier and seller account age bucket, cross-referenced with buyer account age, to quantify the full scope of the coordinated fraud and identify which seller cohorts need immediate action.`,
+      hints: [
+        'Bucket seller account age into: 0-5 days, 6-14 days, 15-30 days, 30+ days',
+        'Join orders to sellers and buyers tables to get account creation dates for both sides',
+        'Calculate fraud rate as fraudulent_orders / total_orders per bucket',
+        'Include avg_order_value per bucket — high-value orders in new-account buckets strengthen the coordinated fraud signal',
+      ],
+      modelQuery: `WITH seller_cohorts AS (
+  -- Classify each seller by onboarding tier and account age at time of order
+  SELECT
+    s.seller_id,
+    s.onboarding_tier,          -- 'express' | 'standard'
+    s.created_at                AS seller_created_at,
+
+    CASE
+      WHEN CURRENT_DATE - s.created_at::date <= 5  THEN '0-5_days'
+      WHEN CURRENT_DATE - s.created_at::date <= 14 THEN '6-14_days'
+      WHEN CURRENT_DATE - s.created_at::date <= 30 THEN '15-30_days'
+      ELSE '30plus_days'
+    END AS seller_age_bucket
+
+  FROM sellers s
+),
+
+order_fraud_flags AS (
+  -- Join orders with seller and buyer account metadata
+  SELECT
+    o.order_id,
+    o.seller_id,
+    o.buyer_id,
+    o.order_value,
+    o.product_category,
+    o.is_fraud_flagged,         -- Boolean from payment processor
+
+    sc.onboarding_tier,
+    sc.seller_age_bucket,
+
+    -- Buyer account age at time of order
+    CASE
+      WHEN o.created_at - b.created_at <= INTERVAL '3 days'  THEN '0-3_days'
+      WHEN o.created_at - b.created_at <= INTERVAL '7 days'  THEN '4-7_days'
+      ELSE '7plus_days'
+    END AS buyer_age_at_order
+
+  FROM orders o
+  INNER JOIN seller_cohorts sc  ON o.seller_id = sc.seller_id
+  INNER JOIN buyers b           ON o.buyer_id  = b.buyer_id
+  WHERE o.created_at >= CURRENT_DATE - INTERVAL '10 days'  -- Window spanning pre/post Express launch
+)
+
+SELECT
+  onboarding_tier,
+  seller_age_bucket,
+  buyer_age_at_order,
+
+  COUNT(*)                                                          AS total_orders,
+  SUM(is_fraud_flagged::int)                                        AS fraud_flagged_orders,
+
+  ROUND(
+    100.0 * SUM(is_fraud_flagged::int) / NULLIF(COUNT(*), 0), 2
+  )                                                                 AS fraud_rate_pct,
+
+  ROUND(AVG(order_value), 2)                                        AS avg_order_value,
+
+  -- High-value fraud concentration
+  SUM(CASE WHEN is_fraud_flagged AND order_value > 200 THEN 1 ELSE 0 END) AS high_value_fraud_orders
+
+FROM order_fraud_flags
+
+GROUP BY 1, 2, 3
+ORDER BY onboarding_tier, seller_age_bucket, buyer_age_at_order;`,
+      annotation: `seller_cohorts CTE bucktes each seller by account age and onboarding tier, creating the primary segmentation variable that connects to the Express Seller launch.
+
+order_fraud_flags CTE computes buyer account age at the exact time of the order — this is the right calculation, not buyer account age today. A buyer who created their account 2 days ago and ordered immediately is the synthetic buyer pattern; a buyer who created their account 2 days ago but ordered last week is a coincidence.
+
+fraud_rate_pct is the headline metric per cell. Expected output: the express / 0-5_days / 0-3_days row should show a dramatically elevated fraud rate (10-20%+) vs. the baseline standard / 30plus_days / 7plus_days row at ~0.8%.
+
+high_value_fraud_orders confirms the category concentration signal without requiring a category join — high ACV fraud in new-account cells is the fingerprint of a deliberate high-value-category targeting strategy by the fraud ring.`,
+    },
+    seniorDiagnosis: {
+      likelyCause: 'Coordinated fraud ring exploiting Express Seller reduced-verification onboarding by creating synthetic seller and buyer account pairs for high-value category fraud',
+      reasoning: 'The 72-hour spike timeline aligned exactly with the Express Seller launch suggests the fraud ring was monitoring the platform for new low-friction onboarding paths. Organized fraud rings routinely test new account creation flows within hours of launch to identify exploitable gaps before platform defenses adapt. The 89% concentration of fraud in accounts under 5 days old, paired with buyer accounts under 3 days old transacting in the highest-value categories available (Electronics, Collectibles), is the unmistakable signature of a synthetic identity ring rather than opportunistic individual fraud. Individual fraudsters do not coordinate buyer and seller account creation simultaneously at this scale and speed. The Express Seller tier reduced verification friction enough to make account creation economically viable for the ring — standard verification was their prior deterrent. The $85k chargeback exposure understates the risk: payment processors have risk thresholds at which they escalate merchant categories or increase reserve requirements, which would have broader platform cost implications.',
+      validationPlan: [
+        'Extract all Express Seller accounts created in the last 5 days and perform device fingerprint and IP address clustering — identify shared infrastructure across seller and buyer accounts',
+        'Map the temporal clustering: plot seller account creation time and paired buyer account creation time to confirm they were created in tight windows by the same actors',
+        'Cross-reference flagged seller accounts with any existing fraud watchlists or shared-email-domain patterns',
+        'Calculate total chargeback exposure: sum order_value for all flagged Express Seller orders to give finance the full liability estimate',
+      ],
+      recommendation: 'Immediately pause Express Seller onboarding pending a security review and restore standard verification requirements. Freeze all Express Seller accounts created in the last 5 days pending manual review, prioritizing those with flagged orders. Share device fingerprint and IP clusters with the payment processor to flag the fraud ring at the network level. Redesign Express Seller tier to include lightweight but harder-to-spoof verification (e.g., phone verification, bank account linkage) before re-launching.',
+      commonMistakes: [
+        'Treating the spike as individual opportunistic fraud and responding with incremental rule tightening rather than recognizing the coordinated ring pattern',
+        'Running an experiment to confirm the onboarding tier is the vector instead of acting on already sufficient evidence',
+        'Focusing only on seller-side verification without addressing the synthetic buyer account creation that is the other half of the fraud mechanism',
+        'Reporting the fraud rate spike without connecting it to the payment processor escalation risk threshold',
+      ],
+      interviewPhrase: 'When fraud spikes simultaneously with a new low-friction onboarding flow, I assume an organized ring found the gap before we did — my first question is whether seller and buyer accounts were created in the same infrastructure cluster, not whether individual orders look suspicious.',
+    },
+  },
+
+  {
+    id: 'RCA08',
+    title: 'DAU Dropped 8% After Auto-Play Feature Launched',
+    subtitle: 'Prism · Short-Form Video · Engagement',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'growth',
+    linkedConceptIds: ['proxy-metric', 'funnel-decomposition', 'segmentation'],
+    context: {
+      metricMovement: 'DAU dropped 8.2% (from 4.1M to 3.77M) over 5 days after Auto-Play Series feature launched at 100% rollout',
+      businessImpact: '~$180k daily revenue impact at current monetization rate; sustained DAU decline compounds into creator and advertiser loss',
+      timeWindow: 'Drop began the day of Auto-Play Series launch, sustained across 5 days',
+      knownFacts: [
+        'Auto-Play Series launched as a full 100% rollout — no A/B test was run',
+        'Session length increased 12% — users are watching more content per visit',
+        'Notification opt-out rate increased 28% in the same 5-day window',
+        'Day-1 retention (D1) dropped from 41% to 36% for new users acquired after launch',
+        'Users who completed 3+ auto-play sessions have higher 7-day retention than non-auto-play users',
+      ],
+    },
+    diagnosisSteps: [
+      {
+        id: 'system_check',
+        stepNumber: 1,
+        label: 'System / Data Check',
+        prompt: 'Before diagnosing user behavior, what do you check first?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Verify DAU tracking definition has not changed — confirm the session event and daily active definition are unchanged post-launch',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Auto-Play changes how users interact with the app: a user may previously have opened the app twice (two separate DAU-qualifying sessions) but now opens it once for a longer session. If the DAU tracking logic changed to require a different event trigger, or if session merging changed how unique daily users are counted, the apparent DAU drop could be a measurement artifact. Confirming the tracking definition is unchanged eliminates this confound in minutes before any behavioral analysis begins.',
+          },
+          {
+            id: 'b',
+            label: 'Check whether a concurrent marketing campaign ended at the same time as the launch, reducing new user acquisition',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'A campaign ending simultaneously with the launch is a legitimate alternative hypothesis worth ruling out, but it would show up as a new-user volume decline rather than a retention-driven DAU drop. Checking marketing spend is a valid secondary step after confirming tracking integrity. The D1 retention signal already suggests returning users are behaving differently, not just that acquisition dropped.',
+          },
+          {
+            id: 'c',
+            label: 'Immediately attribute the drop to the Auto-Play feature since the timing is obvious',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Assuming causation from temporal correlation without a controlled comparison is the most common analyst mistake in full-rollout scenarios. Because there was no A/B test, you cannot directly compare auto-play users vs. non-auto-play users contemporaneously. You must at minimum verify the measurement is valid and rule out external factors before concluding the feature caused the DAU drop.',
+          },
+        ],
+      },
+      {
+        id: 'decompose',
+        stepNumber: 2,
+        label: 'Metric Decomposition',
+        prompt: 'Tracking confirmed unchanged. Now decompose DAU into its components. What decomposition is most useful?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Decompose DAU into new users (first session ever) vs. returning users (had sessions in prior days) to identify which population is driving the drop',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'DAU = new users + returning users. If new user volume is stable and returning user DAU is dropping, the feature is damaging retention of existing users. If new user volume dropped, acquisition is the cause. The D1 retention signal in the known facts already hints at returning-user suppression — but decomposing by new vs. returning confirms which population to focus on and prevents mixing two different causal stories. This decomposition is the fastest path to the correct root cause.',
+          },
+          {
+            id: 'b',
+            label: 'Decompose DAU by platform (iOS vs. Android vs. web) to check if the drop is platform-specific',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Platform segmentation is useful if the feature launched on only one platform or if there is a known platform-specific bug, but there is no evidence of a platform-specific issue here. The DAU drop appears to be a behavioral effect across all users, not a technical failure on one platform. Platform decomposition is a reasonable secondary check but not the most informative primary decomposition.',
+          },
+          {
+            id: 'c',
+            label: 'Look at total video views and engagement rate to confirm users are still engaging',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'You already know from the known facts that session length increased 12% — engagement per visit is up, not down. Re-confirming engagement metrics adds no new diagnostic information. The question is why more engagement per session is not translating into more daily active users, which requires a retention-focused decomposition, not an engagement metric review.',
+          },
+        ],
+      },
+      {
+        id: 'segment',
+        stepNumber: 3,
+        label: 'Segmentation',
+        prompt: 'Decomposition shows returning-user DAU is down while new-user volume is stable. Which segmentation identifies the mechanism?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Segment D1 and D7 retention rates by pre-launch cohorts vs. post-launch cohorts, and cross-reference with notification opt-out behavior',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Comparing retention cohorts (pre-launch vs. post-launch) isolates the feature effect on habitual return behavior: if D1 dropped from 41% to 36% and that drop maps precisely to post-launch cohorts, the feature is damaging the return loop. Crossing with notification opt-out behavior tests whether users who opted out of notifications — likely because they feel "done" after a long auto-play session — are the ones not returning. Together these cuts confirm the session-exhaustion mechanism rather than any alternative explanation.',
+          },
+          {
+            id: 'b',
+            label: 'Segment by content category to see if certain video types are causing disengagement',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Content category analysis is relevant for understanding what users watch, but it does not address the core question of why users are not returning the next day. The auto-play feature affects return behavior regardless of category — it is the depth-vs.-frequency trade-off that matters, not which specific content is being auto-played. Category analysis would be useful after confirming the behavioral mechanism.',
+          },
+          {
+            id: 'c',
+            label: 'Segment by user age demographic to see if older users are less comfortable with auto-play',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Demographic segmentation might show differential feature adoption, but the core mechanism — session exhaustion reducing return frequency — would manifest across demographic groups. Without a specific hypothesis that older or younger users are categorically different in their auto-play response, demographic segmentation is exploratory rather than diagnostic. Retention cohort analysis is far more targeted.',
+          },
+        ],
+      },
+      {
+        id: 'hypothesis',
+        stepNumber: 4,
+        label: 'Root Cause Hypothesis',
+        prompt: 'D1 retention dropped 5pp, notification opt-outs are up 28%, session length is up 12%. Which hypothesis best explains the DAU drop?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Auto-play creates session exhaustion: longer sessions leave users feeling "done," reducing return frequency the next day — the feature trades session depth for habitual daily return visits',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'This hypothesis is the only one that explains all four signals simultaneously: session length up (users watch more per visit), D1 retention down (they return less the next day), notification opt-outs up (they do not want to be pulled back in as urgently), and DAU down (the net effect of fewer daily return visits outweighs the per-session engagement gain). The tension between depth and frequency is a well-documented engagement trade-off in content platforms. Auto-play was optimized for depth metrics without measuring its effect on return frequency, and the habitual return loop — the core driver of daily active usage — was damaged.',
+          },
+          {
+            id: 'b',
+            label: 'Auto-play is surfacing low-quality content in the series, causing users to have negative experiences and churn',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Content quality degradation could cause DAU decline, but the known facts show that users who complete 3+ auto-play sessions have higher 7-day retention — if content quality were poor, completing more auto-play sessions would not produce better outcomes. The positive relationship between auto-play completion and 7-day retention contradicts a content quality hypothesis.',
+          },
+          {
+            id: 'c',
+            label: 'The 100% rollout had a technical bug that prevented some users from opening the app normally',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'A technical bug causing app opening failures would show up in crash rates, error logs, and session start failures — not in session length increasing 12%. If users could not open the app, session length would not increase. The behavioral signature (longer sessions, lower return frequency) is inconsistent with a technical access failure and consistent with a product behavioral effect.',
+          },
+        ],
+      },
+      {
+        id: 'validate',
+        stepNumber: 5,
+        label: 'Validation Approach',
+        prompt: 'Your hypothesis is session exhaustion reducing return frequency. How do you confirm this without an A/B test (since the feature went to 100%)?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Use pre/post cohort comparison: compare D1-D7 retention for users acquired in the 2 weeks before launch vs. 2 weeks after launch, controlling for day-of-week effects',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'A pre/post cohort comparison is the best available substitute for an A/B test when the feature went to 100%. Comparing retention curves for pre-launch vs. post-launch acquisition cohorts — controlling for day-of-week and seasonal effects — gives a quasi-experimental estimate of the feature effect. If post-launch D1/D7 retention is persistently lower across multiple weekly cohorts, the feature is the most plausible explanation. This approach is transparent about its limitations (no control group) while providing actionable directional evidence.',
+          },
+          {
+            id: 'b',
+            label: 'Survey users who have opted out of notifications to ask why they reduced their usage',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Surveying opted-out users can provide qualitative color on the exhaustion hypothesis, but notification opt-outs are not perfectly correlated with DAU decline, and self-reported behavior is less reliable than observed behavioral data. The pre/post cohort retention comparison gives stronger causal evidence faster. Use survey data as supplementary qualitative support, not as the primary validation.',
+          },
+          {
+            id: 'c',
+            label: 'Run a new A/B test where 50% of users get auto-play removed to measure the causal effect',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Turning off a feature for half your users after a full rollout is a product regression experiment that requires significant product and engineering alignment — it is not an analyst\'s unilateral call and would take days to set up properly. More importantly, you have behavioral data available right now (pre-launch cohorts as the natural control group) that can give you directional evidence quickly. Use the data you have before proposing expensive experimental infrastructure.',
+          },
+        ],
+      },
+    ],
+    sqlStep: {
+      prompt: `Your hypothesis is session exhaustion: Auto-Play Series creates longer sessions per visit but damages the habitual daily return loop, suppressing DAU.\n\nWrite a SQL query that compares D1 and D7 retention for user cohorts acquired before the Auto-Play launch vs. after, and also shows the relationship between auto-play session completion count and retention — to confirm both the pre/post retention drop and the depth-vs.-frequency trade-off.`,
+      hints: [
+        'Use install_date to separate pre-launch cohorts (before launch_date) from post-launch cohorts',
+        'D1 retention = user had a session on day 1 after install; D7 = session on day 7',
+        'Count auto_play_completions per user in their first 7 days and bucket (0, 1-2, 3+)',
+        'Control for day-of-week by grouping cohorts by install_week, not install_day',
+      ],
+      modelQuery: `WITH user_cohorts AS (
+  -- Classify users as pre-launch or post-launch based on install date
+  SELECT
+    u.user_id,
+    u.install_date,
+    DATE_TRUNC('week', u.install_date)  AS install_week,
+
+    CASE
+      WHEN u.install_date < '2024-03-15'  THEN 'pre_launch'   -- Auto-Play launch date
+      ELSE 'post_launch'
+    END AS cohort_group
+
+  FROM users u
+  WHERE u.install_date >= '2024-03-01'  -- 2 weeks pre-launch + post-launch period
+),
+
+auto_play_usage AS (
+  -- Count auto-play series completions per user in first 7 days
+  SELECT
+    e.user_id,
+    COUNT(CASE WHEN e.event_type = 'autoplay_series_completed' THEN 1 END) AS autoplay_completions,
+
+    CASE
+      WHEN COUNT(CASE WHEN e.event_type = 'autoplay_series_completed' THEN 1 END) = 0  THEN '0_completions'
+      WHEN COUNT(CASE WHEN e.event_type = 'autoplay_series_completed' THEN 1 END) <= 2 THEN '1-2_completions'
+      ELSE '3plus_completions'
+    END AS autoplay_bucket
+
+  FROM events e
+  INNER JOIN user_cohorts uc ON e.user_id = uc.user_id
+  WHERE e.event_date BETWEEN uc.install_date AND uc.install_date + INTERVAL '7 days'
+  GROUP BY 1
+),
+
+retention_flags AS (
+  -- Flag D1 and D7 sessions for each user
+  SELECT
+    uc.user_id,
+    uc.cohort_group,
+    uc.install_week,
+
+    MAX(CASE
+      WHEN DATE(s.session_start) = uc.install_date + INTERVAL '1 day' THEN 1 ELSE 0
+    END) AS retained_d1,
+
+    MAX(CASE
+      WHEN DATE(s.session_start) = uc.install_date + INTERVAL '7 days' THEN 1 ELSE 0
+    END) AS retained_d7
+
+  FROM user_cohorts uc
+  LEFT JOIN app_sessions s ON uc.user_id = s.user_id
+  GROUP BY 1, 2, 3
+)
+
+SELECT
+  rf.cohort_group,
+  rf.install_week,
+  COALESCE(ap.autoplay_bucket, '0_completions')  AS autoplay_bucket,
+
+  COUNT(*)                                        AS users,
+
+  ROUND(100.0 * AVG(rf.retained_d1), 1)          AS d1_retention_pct,
+  ROUND(100.0 * AVG(rf.retained_d7), 1)          AS d7_retention_pct
+
+FROM retention_flags rf
+LEFT JOIN auto_play_usage ap ON rf.user_id = ap.user_id
+
+GROUP BY 1, 2, 3
+ORDER BY cohort_group, install_week, autoplay_bucket;`,
+      annotation: `user_cohorts CTE creates the quasi-experimental comparison groups using install_date relative to the Auto-Play launch date. install_week grouping controls for day-of-week seasonality in new user acquisition and retention patterns.
+
+auto_play_usage CTE counts completions per user within their first 7 days — this is the depth metric. The bucket creates the dose-response variable: does more auto-play completion predict higher or lower retention?
+
+retention_flags CTE defines D1 and D7 as sessions on the exact day (not "within" the day range) — adjust to your team's retention definition if you use a different window.
+
+Expected output: the pre_launch rows should show D1 ~41% and D7 higher; post_launch rows should show D1 ~36% and D7 lower — confirming the retention regression. Within post-launch, the 3plus_completions bucket should show higher D7 retention than 0_completions, confirming that deep auto-play engagement is a positive signal, but the product is not getting most users into that state.`,
+    },
+    seniorDiagnosis: {
+      likelyCause: 'Auto-Play Series damages the habitual daily return loop by creating session exhaustion — users watch more per visit but return less the next day, suppressing DAU',
+      reasoning: 'The feature was evaluated on the wrong success metric before launch: session length is an engagement depth metric, not a return frequency metric, and these two can move in opposite directions. Auto-Play Series optimized for depth (12% session length increase) while inadvertently undermining frequency (5pp D1 retention drop, 28% notification opt-out increase). The habitual return loop is the engine of DAU on short-form video platforms — users need to feel there is always more to discover when they return, which requires moderate session "appetite" remaining after each visit. Auto-play can satisfy that appetite so completely in one session that users feel less pull to return the next day. The irony is that users who do complete 3+ auto-play sessions show higher 7-day retention, suggesting the feature works well for already-engaged power users but is counterproductive for the majority who get over-served in a single session. The 100% rollout without an A/B test means you cannot quantify the counterfactual cleanly — this is also a process failure.',
+      validationPlan: [
+        'Run pre/post cohort retention analysis comparing D1-D7 retention curves for 2 weeks pre-launch vs. 2 weeks post-launch cohorts, controlling for install week',
+        'Segment auto-play completion count (0, 1-2, 3+) vs. D7 retention to confirm the depth-frequency trade-off and identify whether there is an optimal completion count',
+        'Measure the contribution of notification opt-outs to the DAU decline: calculate DAU suppression attributable to the 28% increase in opt-out rate (users who opt out receive fewer re-engagement nudges)',
+        'Model the DAU trajectory under three scenarios: no change, auto-play disabled, auto-play with session caps (max 2 consecutive auto-plays before a pause prompt)',
+      ],
+      recommendation: 'Add a session break prompt after 2-3 consecutive auto-plays (e.g., "You\'ve watched 3 in a row — come back tomorrow for more") to preserve the return appetite. Redefine feature success metrics to include D1 and D7 retention alongside session length — a feature that increases session length while reducing return frequency is net negative for DAU-based businesses. Retroactively set up a 5% holdout group to generate a clean causal estimate of the feature effect for future launch decisions.',
+      commonMistakes: [
+        'Celebrating session length increase as a success signal without checking its effect on return frequency',
+        'Not recognizing the depth-vs.-frequency trade-off as the diagnostic frame for content platform engagement drops',
+        'Proposing a new A/B test to measure the effect instead of using the pre/post cohort analysis already available',
+        'Launching a major engagement feature at 100% without a holdout group, eliminating the ability to measure causal impact cleanly',
+      ],
+      interviewPhrase: 'On content platforms, I always track session depth and return frequency together — a feature that increases one while suppressing the other is a trade-off, not a win, and session length without D1 retention is a vanity metric.',
+    },
+  },
+
+  {
+    id: 'RCA09',
+    title: 'MRR Growth Slowed to Near-Zero Over One Quarter',
+    subtitle: 'Threadline · B2B SaaS · Revenue Health',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'saas',
+    linkedConceptIds: ['funnel-decomposition', 'segmentation', 'proxy-metric'],
+    context: {
+      metricMovement: 'MRR growth slowed from +4.2% MoM to +0.8% MoM over the past quarter and is now trending toward negative',
+      businessImpact: 'If current trend holds, MRR will peak within 2 months and begin declining — critical risk ahead of a planned fundraise',
+      timeWindow: 'Gradual deceleration over 3 months; no single point of inflection',
+      knownFacts: [
+        'New MRR from new customers has held flat at ~$85k/month throughout the quarter',
+        'Expansion MRR (seat additions, tier upgrades) dropped from $42k to $18k/month',
+        'Contraction MRR (downgrades, seat reductions) increased from $12k to $28k/month',
+        'Churn MRR (full cancellations) held flat at ~$25k/month',
+        'Enterprise accounts (ACV > $20k) show 118% NRR; SMB accounts show 82% NRR',
+      ],
+    },
+    diagnosisSteps: [
+      {
+        id: 'system_check',
+        stepNumber: 1,
+        label: 'System / Data Check',
+        prompt: 'MRR growth decelerated gradually over a full quarter. Before attributing this to business causes, what do you verify?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Verify the MRR waterfall definition — confirm new, expansion, contraction, and churn buckets are categorized consistently and that no accounts were reclassified between segments',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'MRR waterfall metrics are highly sensitive to categorization methodology: a single reclassification rule change can shift revenue between expansion and new MRR, or between contraction and churn, making trends appear that are purely definitional. In B2B SaaS, mid-quarter changes to how seat additions are categorized (new contract vs. expansion) are common. Confirming no methodology change occurred is the first step before treating the MRR trend as a real business signal.',
+          },
+          {
+            id: 'b',
+            label: 'Check if the sales team closed fewer deals this quarter compared to last quarter',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Sales volume is worth checking, but the known facts show new MRR is flat — not declining — so the sales pipeline is not the primary problem. The issue is in the existing customer base (expansion collapsing, contraction rising), not in acquisition. A narrow focus on new bookings would miss the core revenue health story.',
+          },
+          {
+            id: 'c',
+            label: 'Accept the trend as real and immediately analyze which product features are underperforming',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Jumping to product analysis before validating the MRR waterfall definition risks attributing a definitional change to a product problem. Gradual MRR deceleration over a quarter is exactly the scenario where accounting methodology changes can create a false trend. Validate the measurement before diagnosing the cause.',
+          },
+        ],
+      },
+      {
+        id: 'decompose',
+        stepNumber: 2,
+        label: 'Metric Decomposition',
+        prompt: 'MRR waterfall definition confirmed consistent. Now decompose the MRR movement to find which component is most responsible for the deceleration. What decomposition do you run?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Build a full MRR waterfall: net MRR change = new MRR + expansion MRR − contraction MRR − churn MRR, and calculate each bucket\'s contribution to the deceleration vs. the prior period',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'The MRR waterfall decomposition is the standard diagnostic framework for SaaS revenue health. You already have directional clues from the known facts (expansion dropped, contraction rose), but calculating each bucket\'s precise dollar contribution to the net MRR change makes the priority order explicit. Expansion dropping $24k/month and contraction rising $16k/month explains a $40k/month net MRR headwind — quantifying this precisely is the starting point for a defensible recommendation to leadership.',
+          },
+          {
+            id: 'b',
+            label: 'Calculate month-over-month growth rate for total revenue and compare to industry benchmarks',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Industry benchmarking gives context but does not diagnose the cause within Threadline\'s specific revenue mix. A company with the same growth rate as its peer group could still have a structurally deteriorating expansion engine — you need the waterfall decomposition to find the internal driver before benchmarking makes sense as a framing tool.',
+          },
+          {
+            id: 'c',
+            label: 'Look at total contract count and average ACV to determine if the product is being underpriced',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Pricing analysis is not indicated by the available signals — there is no evidence that price is wrong, and the NRR differential (118% enterprise vs. 82% SMB) suggests the issue is segment-specific customer health, not pricing structure. Investigating pricing without first establishing where the MRR compression is coming from is unfocused and would likely return inconclusive results.',
+          },
+        ],
+      },
+      {
+        id: 'segment',
+        stepNumber: 3,
+        label: 'Segmentation',
+        prompt: 'Waterfall shows expansion MRR collapsed and contraction MRR doubled. Which segmentation identifies which accounts are responsible?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Segment expansion and contraction MRR by account size (SMB vs. enterprise) and account cohort (acquisition quarter) to find where NRR is failing',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'The NRR differential in the known facts — 118% enterprise vs. 82% SMB — directly tells you to segment by account size. Applying this segmentation to the expansion and contraction buckets will confirm that nearly all of the contraction MRR is coming from SMB accounts and nearly all of the expansion collapse is an SMB problem. Cohort analysis adds a time dimension: if SMB accounts acquired 6-12 months ago are now contracting, you can forecast when the current acquisition cohort will hit the same wall. This segmentation produces an actionable and complete diagnosis.',
+          },
+          {
+            id: 'b',
+            label: 'Segment by industry vertical to find which market segments have the weakest NRR',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Industry vertical segmentation is a valid secondary cut, particularly if Threadline serves distinct verticals with different retention profiles. However, the NRR differential by account size is already given in the known facts and is a stronger prior than vertical segmentation. Start with the variable whose effect you already have evidence for before adding new dimensions.',
+          },
+          {
+            id: 'c',
+            label: 'Segment by customer success manager (CSM) to find if specific account managers are associated with higher churn',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'CSM-level segmentation is appropriate when the hypothesis is service quality variation, but there is no evidence of that here. The 82% NRR for the entire SMB segment suggests a systematic business-model problem with that customer type, not individual CSM performance. Segmenting by CSM would add noise without addressing the structural segment economics that are the actual driver.',
+          },
+        ],
+      },
+      {
+        id: 'hypothesis',
+        stepNumber: 4,
+        label: 'Root Cause Hypothesis',
+        prompt: 'Segmentation confirms SMB accounts have 82% NRR (contracting and not expanding) while enterprise has 118% NRR. Which hypothesis best explains the MRR growth collapse?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'SMB segment NRR failure: downgrades and seat reductions are concentrated in SMB, expansion has collapsed in SMB, and the revenue growth engine is failing at the SMB layer while enterprise remains healthy',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'This hypothesis explains the full pattern: net MRR growth = new MRR ($85k flat) + expansion MRR ($18k, down $24k) − contraction MRR ($28k, up $16k) − churn MRR ($25k flat). The $40k/month net headwind is entirely explained by SMB accounts contracting rather than expanding. An 82% NRR means SMB accounts are on average generating 18% less revenue 12 months after signing — they are shrinking customers, not growing ones. The expansion collapse is the other side: SMB accounts are not adding seats or upgrading tiers, suggesting they are not getting enough product value to justify investing more.',
+          },
+          {
+            id: 'b',
+            label: 'The company has reached market saturation — it has signed most available customers and growth is naturally slowing',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Market saturation would manifest as declining new MRR, not stable new MRR with collapsing expansion. New MRR is flat at $85k, meaning acquisition is still working. The problem is in the existing customer base — specifically SMB accounts contracting rather than growing. Market saturation is the wrong diagnosis for a revenue problem driven by NRR, not acquisition.',
+          },
+          {
+            id: 'c',
+            label: 'Product quality has declined, causing customers across all segments to reduce usage',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Enterprise NRR at 118% directly contradicts a broad product quality decline — enterprise customers are expanding, not contracting. If product quality had declined, you would expect NRR to fall across both segments. The segment-specific pattern (SMB 82% vs. enterprise 118%) points to a segment economics problem, not a universal product failure.',
+          },
+        ],
+      },
+      {
+        id: 'validate',
+        stepNumber: 5,
+        label: 'Validation Approach',
+        prompt: 'Your hypothesis is SMB NRR failure. How do you quantify and validate the business impact before presenting to leadership?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Build a segment-level MRR waterfall (SMB vs. enterprise) showing each bucket\'s contribution — new, expansion, contraction, churn — for each of the past 3 months',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'A segment-level waterfall is the definitive analysis for this scenario: it makes explicit which segment is contributing positively (enterprise: high expansion, low churn) and which is dragging (SMB: high contraction, low expansion). Showing 3 months of history also reveals whether the SMB NRR deterioration is accelerating, stable, or recovering — a critical dimension for the fundraise narrative. This analysis is directly presentable to a CFO or board and translates into specific intervention points.',
+          },
+          {
+            id: 'b',
+            label: 'Survey churned and downgraded SMB customers to understand why they reduced spending',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Customer surveys provide qualitative texture on the SMB contraction drivers and are useful supplementary input, but they take time and have low response rates from churned accounts. The quantitative waterfall analysis gives you the financial story you need to act — surveys can complement the analysis but should not replace or precede it when you need to move quickly ahead of a fundraise.',
+          },
+          {
+            id: 'c',
+            label: 'Calculate the blended NRR for the whole business and report it as the headline metric',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Blended NRR averaging enterprise and SMB together obscures the exact problem you are trying to surface: the segment divergence. A blended NRR of ~100% looks acceptable but hides the fact that the SMB engine is structurally declining. Reporting blended NRR to leadership in this scenario would understate the risk and prevent the focused intervention the SMB segment requires.',
+          },
+        ],
+      },
+    ],
+    sqlStep: {
+      prompt: `You've confirmed SMB NRR is 82% and is driving the MRR growth collapse through expansion collapse and contraction increases.\n\nWrite a SQL query that builds a monthly MRR waterfall by segment (SMB vs. enterprise), showing new MRR, expansion MRR, contraction MRR, churn MRR, and net MRR change for each segment over the past 3 months.`,
+      hints: [
+        'Compare each account\'s MRR in month M vs. month M-1 to classify the movement type',
+        'New = account did not exist in M-1; Expansion = MRR increased; Contraction = MRR decreased but still active; Churn = account gone in M',
+        'Segment by account_size (enterprise: ACV > $20k, SMB: ACV <= $20k)',
+        'Use a LAG window function or self-join to get prior month MRR per account',
+      ],
+      modelQuery: `WITH monthly_mrr AS (
+  -- Get each account's MRR for each month in the past 4 months
+  -- (4 months to enable 3-month MoM comparison)
+  SELECT
+    a.account_id,
+    a.segment,                  -- 'enterprise' | 'smb'
+    DATE_TRUNC('month', m.month_date)   AS mrr_month,
+    m.mrr_amount
+
+  FROM accounts a
+  INNER JOIN account_mrr_monthly m ON a.account_id = m.account_id
+  WHERE m.month_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '4 months')
+),
+
+mrr_with_prior AS (
+  -- Attach prior month MRR to each account-month
+  SELECT
+    curr.account_id,
+    curr.segment,
+    curr.mrr_month,
+    curr.mrr_amount                                         AS current_mrr,
+    LAG(curr.mrr_amount) OVER (
+      PARTITION BY curr.account_id ORDER BY curr.mrr_month
+    )                                                       AS prior_mrr
+
+  FROM monthly_mrr curr
+),
+
+mrr_waterfall AS (
+  -- Classify each account-month into a MRR movement bucket
+  SELECT
+    account_id,
+    segment,
+    mrr_month,
+    current_mrr,
+    prior_mrr,
+
+    CASE
+      WHEN prior_mrr IS NULL                         THEN 'new'
+      WHEN current_mrr IS NULL AND prior_mrr > 0     THEN 'churn'
+      WHEN current_mrr > prior_mrr                   THEN 'expansion'
+      WHEN current_mrr < prior_mrr AND current_mrr > 0 THEN 'contraction'
+      ELSE 'flat'
+    END AS mrr_movement_type,
+
+    -- Dollar contribution to net MRR change
+    CASE
+      WHEN prior_mrr IS NULL                           THEN current_mrr
+      WHEN current_mrr IS NULL AND prior_mrr > 0       THEN -prior_mrr
+      WHEN current_mrr IS NOT NULL AND prior_mrr IS NOT NULL THEN current_mrr - prior_mrr
+      ELSE 0
+    END AS mrr_delta
+
+  FROM mrr_with_prior
+  -- Exclude accounts that were flat or absent in both months
+  WHERE NOT (current_mrr = prior_mrr AND current_mrr IS NOT NULL)
+)
+
+SELECT
+  segment,
+  mrr_month,
+  mrr_movement_type,
+
+  COUNT(DISTINCT account_id)      AS account_count,
+  ROUND(SUM(mrr_delta), 0)        AS mrr_contribution
+
+FROM mrr_waterfall
+WHERE mrr_month >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '3 months')
+  AND mrr_movement_type != 'flat'
+
+GROUP BY 1, 2, 3
+ORDER BY segment, mrr_month, mrr_movement_type;`,
+      annotation: `monthly_mrr CTE pulls MRR per account per month for a 4-month window. The extra month (4 vs. 3) is needed so LAG() has a prior-period value for the first month you want to report.
+
+LAG() window function in mrr_with_prior attaches the prior month's MRR to each row. PARTITION BY account_id ensures the lag is within each account's own time series, not across accounts.
+
+mrr_movement_type CASE WHEN is the waterfall classification logic. The churn case handles accounts that appear in prior months but not in the current month (current_mrr IS NULL after a LEFT JOIN or when an account closes).
+
+mrr_delta calculates each account-month's dollar contribution to net MRR change. Summing this by segment × movement_type gives you the exact dollar contribution of SMB contraction vs. enterprise expansion.
+
+Expected output: the SMB / contraction rows will show large negative mrr_contribution ($20-28k/month) while the enterprise / expansion rows will show strong positive contributions. The net SMB MRR movement will visibly be negative or near-zero, directly explaining the overall growth deceleration.`,
+    },
+    seniorDiagnosis: {
+      likelyCause: 'SMB segment NRR failure: expansion MRR collapsed and contraction MRR doubled among SMB accounts, overwhelming the flat new-customer acquisition engine',
+      reasoning: 'The MRR growth deceleration is a net effect of three simultaneous movements: expansion dropping $24k/month, contraction increasing $16k/month, and churn holding flat. These movements are almost entirely attributable to the SMB segment, which shows 82% NRR — meaning every cohort of SMB accounts is on average 18% smaller 12 months later. The enterprise segment at 118% NRR is actually a healthy expanding book of business; it is the SMB segment that is dragging net growth toward zero. The lack of a single inflection point indicates this is structural, not event-driven — SMB accounts are systematically not getting enough product value to maintain or grow their spending, and the expansion that previously masked this dynamic ($42k/month) has stopped. Ahead of a fundraise, this is the most dangerous possible pattern: headline MRR growth is near zero and trending negative, but the underlying enterprise segment is healthy, meaning the fix requires a clear SMB strategy change rather than broad cost cuts or product pivots.',
+      validationPlan: [
+        'Build a segment-level MRR waterfall (SMB vs. enterprise) for the past 3 months confirming that net SMB MRR is negative and net enterprise MRR is positive',
+        'Calculate SMB cohort NRR: take every quarterly SMB acquisition cohort from 12 months ago and measure their MRR today vs. at acquisition — confirm the 82% NRR figure and trend direction',
+        'Identify the top 20 SMB contraction accounts and review their usage data — are they reducing seats because of low engagement, budget constraints, or competitive switching?',
+        'Model 12-month forward MRR under current trajectory vs. a scenario where SMB NRR improves to 95% — quantify the fundraise impact of each scenario',
+      ],
+      recommendation: 'Treat SMB NRR as a top-3 company metric alongside new MRR and enterprise NRR. Launch an SMB success program targeting the 3-6 month tenure window (before contraction begins) with automated health scoring and proactive CSM outreach. Evaluate whether the current SMB pricing model captures enough value relative to cost-to-serve — an 82% NRR SMB segment may require a higher entry price point with lower seat expansion friction.',
+      commonMistakes: [
+        'Reporting blended NRR without segmenting by account size, which hides the enterprise vs. SMB divergence',
+        'Diagnosing the MRR growth problem as a sales or acquisition problem when new MRR is flat — the issue is clearly in the existing customer base',
+        'Treating the $42k-to-$18k expansion collapse as a minor line item rather than the primary revenue engine failure',
+        'Not connecting the 82% SMB NRR to a forward trajectory — at 82% NRR the SMB book halves in value every 4 years',
+      ],
+      interviewPhrase: 'When MRR growth decelerates without a drop in new bookings, I go straight to the waterfall — expansion and contraction tell you whether your existing customers believe in the product, and NRR by segment tells you which part of your business is structurally sound.',
+    },
+  },
+
+  {
+    id: 'RCA10',
+    title: 'Monthly Churn Rate More Than Doubled in One Month',
+    subtitle: 'Threadline · B2B SaaS · Retention',
+    difficulty: 'analyst',
+    isFree: false,
+    domain: 'saas',
+    linkedConceptIds: ['segmentation', 'data-quality-check', 'funnel-decomposition'],
+    context: {
+      metricMovement: 'Monthly account churn rate increased from 1.8% to 4.1% in a single month — a 2.3x increase',
+      businessImpact: 'At 4.1% monthly churn, annualized ARR loss to churn would reach $3.9M — approaching total new ARR generation and threatening net growth',
+      timeWindow: 'Spike observed in the billing month that followed a pricing change implemented 6 weeks ago',
+      knownFacts: [
+        'A pricing change was implemented 6 weeks ago: annual contracts unchanged, but month-to-month price increased 25%',
+        '78% of churned accounts in the spike month were on month-to-month billing',
+        'Churned accounts had average tenure of 8 months and ACV of $3,200',
+        'Exit survey responses (n=41): "price too high" cited by 67%, "found alternative" cited by 29%',
+        'No product changes or service quality incidents occurred in the relevant period',
+      ],
+    },
+    diagnosisSteps: [
+      {
+        id: 'system_check',
+        stepNumber: 1,
+        label: 'System / Data Check',
+        prompt: 'Churn rate doubled in a single month. What do you verify first?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Verify the churn definition and attribution window have not changed — confirm "churned" accounts are cancellations in the same period and not a batch of delayed processings hitting the same month',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Churn rate spikes that appear in a single month are frequently caused by batch processing artifacts: a backlog of pending cancellations processed together, or a change in when cancellations are attributed (end-of-contract vs. notice date vs. billing date). A sudden 2.3x increase in a single month is a red flag for a data attribution change rather than a real behavioral shift. Confirming the churn definition and processing logic is unchanged eliminates the most common false-positive before any business analysis.',
+          },
+          {
+            id: 'b',
+            label: 'Pull the exit survey data immediately to understand why customers are leaving',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Exit survey data is valuable evidence — and it is already available in the known facts with a clear "price too high" signal. However, reading survey results before confirming the churn measurement is valid risks building an analysis on faulty data. Verify the measurement first, then interpret the qualitative signals.',
+          },
+          {
+            id: 'c',
+            label: 'Assume the churn spike is real and immediately roll back the pricing change',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Rolling back a pricing change before confirming whether the churn spike is real — or whether it is caused by the pricing change specifically rather than by other factors — is premature and potentially costly. Pricing rollbacks have their own revenue impact and signal instability to customers. Validate the measurement and segment the churn before recommending any action.',
+          },
+        ],
+      },
+      {
+        id: 'decompose',
+        stepNumber: 2,
+        label: 'Metric Decomposition',
+        prompt: 'Churn measurement confirmed accurate. How do you decompose the churn rate to identify the primary driver?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Decompose churn by billing type (month-to-month vs. annual) to test whether the price increase on month-to-month contracts is the mechanism',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'The pricing change affected only month-to-month customers, and 78% of churned accounts were on month-to-month billing. Decomposing by billing type will directly confirm or refute whether the churn spike is concentrated in the affected population. If monthly-contract churn spiked dramatically while annual churn held flat, the pricing change is the cause. This decomposition is the single fastest path to a definitive root cause with the evidence available.',
+          },
+          {
+            id: 'b',
+            label: 'Compare churn rate by product feature usage to find which features churn correlates with',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Feature usage correlation is a useful long-term churn predictor, but it does not explain why churn spiked in a specific month immediately following a pricing change. Feature usage patterns change gradually — they do not create sudden single-month churn spikes. The pricing change is the timing-matched event, and billing type is the direct segmentation variable to test it.',
+          },
+          {
+            id: 'c',
+            label: 'Look at total ARR lost to churn and compare to new ARR won in the same month',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'ARR comparison between churn and new bookings measures net revenue impact but does not diagnose why churn spiked. You already know the dollar impact is significant ($3.9M annualized). The diagnostic question is the cause of the spike, which requires decomposing the churned population by the variable that changed (billing type), not aggregating to a net revenue figure.',
+          },
+        ],
+      },
+      {
+        id: 'segment',
+        stepNumber: 3,
+        label: 'Segmentation',
+        prompt: 'Billing type decomposition confirms month-to-month churn drove the spike. Which additional segmentation quantifies the risk and finds any secondary patterns?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Segment churned month-to-month accounts by account tenure bucket (0-3 months, 4-9 months, 10-18 months, 18+ months) and ACV',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Tenure and ACV segmentation answers two critical follow-up questions: (1) which tenure band is most price-sensitive (shorter-tenure accounts have lower switching costs and less product investment, making them more likely to churn on a price increase), and (2) what is the financial composition of the churned accounts (low-ACV churn at high volume vs. a few large accounts churning). The known facts already indicate churned accounts averaged 8 months tenure and $3,200 ACV — mid-tenure, low-ACV SMB accounts are the most price-elastic segment and the most vulnerable to a 25% increase.',
+          },
+          {
+            id: 'b',
+            label: 'Segment by geographic region to see if churn is concentrated in markets with stronger competitive alternatives',
+            isCorrect: false,
+            level: 'partial',
+            feedback: '29% of exit survey respondents cited "found alternative," which makes competitive dynamics a relevant secondary consideration. However, a geographically segmented competitive response would not produce a single-month spike — it would show gradual regional trends. The spike timing is precisely aligned with the pricing change, making billing type and price sensitivity the primary segmentation, with competitive geography as a secondary follow-up.',
+          },
+          {
+            id: 'c',
+            label: 'Segment by the customer success manager responsible for each churned account',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'CSM segmentation is only relevant when service quality is a plausible cause, and the known facts explicitly state no service quality incidents occurred. When 67% of exit respondents cite price and a 25% price increase just happened, the service quality hypothesis is already contradicted by the evidence. Attributing the spike to CSM performance would be an evidence inversion.',
+          },
+        ],
+      },
+      {
+        id: 'hypothesis',
+        stepNumber: 4,
+        label: 'Root Cause Hypothesis',
+        prompt: '78% of churn is month-to-month, 67% of exit surveys say price, pricing change was 25% on month-to-month contracts. What is the root cause?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'The 25% month-to-month price increase directly triggered churn among price-sensitive shorter-tenure SMB accounts — month-to-month customers have high price elasticity and low switching costs',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Three independent signals converge on the same cause: the timing (spike follows pricing change by 6 weeks — one billing cycle), the population (78% of churn is month-to-month, the exact segment affected), and the self-report (67% say price too high). Month-to-month customers are structurally more price-elastic than annual customers: they have already opted for flexibility over commitment, they renew every 30 days which creates a recurring price evaluation, and they typically have lower product investment (shorter tenure, lower ACV). A 25% increase is above most customers\' tolerance threshold for a productivity tool they were already paying a premium for (monthly pricing is typically 20-30% higher than annual to begin with).',
+          },
+          {
+            id: 'b',
+            label: 'A competitor launched a new product 6 weeks ago that is pulling price-sensitive customers away',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Competitive switching (29% of exit surveys) is a contributing factor but not the root cause. Competitors launching at the same time as the pricing change is possible, but the primary trigger is clearly the price increase — 67% say price vs. 29% citing an alternative. Competitors benefited from the pricing change by being the viable alternative once Threadline raised prices, but they did not initiate the churn spike.',
+          },
+          {
+            id: 'c',
+            label: 'Product value has declined for SMB accounts due to feature gaps that were not addressed in the past 6 months',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Feature gap issues produce gradual churn elevation over many months, not a single-month 2.3x spike. The no-product-changes known fact also directly contradicts this hypothesis. When you have a precisely timed pricing change, a billing-type-concentrated churn spike, and self-reported price complaints from 67% of surveyed churners, a feature gap hypothesis is the least parsimonious explanation available.',
+          },
+        ],
+      },
+      {
+        id: 'validate',
+        stepNumber: 5,
+        label: 'Validation Approach',
+        prompt: 'Your hypothesis is direct price elasticity: the 25% increase triggered churn among month-to-month price-sensitive accounts. How do you validate and quantify?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Calculate churn rate for month-to-month vs. annual accounts in 30-day windows before and after the pricing change, and model the revenue impact at different price increase scenarios',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'This validation directly tests the price elasticity mechanism: if month-to-month churn rate jumped from its baseline after the pricing change while annual churn held flat, you have a clean before/after comparison that isolates the price effect. Modeling revenue impact at different price increase magnitudes (10%, 15%, 20%, 25%) gives leadership the data to evaluate whether a lower price increase would have retained more accounts with the same revenue uplift — the standard pricing elasticity trade-off analysis.',
+          },
+          {
+            id: 'b',
+            label: 'Conduct 1:1 win-back calls with churned accounts to understand if they would return at the original price',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Win-back calls can generate useful qualitative insight and potentially recover a small percentage of churned accounts, but they are a retention tactic rather than a validation method. Quantitative before/after churn rate comparison by billing type is faster, more scalable, and provides the evidence needed for a pricing decision. Conduct win-back calls after the analysis, not instead of it.',
+          },
+          {
+            id: 'c',
+            label: 'Run a new A/B test offering the old price to 50% of month-to-month customers to measure churn differential',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Testing two different prices simultaneously for the same product tier is legally and contractually complex and would require communications that telegraph the pricing change inconsistency to customers — potentially accelerating churn. More importantly, you already have the pre/post natural experiment: churn before the pricing change vs. after. Use the existing data rather than creating a new experiment that carries operational and reputational risk.',
+          },
+        ],
+      },
+    ],
+    sqlStep: {
+      prompt: `You've confirmed that the 25% month-to-month price increase directly triggered the churn spike, concentrated among short-to-mid tenure SMB accounts.\n\nWrite a SQL query that shows churn rate by billing_type × account_tenure_bucket in 30-day windows before and after the pricing change, so you can present the clean before/after price elasticity evidence.`,
+      hints: [
+        'Define tenure buckets: 0-3 months, 4-9 months, 10-18 months, 18+ months at time of churn',
+        'Pricing change date: 6 weeks ago — create a pre/post flag based on cancellation_date',
+        'Churn rate = accounts_churned / accounts_active_at_start_of_window per bucket',
+        'Include avg_acv per bucket to show the revenue composition of the churn',
+      ],
+      modelQuery: `WITH account_windows AS (
+  -- Classify each account into its billing type and tenure bucket
+  -- as of the start of each 30-day window
+  SELECT
+    a.account_id,
+    a.billing_type,             -- 'monthly' | 'annual'
+    a.acv,
+
+    -- Tenure at the time of each window start
+    CASE
+      WHEN DATEDIFF('month', a.created_at, w.window_start) <= 3   THEN '0-3_months'
+      WHEN DATEDIFF('month', a.created_at, w.window_start) <= 9   THEN '4-9_months'
+      WHEN DATEDIFF('month', a.created_at, w.window_start) <= 18  THEN '10-18_months'
+      ELSE '18plus_months'
+    END AS tenure_bucket,
+
+    w.window_start,
+    w.period_label,             -- 'pre_pricing_change' | 'post_pricing_change'
+
+    -- Was this account active at the start of the window?
+    CASE WHEN a.cancelled_at IS NULL OR a.cancelled_at > w.window_start THEN 1 ELSE 0 END AS active_at_window_start,
+
+    -- Did this account churn within this 30-day window?
+    CASE
+      WHEN a.cancelled_at >= w.window_start
+       AND a.cancelled_at  < w.window_start + INTERVAL '30 days' THEN 1 ELSE 0
+    END AS churned_in_window
+
+  FROM accounts a
+  CROSS JOIN (
+    -- Two 30-day windows: one pre and one post pricing change
+    SELECT DATE('2024-01-01') AS window_start, 'pre_pricing_change'  AS period_label
+    UNION ALL
+    SELECT DATE('2024-02-12') AS window_start, 'post_pricing_change' AS period_label
+    -- Pricing change implemented 6 weeks ago; post window starts at that point
+  ) w
+  WHERE a.created_at < w.window_start  -- Account must predate the window
+)
+
+SELECT
+  period_label,
+  billing_type,
+  tenure_bucket,
+
+  SUM(active_at_window_start)                                      AS accounts_at_risk,
+  SUM(churned_in_window)                                           AS churned_accounts,
+
+  ROUND(
+    100.0 * SUM(churned_in_window) / NULLIF(SUM(active_at_window_start), 0),
+    2
+  )                                                                AS churn_rate_pct,
+
+  ROUND(AVG(CASE WHEN churned_in_window = 1 THEN acv END), 0)     AS avg_churned_acv,
+  ROUND(SUM(CASE WHEN churned_in_window = 1 THEN acv ELSE 0 END), 0) AS total_arr_lost
+
+FROM account_windows
+
+GROUP BY 1, 2, 3
+ORDER BY period_label DESC, billing_type, tenure_bucket;`,
+      annotation: `CROSS JOIN to a two-row windows subquery is an efficient pattern for creating before/after comparisons without duplicating query logic. Each account appears once per window — once in the pre period and once in the post period.
+
+active_at_window_start determines the denominator for churn rate: accounts that were still active when each window opened. This is the correct churn rate calculation — accounts that had already churned before the window should not inflate the denominator.
+
+churned_in_window flags cancellations within the specific 30-day window, enabling the apples-to-apples comparison of churn rates in the same calendar-month-length window before and after the pricing change.
+
+Expected output: the post_pricing_change / monthly / 4-9_months row should show dramatically higher churn_rate_pct than its pre_pricing_change counterpart. Annual accounts should show minimal change in both windows, confirming the price elasticity is specific to month-to-month billing. The total_arr_lost column quantifies the revenue cost of the price increase by segment.`,
+    },
+    seniorDiagnosis: {
+      likelyCause: 'The 25% month-to-month price increase directly triggered churn among price-elastic, shorter-tenure SMB accounts who had low switching costs and were already paying a flexibility premium',
+      reasoning: 'Month-to-month customers are structurally the most price-sensitive segment in any SaaS business: they have already demonstrated a preference for flexibility over commitment, they re-evaluate the price-to-value ratio every 30 days, and they have zero switching cost friction from an annual contract. A 25% increase on top of a pricing tier that was already 20-30% higher than annual (the standard month-to-month premium) pushed the total price to a level that exceeded the perceived value for mid-tenure, lower-ACV accounts that had not deeply integrated the product. The 6-week lag between the pricing change and the churn spike is the billing cycle effect: monthly accounts churned at their next renewal, not immediately. The 67% exit survey response citing price is unusually high for a SaaS exit survey — typically price is over-cited as a polite exit reason — but the alignment with the pricing change timing and the billing-type concentration confirms the causal mechanism. The 29% competitive response confirms that competitors were positioned as affordable alternatives once Threadline raised prices, amplifying the elasticity effect.',
+      validationPlan: [
+        'Calculate month-to-month vs. annual churn rate in the 30 days before and after the pricing change — confirm the spike is isolated to monthly accounts',
+        'Build a price elasticity estimate: total churn-related revenue loss vs. total incremental revenue from the 25% increase on retained accounts — determine the net revenue impact of the pricing change',
+        'Segment the retained month-to-month accounts by feature engagement depth to estimate how much deeper product integration protects against price elasticity',
+        'Model 3 scenarios: full rollback to original pricing, partial increase (10-15%), and current pricing with win-back offers for churned accounts',
+      ],
+      recommendation: 'Evaluate a tiered price increase: instead of a flat 25% increase across all month-to-month accounts, apply a differentiated increase based on tenure and usage depth. Highly engaged, longer-tenure accounts can absorb a larger increase; shallow-engagement, short-tenure accounts are the price-sensitive churners. Consider a "convert to annual" offer to at-risk month-to-month accounts before the price change takes effect — trading one-time churn risk for lock-in. Present the net revenue analysis (incremental revenue from retained customers vs. lost ARR from churned accounts) to determine whether the 25% increase was net positive or negative.',
+      commonMistakes: [
+        'Attributing the churn spike to product quality or competitive pressure without testing the billing-type segmentation first',
+        'Treating exit survey "found alternative" responses as the primary cause rather than recognizing that competitive switching was enabled by the price increase',
+        'Proposing a full pricing rollback without first modeling whether the incremental revenue from retained accounts exceeds the churn-related ARR loss',
+        'Not accounting for the 6-week billing-cycle lag between the pricing change and the churn spike, which can cause analysts to look for causes 6 weeks prior rather than at the change itself',
+      ],
+      interviewPhrase: 'When churn spikes in a single month, I immediately check whether a pricing change just hit a billing cycle — the 30-day renewal cadence creates a predictable lag between price changes and churn events that analysts often miss.',
+    },
+  },
+
+  {
+    id: 'RCA11',
+    title: 'Ad Revenue Per DAU Dropped 22% in Three Weeks',
+    subtitle: 'Spark · Social Feed · Ad Monetization',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'growth',
+    linkedConceptIds: ['funnel-decomposition', 'segmentation', 'data-quality-check'],
+    context: {
+      metricMovement: 'Ad revenue per DAU dropped from $0.18 to $0.14 (−22%) over 3 weeks',
+      businessImpact: '~$175M annual revenue impact if sustained at current 12M DAU; fill rate collapse is the primary driver',
+      timeWindow: 'Decline began 3 weeks ago, precisely when a new content safety filter was deployed',
+      knownFacts: [
+        'Fill rate (percentage of ad slots filled with a paying ad) dropped from 91% to 74%',
+        'CPM on filled slots is actually up 4% — advertisers are paying more per filled impression',
+        'A new content safety filter was deployed 3 weeks ago, flagging "brand safety risk" content and suppressing ads on flagged posts',
+        'The filter is triggering on 19% of feed impressions, far above the expected 2-3%',
+        'Categories most flagged: "creator challenges," "reaction content," and "trending sounds" — all high-engagement content types',
+      ],
+    },
+    diagnosisSteps: [
+      {
+        id: 'system_check',
+        stepNumber: 1,
+        label: 'System / Data Check',
+        prompt: 'Ad revenue per DAU dropped 22% over 3 weeks. What do you verify first?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Verify that ad revenue tracking and impression counting methodology have not changed — confirm the revenue per DAU metric is computed identically before and after the filter deployment',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Ad revenue per DAU is a composite metric: any change in how total ad revenue is counted (currency conversion, revenue recognition timing, partner revenue share adjustments) or how DAU is defined can move the metric without reflecting a real change in monetization efficiency. With a system deployment 3 weeks ago, checking that both the numerator (ad revenue) and denominator (DAU) are measured consistently eliminates measurement artifacts before the business diagnosis begins.',
+          },
+          {
+            id: 'b',
+            label: 'Immediately inspect the content safety filter logs to see which posts are being flagged',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Filter log inspection is the right second step and will quickly surface the over-triggering issue, but doing so before confirming measurement integrity could mean spending time on the filter while the actual cause is a revenue reporting change. The 19% triggering rate vs. 2-3% expected is a strong signal the filter is the cause, but validate measurement first.',
+          },
+          {
+            id: 'c',
+            label: 'Contact the major advertisers to see if they reduced their campaign budgets',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Advertiser budget reduction would show up as lower CPMs, not lower fill rates — advertisers compete on price for available inventory, and if they reduced budgets, you would see CPMs fall. The known facts show CPM is actually up 4%, which directly contradicts a demand-side explanation. The problem is supply-side: available inventory being removed from the auction, not advertiser demand declining.',
+          },
+        ],
+      },
+      {
+        id: 'decompose',
+        stepNumber: 2,
+        label: 'Metric Decomposition',
+        prompt: 'Tracking confirmed unchanged. Now decompose ad revenue per DAU into its component drivers. What decomposition reveals the mechanism?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Decompose ad revenue per DAU = (total impressions per DAU) × (fill rate) × (CPM per filled impression) — identify which component changed',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Ad revenue per DAU is driven by three levers: how many ad slots are shown per user (impression volume), what fraction of those slots are filled with paying ads (fill rate), and how much advertisers pay for each filled slot (CPM). You already know from the known facts that CPM is up 4% — so CPM is not the problem. Decomposing this formula will isolate fill rate as the broken component, pointing you directly at the content safety filter as the mechanism suppressing inventory.',
+          },
+          {
+            id: 'b',
+            label: 'Compare daily ad revenue trend line to DAU trend line to check if they diverged at the same time',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Trend line comparison confirms the timing of the divergence and is useful for establishing when the problem started, but it does not explain the mechanism. You already know the timing matches the filter deployment. The decomposition into impressions × fill rate × CPM moves faster from "what happened" to "why it happened."',
+          },
+          {
+            id: 'c',
+            label: 'Look at total ad spend from the top 10 advertisers to confirm demand is still present',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Demand analysis is the wrong direction when fill rate has dropped 17pp and CPM is up — rising CPM with falling fill rate is the exact signature of a supply constraint, not a demand collapse. Advertisers are bidding higher prices for the available inventory precisely because less inventory is available. Checking advertiser demand would confirm demand is healthy but would not identify the fill rate suppression mechanism.',
+          },
+        ],
+      },
+      {
+        id: 'segment',
+        stepNumber: 3,
+        label: 'Segmentation',
+        prompt: 'Decomposition confirms fill rate dropped from 91% to 74% — impression volume and CPM are stable. Which segmentation finds the root cause fastest?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Segment fill rate by content_safety_flag status (flagged vs. not flagged) and content category to confirm the filter is over-triggering on high-engagement content',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'This segmentation directly tests the filter over-triggering hypothesis: if fill rate for flagged content is near 0% (no ads shown) and the filter is triggering on 19% of impressions, then approximately 19% of all ad slots are being suppressed. Crossing with content category will confirm that creator challenges, reaction content, and trending sounds — all high-engagement categories — are the over-flagged population. This segmentation produces the exact evidence needed to tell the trust and safety team that their filter thresholds are too aggressive.',
+          },
+          {
+            id: 'b',
+            label: 'Segment by ad format (video ads vs. static vs. interstitial) to check if a specific format is underperforming',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Ad format analysis could reveal if a specific format type is involved in the fill rate decline, but the content safety filter operates at the post level, not the ad format level — it suppresses all ad formats on flagged posts equally. Format segmentation would not surface the content safety mechanism and would add analysis time without identifying the cause.',
+          },
+          {
+            id: 'c',
+            label: 'Segment by user demographics (age, location) to check if the drop is concentrated in specific user groups',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Demographic segmentation makes sense when the hypothesis involves differential user behavior or advertiser targeting preferences, but the content safety filter applies to post-level content classification, not user demographics. A demographic segmentation would find a diffuse effect across all groups (since high-engagement content is consumed by all demographics) and would not surface the filter over-triggering mechanism.',
+          },
+        ],
+      },
+      {
+        id: 'hypothesis',
+        stepNumber: 4,
+        label: 'Root Cause Hypothesis',
+        prompt: 'Fill rate dropped 17pp, filter triggers on 19% of impressions (vs. 2-3% expected), flagged categories are highest-engagement content. Which hypothesis best explains the root cause?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Content safety filter is over-triggering: its threshold is too aggressive and is incorrectly flagging high-engagement content that is not actually brand-unsafe, removing high-CPM inventory from the ad auction',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'The arithmetic is clear: if the filter was designed to flag 2-3% of impressions but is flagging 19%, it is over-triggering by roughly 7-8x. The categories being flagged — creator challenges, reaction content, trending sounds — are precisely the content that drives the highest engagement on short-form video platforms, and engaged users are exactly the premium inventory advertisers pay CPM premiums for. The filter is not just suppressing ads — it is suppressing the most valuable ads on the platform. The CPM increase on remaining filled slots confirms that the suppressed inventory was high-quality: advertisers are competing harder for the reduced premium inventory that remains.',
+          },
+          {
+            id: 'b',
+            label: 'Major advertisers have added brand safety requirements that prevent them from running on a wider range of content',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Advertiser-side brand safety restrictions could cause fill rate decline if advertisers expanded their exclusion lists. However, this would show up as a demand-side change (lower advertiser bid rates, more unsold inventory) and would likely not be as sudden or as precisely timed as a system deployment. The known facts explicitly state a new content safety filter was deployed 3 weeks ago — the more parsimonious explanation is that the platform\'s own filter, not advertiser requirements, is the primary driver.',
+          },
+          {
+            id: 'c',
+            label: 'Total content volume has declined, reducing the number of available ad slots per DAU',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Impression volume per DAU is stable, which directly contradicts a content volume decline. If total content decreased, you would see fewer impressions per user session, not a fill rate decline. Fill rate is the fraction of existing slots filled, and it dropped independently of impression volume — confirming that the supply of slots is unchanged but the fraction being monetized is shrinking due to the filter.',
+          },
+        ],
+      },
+      {
+        id: 'validate',
+        stepNumber: 5,
+        label: 'Validation Approach',
+        prompt: 'Your hypothesis is filter over-triggering on high-CPM inventory. How do you confirm and quantify the revenue impact?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Pull fill rate and CPM for flagged vs. unflagged content pre/post filter deployment, and calculate the annual revenue impact of the 17pp fill rate gap attributable to over-triggering',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'This validation directly quantifies the filter\'s revenue cost: fill rate for flagged content will be near 0% (ads suppressed) while unflagged content fill rate will be at historical levels. The revenue impact calculation — (flagged impressions) × (expected fill rate) × (CPM) × (365 days) — gives you the dollar cost of the over-triggering that you can bring to the trust and safety team and leadership. This is also the analysis that will justify recalibrating the filter threshold.',
+          },
+          {
+            id: 'b',
+            label: 'Manually review a sample of flagged posts to assess whether they are genuinely brand-unsafe',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Manual review of flagged posts provides qualitative confirmation that the filter is misclassifying content, and it is worth doing as part of the trust and safety team\'s response. However, a 100-post manual sample is supplementary evidence, not the primary quantification. The revenue impact calculation using fill rate and CPM data is faster, scales to millions of impressions, and is the evidence format that will move a leadership decision.',
+          },
+          {
+            id: 'c',
+            label: 'Run an A/B test where 50% of users see ads on flagged content to measure the brand safety risk',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Running a controlled experiment that serves ads on potentially brand-unsafe content to measure risk is not the right validation approach — it exposes the platform to the very brand safety risk the filter was designed to prevent. The correct path is to recalibrate the filter threshold using the existing flagging data and a manual content review sample, not to serve ads on flagged content as a test. Safety controls should not be temporarily disabled to generate experiment data.',
+          },
+        ],
+      },
+    ],
+    sqlStep: {
+      prompt: `You've confirmed the content safety filter is over-triggering, suppressing ads on 19% of feed impressions — 7-8x the expected 2-3% rate — and disproportionately affecting high-engagement, high-CPM content categories.\n\nWrite a SQL query that shows fill rate and CPM by content_safety_flag status and content_category for the 3 weeks before and after filter deployment, so you can quantify the revenue suppression per category.`,
+      hints: [
+        'Create a pre/post flag based on the filter deployment date (3 weeks ago)',
+        'Fill rate = filled_impressions / total_impressions per content_category × flag_status bucket',
+        'Include avg_cpm for filled impressions to confirm the CPM premium on high-engagement categories',
+        'Calculate estimated_revenue_lost = suppressed_impressions × expected_fill_rate × avg_cpm',
+      ],
+      modelQuery: `WITH impression_data AS (
+  -- Join feed impressions to content safety flag status and category
+  SELECT
+    i.impression_id,
+    i.post_id,
+    i.impression_date,
+    i.ad_filled,                      -- Boolean: was an ad served on this impression?
+    i.revenue_earned,                  -- Revenue from this impression (0 if not filled)
+    i.cpm_if_filled,                   -- CPM at which the ad was sold (null if not filled)
+
+    p.content_category,               -- 'creator_challenge' | 'reaction' | 'trending_sound' | 'other'
+    p.content_safety_flagged,         -- Boolean: flagged by new content safety filter
+
+    -- Pre/post filter deployment window
+    CASE
+      WHEN i.impression_date < '2024-02-20' THEN 'pre_filter'   -- Filter deployed 3 weeks ago
+      ELSE 'post_filter'
+    END AS deployment_window
+
+  FROM feed_impressions i
+  INNER JOIN posts p ON i.post_id = p.post_id
+  WHERE i.impression_date >= '2024-01-27'   -- 3 weeks pre-deployment for comparison
+    AND i.impression_date <= CURRENT_DATE
+)
+
+SELECT
+  deployment_window,
+  content_safety_flagged,
+  content_category,
+
+  COUNT(*)                                                       AS total_impressions,
+  SUM(ad_filled::int)                                            AS filled_impressions,
+
+  ROUND(
+    100.0 * SUM(ad_filled::int) / NULLIF(COUNT(*), 0), 1
+  )                                                              AS fill_rate_pct,
+
+  ROUND(AVG(CASE WHEN ad_filled THEN cpm_if_filled END), 2)     AS avg_cpm_filled,
+
+  ROUND(SUM(revenue_earned), 0)                                  AS total_revenue,
+
+  -- Estimated revenue suppressed by the filter (post-deployment, flagged content only)
+  -- Assumes pre-deployment fill rate as the expected fill rate
+  ROUND(
+    SUM(CASE WHEN deployment_window = 'post_filter' AND content_safety_flagged THEN 1 ELSE 0 END)
+    * 0.91   -- Pre-filter fill rate baseline
+    * AVG(CASE WHEN ad_filled THEN cpm_if_filled END) / 1000.0,  -- CPM to per-impression revenue
+    0
+  )                                                              AS est_suppressed_revenue
+
+FROM impression_data
+
+GROUP BY 1, 2, 3
+ORDER BY deployment_window DESC, content_safety_flagged DESC, content_category;`,
+      annotation: `impression_data CTE joins feed impressions to post metadata to get the content_safety_flagged flag and content_category for each impression. The pre/post window is defined relative to the filter deployment date.
+
+fill_rate_pct is the core metric: the post_filter / flagged rows will show near-0% fill rate (ads suppressed on flagged content), while the pre_filter rows show 91% historical fill rate for all categories.
+
+avg_cpm_filled for flagged categories will likely show that creator challenges, reaction content, and trending sounds had above-average CPMs pre-filter, confirming that the filter is suppressing the most valuable inventory on the platform.
+
+est_suppressed_revenue applies the pre-filter fill rate (0.91) to post-filter flagged impressions, then multiplies by avg CPM to estimate the dollar value being lost per category per day. Annualizing this figure gives the $175M impact estimate.
+
+Expected key finding: the post_filter / flagged / creator_challenge and post_filter / flagged / reaction rows will have fill_rate_pct near 0% with the highest avg_cpm_filled values — confirming the filter is removing the highest-value inventory from the auction.`,
+    },
+    seniorDiagnosis: {
+      likelyCause: 'Content safety filter is over-triggering at 7-8x the expected rate, incorrectly flagging high-engagement, high-CPM content and suppressing it from the ad auction — causing a 17pp fill rate decline',
+      reasoning: 'The fill rate collapse from 91% to 74% is directly explained by the filter suppressing 19% of impressions when 2-3% was expected: 91% × (1 − 0.19) ≈ 74%, which matches the observed fill rate almost exactly. The CPM increase on remaining inventory confirms that the suppressed content was premium: advertisers are bidding harder for the reduced pool of available impressions, driving up prices on what remains. The categories being flagged — creator challenges, reaction content, trending sounds — are canonically the highest-engagement content types on short-form video platforms, and they are precisely what brand-safety filters most commonly misclassify because their language and audio patterns superficially resemble riskier content. The filter is likely using a keyword or audio-similarity model that conflates energy and excitement with unsafe content. The $175M annual revenue estimate understates the true cost because it does not account for the creator retention effect: if high-engagement creator content stops getting ad impressions, creators see lower earnings, which over time degrades the content supply.',
+      validationPlan: [
+        'Pull fill rate and CPM by content_safety_flagged × content_category for 3 weeks pre and post deployment — confirm that flagged categories have near-0% fill rate post-deployment and above-average CPMs pre-deployment',
+        'Calculate the dollar cost of over-triggering: (post-filter flagged impressions) × (pre-filter fill rate) × (avg CPM) × 365 = annual revenue suppressed',
+        'Manual QA sample: have a human reviewer assess 200 randomly sampled flagged posts in the top 3 over-flagged categories — measure what fraction are genuinely brand-unsafe',
+        'Review the filter model\'s classification criteria with the trust and safety team to identify why high-engagement content patterns are triggering brand-safety flags',
+      ],
+      recommendation: 'Work with the trust and safety team to recalibrate the filter threshold — raise the confidence threshold required to suppress an impression, reducing false positives. Implement a tiered suppression approach: high-confidence flags suppress ads, medium-confidence flags exclude specific advertiser categories (rather than all ads), and low-confidence flags are reviewed manually. Set a filter performance KPI of less than 3% impression suppression rate and fill rate above 88%, with weekly monitoring. Also implement a fast-path review queue for content in the top-performing categories (creator challenges, trending sounds) to prevent false positive suppression on the most valuable inventory.',
+      commonMistakes: [
+        'Diagnosing the fill rate decline as a demand-side problem when CPM is increasing — rising CPM with falling fill rate is a supply constraint, not a demand collapse',
+        'Not connecting the filter deployment timing to the fill rate decline because the trust and safety team operates independently of ad monetization',
+        'Treating the revenue impact as purely an ad ops problem without recognizing the creator ecosystem consequence of reduced earnings on high-engagement content',
+        'Proposing to disable the filter entirely rather than recalibrating the threshold — brand safety is a real requirement and the solution is precision, not removal',
+      ],
+      interviewPhrase: 'When fill rate drops and CPM rises simultaneously, I know supply is being removed from the auction — I look for any recent content classification, filtering, or policy change that could be suppressing inventory before I look at advertiser demand.',
+    },
+  },
+
+  {
+    id: 'RCA12',
+    title: 'New Creator 7-Day Retention Dropped 30% Over Six Weeks',
+    subtitle: 'Prism · Short-Form Video · Creator Supply',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'growth',
+    linkedConceptIds: ['segmentation', 'funnel-decomposition', 'proxy-metric'],
+    context: {
+      metricMovement: 'New creator 7-day retention (posting at least once in week 2 after joining) dropped from 38% to 27% over 6 weeks',
+      businessImpact: 'Creator supply is the core content constraint — a 30% retention drop will compress the content catalog and lag into DAU decline in 4-8 weeks',
+      timeWindow: 'Decline began 7 weeks ago, one week after a ranking algorithm update',
+      knownFacts: [
+        'A ranking algorithm update 7 weeks ago shifted primary ranking signal from "likes + shares" to "completion rate"',
+        'New creator median completion rate in week 1 is 34% vs. established creator median of 67%',
+        'New creator impression volume in week 1 fell 41% after the algorithm change (algorithm down-ranks low-completion content)',
+        'Creator survey (n=200 churned new creators): "my videos got no views" cited by 71%',
+        'Established creator retention is unchanged at 84%',
+      ],
+    },
+    diagnosisSteps: [
+      {
+        id: 'system_check',
+        stepNumber: 1,
+        label: 'System / Data Check',
+        prompt: 'New creator 7-day retention dropped from 38% to 27% over 6 weeks. What do you verify first?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Verify the creator retention definition has not changed — confirm week 2 posting is being measured consistently and the creator onboarding cohort definition is unchanged',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Creator retention metrics are sensitive to definitional changes: if the cohort window changed (e.g., from "any post in week 2" to "at least 2 posts in week 2"), or if the creator onboarding definition changed (e.g., stricter criteria for who counts as a "new creator"), the metric could move without reflecting a real behavioral change. Confirming the retention definition is unchanged eliminates this before you build a business case around a measurement artifact.',
+          },
+          {
+            id: 'b',
+            label: 'Check whether new creator acquisition volume dropped (fewer new creators joining, affecting the base rate)',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Creator acquisition volume affects the absolute count of retained creators but not the retention rate itself, since retention is defined as a percentage of a cohort. However, if the definition of "new creator" changed in a way that captured a more casual or less committed cohort, the rate could be affected. Acquisition volume check is a reasonable secondary verification after confirming the retention definition.',
+          },
+          {
+            id: 'c',
+            label: 'Accept the drop as real since the algorithm change timing is obvious and immediately recommend reverting it',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Recommending an algorithm revert before validating the measurement or understanding the full causal chain is premature. Algorithm changes often have complex trade-offs — established creator engagement may have improved with the completion rate signal. You need to confirm the measurement is valid and understand the full impact before recommending a revert that could degrade other platform metrics.',
+          },
+        ],
+      },
+      {
+        id: 'decompose',
+        stepNumber: 2,
+        label: 'Metric Decomposition',
+        prompt: 'Retention definition confirmed unchanged. How do you decompose the retention drop to isolate the mechanism?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Decompose creator retention by cohort type (new vs. established) and week-1 impression volume bucket to identify the distribution mechanism',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'The known facts already show established creator retention is unchanged at 84% — so the retention collapse is exclusively in new creators. Decomposing by week-1 impression volume bucket tests the causal chain: if new creators who received high week-1 impressions retained at rates similar to established creators, but new creators who received low impressions churned at high rates, then distribution (not content quality) is the mechanism. This decomposition translates the algorithm hypothesis into a directly testable behavioral prediction.',
+          },
+          {
+            id: 'b',
+            label: 'Compare new creator posting frequency in week 1 vs. week 2 to see if the drop is about effort rather than impressions',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Posting frequency analysis could reveal if creators are reducing effort before quitting, but effort is a symptom of low impressions, not an independent cause. Creators who post in week 1 but see no views post less in week 2 and then not at all in week 3. Decomposing by impression volume gets to the upstream cause faster than looking at week-2 posting behavior.',
+          },
+          {
+            id: 'c',
+            label: 'Look at overall content volume on the platform to check if total supply is growing or declining',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Total content volume is a downstream consequence of creator retention, not a diagnostic input for understanding why creator retention dropped. If new creator retention is falling, total content supply will lag behind. Measuring content volume does not explain the mechanism behind the retention change.',
+          },
+        ],
+      },
+      {
+        id: 'segment',
+        stepNumber: 3,
+        label: 'Segmentation',
+        prompt: 'New creator impression volume fell 41% post-algorithm change. Which segmentation confirms this is the causal mechanism for retention failure?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Segment new creator W2 posting rate by W1 impression volume quintile (lowest 20% impressions to highest 20%) and by pre/post algorithm cohort',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Segmenting retention by impression volume quintile produces a direct dose-response relationship: if W2 posting rate increases monotonically with W1 impression volume — lowest impressions = lowest retention, highest impressions = highest retention — you have confirmed that distribution is the causal mechanism for creator retention. Crossing with pre/post algorithm cohorts confirms that the relationship became stronger after the algorithm change, proving the algorithm shifted the impression distribution in a way that suppressed new creator retention specifically.',
+          },
+          {
+            id: 'b',
+            label: 'Segment by video content quality proxy (video length, production effort indicators) to see if new creators are posting lower-quality content',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Content quality analysis is worth exploring as a secondary check, but the 71% survey response citing "my videos got no views" is a distribution signal, not a quality signal. If quality were the primary issue, creators would get some views but low engagement — but they are reporting near-zero views, which is a distribution problem. The algorithm change that penalizes low-completion content (which new creators structurally have) is the more proximate mechanism.',
+          },
+          {
+            id: 'c',
+            label: 'Segment by creator demographics (age, location, device type) to identify if certain creator groups are disproportionately affected',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Demographic segmentation could reveal differential access patterns but does not address the algorithmic cold-start problem. The completion rate disadvantage for new creators is structural — any new creator\'s first videos will have lower completion rates than established creators regardless of demographics. Demographic analysis would add noise without identifying the algorithm-driven mechanism.',
+          },
+        ],
+      },
+      {
+        id: 'hypothesis',
+        stepNumber: 4,
+        label: 'Root Cause Hypothesis',
+        prompt: 'New creators have 34% median completion rates vs. 67% for established creators, and 41% fewer impressions in week 1 after the algorithm change. Which hypothesis best explains the retention drop?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Algorithm-induced cold-start failure: by ranking on completion rate, the algorithm systematically disadvantages new creators whose early content has lower completion rates, reducing their week-1 impressions and eliminating the feedback loop needed to grow and improve',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'This hypothesis explains the full pattern: the algorithm change created a self-reinforcing disadvantage for new creators. New creators\' first videos naturally have lower completion rates (less refined content, smaller initial following, no algorithmic trust signals) — the algorithm down-ranks low-completion content — fewer impressions result — the creator sees no views and infers their content is bad — they quit before completing the learning curve. Established creators are immune because their historical completion rates are high and their algorithmic trust is already earned. The 71% "no views" survey response and the 41% impression volume decline are convergent confirmations of the distribution failure, not the content quality failure.',
+          },
+          {
+            id: 'b',
+            label: 'New creator content quality declined because the platform attracted less talented creators in recent cohorts',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Content quality shifts develop gradually over many months and would not produce a 6-week retention collapse. More importantly, the algorithm change provides a precise timing explanation that is far more parsimonious — the retention drop began one week after the algorithm launched. If creator quality had declined, you would expect impression volume to hold steady while engagement metrics fell. Instead, impressions fell 41%, which is a distribution change, not a quality change.',
+          },
+          {
+            id: 'c',
+            label: 'New creators are being outcompeted for attention by established creators who benefited from the algorithm change',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'This hypothesis is partially true mechanically — established creators with high completion rates did receive relatively more distribution after the algorithm change — but framing it as competition obscures the structural problem. The issue is not that established creators are winning; it is that the algorithm has no mechanism for bootstrapping new creators through their low-completion-rate phase. Fixing the "competition" framing would lead to incorrectly targeting established creators, when the right fix is a new-creator distribution carve-out or a separate ranking model for first-week content.',
+          },
+        ],
+      },
+      {
+        id: 'validate',
+        stepNumber: 5,
+        label: 'Validation Approach',
+        prompt: 'Your hypothesis is algorithm-induced cold-start failure suppressing new creator impressions and breaking the retention loop. How do you validate this?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Run a cohort analysis comparing W1 impression volume and W2 posting rate for new creator cohorts from 4 weeks pre-algorithm change vs. 4 weeks post, segmented by impression volume quintile',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'This pre/post cohort analysis creates a natural quasi-experiment: new creator cohorts from before the algorithm change experienced the old distribution model, and post-change cohorts experienced the new one. If W1 impression volume shifted downward for post-change cohorts and W2 posting rate declined in the same direction, you have strong evidence that the algorithm change is the cause. Segmenting by impression quintile confirms the dose-response relationship — lowest-impression creators have lowest W2 retention — and gives engineering a specific threshold to target for a new-creator boost policy.',
+          },
+          {
+            id: 'b',
+            label: 'Survey new creators who are still posting in week 2 to understand what kept them engaged',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Surveying retained new creators provides useful qualitative insights about what worked for them, and you might find that the few retained new creators had unusually high week-1 completion rates or viral content. However, this is supplementary evidence — the cohort retention analysis using behavioral data is faster and more statistically robust than a survey of a self-selected retained population.',
+          },
+          {
+            id: 'c',
+            label: 'Revert the algorithm change immediately and observe whether new creator retention recovers within two weeks',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Reverting the algorithm without validating the hypothesis first risks disrupting established creator performance for an uncertain return. The algorithm change likely improved engagement quality for established content — reverting it could worsen platform-wide completion rates and DAU. Validate the mechanism using the available historical data first, then propose a targeted fix (new-creator boost) rather than a full revert that trades one problem for another.',
+          },
+        ],
+      },
+    ],
+    sqlStep: {
+      prompt: `You've confirmed the algorithm cold-start hypothesis: the completion-rate ranking signal systematically suppresses new creator week-1 impressions, breaking the feedback loop needed for new creators to learn and stay.\n\nWrite a SQL query that compares new creator week-1 impression volume and week-2 posting rate by cohort (pre vs. post algorithm change), split by creator account age bucket, to confirm the dose-response relationship between impressions and retention.`,
+      hints: [
+        'Define new creator as a creator whose first post was within 7 days of the analysis window start',
+        'Week-1 impressions = total impressions on the creator\'s posts in days 1-7 after first post',
+        'Week-2 posting = did the creator post at least once in days 8-14 after first post (retention flag)',
+        'Bucket creators by W1 impression volume quintile to show the dose-response relationship',
+      ],
+      modelQuery: `WITH new_creator_cohorts AS (
+  -- Identify new creators by first_post_date and classify by algorithm era
+  SELECT
+    c.creator_id,
+    c.first_post_date,
+
+    CASE
+      WHEN c.first_post_date < '2024-01-22' THEN 'pre_algorithm'   -- Algorithm launched 7 weeks ago
+      ELSE 'post_algorithm'
+    END AS algorithm_cohort
+
+  FROM creators c
+  WHERE c.first_post_date >= '2024-01-01'   -- Covers pre and post algorithm window
+    AND c.first_post_date <= CURRENT_DATE - INTERVAL '14 days'  -- Need 14 days to measure W2
+),
+
+week1_impressions AS (
+  -- Total impressions on creator's content in days 1-7 after first post
+  SELECT
+    ncc.creator_id,
+    ncc.algorithm_cohort,
+    ncc.first_post_date,
+    COALESCE(SUM(i.impression_count), 0)  AS w1_total_impressions
+
+  FROM new_creator_cohorts ncc
+  LEFT JOIN post_impressions i
+    ON i.creator_id = ncc.creator_id
+    AND i.impression_date BETWEEN ncc.first_post_date
+                               AND ncc.first_post_date + INTERVAL '6 days'
+  GROUP BY 1, 2, 3
+),
+
+week2_retention AS (
+  -- Flag: did creator post at least once in days 8-14 after first post?
+  SELECT
+    ncc.creator_id,
+    MAX(CASE
+      WHEN p.post_date BETWEEN ncc.first_post_date + INTERVAL '7 days'
+                           AND ncc.first_post_date + INTERVAL '13 days' THEN 1 ELSE 0
+    END) AS posted_in_week2
+
+  FROM new_creator_cohorts ncc
+  LEFT JOIN posts p ON p.creator_id = ncc.creator_id
+  GROUP BY 1
+),
+
+impression_quintiles AS (
+  -- Assign W1 impression quintile within each algorithm cohort
+  SELECT
+    wi.creator_id,
+    wi.algorithm_cohort,
+    wi.w1_total_impressions,
+    NTILE(5) OVER (
+      PARTITION BY wi.algorithm_cohort
+      ORDER BY wi.w1_total_impressions
+    ) AS impression_quintile   -- 1 = lowest impressions, 5 = highest
+
+  FROM week1_impressions wi
+)
+
+SELECT
+  iq.algorithm_cohort,
+  iq.impression_quintile,
+
+  COUNT(*)                                        AS creator_count,
+  ROUND(AVG(iq.w1_total_impressions), 0)          AS avg_w1_impressions,
+
+  SUM(wr.posted_in_week2)                         AS w2_retained_creators,
+  ROUND(
+    100.0 * SUM(wr.posted_in_week2) / NULLIF(COUNT(*), 0), 1
+  )                                               AS w2_retention_rate_pct
+
+FROM impression_quintiles iq
+INNER JOIN week2_retention wr ON iq.creator_id = wr.creator_id
+
+GROUP BY 1, 2
+ORDER BY algorithm_cohort, impression_quintile;`,
+      annotation: `new_creator_cohorts CTE identifies creators by first_post_date and applies the pre/post algorithm label. The 14-day lookback ensures all creators in the analysis have had time to either post or not post in week 2.
+
+week1_impressions uses a date range join (LEFT JOIN to avoid dropping creators who received zero impressions) to count impressions in days 1-7. COALESCE ensures creators who received zero impressions appear with 0 rather than NULL.
+
+NTILE(5) in impression_quintiles partitions creators within each algorithm cohort into 5 equal groups by impression volume. Partitioning by cohort ensures pre and post quintiles are comparable within each era rather than mixing impression distributions across algorithm regimes.
+
+Expected output: for post_algorithm cohorts, quintile 1 (fewest impressions) should show dramatically lower w2_retention_rate_pct than quintile 5 (most impressions), confirming the dose-response relationship. Comparing the same quintile pattern for pre_algorithm cohorts vs. post_algorithm cohorts will show that the bottom quintile got much worse after the algorithm change — confirming that the algorithm compressed new creator impression distribution downward.`,
+    },
+    seniorDiagnosis: {
+      likelyCause: 'Algorithm cold-start failure: the completion-rate ranking signal structurally disadvantages new creators whose early content is down-ranked, suppressing week-1 impressions and eliminating the feedback loop that motivates continued posting',
+      reasoning: 'The completion-rate ranking signal is a high-quality engagement metric for optimizing established content, but it creates a cold-start trap for new creators. New creators\' first videos have structurally lower completion rates — they have not learned the format, have no audience trust, and receive fewer algorithmic distribution boosts that increase completion from engaged followers. The algorithm down-ranks their content, reducing impressions by 41%, and creators who see near-zero views have no signal to improve and no motivation to continue. The 34% vs. 67% median completion rate gap between new and established creators is not a content quality gap — it is a bootstrapping gap that the algorithm has no mechanism to bridge. The 71% survey response citing "no views" confirms that creators are experiencing the distribution failure, not a quality mismatch with their audience. Established creator retention at 84% (unchanged) confirms the algorithm is working well for the majority of the creator base — the problem is narrowly specific to the cold-start phase and requires a targeted fix, not an algorithm revert.',
+      validationPlan: [
+        'Run pre/post cohort retention analysis for new creators: compare W1 impression volume and W2 posting rate for cohorts from 4 weeks before vs. 4 weeks after the algorithm change',
+        'Plot a dose-response curve: W2 retention rate by W1 impression quintile within post-algorithm cohorts — confirm that retention increases monotonically with impressions',
+        'Identify the minimum W1 impression threshold for acceptable W2 retention (e.g., creators with 500+ W1 impressions retain at 45%+ vs. 15% for sub-100 impression creators)',
+        'Estimate the forward DAU impact: model content supply decline from the 11pp creator retention drop and estimate the lag time before it suppresses consumer DAU',
+      ],
+      recommendation: 'Implement a new-creator distribution boost: for creators in their first 14 days, temporarily override the completion-rate ranking signal with a diversified distribution policy that gives their content a minimum guaranteed impression floor (e.g., 500-1,000 impressions per post). After day 14, gradually transition to the standard completion-rate ranking as the creator accumulates a performance history. This is the standard cold-start solution used by content platforms. Monitor new creator W2 retention as the primary success metric for the boost policy, with a 35%+ target.',
+      commonMistakes: [
+        'Recommending a full algorithm revert without recognizing that the completion-rate signal is working for established creators and reverting it would degrade platform-wide content quality',
+        'Interpreting the new-creator completion rate gap (34% vs. 67%) as a content quality problem rather than a bootstrapping problem — new creators structurally cannot achieve established-creator completion rates in week 1',
+        'Not quantifying the lagged DAU impact of creator supply compression — creator retention problems take 4-8 weeks to manifest in consumer DAU, by which time the damage is harder to reverse',
+        'Treating the 71% survey response as self-report bias rather than as corroborating evidence for the impression volume data',
+      ],
+      interviewPhrase: 'Ranking algorithms optimized for engagement quality create cold-start traps for new supply — any new creator, seller, or contributor starts with structurally worse signals than incumbents, so my first question when new-side retention drops is always whether a ranking change just made the gap bigger.',
+    },
   }
 ];
 

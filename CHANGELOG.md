@@ -4,6 +4,70 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.4 — Gap-Fill: 6 New Rooms / Expansions + 2 New Room Types
+**Date:** May 2026
+**Commit message:** "feat: V3.4 — RCA/Cases expansion, causal inference stats, interview SQL, Behavioral + Estimation rooms"
+**Files changed:** `src/data/rcaCases.js`, `src/data/businessCases.js`, `src/data/statsModules.js`, `src/data/codeModules.js`, `src/data/behavioralQuestions.js` (NEW), `src/data/estimationProblems.js` (NEW), `src/utils/behavioralProgress.js` (NEW), `src/utils/estimationProgress.js` (NEW), `src/pages/BehavioralBrowser.jsx` (NEW), `src/pages/EstimationBrowser.jsx` (NEW), `src/components/behavioral/BehavioralRunner.jsx` (NEW), `src/components/estimation/EstimationRunner.jsx` (NEW), `src/App.jsx`, `src/components/layout/Header.jsx`, `CHANGELOG.md`, `IDEAS.md`
+
+### Why
+Honest platform audit identified 6 material gaps: RCA and Cases rooms were thin relative to interview frequency; no behavioral/leadership layer existed; no Fermi/estimation room; no causal inference beyond A/B; Code Room lacked classic interview-format SQL. All 6 gaps addressed in this release.
+
+### RCA Room — RCA07–RCA12 (12 total)
+- **RCA07** Crafted marketplace seller fraud spike — Express Seller low-friction onboarding exploited by coordinated fraud ring. Paired SQL: fraud rate by seller cohort age × onboarding tier × buyer age.
+- **RCA08** Prism DAU drop post Auto-Play rollout — session exhaustion effect: longer sessions reduce habitual return frequency, D1 retention proxy reveals the mechanism.
+- **RCA09** Threadline MRR growth near-zero — SMB segment NRR collapse (82%) while enterprise remains at 118%; MRR waterfall decomposition via LAG().
+- **RCA10** Threadline monthly churn 2.3x spike — 25% month-to-month price increase hit price-elastic short-tenure SMB accounts at their next billing cycle.
+- **RCA11** Spark ad revenue per DAU -22% — content safety filter over-triggering at 7-8x expected rate, suppressing ads on high-CPM engagement content.
+- **RCA12** Prism new creator 7-day retention -30% — algorithm cold-start failure: completion-rate ranking suppresses new creator impressions 41%, breaking the feedback loop.
+
+### Business Cases Room — C07–C12 (12 total)
+- **C07** Threadline pricing decision — blanket vs. tiered 20% price increase; segment elasticity by SMB/enterprise; NRR as the right metric (not new ARR).
+- **C08** Crafted build vs. buy AI recommendation engine — validate that recommendation is the bottleneck first; 3-year TCO framing; vendor-first with escape clause.
+- **C09** Spark SEA international expansion — SEA CPMs are 80-90% lower; unit economics break-even per DAU must precede market sizing; Indonesia-first pilot.
+- **C10** Prism cost-cutting $2M — map costs against growth contribution before cutting; sequence infrastructure → low-ROI marketing → headcount.
+- **C11** Threadline competitive response — 2 lost deals ≠ a trend; 90-day win/loss tracking with pre-committed threshold before pricing changes.
+- **C12** Crafted product sunset (Crafted Local events) — LTV of 2,400 at-risk sellers vs. $1.2M cost; three-option matrix (sunset / min-viable / keep).
+
+### Stats Room — STAT17–20: Causal Inference beyond A/B (20 total)
+- **STAT17** DiD — Threadline onboarding regional rollout: 7pp - 4pp control trend = 3pp DiD estimate; parallel trends assumption.
+- **STAT18** Regression Discontinuity — Crafted Top Seller badge at 100-review threshold; manipulation test; external validity warning on threshold change.
+- **STAT19** Synthetic Control — Spark Canada feature rollout; single-country US comparison as weak counterfactual; donor pool weighting.
+- **STAT20** Instrumental Variables — Crafted promotions OLS selection bias; A/B email invite as valid instrument; LATE vs. ATE distinction.
+
+### Code Room — C15–C18: Interview-Format SQL (18 total)
+- **C15** Anti-join (watched ≥3, never shared) — LEFT JOIN IS NULL vs. NOT EXISTS, performance comparison.
+- **C16** Rolling 7-day DAU — date spine + self-join; why COUNT DISTINCT breaks RANGE BETWEEN window frames.
+- **C17** Top-N per group — DENSE_RANK vs. RANK vs. ROW_NUMBER; CTE wrapping requirement.
+- **C18** Sessionization — LAG → gap flag → cumulative SUM = session_id; highest-frequency advanced SQL interview pattern.
+
+### Behavioral / Leadership Room (NEW — 8 questions)
+New room: `src/pages/BehavioralBrowser.jsx` + `src/components/behavioral/BehavioralRunner.jsx` + `src/data/behavioralQuestions.js` + `src/utils/behavioralProgress.js`
+- 8 questions covering: influence, communication, data-impact, conflict, leadership categories
+- STAR guide collapsible, model answer in Situation/Task/Action/Result prose blocks
+- Self-rating: "Nailed the structure + insight" / "Had the structure, missed a key principle" / "Needs more practice"
+- Room color: `var(--accent)` (blue). BEH01 and BEH02 free.
+
+### Estimation / Fermi Room (NEW — 8 problems)
+New room: `src/pages/EstimationBrowser.jsx` + `src/components/estimation/EstimationRunner.jsx` + `src/data/estimationProblems.js` + `src/utils/estimationProgress.js`
+- 8 problems: Uber rides NYC, YouTube storage cost, WhatsApp India MAU, Yelp restaurants, Spotify songs, Google searches/sec, Airbnb host CAC, Instagram revenue per user
+- Approach badge (bottom-up / top-down / hybrid), collapsible framework steps + hints
+- Model answer shows real arithmetic inline; highlighted final estimate; sanity checks
+- Room color: `var(--teal)`. EST01 and EST02 free.
+
+### App.jsx + Header.jsx changes
+- 4 new lazy imports (BehavioralBrowser, BehavioralRunner, EstimationBrowser, EstimationRunner)
+- 2 new data imports (behavioralQuestions, estimationProblems)
+- 2 new progress util imports
+- 2 new state vars (activeBehavioralId, activeEstimationId)
+- 2 new open functions (openBehavioralQuestion, openEstimationProblem)
+- 2 new getNext helpers (getNextBehavioralId, getNextEstimationId)
+- 2 new computed active/next vars each
+- JSX routing blocks for behavioral + estimation browser + runner
+- onResetAllProgress updated with new localStorage keys
+- Header: added "Behavioral" and "Estimation" nav items; active-state for both runners
+
+---
+
 ## V3.3.1 — Next-case nav for Product Design + Code runners
 **Date:** May 2026
 **Commit message:** "feat: V3.3.1 — next-case nav on ProductDesign + Code runners, CHANGELOG/IDEAS update"

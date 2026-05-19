@@ -871,6 +871,574 @@ export const statsModules = [
       connectsTo: ['design', 'review', 'metrics', 'rca'],
     },
   },
+
+  {
+    id: 'stat13-did-parallel-trends',
+    title: 'DiD Without Parallel Trends',
+    subtitle: 'Difference-in-differences assumption violation',
+    concept: 'did',
+    difficulty: 'senior',
+    isFree: false,
+    linkedConceptIds: ['did', 'parallel-trends', 'selection-bias', 'causal-inference'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
+
+    situation: {
+      company: 'Crafted',
+      product: 'Peer-to-peer artisan marketplace, ~$180M annualized GMV across 40 US cities',
+      context: 'Crafted rolled out a new seller verification badge in NYC, LA, and Chicago last quarter — not as a randomized experiment, just an operational launch in the cities where the ops team had bandwidth to verify sellers. A PM just Slacked you: "I ran a DiD on GMV for badge cities vs. the 37 control cities. Badge cities are up 18% relative to controls after the rollout. Verification is clearly working — can you help me write up a national rollout case?"',
+      decisionPressure: 'The ops team is scoping the cost of national verification rollout. Leadership wants a data-backed go/no-go by end of week.',
+    },
+
+    setup: {
+      metric: 'Gross Merchandise Value (GMV) per city, weekly',
+      baseline: 'Badge cities averaged $4.2M GMV/week pre-rollout. Control cities averaged $1.1M GMV/week.',
+      observedResult: 'Badge cities GMV grew 31% post-rollout. Control cities GMV grew 11% post-rollout. DiD estimate: +18pp relative lift attributed to the badge.',
+      sampleInfo: '3 treated cities, 37 control cities. 8 weeks pre-rollout, 8 weeks post-rollout. Standard DiD regression with city and time fixed effects.',
+      caveat: 'Badge cities (NYC, LA, Chicago) were the three highest-GMV cities and had been growing faster than control cities for at least 12 weeks before the rollout — a fact not surfaced in the PM\'s write-up.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"The DiD analysis shows verification badges cause an 18% GMV lift — we should roll out nationally."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Valid — DiD controls for fixed city-level differences, so pre-existing size differences between badge cities and control cities do not matter.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'DiD with city and time fixed effects does control for time-invariant differences between cities — it accounts for the fact that NYC is always larger than Boise. But it does not control for differential pre-treatment trends. If badge cities were already on a steeper growth trajectory before the rollout, the post-treatment divergence captures both the badge effect and the continuation of that pre-existing trend. Fixed effects absorb levels, not slopes. The parallel trends assumption requires that, absent the badge, treated and control cities would have followed the same growth trajectory — and that assumption needs to be tested explicitly.',
+      },
+      {
+        id: 'b',
+        label: 'Partially valid — the 18% estimate is probably real, but should be validated with a longer post-treatment window before committing to national rollout.',
+        isCorrect: false,
+        level: 'partial',
+        feedback: 'Extending the post-treatment window would improve precision, but the fundamental problem here is not statistical power — it is identification. If the pre-treatment trends were not parallel, a longer observation period does not fix the confounding; it just gives you a more precisely estimated biased number. The correct intervention is to go back and plot pre-treatment trends by city group before drawing any causal conclusions from the DiD estimate.',
+      },
+      {
+        id: 'c',
+        label: 'Invalid — DiD requires parallel pre-treatment trends, and if badge cities were already growing faster before the rollout, the 18% estimate conflates the badge effect with differential trend continuation.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. The parallel trends assumption is the identifying assumption of DiD: absent treatment, treated and control units would have followed the same trend. If badge cities were on a faster growth trajectory for 12 weeks before the rollout, that trajectory will continue post-rollout regardless of the badge, inflating the DiD estimate. The 18% figure cannot be causally attributed to the badge without first verifying that pre-treatment trends were parallel. You must plot pre-period GMV growth by group and run a formal pre-trend test before any causal claim is valid.',
+      },
+      {
+        id: 'd',
+        label: 'Invalid — with only 3 treated cities, the sample is too small for any DiD analysis to be statistically meaningful.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Small treated-unit counts do create inference problems in DiD (standard errors may be understated, and you should use cluster-robust standard errors at the city level), but the primary issue here is not statistical power — it is that the identifying assumption of DiD has likely been violated. Even with 300 treated cities, a DiD that violates parallel trends produces a biased estimate of the causal effect. The small-N problem is real but secondary to the confounding from differential pre-trends.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'DiD is only identified if parallel trends holds. Badge cities were already growing faster before rollout — the 18% estimate is likely confounded. Plot pre-treatment trends before making any causal claim.',
+      why: 'Difference-in-differences estimates the Average Treatment Effect on the Treated (ATT) by comparing the change in outcomes for treated units before and after treatment to the change for control units over the same period. The intuition is clean: the control group tells you what would have happened to the treated group in the absence of treatment, so differencing removes both time-invariant unit heterogeneity and aggregate time shocks.\n\nThe critical assumption that makes this work is parallel trends: in the counterfactual world where treated units were never treated, their outcome trajectory would have been parallel to the control group\'s trajectory. This assumption cannot be directly tested (the counterfactual is unobservable), but it can be falsified by examining pre-treatment data. If treated and control units were trending differently before treatment began, there is no reason to believe they would have converged absent treatment — the control group is not a valid counterfactual.\n\nIn this case, Crafted chose badge cities based on operational readiness, which in practice meant the largest, most developed markets — NYC, LA, and Chicago. These are structurally different from the control cities not just in level but in trajectory: mature marketplace cities often exhibit faster organic GMV growth because they have deeper network effects, more repeat buyers, and higher seller density. If badge cities were growing 3-4pp faster per quarter before the rollout, a simple DiD will attribute that pre-existing growth differential to the badge, producing an inflated ATT estimate.\n\nThe diagnostic is straightforward: plot average weekly GMV growth for badge cities and control cities across the 8 pre-rollout weeks and run a test for pre-trend differences (regress the outcome on a group-time interaction in the pre-period; the coefficient should be statistically indistinguishable from zero if trends are parallel). If trends are not parallel, DiD is not identified. Alternatives include synthetic control — constructing a weighted combination of control cities that matches the pre-treatment GMV trend of badge cities as closely as possible — or selecting matched control cities (e.g., cities with similar pre-treatment GMV levels and growth rates) before running DiD.',
+      commonMistake: 'Analysts running DiD often check that treated and control groups are similar in levels at baseline (a balance check) but skip the parallel trends test. Balance in levels does not imply parallel trends in growth rates — those are independent properties that must both be verified.',
+      interviewPhrase: '"Before I can call this a causal 18% lift, I need to see the pre-treatment trend plot. If badge cities were already on a steeper GMV growth curve before the rollout — which I\'d expect given these are your three largest markets — the DiD estimate is picking up that differential trend, not the badge effect. Let\'s verify parallel trends first."',
+      connectsTo: ['stats', 'design'],
+    },
+  },
+
+  {
+    id: 'stat14-rd-manipulation',
+    title: 'RD With Running Variable Manipulation',
+    subtitle: 'Regression discontinuity density test failure',
+    concept: 'regression-discontinuity',
+    difficulty: 'senior',
+    isFree: false,
+    linkedConceptIds: ['regression-discontinuity', 'mccrary-test', 'late', 'manipulation-bias'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
+
+    situation: {
+      company: 'Volta',
+      product: 'Consumer lending fintech offering personal loans; ~$2.1B in annual originations',
+      context: 'Volta prices loans using a credit score cutoff: borrowers with a score of 680 or above receive a 8.9% APR, while borrowers below 680 receive 11.4% APR. A DS just sent you their analysis: "I ran an RD on 30-day default rates across the 680 threshold. Borrowers just above the cutoff (680-700) have a 4.2 percentage point lower 30-day default rate than borrowers just below (660-679). This is clean evidence that the lower interest rate reduces defaults — we should consider lowering the APR cutoff to help more borrowers."',
+      decisionPressure: 'The product team wants to use this finding to pitch a rate restructuring to the credit committee next month.',
+    },
+
+    setup: {
+      metric: '30-day default rate (primary); credit score as running variable; interest rate tier as treatment',
+      baseline: 'Borrowers just below 680: 9.1% 30-day default rate. Borrowers just above 680: 4.9% 30-day default rate.',
+      observedResult: 'RD estimate: -4.2pp default rate at the 680 threshold (lower rate causes fewer defaults), p < 0.01. Bandwidth: 20 credit score points on each side.',
+      sampleInfo: 'n = 12,400 borrowers within the 660-700 bandwidth over 18 months. Estimate uses local linear regression on each side of cutoff.',
+      caveat: 'A histogram of credit scores near the cutoff shows an unusually high density of borrowers at 681-685 relative to what a smooth distribution would predict — and an unusual dip at 675-679. The McCrary density test is significant (p = 0.003).',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"RD analysis shows lower interest rates causally reduce default rates by 4.2pp at the 680 credit score threshold."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Valid — RD is one of the most credible quasi-experimental designs, and the local randomization near the cutoff makes this causally identified.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'RD is credible precisely because near the cutoff, assignment to treatment is effectively as-good-as-random — borrowers just above and just below a threshold should be similar on all characteristics except the treatment. But that near-random assignment breaks down entirely if individuals can manipulate their running variable to end up on the preferred side of the cutoff. The McCrary test shows significant bunching above 680, indicating that is exactly what is happening here. The local randomization assumption — which is what makes RD credible — is violated when the running variable is manipulated.',
+      },
+      {
+        id: 'b',
+        label: 'Partially valid — the estimate is directionally right, but the bandwidth choice of 20 points may be too wide and should be narrowed.',
+        isCorrect: false,
+        level: 'partial',
+        feedback: 'Bandwidth selection is a legitimate concern in RD analysis — a bandwidth that is too wide includes borrowers who are less comparable, increasing bias, while a bandwidth that is too narrow reduces sample size and increases variance. But narrowing the bandwidth does not fix the manipulation problem here. If borrowers at 681-685 are selectively different from borrowers at 675-679 because the former group actively managed their scores to cross the threshold, the comparison is invalid regardless of how narrow the bandwidth is. The density test failure is the primary problem.',
+      },
+      {
+        id: 'c',
+        label: 'Invalid — the McCrary density test shows significant bunching just above the cutoff, indicating running variable manipulation. When assignment can be manipulated, the RD estimate is not causally identified.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. The identifying assumption of RD is that the running variable is not manipulated around the threshold — specifically, that individuals cannot precisely control which side of the cutoff they land on. The McCrary density test (p = 0.003) is a direct test of this: it checks whether the density of the running variable is smooth through the cutoff. Significant bunching above 680 and a corresponding dip below indicates that some borrowers (or intermediaries acting on their behalf) are pushing scores just over the cutoff. If only certain types of borrowers can do this — e.g., those who are more financially sophisticated or have access to credit repair services — the group just above the cutoff is systematically different from the group just below in ways that affect default risk, independent of the interest rate.',
+      },
+      {
+        id: 'd',
+        label: 'Invalid — 30-day default rate is too short a window to measure the effect of interest rate on repayment behavior.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Measurement window is a design consideration worth debating, but it is not the primary invalidating issue here. A 30-day default rate captures early payment failure, which is a legitimate outcome for a lending study focused on immediate repayment capacity. The fundamental problem is that the running variable has been manipulated — changing the outcome measurement window to 60 or 90 days would not resolve the fact that the comparison group is contaminated by selective score manipulation.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'The McCrary test is significant — running variable manipulation is present. When borrowers can manipulate their credit score to cross the threshold, the local randomization that makes RD valid breaks down and the estimate is biased.',
+      why: 'Regression discontinuity identifies a Local Average Treatment Effect (LATE) at the cutoff: the causal effect of treatment for units whose running variable places them right at the threshold. The design exploits the fact that, near a threshold, whether a unit ends up just above or just below is essentially arbitrary — small measurement differences or random variation in the running variable determine treatment assignment, making the comparison as credible as a randomized experiment for units near the cutoff.\n\nThis logic requires one critical assumption: individuals cannot precisely control which side of the threshold they land on. If they can, the units just above and just below are no longer comparable. In a credit score context, this means borrowers who end up at 681 should be similar to borrowers at 679 in all respects except that they drew a slightly higher score. If borrowers or credit bureaus can engineer a score just above 680 — through selective timing of credit inquiries, rapid payoff of small balances, dispute resolution, or credit repair interventions — then the group at 681-685 is systematically more financially sophisticated, more motivated, and likely lower risk than the group at 675-679, independent of any interest rate effect.\n\nThe McCrary density test formalizes this check. Under no manipulation, the density of the running variable should be smooth through the cutoff — the histogram should look approximately continuous. A statistically significant break in density at the threshold (bunching above, depletion below) is evidence that units are sorting, and the local randomization assumption fails. In this case, p = 0.003 is strong evidence of sorting.\n\nWhen manipulation is present, the options are: (1) acknowledge the RD is not valid and seek an alternative identification strategy; (2) attempt to instrument for the "true" credit score using other signals, though this is difficult in practice; or (3) restrict analysis to only the hard "cliff" segment where score manipulation is mechanically impossible — but that subgroup is often too small and too specific to generalize. The honest answer here is that the RD estimate should not be taken to the credit committee as causal evidence.',
+      commonMistake: 'Running an RD without checking the density of the running variable near the threshold. Plotting the McCrary density test histogram takes five minutes and is mandatory before interpreting any RD estimate — many analysts skip it because they are focused on the discontinuity in the outcome rather than the validity of the design.',
+      interviewPhrase: '"Before I can trust this RD, I need to see the histogram of credit scores at the threshold. If there\'s bunching just above 680, borrowers are sorting themselves across the cutoff — and then the people just above and just below are no longer comparable. That\'s not a 4.2pp causal estimate anymore, it\'s a selection artifact."',
+      connectsTo: ['stats', 'design'],
+    },
+  },
+
+  {
+    id: 'stat15-synthetic-control-donor-pool',
+    title: 'Synthetic Control With a Contaminated Donor Pool',
+    subtitle: 'Donor pool validity and pre-treatment fit requirements',
+    concept: 'synthetic-control',
+    difficulty: 'senior',
+    isFree: false,
+    linkedConceptIds: ['synthetic-control', 'sutva', 'donor-pool', 'pre-treatment-fit', 'counterfactual'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
+
+    situation: {
+      company: 'Spark',
+      product: 'Short-form social feed app, 85M monthly active users in the US, also present in Canada, UK, and Australia',
+      context: 'Spark replaced its US chronological feed with an AI-curated feed last quarter. The change was not run as an A/B test — it was a hard cutover for all US users simultaneously. A senior DS on the growth team has proposed a synthetic control analysis using Canada, UK, and Australia as donor countries and says: "I constructed a synthetic US using weighted combinations of these three markets. Pre-period trends fit well. Post-cutover, the synthetic US underperforms actual US by 11% in DAU — proof the algorithm change caused an 11% lift." They are presenting this to the CEO next week.',
+      decisionPressure: 'The CEO wants to know whether to push for a similar feed overhaul in international markets. This analysis is the primary evidence being used.',
+    },
+
+    setup: {
+      metric: 'Daily Active Users (DAU) normalized by market size',
+      baseline: 'US DAU index: 100 (normalized). Synthetic US DAU (from donor pool): 100 (pre-period, by construction).',
+      observedResult: 'Post-cutover: Actual US DAU index rises to ~111. Synthetic US DAU index stays at ~100. Implied causal effect: +11% DAU.',
+      sampleInfo: 'Pre-period: 26 weeks. Post-period: 12 weeks. Donor pool: Canada, UK, Australia. Weights not reported. Pre-period fit R² = 0.91.',
+      caveat: 'All three donor countries are English-speaking, culturally proximate to the US, and follow similar content consumption trends — meaning they may experience correlated shocks to social app usage independent of the feed algorithm. No pre-treatment fit plot was shared, only the R² statistic.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"Synthetic control estimates a causal 11% DAU lift from the algorithm change."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Valid — synthetic control is the gold standard for single-unit policy evaluation, and an R² of 0.91 confirms excellent pre-period fit.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Synthetic control is a powerful method for single-unit causal inference, but it has strict requirements that R² alone cannot confirm. First, donor units must not have been affected by the treatment (SUTVA). If Canada, UK, and Australia are heavily influenced by the same content trends as the US — which is likely for an English-language app with globally shared creator content — they do not provide an independent counterfactual. Second, R² as a global fit statistic can mask local fit failures; you need to see the full pre-period trajectory plot, not just a summary statistic. A high R² achieved by overfitting to a few influential weeks is very different from a tight, consistent pre-period match.',
+      },
+      {
+        id: 'b',
+        label: 'Partially valid — the analysis is directionally informative, but the donor pool should include more geographically diverse countries to reduce cultural correlation.',
+        isCorrect: false,
+        level: 'partial',
+        feedback: 'Geographic diversity in the donor pool is the right instinct, but framing this as "partially valid" understates the severity of the problem. If the current donor pool is contaminated by correlated exposure to the same trends affecting the US, the synthetic counterfactual is not measuring what would have happened to the US absent the algorithm change — it is measuring what happened to markets with similar structural exposure to the same shocks. Additionally, the absence of a pre-period fit plot is a methodological gap that must be addressed before any result is presented to leadership.',
+      },
+      {
+        id: 'c',
+        label: 'Not yet credible — donor pool SUTVA may be violated if donor countries share content trends with the US, and no pre-treatment fit plot has been shown. The 11% estimate cannot be presented as causal without these checks.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. Synthetic control requires two things to be credible: (1) donor units that were not affected by the treatment — SUTVA — so they form a valid counterfactual, and (2) a good pre-treatment fit, which must be demonstrated visually with a time-series plot, not just summarized with R². If all three donor countries are culturally similar English-speaking markets that share content creators, trending topics, and seasonal social app behavior with the US, they may not be independent of whatever trends are driving US DAU — and they may have indirectly benefited from algorithm-driven creator behavior originating in the US. The 11% estimate needs both a SUTVA defense and a visible pre-treatment fit plot before it is presentable as causal evidence.',
+      },
+      {
+        id: 'd',
+        label: 'Invalid — synthetic control cannot be used for platform algorithm changes because user behavior is too heterogeneous across countries.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Cross-country heterogeneity is a legitimate concern in synthetic control (it is related to the interpolation bias problem), but it does not categorically invalidate the method for platform algorithms. Synthetic control has been applied credibly across markets with meaningful differences when the pre-treatment fit is good and donor units are truly unaffected by the treatment. The problems here are more specific: potential SUTVA violation from culturally correlated donor markets, and the absence of a pre-period fit visualization. Broad category invalidation is the wrong frame.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'Synthetic control requires an uncontaminated donor pool and a demonstrated pre-treatment fit. Neither has been properly established here. The 11% estimate is not yet credible as a causal claim.',
+      why: 'Synthetic control constructs a weighted combination of control units (the "donor pool") that matches the pre-treatment trajectory of the treated unit as closely as possible. The resulting synthetic unit serves as the counterfactual: what the treated unit would have looked like absent the treatment. Post-treatment, any divergence between the actual and synthetic series is attributed to the treatment effect. The method is particularly well-suited to settings with a single treated unit and a long pre-treatment period — exactly the situation Spark faces with a hard US-only cutover.\n\nThe method rests on two requirements. First, SUTVA (Stable Unit Treatment Value Assumption): donor units must not have been affected by the treatment, directly or indirectly. If Spark\'s US algorithm change made certain creator formats trend more heavily in the US, and those formats then spilled over into Canadian and UK content consumption because creators are shared across markets, then Canada and the UK are not unaffected controls — their DAU is partially influenced by the treatment. The synthetic US would then understate the counterfactual (because donor DAU grew too, partially due to spillover), making the treatment effect look larger than it actually was.\n\nSecond, pre-treatment fit must be demonstrated visually over the full pre-period. R² = 0.91 is a summary statistic that can hide significant mismatches in specific weeks — a particularly good fit in months 1-4 but poor fit in months 5-6 would still produce a high R², but a synthetic control fitted on a mismatched pre-period is not a valid counterfactual. The standard practice in any synthetic control paper or analysis is to plot the actual and synthetic series together for the entire pre-period and allow readers to see the fit directly. Without this plot, the claim cannot be evaluated.\n\nFor this analysis to be credible, the DS needs to: (1) defend why Canada, UK, and Australia are not exposed to US content trends (or quantify the spillover and correct for it), (2) add geographically uncorrelated donor candidates (e.g., Brazil, Germany, Japan) where the content ecosystem is more independent, and (3) show the full pre-period fit plot rather than reporting only R². Only then can an 11% estimate be offered to the CEO as causal evidence.',
+      commonMistake: 'Summarizing synthetic control pre-treatment fit with a single statistic (R², RMSPE) rather than plotting the full pre-period series. A number cannot convey whether the fit is consistently good across time or driven by a small number of well-fitted periods. Always show the plot.',
+      interviewPhrase: '"I need to see two things before I\'ll call this causal. First, show me the pre-period fit plot — not just R², the actual time series overlay. Second, walk me through why Canada, UK, and Australia are valid donor markets given they share creator content with the US. If they\'re picking up spill-over from the algorithm change itself, they\'re not a valid counterfactual."',
+      connectsTo: ['stats', 'design'],
+    },
+  },
+
+  {
+    id: 'stat16-iv-exclusion-restriction',
+    title: 'IV With Exclusion Restriction Violation',
+    subtitle: 'Instrumental variables instrument validity',
+    concept: 'instrumental-variables',
+    difficulty: 'senior',
+    isFree: false,
+    linkedConceptIds: ['instrumental-variables', 'exclusion-restriction', 'late', 'instrument-validity', 'confounding'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
+
+    situation: {
+      company: 'Prism',
+      product: 'Short-form video platform, 60M creators, ~$900M annualized revenue from creator monetization fees',
+      context: 'Prism wants to understand whether enabling creator monetization causes a decline in content quality. Observational data is confounded — better creators may be more likely to monetize, biasing naive comparisons. A DS proposes an instrumental variables approach: "We ran an early access program where we randomly invited a subset of creators to enable monetization. I\'ll use whether a creator received an invite as the instrument for their monetization status. My IV estimate is that monetization causes a 19% reduction in content completion rate." You dig into the invite criteria and find that the early access invites were sent to creators who had uploaded at least 30 videos in the past 60 days — a high-velocity threshold.',
+      decisionPressure: 'The policy team is drafting a proposal to delay monetization unlock for new creators based on this estimate. The DS is presenting to leadership tomorrow.',
+    },
+
+    setup: {
+      metric: 'Content completion rate (% of video watched to end), averaged per creator over 90 days post-monetization',
+      baseline: 'Non-monetized creators: 61% average completion rate. Monetized creators (observational): 52% average completion rate.',
+      observedResult: 'IV estimate (using invite as instrument): monetization causes -19pp completion rate. First stage F-statistic: 87 (strong instrument). Reduced form: invited creators have 11pp lower completion rates than non-invited creators.',
+      sampleInfo: 'n = 24,000 creators in early access cohort and matched non-invited creators. Instrument is binary (received invite or not). Compliance rate: 58% of invited creators enabled monetization.',
+      caveat: 'The early access invite was restricted to creators who uploaded 30+ videos in 60 days. High upload velocity is independently associated with lower completion rates — creators who post very frequently tend to produce lower-quality individual pieces.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"The IV estimate using early-access invite as instrument shows monetization causally reduces content quality by 19%."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Valid — the invite was randomly assigned among eligible creators, satisfying the exogeneity requirement for a valid instrument.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Random assignment among eligible creators ensures that conditional on eligibility (30+ uploads in 60 days), the instrument is uncorrelated with unobserved confounders. But a valid instrument requires more than exogeneity — it also requires the exclusion restriction: the instrument affects the outcome only through the treatment, with no direct effect on the outcome. Here, invitation eligibility selects for high-velocity creators. If high upload velocity independently predicts lower content quality (which the data suggests), then the instrument has a direct path to completion rate that bypasses monetization status. Exogeneity alone is not enough.',
+      },
+      {
+        id: 'b',
+        label: 'Partially valid — the first-stage F-statistic of 87 confirms a strong instrument, which addresses the weak instrument problem. The estimate is probably reliable.',
+        isCorrect: false,
+        level: 'partial',
+        feedback: 'A strong first stage (F > 10, here F = 87) is necessary to avoid the weak instrument problem — an instrument that only weakly predicts treatment produces IV estimates with enormous standard errors and severe finite-sample bias. But instrument strength addresses only the relevance condition of IV validity. The exclusion restriction is an entirely separate assumption that the first-stage F-statistic says nothing about. You can have a very strong instrument that badly violates exclusion — and that is exactly the situation here. High velocity creators were selected for the invite, and high velocity predicts quality decline on its own.',
+      },
+      {
+        id: 'c',
+        label: 'Invalid — the exclusion restriction is violated because the invite was sent to high-velocity creators, and upload velocity independently predicts content quality decline, creating a direct path from instrument to outcome that bypasses the monetization treatment.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. The exclusion restriction requires that the instrument affects the outcome only through its effect on the treatment — there is no direct pathway from instrument to outcome. Here, being invited to early access monetization is correlated with being a high-velocity uploader (the eligibility criterion). High-velocity uploading independently predicts lower content completion rates (more frequent posting tends to reduce per-video quality). This means the instrument has two paths to the outcome: (1) through monetization status (the intended channel) and (2) directly through the selection of high-velocity creators who would have shown quality decline regardless of monetization. The IV estimate absorbs both effects and is therefore biased. The -19pp estimate cannot be interpreted as the pure effect of monetization.',
+      },
+      {
+        id: 'd',
+        label: 'Invalid — a 58% compliance rate is too low for IV to produce reliable estimates. Only randomized experiments with full compliance are valid.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Partial compliance is the norm in IV applications, not a disqualifier. IV with a binary instrument and partial compliance estimates the Local Average Treatment Effect (LATE) — the effect of treatment for compliers (creators who were invited and chose to monetize). A compliance rate of 58% is perfectly reasonable for an IV design. The critical problem here is not compliance rate — it is that the exclusion restriction is violated because the instrument selection criterion (high upload velocity) creates a direct path to the outcome. That is a fundamental validity problem, not a statistical power problem.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'The exclusion restriction is violated — invite eligibility selected high-velocity creators, and velocity independently predicts quality decline. The IV estimate conflates the effect of monetization with the effect of being a high-volume poster. The -19pp figure is not a valid causal estimate.',
+      why: 'Instrumental variables estimation requires three conditions to be satisfied simultaneously. The relevance condition requires that the instrument is meaningfully correlated with the treatment — a weak instrument produces unreliable estimates, and is tested with the first-stage F-statistic. The exogeneity condition requires that the instrument is uncorrelated with unobserved confounders — it must be as good as randomly assigned conditional on observables. The exclusion restriction requires that the instrument affects the outcome only through the treatment — there is no direct pathway from instrument to outcome that bypasses the endogenous treatment variable.\n\nThe first two conditions can be partially tested. Relevance is assessed with the first-stage F-statistic (F = 87 here is strong). Exogeneity can be partially examined by checking balance on observable characteristics between instrument groups, though it ultimately relies on the design (randomization within eligible creators here supports conditional exogeneity). The exclusion restriction, however, is fundamentally untestable from the data alone — it is a structural assumption about the data-generating process that requires logical and domain reasoning to defend or falsify.\n\nHere, the exclusion restriction fails at the design level. The early access invite was gatekept by upload velocity — only creators who posted 30+ videos in 60 days were eligible. This is not a random sample of creators; it is a selected sample with a specific behavioral characteristic. High-velocity posting is itself a plausible cause of quality decline: when a creator posts every other day, the average production value per video tends to fall, completion rates tend to drop, and the channel mix shifts toward quantity over quality. The instrument therefore has a direct pathway to the outcome (instrument → velocity → quality) that exists independently of the monetization pathway (instrument → monetization → quality). The IV estimate absorbs both pathways and is upwardly biased in its estimate of the monetization effect.\n\nThe practical fix is either to find an instrument that is not correlated with velocity — for example, truly random assignment among all creators regardless of activity level — or to condition on upload velocity in the analysis to partial out its effect. But conditioning on a post-instrument variable introduces its own complications (bad control problem). The cleanest solution would have been to randomize the invite within a more representative population from the start. As it stands, the estimate should not be used to set policy without acknowledging this confound explicitly.',
+      commonMistake: 'Validating IV only on the first-stage F-statistic and stopping there. Many analysts check relevance carefully (because it produces a testable number) but treat the exclusion restriction as a formality or assume it is satisfied by design. The exclusion restriction requires active scrutiny of every pathway by which the instrument could affect the outcome directly — it is an argument, not a calculation.',
+      interviewPhrase: '"The F-stat tells me the instrument is strong, but that\'s only one of three conditions. The exclusion restriction is the hard one — does the invite affect completion rate only through monetization? If you selected invitees based on upload velocity, and velocity independently drives quality down, then no: you\'ve got a direct path from instrument to outcome that has nothing to do with monetization. That invalidates the estimate."',
+      connectsTo: ['stats', 'design'],
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // STAT17 — Difference-in-Differences (Senior)
+  // Trap: reading treatment group change as the causal effect, ignoring secular trend
+  // ─────────────────────────────────────────────
+  {
+    id: 'stat17-did',
+    title: 'Is +7pp the Onboarding Uplift?',
+    subtitle: 'Diff-in-diff vs. raw treatment group change',
+    concept: 'diff-in-diff',
+    difficulty: 'senior',
+    isFree: false,
+    linkedConceptIds: ['diff-in-diff', 'counterfactual', 'causal-inference'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
+
+    situation: {
+      company: 'Threadline',
+      product: 'B2B SaaS project management platform',
+      context: 'Threadline launched a redesigned onboarding flow in three cities (Chicago, Austin, Denver) as a phased regional rollout — not a randomized A/B test. After 4 weeks the analytics team compares cities that received the new onboarding against the rest of the US. Treatment cities (new onboarding): activation rate moved from 62% to 71% (+9pp... wait — read the setup). The analyst in your review writes: "New onboarding improved activation by 7pp — that\'s what we should report to the product team."',
+      decisionPressure: 'The VP of Product wants to green-light a nationwide rollout before Q2 planning. The analyst\'s 7pp figure is the number in the deck.',
+    },
+
+    setup: {
+      metric: 'User activation rate (% of signups completing core setup within 7 days)',
+      baseline: 'Pre-period (Jan 2024): Treatment cities 64%, Control cities 62%',
+      observedResult: 'Post-period (Feb 2024): Treatment cities 71% (+7pp), Control cities 66% (+4pp)',
+      sampleInfo: 'Treatment: Chicago, Austin, Denver (new onboarding). Control: remaining US cities (old onboarding). 4-week observation window.',
+      caveat: 'February is historically a strong month for SaaS signups following end-of-January budget approvals. Control cities also improved by 4pp over the same period.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"The new onboarding improved activation by 7pp — that\'s the uplift we should report to the product team."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Correct — the treatment cities gained 7pp so the new onboarding caused 7pp of improvement.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'This reads the raw treatment group change as the causal effect. But some or all of the 7pp gain may have happened regardless of the new onboarding — the control cities also improved by 4pp over the same period, likely due to seasonal trends or platform-wide changes. Without subtracting the counterfactual trend, the 7pp estimate is inflated.',
+      },
+      {
+        id: 'b',
+        label: 'Partially right — 7pp is a valid upper bound on the effect, but the true effect is probably lower once you account for noise.',
+        isCorrect: false,
+        level: 'partial',
+        feedback: 'Calling 7pp an "upper bound" frames this as a statistical noise problem, but the issue is methodological: there\'s a systematic upward bias from the secular trend, not just sampling variation. The control group\'s 4pp gain is the signal that a trend was happening across all cities. Diff-in-diff removes this trend, giving 3pp — not a confidence interval around 7pp.',
+      },
+      {
+        id: 'c',
+        label: 'Wrong — the diff-in-diff estimate is 3pp (7pp minus the 4pp control group trend), not 7pp. The 4pp control gain reflects secular trends that would have lifted treatment cities regardless.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. Diff-in-diff isolates the causal effect by subtracting what would have happened anyway (the counterfactual trend) from the treatment group\'s change. Here: DiD = (71% − 64%) − (66% − 62%) = 7pp − 4pp = 3pp. The 4pp control group improvement captures platform-wide or seasonal effects that elevated activation across all cities. Reporting 7pp overstates the effect of the new onboarding by more than 2x.',
+      },
+      {
+        id: 'd',
+        label: 'The analysis is invalid because this wasn\'t a randomized experiment — regional rollouts can never be used for causal inference.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Randomization is not a prerequisite for causal inference — it\'s one way to satisfy the assumption of comparable counterfactuals. Diff-in-diff is specifically designed for non-randomized rollouts. The key assumption is parallel trends: treatment and control cities must have trended similarly before the rollout. If pre-period trends were parallel, DiD yields a valid causal estimate. The regional rollout here is a legitimate DiD setup, provided you verify the pre-trend.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'The DiD estimate is 3pp, not 7pp. The 4pp control group gain reflects a secular trend that would have lifted treatment cities regardless of the new onboarding — subtracting it is the entire point of diff-in-diff.',
+      why: 'Diff-in-diff identifies causal effects in non-randomized settings by comparing the change in the treatment group against the change in a control group over the same period. The control group\'s change is the counterfactual: what would have happened to the treatment group absent the intervention. The causal estimate is (treatment post − treatment pre) − (control post − control pre). Here that is 7pp − 4pp = 3pp. The key assumption — parallel trends — requires that treatment and control cities would have moved together in the absence of the new onboarding. You validate this by plotting pre-period trends for both groups: if they were running in parallel before the rollout, the assumption is credible.',
+      commonMistake: 'Reading the treatment group\'s raw pre-to-post change as the causal effect. This ignores that external forces (seasonality, product releases, macro trends) affect all groups simultaneously. The control group exists precisely to measure those background forces so you can subtract them out.',
+      interviewPhrase: '"The 7pp is what treatment cities gained — but control cities also gained 4pp during the same period without the new onboarding. That 4pp is the trend that would have happened anyway. The diff-in-diff estimate is 7 minus 4, which is 3pp. That\'s the number for the deck."',
+      connectsTo: ['review', 'design'],
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // STAT18 — Regression Discontinuity (Senior)
+  // Trap: accepting the RD estimate without manipulation check, and misapplying LATE to policy
+  // ─────────────────────────────────────────────
+  {
+    id: 'stat18-rdd',
+    title: 'Does the Badge Drive $830 More GMV?',
+    subtitle: 'Regression discontinuity — threshold effects vs. policy extrapolation',
+    concept: 'regression-discontinuity',
+    difficulty: 'senior',
+    isFree: false,
+    linkedConceptIds: ['regression-discontinuity', 'causal-inference', 'selection-bias'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
+
+    situation: {
+      company: 'Crafted',
+      product: 'Handmade goods marketplace — seller-side GMV optimization',
+      context: 'Crafted awards sellers a "Top Seller" badge when they accumulate 100 reviews. An analyst looks at the last 6 months of data: sellers with 95–104 reviews show a sharp jump in monthly GMV at exactly the 100-review threshold. The analyst writes: "The Top Seller badge causes $830/month GMV uplift — we should lower the threshold to 80 reviews to give more sellers the badge and grow total GMV."',
+      decisionPressure: 'The growth team wants to lower the badge threshold before the holiday season. The analyst\'s $830 figure is the projected per-seller GMV gain in the business case.',
+    },
+
+    setup: {
+      metric: 'Monthly GMV per seller',
+      baseline: 'Sellers with 95–99 reviews: $2,800/month average GMV',
+      observedResult: 'Sellers with 100–104 reviews: $3,650/month average GMV — a $850 jump at the 100-review threshold',
+      sampleInfo: '6-month window, sellers in the 95–104 review band. Sharp discontinuity at exactly 100 reviews.',
+      caveat: 'Review counts cluster noticeably at 100 — there are more sellers with exactly 100 reviews than you would expect from a smooth distribution. The $830 estimate uses a wide bandwidth (95–104 reviews).',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"The Top Seller badge causes $830/month GMV uplift — we should lower the threshold to 80 reviews to give more sellers the badge and grow GMV."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Correct — the sharp discontinuity at 100 reviews is exactly what RD is designed to detect. The $830 estimate is valid and the policy recommendation follows directly.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'The RD design is appropriate for estimating the badge effect at the threshold, but two serious problems remain before the estimate can be used for policy. First, the clustering of sellers at exactly 100 reviews is a red flag for manipulation — sellers may be soliciting reviews to cross the threshold, which violates the RD assumption that units cannot precisely control their score. Second, even if the $830 estimate is valid at threshold = 100, it does not tell you what the effect would be at threshold = 80 — that is an out-of-sample extrapolation.',
+      },
+      {
+        id: 'b',
+        label: 'The RD estimate is the right approach, but $830 may be biased by the wide bandwidth — a narrower bandwidth around 100 would give a more precise local estimate.',
+        isCorrect: false,
+        level: 'partial',
+        feedback: 'Bandwidth choice does matter — using 95–104 (a ±5 band) risks including sellers who differ from threshold-crossers in systematic ways. A narrower bandwidth (98–102 or 99–101) would tighten the local comparison. But bandwidth is not the most critical issue here. The manipulation check (bunching at 100) and the external validity problem (the policy changes the threshold to 80) are more fundamental flaws in the analyst\'s argument.',
+      },
+      {
+        id: 'c',
+        label: 'The RD estimate needs a manipulation check first — the clustering at 100 reviews suggests sellers may be gaming the threshold. And even if $830 is valid at threshold = 100, lowering the threshold to 80 is an out-of-sample extrapolation that the estimate doesn\'t support.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct on both counts. The McCrary density test checks whether there is statistically significant bunching just above the threshold — if sellers can solicit reviews to hit exactly 100, the groups just below and just above are no longer comparable, and the RD estimate is biased. Separately, RD estimates a Local Average Treatment Effect at the threshold. The effect of the badge for sellers who organically reach 100 reviews says nothing about the effect for sellers who would receive the badge at 80 — those are different populations with different baseline quality and customer trust. The policy recommendation requires an entirely separate analysis.',
+      },
+      {
+        id: 'd',
+        label: 'RD cannot be used here at all because review counts are not randomly assigned — only randomized experiments can estimate badge effects.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'RD does not require random assignment — it exploits a threshold rule to create a locally valid comparison. The key assumption is that sellers cannot precisely control whether they end up just below or just above the threshold (the no-manipulation assumption), not that review counts are random. If the no-manipulation assumption holds, sellers near the cutoff are comparable and the discontinuity is causal. The question here is whether that assumption actually holds, given the bunching at 100.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'The RD design is valid in principle, but the estimate needs a manipulation (McCrary) test before it can be trusted. And even a clean $830 estimate applies only at the current threshold — it cannot be extrapolated to justify moving the threshold to 80.',
+      why: 'Regression discontinuity identifies causal effects by exploiting a sharp rule: units just below a threshold are used as the counterfactual for units just above. The key assumption is no manipulation — units cannot precisely sort themselves to one side of the cutoff. If sellers are gaming the review count to hit exactly 100, the groups on either side differ systematically (manipulators vs. non-manipulators), and the discontinuity reflects selection, not the badge effect. The McCrary density test checks for this by looking for a statistically significant spike in the density of the running variable (review count) just above the cutoff. Separately, RD estimates a Local Average Treatment Effect at the specific threshold studied. Changing the threshold changes the population of marginal crossers, invalidating any extrapolation.',
+      commonMistake: 'Accepting the RD estimate without running the manipulation test, and then treating the threshold-local effect as the effect of the policy change. Both are errors: the first questions the estimate\'s internal validity; the second questions its external validity.',
+      interviewPhrase: '"The jump at 100 reviews looks like a clean discontinuity, but before I use that number I\'d check for bunching — plot the review count distribution and run a McCrary test. If sellers are soliciting reviews to hit 100, the RD estimate is biased. And even if it\'s clean, the $830 applies to sellers crossing 100 organically. That doesn\'t tell you anything about what happens if you give the badge at 80 — that\'s a different population."',
+      connectsTo: ['review', 'design'],
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // STAT19 — Synthetic Control (Senior)
+  // Trap: using the most convenient single-country comparison without checking pre-trend fit
+  // ─────────────────────────────────────────────
+  {
+    id: 'stat19-synthetic-control',
+    title: 'Is the US a Good Counterfactual for Canada?',
+    subtitle: 'Synthetic control vs. convenience comparison',
+    concept: 'synthetic-control',
+    difficulty: 'senior',
+    isFree: false,
+    linkedConceptIds: ['synthetic-control', 'diff-in-diff', 'counterfactual', 'causal-inference'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
+
+    situation: {
+      company: 'Spark',
+      product: 'Social feed app — 12M DAU globally',
+      context: 'Spark launched a "collaborative playlist" feature in Canada only (a country-level rollout, not an A/B test). Eight weeks later: Canadian DAU/user is up 14%. The US — which did not receive the feature — is up 3% over the same period. The analytics team writes: "The collaborative playlist feature drove 11pp DAU/user improvement in Canada (14% minus 3% US comparison)."',
+      decisionPressure: 'The feature team wants to use the 11pp figure to justify a global rollout in the next sprint planning session.',
+    },
+
+    setup: {
+      metric: 'DAU/user (daily active users divided by total registered users, expressed as a percentage)',
+      baseline: '8-week pre-period: Canada and US tracked each other loosely but Canada had slightly higher baseline engagement',
+      observedResult: 'Post-launch 8 weeks: Canada +14%, US +3% over the same period',
+      sampleInfo: 'Country-level rollout. Canada = treated unit. US used as single control. Other comparable markets (Australia, UK, NZ, Ireland) available but not used.',
+      caveat: 'The US is structurally larger, has different content consumption patterns, and showed diverging engagement trends from Canada in the 3 weeks prior to the Canadian launch.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"The collaborative playlist feature drove 11pp DAU/user improvement in Canada (14% minus 3% US comparison)."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Correct — the US is the natural comparison for Canada. The 11pp difference is a valid diff-in-diff estimate.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'The US is geographically convenient but not necessarily a good counterfactual for Canada. A valid diff-in-diff requires that the control unit (US) would have trended like Canada in the absence of the feature — the parallel trends assumption. If Canada and the US had diverging pre-period trends (which the caveat describes), the simple 14% − 3% subtraction absorbs those structural differences and does not isolate the feature effect.',
+      },
+      {
+        id: 'b',
+        label: 'Directionally plausible, but the US is a weak single-country counterfactual. A synthetic control using a weighted mix of comparable markets would give a more credible estimate.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. When a single clean control unit does not exist, synthetic control constructs a weighted combination of donor units — here, Australia, UK, NZ, Ireland — that best replicates Canada\'s pre-period DAU/user trend. The quality of the synthetic control is measured by how closely it matches Canada\'s pre-period outcomes (R² of pre-period fit). If the synthetic control implies 5% expected growth in Canada absent the feature, the causal estimate is 9pp, not 11pp. The US-only comparison is directionally useful as a sanity check but insufficient as the primary estimate.',
+      },
+      {
+        id: 'c',
+        label: 'Invalid — country-level rollouts can never support causal inference because there is only one treated unit.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Single treated-unit studies are challenging but not impossible for causal inference. Synthetic control was specifically developed for exactly this setting — one treated unit, multiple potential control units. The method builds a counterfactual for the treated unit by weighting donor countries to match its pre-treatment trajectory. The validity depends on the quality of the pre-period fit, not on having multiple treated units.',
+      },
+      {
+        id: 'd',
+        label: 'The 11pp estimate is biased upward because the US is much larger than Canada, so the comparison is not apples-to-apples.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Population size alone does not invalidate a comparison — DAU/user is already normalized per registered user, so scale differences are removed. The problem with the US as a counterfactual is not its size but its pre-period trend divergence from Canada. A large country can be a valid synthetic control donor if it tracks the treated unit\'s pre-period outcomes well. Synthetic control weights donors precisely to match pre-period trends regardless of their absolute size.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'The 11pp estimate uses the US as a convenience counterfactual without verifying that US and Canada trended in parallel before the launch. Synthetic control — a weighted mix of Australia, UK, NZ, and Ireland that best matches Canada\'s pre-period — would give a more defensible causal estimate.',
+      why: 'Synthetic control addresses the fundamental problem of single treated units: there is no natural control group. The method constructs one by finding a weighted combination of donor units (comparable countries, states, or markets) that best replicates the treated unit\'s pre-treatment outcome trajectory. Validity is assessed by the pre-period fit: if the synthetic Canada closely tracks actual Canada before the feature launch (high R²), the synthetic control is credible as a counterfactual. Key assumptions: no spillover from Canada to donor markets (Canadian users are not influencing Australian behavior through the playlist feature), and the donor units themselves are not treated. The US fails on pre-period fit if the two markets were diverging before the launch.',
+      commonMistake: 'Defaulting to the most geographically or culturally familiar single country as the control without testing whether it actually tracks the treated unit\'s pre-period trend. The pre-period parallel trend is the assumption that must be verified, not assumed.',
+      interviewPhrase: '"Before I use the US as the counterfactual I\'d plot Canada and US DAU/user for the 8 weeks before the launch. If they were diverging, the 11pp estimate is absorbing that pre-existing divergence. Synthetic control — using a weighted mix of Australia, UK, New Zealand, Ireland — gives us a counterfactual that actually fits Canada\'s pre-period trajectory. The estimate shifts depending on how well that synthetic fits."',
+      connectsTo: ['review', 'design'],
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // STAT20 — Instrumental Variables (Selection Bias in OLS) (Senior)
+  // Trap: accepting OLS coefficient as causal when treatment is self-selected
+  // ─────────────────────────────────────────────
+  {
+    id: 'stat20-iv-selection',
+    title: 'Is $1,200 the Causal Effect of Featured Placement?',
+    subtitle: 'IV vs. OLS — selection bias and the LATE',
+    concept: 'instrumental-variables',
+    difficulty: 'senior',
+    isFree: false,
+    linkedConceptIds: ['instrumental-variables', 'selection-bias', 'causal-inference', 'endogeneity'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
+
+    situation: {
+      company: 'Crafted',
+      product: 'Handmade goods marketplace — seller promotions program',
+      context: 'Crafted runs a promotions program where sellers who opt in receive featured placement on category pages. An analyst runs an OLS regression of "received featured placement (0/1)" on "monthly GMV" and finds a $1,200/month coefficient. A senior analyst pushes back: "Sellers who opt into promotions are already higher quality — the OLS estimate is biased." The analyst responds: "The regression controls for reviews and category, so the estimate is clean."',
+      decisionPressure: 'The promotions team wants to use the $1,200 figure to calculate ROI and expand the program budget in the next planning cycle.',
+    },
+
+    setup: {
+      metric: 'Monthly GMV per seller',
+      baseline: 'Non-promoted sellers average $2,400/month GMV',
+      observedResult: 'OLS coefficient on featured placement = +$1,200/month (p < 0.001, controls for review count and category)',
+      sampleInfo: 'All active sellers over 6 months. ~18% opted into the promotions program. Promotion email invites were A/B tested — 50% of eligible sellers received an invite, 50% did not.',
+      caveat: 'Sellers self-select into the program. The A/B tested email invite (which randomly determined who received the invitation) was not used in the OLS regression.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"The regression estimate of $1,200/month GMV uplift from featured placement is the causal effect of the promotion program."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Correct — the regression controls for review count and category, which are the main confounders. The $1,200 estimate is causal.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Controlling for observable confounders (reviews, category) does not remove selection bias from unobservables. Sellers who opt into promotions likely differ from non-participants in ways that are hard to measure: motivation, product quality, pricing strategy, customer service responsiveness. These unobserved characteristics independently drive higher GMV. Including review count and category in the regression does not close these backdoor paths — it only adjusts for the variables you happened to include.',
+      },
+      {
+        id: 'b',
+        label: 'Partially right — OLS is biased, but the direction is unclear. Promoted sellers might be lower quality if only struggling sellers opt in for a boost.',
+        isCorrect: false,
+        level: 'partial',
+        feedback: 'The direction of selection bias requires domain reasoning, not just statistical skepticism. In most marketplace settings, promotion opt-in is positively correlated with seller quality: higher-quality sellers have more to gain from visibility, understand the platform better, and are more engaged. The bias is likely upward — the OLS coefficient overstates the causal effect. While the direction could theoretically go either way, the prior here strongly suggests upward bias, and the setup confirms this is the senior analyst\'s concern.',
+      },
+      {
+        id: 'c',
+        label: 'Wrong — OLS is biased by selection. The A/B tested email invite is a valid instrument: it affects whether sellers received the promotion but has no direct effect on GMV. The IV estimate (invite → GMV) / (invite → take-up rate) gives the LATE for compliers, not the ATE.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. The randomly assigned email invite satisfies the three IV conditions: relevance (receiving the invite increases take-up probability — check with the first-stage F-statistic), exogeneity (random assignment means the invite is uncorrelated with unobserved seller quality), and exclusion restriction (the invite affects GMV only through whether the seller enters the promotions program — not through any direct channel). The IV estimate = (ITT effect on GMV) / (first-stage take-up rate) — this is the Local Average Treatment Effect for compliers: sellers who took up the promotion because they received the invite. This is narrower than the ATE for all sellers, but it is causal.',
+      },
+      {
+        id: 'd',
+        label: 'Invalid — even IV cannot solve the selection problem here because the instrument (email invite) was only sent to eligible sellers, not all sellers.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Restricting the instrument to an eligible subset is standard practice in IV — it does not invalidate the design. The IV estimate applies to compliers within the eligible population, which is a well-defined subgroup. The relevant question is whether random assignment within the eligible pool is credible (yes, it was explicitly A/B tested) and whether the exclusion restriction holds (receiving an invite email should not directly affect GMV through any channel other than program participation). The eligibility restriction narrows the LATE to eligible compliers but does not break the IV logic.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'OLS is biased upward because promoted sellers self-select based on unobserved quality. The randomly assigned email invite is a valid instrument — use it. The IV estimate gives the LATE for sellers who joined the program because of the invite, which is more honest and more actionable than the biased OLS coefficient.',
+      why: 'Endogeneity arises when the treatment variable (featured placement) is correlated with the error term — here, with unobserved seller quality. OLS cannot distinguish "featured placement drives GMV" from "high-quality sellers both opt into promotions and earn more GMV." Instrumental variables break this link by using a variable — the randomly assigned email invite — that shifts treatment assignment without being correlated with the unobservable confounder. The IV estimator is the ratio of the reduced-form effect (invite → GMV) to the first-stage effect (invite → take-up). This gives the LATE: the causal effect of the promotion for sellers who were induced to participate by the invite (compliers). Importantly, LATE is not the same as ATE — it excludes always-takers (sellers who would join regardless of invite) and never-takers (sellers who would not join even with an invite).',
+      commonMistake: 'Assuming that adding control variables to OLS removes all confounding. Observed controls only close backdoor paths through the variables you measured. Unobserved confounders — seller motivation, product quality, pricing discipline — remain open paths unless you use a design-based solution like IV, matching on a richer covariate set, or a randomized experiment.',
+      interviewPhrase: '"The OLS estimate is almost certainly biased upward — sellers who opt into promotions are not a random sample, they\'re the engaged, higher-quality sellers who would earn more GMV anyway. But you have a clean instrument sitting unused: the email invite was A/B tested. Use that. The IV estimate divides the invite\'s effect on GMV by its effect on take-up, and that gives you the causal effect for the sellers who actually responded to the program."',
+      connectsTo: ['review', 'design'],
+    },
+  },
 ];
 
 export const statsModulesById = Object.fromEntries(statsModules.map(m => [m.id, m]));

@@ -9,6 +9,8 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     { id: 'code', label: 'Code' },
     { id: 'product-design', label: 'PM Design' },
     { id: 'prioritization', label: 'Prioritize' },
+    { id: 'behavioral', label: 'Behavioral' },
+    { id: 'estimation', label: 'Estimation' },
     { id: 'blog', label: 'Playbook' },
     { id: 'progress', label: 'Progress' },
   ];
@@ -73,7 +75,9 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               || (item.id === 'cases' && currentPage === 'cases-runner')
               || (item.id === 'code' && currentPage === 'code-runner')
               || (item.id === 'product-design' && currentPage === 'product-design-runner')
-              || (item.id === 'prioritization' && currentPage === 'prioritization-runner');
+              || (item.id === 'prioritization' && currentPage === 'prioritization-runner')
+              || (item.id === 'behavioral' && currentPage === 'behavioral-runner')
+              || (item.id === 'estimation' && currentPage === 'estimation-runner');
             return (
               <button
                 key={item.id}

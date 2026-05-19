@@ -37,15 +37,31 @@ Running list of product, content, and feature ideas. Not prioritized — just ca
 
 ---
 
-## Horizon: V3.4 Candidates
+## ✅ V3.4 — Shipped
 
-**Stats Room next-case nav** — StatsRunner uses a different flow (multiple-choice MCQ, not a debrief panel). Would need a different pattern — a "Next module →" button after the `seniorRead` section. Lower priority since Stats is MCQ not freeform.
+**RCA Room expanded to 12 cases** — RCA07-RCA12: seller fraud spike, DAU drop post-rollout, MRR growth slowdown, B2B churn spike, ad revenue floor drop, creator retention regression.
 
-**Progress page: Code/PD/Prioritization completionMap** — The completionMap in Progress.jsx excludes Code, ProductDesign, and Prioritization rooms. No learning path currently references those rooms, so it's a non-issue today — but if paths ever include them, completion checkmarks won't light up.
+**Business Cases expanded to 12** — C07-C12: pricing decision (tiered elasticity), build vs. buy AI, international expansion (SEA unit economics), cost-cutting analysis, competitive response, product sunset.
 
-**RCA Room content expansion** — RCA07–RCA08: (a) marketplace seller fraud spike (platform integrity angle), (b) DAU drop post-feature rollout (attribution ambiguity). 6 cases currently.
+**Causal inference Stats modules (STAT17-20)** — DiD, regression discontinuity, synthetic control, instrumental variables. Senior DS interview staples, all in product context.
 
-**New learning path: "Code Track"** — A path using Code modules C01→C04→C07→C08 that walks through funnel → retention → CUPED → bootstrap. For users who want a SQL/Python focus.
+**Interview-format SQL in Code Room (C15-C18)** — Anti-join, rolling 7-day DAU, top-N per group, sessionization. Classic interview SQL, not pattern-teaching.
+
+**Behavioral / Leadership Room (NEW)** — 8 questions, STAR framework, model answers in prose, self-rating. Covers influence, conflict, data-impact, communication, leadership.
+
+**Estimation / Fermi Room (NEW)** — 8 problems with real arithmetic walkthroughs, approach badges (bottom-up/top-down/hybrid), sanity checks.
+
+---
+
+## Horizon: V3.5 Candidates
+
+**Stats Room next-case nav** — StatsRunner uses a different flow (MCQ, not debrief panel). Would need a "Next module →" button after the `seniorRead` section. Lower priority.
+
+**Progress page: completionMap for newer rooms** — Code, ProductDesign, Prioritization, Behavioral, Estimation excluded from completionMap. Non-issue until learning paths reference those rooms.
+
+**New learning path: "Code Track"** — C01→C04→C07→C08 walking funnel → retention → CUPED → bootstrap. For SQL/Python focus.
+
+**New learning path: "Full-Stack DS Interview"** — Stats + RCA + Cases + Behavioral + Estimation for comprehensive senior DS prep across all question types.
 
 **V4.0: DS/ML Engineering Lab** — Separate product, different audience (MLEs, data engineers). Model evaluation, feature stores, PySpark, production ML. Build trigger: PAL has stable traffic + validated monetization.
 

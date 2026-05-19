@@ -1336,6 +1336,985 @@ plt.show()`,
       `cmap='Blues_r' (reversed) maps high retention to dark blue and low retention to light/white. This is the convention for retention heatmaps — the visual gradient flows naturally from the dense dark diagonal (W0 = 100%) outward`,
     ],
   },
+
+  // ─────────────────────────────────────────────
+  // CODE11 — Second Purchase Date (SQL · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code11-second-purchase-sql',
+    title: 'Find Each User\'s Second Purchase Date',
+    subtitle: 'SQL · Window Functions · ROW_NUMBER · CTEs',
+    track: 'sql',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['ROW_NUMBER', 'window functions', 'e-commerce', 'CTEs', 'self-join'],
+
+    scenario: {
+      company: 'Crestline Home',
+      context: `You're in a product analytics interview at Crestline Home, an e-commerce company. The interviewer says: "We want to understand how quickly users come back after their first purchase — that gap is a strong signal of product-market fit in our category." You have an orders table with one row per order. Your goal is to find the second purchase date for each user and compute the number of days between their first and second purchase.`,
+      schema: [
+        { table: 'orders', description: 'One row per order placed on the platform', columns: ['order_id', 'user_id', 'created_at', 'order_total'] },
+        { table: '—', description: 'created_at is a TIMESTAMP. A single user can have multiple rows (one per order).', columns: [] },
+        { table: '—', description: 'Only include users who have placed at least 2 orders. Users with exactly 1 order should be excluded from the result.', columns: [] },
+      ],
+      task: 'Return one row per user showing: user_id, first_purchase_date, second_purchase_date, and days_to_second_purchase. Only include users with at least 2 orders.',
+    },
+
+    hints: [
+      'Use ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at) to rank each user\'s orders chronologically — rn=1 is first purchase, rn=2 is second',
+      'Compute this in a CTE, then filter for rn IN (1, 2) to keep only the first two orders per user',
+      'Use a second CTE or a CASE-based pivot to get first and second purchase on the same row per user — MAX(CASE WHEN rn=1 THEN ...) is a clean pattern',
+      'Use ROW_NUMBER not RANK — if two orders share the exact same timestamp, RANK would assign both rn=1 and skip rn=2, which would break the filter logic',
+    ],
+
+    partialCode: `WITH ranked_orders AS (
+  -- Rank each user's orders chronologically
+  SELECT
+    order_id,
+    user_id,
+    created_at,
+    -- TODO: assign a row number per user ordered by created_at ascending
+    ROW_NUMBER() OVER (___) AS rn
+  FROM orders
+),
+
+first_two AS (
+  -- Keep only the first and second order per user
+  SELECT
+    user_id,
+    created_at,
+    rn
+  FROM ranked_orders
+  -- TODO: filter to only rn = 1 or rn = 2
+  WHERE ___
+),
+
+pivoted AS (
+  -- Pivot to get first and second purchase on the same row
+  SELECT
+    user_id,
+    -- TODO: use MAX(CASE WHEN ...) to get first_purchase_date
+    MAX(CASE WHEN rn = 1 THEN created_at END) AS first_purchase_date,
+    -- TODO: use MAX(CASE WHEN ...) to get second_purchase_date
+    ___ AS second_purchase_date
+  FROM first_two
+  GROUP BY user_id
+)
+
+SELECT
+  user_id,
+  first_purchase_date,
+  second_purchase_date,
+  -- TODO: compute days_to_second_purchase (cast or use DATE_DIFF depending on dialect)
+  ___ AS days_to_second_purchase
+FROM pivoted
+-- TODO: exclude users who never had a second purchase
+WHERE ___
+ORDER BY days_to_second_purchase ASC;`,
+
+    modelAnswer: `WITH ranked_orders AS (
+  -- Assign a sequential rank to each order per user, oldest first
+  -- ROW_NUMBER (not RANK) ensures ties at the same timestamp get distinct ranks
+  SELECT
+    order_id,
+    user_id,
+    created_at,
+    ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at ASC) AS rn
+  FROM orders
+),
+
+first_two AS (
+  -- Retain only each user's 1st and 2nd order rows
+  SELECT
+    user_id,
+    created_at,
+    rn
+  FROM ranked_orders
+  WHERE rn IN (1, 2)
+),
+
+pivoted AS (
+  -- Pivot: bring first and second purchase onto one row per user
+  -- MAX() with CASE is the standard SQL pivot idiom — only one row per rn value
+  -- will be non-NULL, so MAX() safely extracts it
+  SELECT
+    user_id,
+    MAX(CASE WHEN rn = 1 THEN created_at END) AS first_purchase_date,
+    MAX(CASE WHEN rn = 2 THEN created_at END) AS second_purchase_date
+  FROM first_two
+  GROUP BY user_id
+)
+
+SELECT
+  user_id,
+  DATE(first_purchase_date)  AS first_purchase_date,
+  DATE(second_purchase_date) AS second_purchase_date,
+  -- DATEDIFF or DATE_PART depending on SQL dialect; this version is ANSI-compatible
+  DATE_PART('day', second_purchase_date - first_purchase_date)::INT
+    AS days_to_second_purchase
+FROM pivoted
+WHERE second_purchase_date IS NOT NULL  -- exclude users with only 1 order
+ORDER BY days_to_second_purchase ASC;`,
+
+    keyInsights: [
+      'ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at) is the canonical approach: it assigns a per-user sequential rank that correctly handles any number of orders without needing self-joins or subquery correlated aggregations',
+      'The MAX(CASE WHEN rn=1 THEN ...) pivot pattern is more readable and performant than a self-join on user_id — a self-join doubles the scan and requires a join predicate that can produce duplicates if timestamps are equal',
+      'Using RANK() instead of ROW_NUMBER() is the classic mistake here: if two orders share the exact same created_at timestamp, RANK assigns rn=1 to both and skips rn=2, so the WHERE rn=2 filter returns nothing for that user',
+      'In the interview, mention that you\'d also check for duplicate order_id values before running this — if the orders table has duplication bugs, ROW_NUMBER gives an arbitrary "second order" that may actually be the same logical purchase',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE12 — Rolling 3-Month Retention (SQL · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code12-rolling-3month-retention-sql',
+    title: 'Compute Rolling 3-Month Consecutive Retention',
+    subtitle: 'SQL · Rolling Retention · DATE_TRUNC · Window Functions',
+    track: 'sql',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['retention', 'DATE_TRUNC', 'rolling window', 'CTEs', 'growth analytics'],
+
+    scenario: {
+      company: 'Spark',
+      context: `You're interviewing at Spark, a social app with 12M daily active users. The interviewer says: "Our VP of Growth wants a metric that catches users who are genuinely habitual — not just people who spiked in one month. She wants to see how many users were active in three consecutive months." You need to write a query showing, for each month in 2024, the count of users active in that month AND each of the two prior months — a rolling 3-month consecutive retention count.`,
+      schema: [
+        { table: 'user_activity', description: 'One row per user per day they performed any action in the app', columns: ['user_id', 'activity_date', 'activity_type'] },
+        { table: 'users', description: 'One row per registered user', columns: ['user_id', 'signup_date', 'country'] },
+        { table: '—', description: 'activity_date is a DATE column. There can be multiple rows per user per day (different activity_type values).', columns: [] },
+      ],
+      task: 'For each month in 2024 (starting from March, since you need 2 prior months), return the month and the count of distinct users who were active in that month, the prior month, AND the month before that — all three consecutive months.',
+    },
+
+    hints: [
+      'Use DATE_TRUNC(\'month\', activity_date) to collapse daily activity into monthly buckets, then DISTINCT on user_id + month to get one row per user per active month',
+      'Self-join the monthly active users table three times (or use a LAG-based approach) to enforce that the same user appears in month M, month M-1, and month M-2',
+      'The self-join approach is most readable: alias the monthly CTE as m0, m1, m2; join on user_id with month conditions m1.month = m0.month - interval \'1 month\' etc.',
+      'A common mistake is using BETWEEN on the activity date — that checks activity within a range, not activity in all 3 individual months. A user active only in January and March would pass a BETWEEN check but should not count as 3-month consecutive.',
+    ],
+
+    partialCode: `WITH monthly_active AS (
+  -- Collapse to one row per user per calendar month they were active
+  -- Use DISTINCT to de-duplicate multiple activity events in the same month
+  SELECT DISTINCT
+    user_id,
+    -- TODO: truncate activity_date to month granularity
+    DATE_TRUNC('month', activity_date) AS activity_month
+  FROM user_activity
+  WHERE activity_date >= '2024-01-01'
+    AND activity_date <  '2025-01-01'
+),
+
+three_month_active AS (
+  -- For each month M, find users active in M, M-1, and M-2
+  -- Self-join the CTE three times on user_id with offset month conditions
+  SELECT
+    m0.activity_month AS month,
+    m0.user_id
+  FROM monthly_active m0
+  -- TODO: join monthly_active m1 on same user_id, one month earlier
+  JOIN monthly_active m1
+    ON m1.user_id = m0.user_id
+    AND m1.activity_month = ___   -- m0's month minus 1 month
+  -- TODO: join monthly_active m2 on same user_id, two months earlier
+  JOIN monthly_active m2
+    ON m2.user_id = m0.user_id
+    AND m2.activity_month = ___   -- m0's month minus 2 months
+)
+
+SELECT
+  month,
+  -- TODO: count distinct users who appear in all three months
+  COUNT(DISTINCT user_id) AS consecutive_3month_users
+FROM three_month_active
+-- Limit to months starting from March 2024 (first month with 2 prior months available)
+WHERE month >= '2024-03-01'
+GROUP BY 1
+ORDER BY 1;`,
+
+    modelAnswer: `WITH monthly_active AS (
+  -- One row per user per calendar month they were active
+  -- DISTINCT collapses multiple events on the same day/month to a single presence signal
+  SELECT DISTINCT
+    user_id,
+    DATE_TRUNC('month', activity_date) AS activity_month
+  FROM user_activity
+  WHERE activity_date >= '2024-01-01'
+    AND activity_date <  '2025-01-01'
+),
+
+three_month_active AS (
+  -- Enforce consecutive 3-month presence via self-joins
+  -- m0 = target month, m1 = one month prior, m2 = two months prior
+  -- A user must have a row in ALL THREE months to appear in the result
+  SELECT
+    m0.activity_month AS month,
+    m0.user_id
+  FROM monthly_active m0
+  JOIN monthly_active m1
+    ON  m1.user_id       = m0.user_id
+    AND m1.activity_month = m0.activity_month - INTERVAL '1 month'
+  JOIN monthly_active m2
+    ON  m2.user_id       = m0.user_id
+    AND m2.activity_month = m0.activity_month - INTERVAL '2 months'
+)
+
+SELECT
+  TO_CHAR(month, 'YYYY-MM')             AS month,
+  COUNT(DISTINCT user_id)               AS consecutive_3month_users
+FROM three_month_active
+WHERE month >= '2024-03-01'  -- March is the first month with 2 full prior months in 2024
+GROUP BY 1
+ORDER BY 1;`,
+
+    keyInsights: [
+      'The self-join approach (m0, m1, m2 all referencing the same monthly_active CTE) is more explicit and less error-prone than using LAG() — it directly encodes "user must exist in month M AND M-1 AND M-2" as three independent join conditions',
+      'DATE_TRUNC(\'month\', activity_date) collapses the daily grain to monthly, enabling the month arithmetic (- INTERVAL \'1 month\'). Operating on the raw date column with BETWEEN would check presence in a date range, not presence in all three individual months',
+      'The critical mistake is using BETWEEN activity_date AND activity_date - 90: this would include a user active in January and March but not February — a "zombie" user who appears retained but actually lapsed. The self-join enforces each month independently.',
+      'In the interview, distinguish this from cohort retention: rolling 3-month retention asks "who is habitually active right now?" whereas cohort retention asks "of users who joined in month X, how many are still around in month X+N?" — different questions, different business uses',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE13 — Longest Consecutive Login Streak (SQL · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code13-longest-login-streak-sql',
+    title: 'Find Each User\'s Longest Login Streak',
+    subtitle: 'SQL · Gaps and Islands · ROW_NUMBER · Date Arithmetic',
+    track: 'sql',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['gaps and islands', 'ROW_NUMBER', 'consecutive dates', 'CTEs', 'window functions'],
+
+    scenario: {
+      company: 'Prism',
+      context: `You're interviewing at Prism, a content platform. The interviewer says: "We want to reward power users — specifically, users with the longest streaks of consecutive daily logins. Can you write a query that finds each user's longest streak?" The logins table has already been de-duplicated: there is at most one row per user per day. You need to find the length of each user's longest consecutive daily login streak, along with the start and end dates of that streak.`,
+      schema: [
+        { table: 'logins', description: 'One row per user per day they logged in. Already de-duplicated — no duplicate (user_id, login_date) rows.', columns: ['user_id', 'login_date'] },
+        { table: '—', description: 'login_date is a DATE column. Consecutive means login_date and login_date + 1 are both present — no gaps.', columns: [] },
+      ],
+      task: 'Return one row per user showing: user_id, longest_streak (number of days), streak_start (DATE), streak_end (DATE). If a user has multiple streaks of equal maximum length, return the earliest one.',
+    },
+
+    hints: [
+      'The classic "gaps and islands" trick: ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date) gives a sequential integer rn. Then login_date - rn gives the same date value for all consecutive dates in a streak — that value is the "island key".',
+      'Walk through an example: logins on days 1,2,3,5,6 get rn=1,2,3,4,5. Day-rn = 0,0,0,1,1. Days 1-3 share island key 0; days 5-6 share island key 1. Each unique (user_id, island_key) pair is one streak.',
+      'Group by (user_id, island_key) to get streak_start = MIN(login_date), streak_end = MAX(login_date), streak_length = COUNT(*)',
+      'After computing all streaks, use RANK() OVER (PARTITION BY user_id ORDER BY streak_length DESC, streak_start ASC) to pick the longest (earliest if tied) streak per user',
+    ],
+
+    partialCode: `WITH numbered_logins AS (
+  -- Assign a sequential row number per user, ordered by login date
+  SELECT
+    user_id,
+    login_date,
+    -- TODO: ROW_NUMBER() partitioned by user_id, ordered by login_date
+    ROW_NUMBER() OVER (___) AS rn
+  FROM logins
+),
+
+islands AS (
+  -- The gaps-and-islands trick:
+  -- login_date - rn yields the same "island key" for all consecutive dates
+  -- because consecutive dates increment login_date by 1 AND rn by 1 simultaneously
+  SELECT
+    user_id,
+    login_date,
+    -- TODO: compute island_key = login_date - rn (use INTERVAL or integer cast depending on dialect)
+    (login_date - rn * INTERVAL '1 day')::DATE AS island_key
+  FROM numbered_logins
+),
+
+streaks AS (
+  -- Aggregate each contiguous island into a streak with start, end, and length
+  SELECT
+    user_id,
+    island_key,
+    MIN(login_date)  AS streak_start,
+    MAX(login_date)  AS streak_end,
+    -- TODO: count the number of days in this streak
+    COUNT(*)         AS streak_length
+  FROM islands
+  GROUP BY user_id, island_key
+),
+
+ranked_streaks AS (
+  -- Rank streaks per user: longest first, earliest start as tiebreaker
+  SELECT
+    user_id,
+    streak_start,
+    streak_end,
+    streak_length,
+    -- TODO: RANK() to pick the longest streak per user
+    RANK() OVER (PARTITION BY user_id ORDER BY ___ DESC, ___ ASC) AS rnk
+  FROM streaks
+)
+
+SELECT
+  user_id,
+  streak_length   AS longest_streak,
+  streak_start,
+  streak_end
+FROM ranked_streaks
+WHERE rnk = 1
+ORDER BY longest_streak DESC, user_id;`,
+
+    modelAnswer: `WITH numbered_logins AS (
+  -- Sequential row number per user ordered by login date
+  -- This is the setup for the gaps-and-islands date subtraction trick
+  SELECT
+    user_id,
+    login_date,
+    ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date ASC) AS rn
+  FROM logins
+),
+
+islands AS (
+  -- Key insight: for consecutive dates, login_date and rn both increase by 1 each row,
+  -- so (login_date - rn) stays constant within a streak — it is the "island key".
+  -- Example: logins on Jan 1,2,3 get rn=1,2,3. Jan1-1=Dec31, Jan2-2=Dec31, Jan3-3=Dec31.
+  -- Same island key. A gap on Jan 4 (rn=4 next time user appears on Jan 5) gives Jan5-4=Jan1 (different key).
+  SELECT
+    user_id,
+    login_date,
+    (login_date - (rn - 1) * INTERVAL '1 day')::DATE AS island_key
+    -- Subtract (rn-1) to anchor the key to the streak's first date — a cosmetic choice; rn works equally well
+  FROM numbered_logins
+),
+
+streaks AS (
+  -- Aggregate each island: min date = start, max date = end, count = streak length
+  SELECT
+    user_id,
+    MIN(login_date)  AS streak_start,
+    MAX(login_date)  AS streak_end,
+    COUNT(*)         AS streak_length
+  FROM islands
+  GROUP BY user_id, island_key
+),
+
+ranked_streaks AS (
+  -- Pick the longest streak per user; use streak_start ASC as tiebreaker for ties
+  SELECT
+    user_id,
+    streak_start,
+    streak_end,
+    streak_length,
+    RANK() OVER (
+      PARTITION BY user_id
+      ORDER BY streak_length DESC, streak_start ASC
+    ) AS rnk
+  FROM streaks
+)
+
+SELECT
+  user_id,
+  streak_length  AS longest_streak,
+  streak_start,
+  streak_end
+FROM ranked_streaks
+WHERE rnk = 1
+ORDER BY longest_streak DESC, user_id;`,
+
+    keyInsights: [
+      'The date minus row_number trick works because consecutive calendar dates and sequential row numbers both increase by exactly 1 per step — their difference is constant within a streak and changes at every gap. This is the expected elegant solution; any other approach is significantly more complex.',
+      'Grouping by (user_id, island_key) with MIN/MAX/COUNT collapses each streak island into a single summary row in one aggregation step — no recursion, no self-join, no looping. The entire gaps-and-islands problem reduces to a two-step CTE.',
+      'Using LAG() to detect breaks (WHERE login_date != LAG(login_date) + 1) finds gap boundaries but does not directly give streak lengths — you then need a cumulative sum to assign group IDs, which is more code and harder to explain clearly in an interview.',
+      'Walk through the arithmetic explicitly in the interview: "If I log in Monday, Tuesday, Wednesday — row numbers 1, 2, 3 — then Monday minus 1 day, Tuesday minus 2 days, Wednesday minus 3 days all equal the same date. That common date is my streak identifier." Interviewers want to see that you understand why it works, not just that you know the trick.',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE14 — N-day Retention Cohort Table (SQL · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code14-nday-retention-cohort-sql',
+    title: 'Build a Day-1 / Day-7 / Day-30 Retention Cohort Table',
+    subtitle: 'SQL · Cohort Retention · DATE_TRUNC · LEFT JOIN · Pivoting',
+    track: 'sql',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['cohort analysis', 'retention', 'LEFT JOIN', 'DATE_TRUNC', 'fintech'],
+
+    scenario: {
+      company: 'Volta',
+      context: `You're interviewing at Volta, a fintech app. The interviewer says: "Our growth team tracks Day 1, Day 7, and Day 30 retention as key health metrics. Can you write a query that builds the full retention table broken out by weekly signup cohort for Q1 2024?" Each cell in the table should show the percentage of users from that signup week who had a session on exactly Day N after signup — not within N days, but on that specific day.`,
+      schema: [
+        { table: 'users', description: 'One row per registered user', columns: ['user_id', 'signup_date'] },
+        { table: 'sessions', description: 'One row per app session', columns: ['user_id', 'session_date'] },
+        { table: '—', description: 'signup_date and session_date are DATE columns. Q1 2024 = Jan 1 through Mar 31, 2024.', columns: [] },
+        { table: '—', description: 'Day 1 = signup_date + 1, Day 7 = signup_date + 7, Day 30 = signup_date + 30. "Exactly on that day" — not within a window.', columns: [] },
+      ],
+      task: 'Return one row per weekly signup cohort (signup week, cohort_size, day_1_retention_pct, day_7_retention_pct, day_30_retention_pct). Only include Q1 2024 cohorts.',
+    },
+
+    hints: [
+      'Use DATE_TRUNC(\'week\', signup_date) to bucket users into weekly cohorts. Cohort size = COUNT(DISTINCT user_id) per cohort.',
+      'For each retention day, LEFT JOIN the sessions table filtered to exactly session_date = signup_date + N (use INTERVAL or integer addition depending on dialect).',
+      'LEFT JOIN (not INNER JOIN) is essential — users who did not return on Day N should count as 0 in the denominator, not be excluded from the cohort entirely.',
+      'Divide retained users by cohort size using NULLIF to avoid division by zero: ROUND(100.0 * COUNT(DISTINCT s1.user_id) / NULLIF(COUNT(DISTINCT u.user_id), 0), 1).',
+    ],
+
+    partialCode: `WITH cohorts AS (
+  -- Assign each user to their weekly signup cohort
+  -- Cohort key = Monday of their signup week
+  SELECT
+    user_id,
+    signup_date,
+    -- TODO: truncate signup_date to the week level
+    DATE_TRUNC('week', signup_date)::DATE AS signup_week
+  FROM users
+  WHERE signup_date >= '2024-01-01'
+    AND signup_date <  '2024-04-01'  -- Q1 2024 only
+)
+
+SELECT
+  c.signup_week,
+  COUNT(DISTINCT c.user_id)                                           AS cohort_size,
+
+  -- Day 1 retention: users who had a session exactly on signup_date + 1
+  ROUND(
+    100.0 * COUNT(DISTINCT s1.user_id)
+      / NULLIF(COUNT(DISTINCT c.user_id), 0),
+    1
+  )                                                                   AS day_1_retention_pct,
+
+  -- TODO: Day 7 retention (same pattern, session_date = signup_date + 7)
+  ROUND(
+    100.0 * COUNT(DISTINCT ___)
+      / NULLIF(COUNT(DISTINCT c.user_id), 0),
+    1
+  )                                                                   AS day_7_retention_pct,
+
+  -- TODO: Day 30 retention (session_date = signup_date + 30)
+  ___                                                                 AS day_30_retention_pct
+
+FROM cohorts c
+
+-- LEFT JOIN for Day 1: only match sessions on exactly signup_date + 1
+LEFT JOIN sessions s1
+  ON s1.user_id      = c.user_id
+  -- TODO: add the date condition for Day 1
+  AND s1.session_date = ___
+
+-- TODO: LEFT JOIN sessions s7 for Day 7 retention
+___
+
+-- TODO: LEFT JOIN sessions s30 for Day 30 retention
+___
+
+GROUP BY 1
+ORDER BY 1;`,
+
+    modelAnswer: `WITH cohorts AS (
+  -- Assign each Q1 2024 user to their Monday-anchored weekly signup cohort
+  SELECT
+    user_id,
+    signup_date,
+    DATE_TRUNC('week', signup_date)::DATE AS signup_week
+  FROM users
+  WHERE signup_date >= '2024-01-01'
+    AND signup_date <  '2024-04-01'
+)
+
+SELECT
+  c.signup_week,
+  COUNT(DISTINCT c.user_id)                                           AS cohort_size,
+
+  -- Day 1 retention: % of cohort with a session on EXACTLY signup_date + 1
+  -- LEFT JOIN ensures users with no Day-1 session are still in the denominator
+  ROUND(
+    100.0 * COUNT(DISTINCT s1.user_id)
+           / NULLIF(COUNT(DISTINCT c.user_id), 0),
+    1
+  )                                                                   AS day_1_retention_pct,
+
+  -- Day 7 retention: % of cohort with a session on EXACTLY signup_date + 7
+  ROUND(
+    100.0 * COUNT(DISTINCT s7.user_id)
+           / NULLIF(COUNT(DISTINCT c.user_id), 0),
+    1
+  )                                                                   AS day_7_retention_pct,
+
+  -- Day 30 retention: % of cohort with a session on EXACTLY signup_date + 30
+  -- Note: recent cohorts may not have reached Day 30 yet — their cell will show 0.0
+  ROUND(
+    100.0 * COUNT(DISTINCT s30.user_id)
+           / NULLIF(COUNT(DISTINCT c.user_id), 0),
+    1
+  )                                                                   AS day_30_retention_pct
+
+FROM cohorts c
+
+-- Day 1: LEFT JOIN filters to exactly one day after signup
+LEFT JOIN sessions s1
+  ON  s1.user_id      = c.user_id
+  AND s1.session_date = c.signup_date + INTERVAL '1 day'
+
+-- Day 7: LEFT JOIN filters to exactly seven days after signup
+LEFT JOIN sessions s7
+  ON  s7.user_id      = c.user_id
+  AND s7.session_date = c.signup_date + INTERVAL '7 days'
+
+-- Day 30: LEFT JOIN filters to exactly thirty days after signup
+LEFT JOIN sessions s30
+  ON  s30.user_id      = c.user_id
+  AND s30.session_date = c.signup_date + INTERVAL '30 days'
+
+GROUP BY 1
+ORDER BY 1;`,
+
+    keyInsights: [
+      'Three separate LEFT JOINs on the sessions table — each filtered to a specific day offset — is the cleanest way to compute multi-day retention in a single pass. Each join is independent, so session_date = signup_date + N is an exact point-in-time filter, not a window.',
+      'LEFT JOIN is mandatory, not optional: with an INNER JOIN, users who didn\'t return on Day N would be excluded from the cohort count entirely, inflating the retention rate. LEFT JOIN preserves all cohort members in the denominator regardless of whether they matched the session filter.',
+      'The critical distinction is "on exactly Day N" vs "within N days of signup." BETWEEN signup_date AND signup_date + N measures cumulative retention (did they ever return?) — a different, weaker metric. Exact Day N is a stricter habituation signal. Always clarify this with the interviewer.',
+      'Cohort dilution is real: cohorts from late March 2024 haven\'t had 30 days to reach Day 30 by the time you run the query, so their day_30_retention_pct will be 0.0, not missing data — mention this in the interview so the reviewer doesn\'t misinterpret it as poor retention',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // C15 — Users Who Did X But Not Y (SQL · Interview · Analyst)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code15-users-x-not-y-sql',
+    title: 'Users Who Watched But Never Shared',
+    subtitle: 'SQL · Anti-Join · Set Difference · Interview Classic',
+    track: 'sql',
+    difficulty: 'analyst',
+    isFree: false,
+    tags: ['anti-join', 'set difference', 'NOT EXISTS', 'LEFT JOIN', 'interview-sql'],
+
+    scenario: {
+      company: 'Prism',
+      context: `You're in a Prism data interview. The interviewer says: "We want to identify users who are consuming content but not sharing it — a signal we use to prioritize share-nudge experiments. Write a query that returns all users who watched at least 3 videos but never shared any video in the last 30 days."`,
+      schema: [
+        { table: 'events', description: 'One row per user event', columns: ['user_id', 'event_type', 'event_ts', 'video_id'] },
+        { table: '—', description: 'event_type values: "video_watched" | "video_shared"', columns: [] },
+      ],
+      task: 'Return user_ids who had ≥ 3 video_watched events AND zero video_shared events in the last 30 days. Show two approaches: LEFT JOIN anti-join and NOT EXISTS.',
+    },
+
+    hints: [
+      'The anti-join pattern: LEFT JOIN the events table filtered to video_shared, then WHERE that join produced NULL — meaning no share event matched.',
+      'Count only video_watched events in HAVING — use a conditional COUNT or filter in a subquery before joining.',
+      'NOT EXISTS is an alternative: correlated subquery that checks whether any video_shared event exists for the user in the window.',
+      'Date filter: event_ts >= CURRENT_DATE - INTERVAL \'30 days\' (or equivalent). Apply this filter consistently for both watched and shared event counts.',
+    ],
+
+    partialCode: `-- Schema reminder:
+-- events(user_id, event_type, event_ts, video_id)
+-- event_type: 'video_watched' | 'video_shared'
+
+-- TODO: Return user_ids with >= 3 video_watched events
+-- and zero video_shared events in the last 30 days.
+-- Show the LEFT JOIN anti-join approach.
+
+SELECT  w.user_id
+FROM    /* your query here */
+`,
+
+    modelAnswer: `-- ─────────────────────────────────────────────────────────
+-- APPROACH 1: LEFT JOIN anti-join (most common, generally efficient)
+-- ─────────────────────────────────────────────────────────
+
+SELECT  w.user_id
+FROM (
+  -- Step 1: aggregate watched events per user in the last 30 days
+  SELECT  user_id,
+          COUNT(*) AS watch_count
+  FROM    events
+  WHERE   event_type = 'video_watched'
+    AND   event_ts  >= CURRENT_DATE - INTERVAL '30 days'
+  GROUP BY user_id
+  HAVING  COUNT(*) >= 3          -- keep only users with >= 3 watches
+) w
+
+-- Step 2: anti-join — LEFT JOIN to share events, keep rows where join is NULL
+LEFT JOIN (
+  SELECT DISTINCT user_id
+  FROM   events
+  WHERE  event_type = 'video_shared'
+    AND  event_ts  >= CURRENT_DATE - INTERVAL '30 days'
+) s ON s.user_id = w.user_id
+
+WHERE s.user_id IS NULL;         -- NULL means no share event matched = never shared
+
+
+-- ─────────────────────────────────────────────────────────
+-- APPROACH 2: NOT EXISTS (correlated subquery — same result, different style)
+-- ─────────────────────────────────────────────────────────
+
+SELECT  user_id
+FROM    events
+WHERE   event_type = 'video_watched'
+  AND   event_ts  >= CURRENT_DATE - INTERVAL '30 days'
+GROUP BY user_id
+HAVING  COUNT(*) >= 3
+  AND   NOT EXISTS (
+          -- correlated subquery: is there ANY share from this user in the window?
+          SELECT 1
+          FROM   events e2
+          WHERE  e2.user_id   = events.user_id
+            AND  e2.event_type = 'video_shared'
+            AND  e2.event_ts  >= CURRENT_DATE - INTERVAL '30 days'
+        );
+
+
+-- ─────────────────────────────────────────────────────────
+-- WHY NOT NOT IN?
+-- NOT IN (SELECT user_id FROM ... WHERE event_type = 'video_shared')
+-- Pitfall: if the subquery returns ANY NULL, NOT IN returns no rows.
+-- Safer to use LEFT JOIN IS NULL or NOT EXISTS.
+-- ─────────────────────────────────────────────────────────`,
+
+    keyInsights: [
+      'The anti-join pattern (LEFT JOIN + IS NULL on the right side) is the most readable and typically most performant way to find "rows in A with no match in B." It is the preferred form in most query optimizers.',
+      'NOT EXISTS is equivalent and sometimes preferred when the correlated subquery is simple — the optimizer often executes it identically to a LEFT JOIN anti-join in modern engines (Postgres, BigQuery, Snowflake).',
+      'Avoid NOT IN when the subquery could return NULLs: SQL\'s three-value logic means "x NOT IN (1, 2, NULL)" evaluates to UNKNOWN, silently returning zero rows. This is one of the most common silent bugs in SQL.',
+      'Apply the date filter consistently to both the watched and shared events. A common mistake is filtering the watched events but not the shared events, which would exclude users who shared before the 30-day window — they should count as "never shared in the window."',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // C16 — Rolling 7-Day Active Users (SQL · Interview · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code16-rolling-7day-dau-sql',
+    title: 'Rolling 7-Day Active Users by Date',
+    subtitle: 'SQL · Rolling Window · Date Spine · R7DAU · Interview Classic',
+    track: 'sql',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['rolling window', 'date spine', 'R7DAU', 'self-join', 'interview-sql'],
+
+    scenario: {
+      company: 'Spark',
+      context: `You're interviewing at Spark. The PM asks: "Can you write a query that shows me rolling 7-day active users (R7DAU) for every date in the last 30 days? R7DAU on a given date = the count of distinct users who were active on any of the 7 days ending on that date." This is a standard product health metric.`,
+      schema: [
+        { table: 'user_activity', description: 'One row per user per active date (deduplicated — at most one row per user_id + activity_date)', columns: ['user_id', 'activity_date'] },
+        { table: '—', description: 'activity_date is a DATE column. Assume today is the reference date.', columns: [] },
+      ],
+      task: 'Return one row per date for the last 30 days, with the count of distinct users active on any of the 7 days ending on (and including) that date. Explain why a window function with COUNT(DISTINCT) does not work here and what the correct approach is.',
+    },
+
+    hints: [
+      'You need a date spine — a complete list of all dates in the last 30 days — so dates with zero activity still appear in the result.',
+      'Self-join the activity table: for each spine date d, join activity rows where activity_date BETWEEN d - 6 AND d. Then COUNT(DISTINCT user_id).',
+      'Window functions like SUM() OVER (... ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) work for additive metrics but COUNT(DISTINCT ...) is not supported inside window frames in most SQL engines.',
+      'Generate the date spine with a recursive CTE, generate_series() (Postgres), or UNNEST(GENERATE_DATE_ARRAY()) (BigQuery).',
+    ],
+
+    partialCode: `-- Schema reminder:
+-- user_activity(user_id, activity_date DATE)
+
+-- TODO: Return one row per date for the last 30 days.
+-- Each row: date, rolling_7day_active_users
+-- (distinct users active on any of the 7 days ending on that date)
+`,
+
+    modelAnswer: `-- ─────────────────────────────────────────────────────────
+-- APPROACH 1: Date spine + self-join (works in all SQL dialects)
+-- ─────────────────────────────────────────────────────────
+
+WITH date_spine AS (
+  -- Generate every date in the last 30 days
+  -- Postgres / Redshift syntax:
+  SELECT CAST(generate_series AS DATE) AS spine_date
+  FROM   generate_series(
+           CURRENT_DATE - INTERVAL '29 days',
+           CURRENT_DATE,
+           INTERVAL '1 day'
+         )
+  -- BigQuery alternative:
+  -- SELECT date FROM UNNEST(GENERATE_DATE_ARRAY(DATE_SUB(CURRENT_DATE(), INTERVAL 29 DAY), CURRENT_DATE())) AS date
+)
+
+SELECT
+  d.spine_date                    AS date,
+  COUNT(DISTINCT a.user_id)       AS rolling_7day_active_users
+FROM   date_spine d
+
+-- For each spine date, include all activity in the 7-day window ending on that date
+LEFT JOIN user_activity a
+  ON  a.activity_date BETWEEN d.spine_date - INTERVAL '6 days'
+                          AND d.spine_date
+
+GROUP BY d.spine_date
+ORDER BY d.spine_date;
+
+
+-- ─────────────────────────────────────────────────────────
+-- WHY WINDOW FUNCTIONS DON'T WORK FOR COUNT(DISTINCT)
+-- ─────────────────────────────────────────────────────────
+-- This looks tempting but is NOT valid in most engines:
+--
+-- COUNT(DISTINCT user_id) OVER (
+--   ORDER BY activity_date
+--   ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+-- )
+--
+-- COUNT(DISTINCT) inside a window frame is not supported in
+-- Postgres, Snowflake, Redshift, or BigQuery (as of 2024).
+-- The self-join approach above is the correct solution.
+--
+-- If the table already has one row per user per date (deduplicated),
+-- COUNT(*) in a window frame would work for non-distinct counts —
+-- but the moment you need distinct users across an overlapping window,
+-- you need the self-join.
+-- ─────────────────────────────────────────────────────────`,
+
+    keyInsights: [
+      'Rolling window aggregations over distinct users require a date spine + self-join, not a window function. COUNT(DISTINCT ...) is not supported inside window frames (ROWS BETWEEN N PRECEDING AND CURRENT ROW) in Postgres, Snowflake, Redshift, or BigQuery — this is a common interview trap.',
+      'The date spine is essential: without it, dates with zero activity simply disappear from the result. A product health chart with missing dates is misleading. Always generate a complete date series and LEFT JOIN activity onto it.',
+      'The self-join condition (activity_date BETWEEN spine_date - 6 AND spine_date) creates an expanding set of matched rows for each spine date. COUNT(DISTINCT user_id) on that set gives the correct rolling 7-day unique user count.',
+      'In BigQuery, APPROX_COUNT_DISTINCT() is sometimes used with HyperLogLog sketch aggregation across sliding windows as a performance optimization at scale — but for interview purposes, the exact self-join answer is what the interviewer is looking for.',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // C17 — Top N Per Group / Ranking (SQL · Interview · Analyst)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code17-top-n-per-group-sql',
+    title: 'Top 3 Sellers by GMV Per Category',
+    subtitle: 'SQL · DENSE_RANK · Window Functions · Top-N Per Group · Interview Classic',
+    track: 'sql',
+    difficulty: 'analyst',
+    isFree: false,
+    tags: ['ranking', 'DENSE_RANK', 'window functions', 'CTE', 'top-N per group', 'interview-sql'],
+
+    scenario: {
+      company: 'Crafted',
+      context: `You're interviewing at Crafted. The interviewer says: "Our category managers want to see a leaderboard — for each product category, show me the top 3 sellers by total GMV in the last 90 days. Include their rank, total GMV, and handle ties correctly."`,
+      schema: [
+        { table: 'orders', description: 'One row per completed order', columns: ['order_id', 'seller_id', 'category', 'gmv', 'order_date'] },
+        { table: '—', description: 'gmv is a numeric column in USD. order_date is a DATE. Multiple orders can exist per seller per category.', columns: [] },
+      ],
+      task: 'Return seller_id, category, total_gmv, and rank within category for the top 3 sellers per category in the last 90 days. Use DENSE_RANK and explain when you would choose RANK vs DENSE_RANK vs ROW_NUMBER.',
+    },
+
+    hints: [
+      'Step 1: aggregate orders to (seller_id, category, SUM(gmv)) for the last 90 days.',
+      'Step 2: apply DENSE_RANK() OVER (PARTITION BY category ORDER BY total_gmv DESC) on the aggregated result — in a CTE.',
+      'Step 3: filter the CTE WHERE rank <= 3.',
+      'You cannot use WHERE on a window function in the same SELECT — wrap it in a CTE or subquery first.',
+    ],
+
+    partialCode: `-- Schema reminder:
+-- orders(order_id, seller_id, category, gmv, order_date)
+
+-- TODO: Return the top 3 sellers per category by total GMV
+-- in the last 90 days. Include rank. Handle ties with DENSE_RANK.
+`,
+
+    modelAnswer: `-- ─────────────────────────────────────────────────────────
+-- STEP 1: Aggregate GMV per seller per category (last 90 days)
+-- STEP 2: Rank within each category using DENSE_RANK
+-- STEP 3: Filter to top 3 ranks
+-- ─────────────────────────────────────────────────────────
+
+WITH seller_gmv AS (
+  -- Aggregate total GMV per seller per category in the last 90 days
+  SELECT
+    seller_id,
+    category,
+    SUM(gmv)  AS total_gmv
+  FROM   orders
+  WHERE  order_date >= CURRENT_DATE - INTERVAL '90 days'
+  GROUP BY seller_id, category
+),
+
+ranked_sellers AS (
+  -- Rank sellers within each category by total GMV (highest = rank 1)
+  -- DENSE_RANK: ties share the same rank, no ranks are skipped
+  -- e.g., two sellers tied for 1st both get rank 1, next seller gets rank 2
+  SELECT
+    seller_id,
+    category,
+    total_gmv,
+    DENSE_RANK() OVER (
+      PARTITION BY category
+      ORDER BY total_gmv DESC
+    ) AS gmv_rank
+  FROM seller_gmv
+)
+
+-- STEP 3: Keep only ranks 1, 2, 3 per category
+-- NOTE: Cannot apply WHERE on window function in the same query level —
+-- must wrap in CTE or subquery first
+SELECT
+  category,
+  gmv_rank,
+  seller_id,
+  total_gmv
+FROM   ranked_sellers
+WHERE  gmv_rank <= 3
+ORDER BY category, gmv_rank;
+
+
+-- ─────────────────────────────────────────────────────────
+-- RANK vs DENSE_RANK vs ROW_NUMBER — when to use each:
+-- ─────────────────────────────────────────────────────────
+--
+-- RANK():        Tied rows get the same rank. Next rank SKIPS.
+--                Sellers with $5k, $5k, $3k → ranks 1, 1, 3
+--                Use when: "position in a leaderboard with gaps"
+--
+-- DENSE_RANK():  Tied rows get the same rank. Next rank does NOT skip.
+--                Sellers with $5k, $5k, $3k → ranks 1, 1, 2
+--                Use when: "top N per group" — preferred here, because
+--                WHERE rank <= 3 would exclude the $3k seller with RANK()
+--                if there are two tied at rank 1 (they'd be 1,1,3 — rank 3 > 3 cutoff?
+--                Actually rank 3 = 3, it passes — but if THREE sellers tie at 1st,
+--                rank 4 is skipped and the 4th seller is invisible with WHERE rank <= 3)
+--
+-- ROW_NUMBER():  Unique rank for every row — ties broken arbitrarily.
+--                Sellers with $5k, $5k, $3k → ranks 1, 2, 3 (arbitrary for tie)
+--                Use when: deduplication, pagination, "pick exactly one row per group"
+-- ─────────────────────────────────────────────────────────`,
+
+    keyInsights: [
+      'You cannot filter on a window function in the same SELECT level — this is the single most common SQL interview mistake with ranking queries. The window function must be computed in a CTE or subquery, then filtered in the outer query.',
+      'DENSE_RANK is the right choice for top-N-per-group problems because it never skips ranks on ties. With RANK(), if three sellers tie for 1st, the 4th seller gets rank 4 — and WHERE rank <= 3 might include or exclude unexpected sellers depending on how many ties exist at the boundary.',
+      'ROW_NUMBER is correct when you need exactly one row per group with no ties (e.g., deduplication: keep the most recent record per user). It assigns arbitrary but unique ranks, so two equal-GMV sellers would get different row numbers with no guarantee of which one comes first.',
+      'Always aggregate first, then rank — do not try to nest SUM(gmv) inside the window function directly. A CTE per step (aggregate → rank → filter) is the clearest structure and easiest to debug in an interview setting.',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // C18 — Sessionization (SQL · Interview · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code18-sessionization-sql',
+    title: 'Sessionize an Events Table',
+    subtitle: 'SQL · LAG · Session Detection · Cumulative Sum · Interview Classic',
+    track: 'sql',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['sessionization', 'LAG', 'cumulative sum', 'window functions', 'interview-sql'],
+
+    scenario: {
+      company: 'Prism',
+      context: `You're in a senior data interview at Prism. The interviewer says: "We need to sessionize our events table. Define a session as a sequence of events from the same user where no gap between consecutive events exceeds 30 minutes. Write a query that (1) assigns a session_id to each event, and (2) counts distinct sessions per user per day."`,
+      schema: [
+        { table: 'events', description: 'One row per user event', columns: ['user_id', 'event_ts', 'event_type'] },
+        { table: '—', description: 'event_ts is a TIMESTAMP. Events are not deduplicated — a user can have many events per minute.', columns: [] },
+      ],
+      task: 'Write a SQL query that assigns a session_id to each event (events within 30 minutes of the previous event from the same user belong to the same session), then counts distinct sessions per user per day.',
+    },
+
+    hints: [
+      'Step 1: Use LAG(event_ts) OVER (PARTITION BY user_id ORDER BY event_ts) to get the previous event\'s timestamp for the same user.',
+      'Step 2: Flag session starts — a new session begins when the gap from the previous event exceeds 30 minutes (or when it\'s the user\'s first event).',
+      'Step 3: SUM(is_new_session) OVER (PARTITION BY user_id ORDER BY event_ts) gives a monotonically increasing session counter per user — this is the session_id.',
+      'Step 4: Group by user_id, DATE(event_ts), session_id and count distinct sessions per user per day.',
+    ],
+
+    partialCode: `-- Schema reminder:
+-- events(user_id, event_ts TIMESTAMP, event_type)
+
+-- TODO: Sessionize events. A new session starts when the gap
+-- between consecutive events from the same user exceeds 30 minutes.
+-- Return: user_id, event_date, sessions_that_day
+`,
+
+    modelAnswer: `-- ─────────────────────────────────────────────────────────
+-- SESSIONIZATION IN THREE CTE STEPS
+-- Pattern: LAG → gap flag → cumulative sum = session_id
+-- ─────────────────────────────────────────────────────────
+
+WITH events_with_prev AS (
+  -- STEP 1: For each event, get the timestamp of the previous event
+  -- from the same user, ordered by time
+  SELECT
+    user_id,
+    event_ts,
+    event_type,
+    LAG(event_ts) OVER (
+      PARTITION BY user_id
+      ORDER BY event_ts
+    ) AS prev_event_ts
+  FROM events
+),
+
+session_flags AS (
+  -- STEP 2: Flag the start of a new session
+  -- A new session begins when:
+  --   (a) there is no previous event (first event for the user), OR
+  --   (b) the gap from the previous event exceeds 30 minutes
+  SELECT
+    user_id,
+    event_ts,
+    event_type,
+    CASE
+      WHEN prev_event_ts IS NULL THEN 1   -- first event ever for this user
+      WHEN event_ts - prev_event_ts > INTERVAL '30 minutes' THEN 1  -- gap > 30 min
+      ELSE 0
+    END AS is_new_session
+    -- Postgres/Redshift: event_ts - prev_event_ts gives an INTERVAL, compare directly
+    -- BigQuery: TIMESTAMP_DIFF(event_ts, prev_event_ts, MINUTE) > 30
+    -- Snowflake: DATEDIFF('minute', prev_event_ts, event_ts) > 30
+  FROM events_with_prev
+),
+
+sessionized AS (
+  -- STEP 3: Cumulative sum of session-start flags = monotonically increasing
+  -- session counter per user. This is the session_id.
+  -- User's 1st session = 1, 2nd = 2, etc.
+  SELECT
+    user_id,
+    event_ts,
+    event_type,
+    is_new_session,
+    SUM(is_new_session) OVER (
+      PARTITION BY user_id
+      ORDER BY event_ts
+      ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS session_id   -- unique per user (not globally unique across users)
+  FROM session_flags
+)
+
+-- STEP 4: Count distinct sessions per user per day
+-- Each (user_id, session_id) pair is one session.
+-- We group by user + date + session_id to get one row per session,
+-- then count those rows per user per day.
+SELECT
+  user_id,
+  DATE(event_ts)          AS event_date,
+  COUNT(DISTINCT session_id) AS sessions_that_day
+FROM   sessionized
+GROUP BY user_id, DATE(event_ts)
+ORDER BY user_id, event_date;
+
+
+-- ─────────────────────────────────────────────────────────
+-- NOTES FOR INTERVIEW DISCUSSION:
+-- ─────────────────────────────────────────────────────────
+-- 1. session_id is unique within a user, not globally.
+--    If you need a globally unique session_id, use:
+--    CONCAT(user_id, '-', session_id) or ROW_NUMBER() OVER () on sessionized.
+--
+-- 2. The cumulative SUM trick works because is_new_session is 0 or 1 —
+--    each new session increments the counter by 1 for all subsequent
+--    events until the next session boundary. No recursion needed.
+--
+-- 3. ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW is the default
+--    for SUM with ORDER BY in most engines, but writing it explicitly
+--    is clearer and avoids dialect-specific default behavior surprises.
+--
+-- 4. This does NOT require recursive CTEs or stored procedures —
+--    pure window functions handle it in O(n log n) sort time.
+-- ─────────────────────────────────────────────────────────`,
+
+    keyInsights: [
+      'The sessionization pattern is three steps: LAG to get the previous event timestamp, a CASE statement to flag session starts (gap > threshold or first event), and a cumulative SUM of that flag as the session_id. Memorize this pattern — it appears in a majority of senior product analytics interviews.',
+      'The cumulative sum trick works because the session-start flag is binary (0 or 1). Every time a new session begins, the running sum increments by 1, and all subsequent events in that session share the same counter value until the next increment.',
+      'This approach does not require recursive CTEs, UDFs, or procedural logic — it is pure standard SQL that runs efficiently on columnar engines (BigQuery, Snowflake, Redshift). Point this out in the interview to signal you understand execution models.',
+      'Session_id is user-scoped, not globally unique. If downstream queries need to join sessions across users, you must compose a globally unique key: CONCAT(user_id, \'-\', session_id) or assign a row number over the entire sessionized table partitioned by (user_id, session_id).',
+    ],
+  },
 ];
 
 export const codeModulesById = Object.fromEntries(codeModules.map(m => [m.id, m]));
