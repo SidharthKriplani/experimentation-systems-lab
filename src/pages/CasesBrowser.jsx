@@ -11,7 +11,7 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock }) {
           fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--purple)', marginBottom: '0.4rem',
         }}>
-          Cases Room
+          Business Cases
         </div>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--text)', margin: '0 0 0.5rem', letterSpacing: '-0.02em' }}>
           Cases Room

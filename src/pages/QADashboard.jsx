@@ -16,7 +16,7 @@ import { lock } from '../utils/unlock.js';
 
 const ROOM_COLORS = {
   stats:   { color: 'var(--blue-text)',  bg: 'var(--blue-bg)',   border: 'var(--blue-border)' },
-  metrics: { color: 'var(--teal)',       bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
+  metrics: { color: 'var(--green)',      bg: 'var(--green-bg)',  border: 'var(--green-border)' },
   design:  { color: 'var(--teal)',       bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
   review:  { color: 'var(--accent)',     bg: 'var(--accent-bg)', border: 'var(--accent-border)' },
   rca:     { color: 'var(--yellow)',     bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },

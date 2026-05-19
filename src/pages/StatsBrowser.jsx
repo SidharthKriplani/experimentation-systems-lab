@@ -123,9 +123,7 @@ export function StatsBrowser({ onSelectModule, unlocked, onUnlock }) {
                   {module.title}
                 </h3>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                  {module.situation.context.length > 120
-                    ? module.situation.context.slice(0, 120) + '…'
-                    : module.situation.context}
+                  {module.subtitle}
                 </p>
 
                 {isLocked && (

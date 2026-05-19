@@ -146,7 +146,10 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   businessCases.forEach(c => { if (caseProgress[c.id]?.attempts > 0) completionMap[`cases:${c.id}`] = true; });
 
   function handleClear() {
-    if (window.confirm('Clear all Review Room progress? This cannot be undone.')) {
+    if (window.confirm('Clear all progress across all rooms? This cannot be undone.')) {
+      ['exp-lab-progress-v1', 'pal-design-progress-v1', 'pal-stats-progress-v1',
+       'pal-metrics-progress-v2', 'pal-rca-progress-v2', 'pal-cases-progress-v2',
+      ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
       clearProgress();
       onClear();
     }
@@ -170,7 +173,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
             background: 'transparent', border: '1px solid var(--border)',
             borderRadius: '5px', padding: '0.35rem 0.75rem',
             color: 'var(--text-dim)', fontSize: '0.8rem', cursor: 'pointer',
-          }}>Clear Review Progress</button>
+          }}>Clear All Progress</button>
         )}
       </div>
 
@@ -181,6 +184,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
           background: 'var(--surface)', border: '1px solid var(--border)',
           borderRadius: 'var(--radius-lg)', padding: '1.5rem',
           boxShadow: 'var(--shadow-sm)',
+          order: totalCompleted === 0 ? 2 : 1,
         }}>
           <div style={{
             fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
@@ -192,7 +196,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
               key={r.label}
               label={r.label}
               color={r.label === 'Stats' ? 'var(--blue-text)' :
-                     r.label === 'Metrics' ? 'var(--teal)' :
+                     r.label === 'Metrics' ? 'var(--green)' :
                      r.label === 'Design' ? 'var(--teal)' :
                      r.label === 'Review' ? 'var(--accent)' :
                      r.label === 'RCA' ? 'var(--yellow)' : 'var(--purple)'}
@@ -251,7 +255,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
         </div>
 
         {/* Guided Paths */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', order: totalCompleted === 0 ? 1 : 2 }}>
           <div style={{
             fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
             letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.25rem',

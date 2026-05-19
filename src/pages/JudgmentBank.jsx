@@ -241,8 +241,8 @@ function MetricsCard({ metricCase, onClick }) {
         boxShadow: 'var(--shadow-sm)',
       }}
       onMouseEnter={e => {
-        e.currentTarget.style.borderColor = 'var(--teal)';
-        e.currentTarget.style.boxShadow = '0 0 0 3px var(--teal-bg)';
+        e.currentTarget.style.borderColor = 'var(--green)';
+        e.currentTarget.style.boxShadow = '0 0 0 3px var(--green-bg)';
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border)';
@@ -272,7 +272,7 @@ function MetricsCard({ metricCase, onClick }) {
           background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{metricCase.domain}</span>
-        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--teal)', fontWeight: 700 }}>⊗ Metrics</span>
+        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--green)', fontWeight: 700 }}>⊗ Metrics</span>
       </div>
     </div>
   );

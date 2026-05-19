@@ -26,7 +26,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
       <div style={{ marginBottom: '1.75rem' }}>
         <div style={{
           fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
-          color: 'var(--teal)', marginBottom: '0.4rem',
+          color: 'var(--green)', marginBottom: '0.4rem',
         }}>
           Metrics Room
         </div>
@@ -40,7 +40,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <RoomBadge />
           <StatPill n={freeCount} label="free" />
-          <StatPill n={completedCount} label="completed" color="var(--teal)" />
+          <StatPill n={completedCount} label="completed" color="var(--green)" />
         </div>
       </div>
 
@@ -75,7 +75,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
               }}
               onMouseEnter={e => {
                 if (!isLocked) {
-                  e.currentTarget.style.borderColor = 'var(--teal-border)';
+                  e.currentTarget.style.borderColor = 'var(--green-border)';
                   e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
                 }
               }}
@@ -105,7 +105,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
                 ) : (
                   <span style={{
                     fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-                    color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+                    color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
                     borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
                   }}>Beta</span>
                 )}
@@ -155,7 +155,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
                   <span style={{ fontSize: '0.73rem', color: 'var(--text-dim)' }}>Not started</span>
                 )}
                 {!isLocked && (
-                  <span style={{ fontSize: '0.78rem', color: 'var(--teal)', fontWeight: 600 }}>→</span>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--green)', fontWeight: 600 }}>→</span>
                 )}
               </div>
             </div>
@@ -176,9 +176,9 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
           <button
             onClick={onUnlock}
             style={{
-              background: 'none', border: '1px solid var(--teal-border)',
+              background: 'none', border: '1px solid var(--green-border)',
               borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.65rem',
-              color: 'var(--teal)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
+              color: 'var(--green)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
             }}
           >Enter unlock code</button>
         </div>
@@ -191,9 +191,9 @@ function RoomBadge() {
   return (
     <div style={{
       display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-      background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+      background: 'var(--green-bg)', border: '1px solid var(--green-border)',
       borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.6rem',
-      fontSize: '0.75rem', color: 'var(--teal)', fontWeight: 700,
+      fontSize: '0.75rem', color: 'var(--green)', fontWeight: 700,
     }}>
       Metrics · {metricCases.length} Cases
     </div>
@@ -207,7 +207,7 @@ function StatPill({ n, label, color }) {
       borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.7rem',
       display: 'flex', alignItems: 'baseline', gap: '0.3rem',
     }}>
-      <span style={{ fontSize: '1rem', fontWeight: 800, color: color || 'var(--teal)', lineHeight: 1 }}>{n}</span>
+      <span style={{ fontSize: '1rem', fontWeight: 800, color: color || 'var(--green)', lineHeight: 1 }}>{n}</span>
       <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{label}</span>
     </div>
   );

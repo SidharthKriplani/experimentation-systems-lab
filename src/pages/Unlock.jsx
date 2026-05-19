@@ -23,17 +23,17 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
         <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✓</div>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--green)', marginBottom: '0.75rem' }}>Beta Access Active</h1>
         <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-          All 8 scenarios are unlocked. Head to the Scenario Browser to access the paid scenarios.
+          All 44 practice items are unlocked across Stats, Metrics, Design, Review, RCA, and Cases.
         </p>
         <button
-          onClick={() => onNavigate('browser')}
+          onClick={() => onNavigate('progress')}
           style={{
             background: 'var(--accent)', color: '#fff', border: 'none',
             borderRadius: '6px', padding: '0.6rem 1.5rem',
             fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
           }}
         >
-          Open Scenario Browser →
+          View My Progress →
         </button>
       </div>
     );
@@ -54,8 +54,11 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
             Private Beta Access
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-            Paid access coming soon — unlock code enabled for private beta.
-            Enter your access code to unlock all 8 scenarios.
+            Access all 44 practice items across Stats, Metrics, Design, Review, RCA, and Cases.
+            Progress is saved locally in your browser. No account required.
+          </p>
+          <p style={{ color: 'var(--text-dim)', fontSize: '0.8rem', marginTop: '0.5rem' }}>
+            If you received a beta code, enter it below.
           </p>
         </div>
 
@@ -109,7 +112,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
         )}
 
         <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-subtle)', fontSize: '0.75rem', color: 'var(--text-dim)', textAlign: 'center' }}>
-          Access status stored locally in your browser. No account required.
+          Progress and access status stored locally. No server, no account.
         </div>
       </div>
     </div>

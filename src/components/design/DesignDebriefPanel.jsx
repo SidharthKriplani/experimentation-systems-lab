@@ -148,24 +148,24 @@ export function DesignDebriefPanel({
             fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
             color: 'var(--accent)', marginBottom: '0.4rem',
           }}>
-            Paired Review Room scenario
+            You designed this test. Now see what happened.
           </div>
           <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.55, margin: '0 0 0.75rem' }}>
-            {scenario.pairedScenarioPrompt?.toReview || 'You designed this test. Now read what actually happened when it ran.'}
+            {scenario.pairedScenarioPrompt?.toReview || 'The results are in — messy, real, and under business pressure. How do you read them?'}
           </p>
           <button
             onClick={onGoToReview}
             style={{
-              padding: '0.55rem 1rem',
+              padding: '0.6rem 1.1rem',
               background: 'var(--accent)', color: '#fff',
               border: 'none', borderRadius: 'var(--radius-sm)',
-              fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer',
+              fontSize: '0.875rem', fontWeight: 700, cursor: 'pointer',
               transition: 'opacity 0.1s',
             }}
             onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
             onMouseLeave={e => e.currentTarget.style.opacity = '1'}
           >
-            Go to Review Room →
+            See the result in Review Room →
           </button>
         </section>
       )}

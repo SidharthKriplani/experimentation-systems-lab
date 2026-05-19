@@ -1,3 +1,5 @@
+import { learningPaths } from '../data/learningPaths.js';
+
 export function Home({ onNavigate, onStartScenario }) {
   const rooms = [
     {
@@ -9,7 +11,7 @@ export function Home({ onNavigate, onStartScenario }) {
       nav: 'stats',
     },
     {
-      id: 'metrics', label: 'Metrics Room', color: 'var(--teal)', bg: 'var(--teal-bg)', border: 'var(--teal-border)',
+      id: 'metrics', label: 'Metrics Room', color: 'var(--green)', bg: 'var(--green-bg)', border: 'var(--green-border)',
       tagline: 'Can you choose the right metric before the experiment runs?',
       description: 'Define the primary metric, diagnostic metrics, and guardrails for a product scenario. Catch proxy traps, gaming incentives, and circular definitions. Scored against a senior metric design standard.',
       meta: '6 cases · 2 free + 4 beta · Analyst → Senior',
@@ -62,7 +64,7 @@ export function Home({ onNavigate, onStartScenario }) {
           marginBottom: '1.75rem', fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 600,
           letterSpacing: '0.02em',
         }}>
-          Product Analytics Lab · V2.0
+          Private Beta
         </div>
 
         <h1 style={{
@@ -80,17 +82,16 @@ export function Home({ onNavigate, onStartScenario }) {
         <p style={{
           fontSize: '1.05rem',
           color: 'var(--text-muted)',
-          lineHeight: 1.75,
+          lineHeight: 1.7,
           marginBottom: '0.6rem',
-          maxWidth: '580px',
+          maxWidth: '560px',
         }}>
-          Six rooms. One skill loop. Practice metric design, experiment design, statistical
-          claim evaluation, experiment review, root cause analysis, and business case framing —
-          all with realistic product pressure and senior analyst debriefs.
+          44 practice cases across six rooms. Each one puts you in a real product scenario —
+          messy data, stakeholder pressure, no clean answer — then shows you how a senior analyst read it.
         </p>
 
         <p style={{ fontSize: '0.84rem', color: 'var(--text-dim)', marginBottom: '2.25rem' }}>
-          For product analysts, data scientists, growth analysts, and PMs who already know the basics.
+          For product analysts, data scientists, and PMs who already know the basics.
         </p>
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -103,7 +104,7 @@ export function Home({ onNavigate, onStartScenario }) {
               letterSpacing: '-0.01em', boxShadow: 'var(--shadow)',
             }}
           >
-            Start in Stats Room →
+            Start with Stats Room →
           </button>
           <button
             onClick={() => onNavigate('progress')}
@@ -115,26 +116,14 @@ export function Home({ onNavigate, onStartScenario }) {
               boxShadow: 'var(--shadow-sm)',
             }}
           >
-            View Guided Paths →
-          </button>
-          <button
-            onClick={() => onNavigate('bank')}
-            style={{
-              background: 'var(--surface)', color: 'var(--text-secondary)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)', padding: '0.7rem 1.4rem',
-              fontWeight: 500, fontSize: '0.92rem', cursor: 'pointer',
-              boxShadow: 'var(--shadow-sm)',
-            }}
-          >
-            Browse All 44 Cases →
+            New here? Try the Beginner Path →
           </button>
         </div>
       </div>
 
       {/* ── Six rooms ──────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
-        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>Six rooms. One loop.</div>
+        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>Six rooms. Six judgment muscles.</div>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
@@ -275,7 +264,7 @@ export function Home({ onNavigate, onStartScenario }) {
           {/* Metrics */}
           <RoomList
             label="Metrics Room · 6 Cases"
-            labelColor="var(--teal)" labelBg="var(--teal-bg)" labelBorder="var(--teal-border)"
+            labelColor="var(--green)" labelBg="var(--green-bg)" labelBorder="var(--green-border)"
             items={[
               ['Free', 'Search Success Rate', 'proxy trap'],
               ['Free', 'Activation Metric', 'checklist gaming'],
@@ -284,7 +273,7 @@ export function Home({ onNavigate, onStartScenario }) {
               ['Beta', 'Revenue Growth Metric', 'GMV vs NRR'],
               ['Beta', 'GenAI Support Bot', 'deflection≠resolution'],
             ]}
-            btnColor="var(--teal)"
+            btnColor="var(--green)"
             btnLabel="Open Metrics Room →"
             onOpen={() => onNavigate('metrics')}
           />
@@ -362,44 +351,39 @@ export function Home({ onNavigate, onStartScenario }) {
         </div>
       </div>
 
-      {/* ── Roadmap ──────────────────────────────────────────────────────── */}
-      <div style={{ maxWidth: '520px' }}>
-        <div className="label-caps" style={{ marginBottom: '1rem' }}>Build history</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-          {[
-            { v: 'V1',   desc: 'Experiment Review Room · 8 scenarios', done: true, current: false },
-            { v: 'V1.1', desc: 'Judgment Bank · 50-scenario architecture · theme system', done: true, current: false },
-            { v: 'V1.2', desc: 'Design Room · Product Analytics Lab rebrand', done: true, current: false },
-            { v: 'V1.5', desc: 'Stats Room · 8 modules · p-value to SUTVA', done: true, current: false },
-            { v: 'V1.6', desc: '8 paired scenarios · claim evaluation mechanic · 28 items', done: true, current: false },
-            { v: 'V2.0', desc: 'Metrics Room + RCA Room + Cases Room · 44 items total · guided paths', done: false, current: true },
-          ].map(({ v, desc, done, current }) => (
-            <div key={v} style={{
-              display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
-              padding: '0.6rem 0',
-              borderBottom: '1px solid var(--border-subtle)',
-              opacity: current ? 1 : done ? 0.75 : 0.38,
-            }}>
-              <span style={{
-                fontWeight: 800, fontSize: '0.75rem',
-                color: current ? 'var(--accent)' : done ? 'var(--teal)' : 'var(--text-dim)',
-                minWidth: '34px', paddingTop: '1px',
-              }}>{v}</span>
-              <span style={{ fontSize: '0.82rem', color: current ? 'var(--text-secondary)' : 'var(--text-dim)', lineHeight: 1.5, flex: 1 }}>{desc}</span>
-              {current && (
-                <span style={{
-                  fontSize: '0.58rem', fontWeight: 700, color: 'var(--green-text)',
-                  background: 'var(--green-bg)', border: '1px solid var(--green-border)',
-                  borderRadius: '3px', padding: '0.08rem 0.4rem', flexShrink: 0, marginTop: '2px',
-                }}>NOW</span>
-              )}
-              {done && !current && (
-                <span style={{
-                  fontSize: '0.58rem', fontWeight: 700, color: 'var(--teal)',
-                  background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
-                  borderRadius: '3px', padding: '0.08rem 0.4rem', flexShrink: 0, marginTop: '2px',
-                }}>DONE</span>
-              )}
+      {/* ── Guided paths ────────────────────────────────────────────────── */}
+      <div style={{ marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div className="label-caps">Guided paths — where to start</div>
+          <button
+            onClick={() => onNavigate('progress')}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontSize: '0.78rem', fontWeight: 600, padding: 0 }}
+          >View all paths →</button>
+        </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+          gap: '0.65rem',
+        }}>
+          {learningPaths.map(path => (
+            <div
+              key={path.id}
+              onClick={() => onNavigate('progress')}
+              style={{
+                background: 'var(--surface)', border: `1px solid ${path.border}`,
+                borderRadius: 'var(--radius)', padding: '1rem 1.1rem',
+                cursor: 'pointer', boxShadow: 'var(--shadow-sm)',
+              }}
+            >
+              <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: path.color, marginBottom: '0.35rem' }}>
+                {path.sequence.length} items
+              </div>
+              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.25rem', lineHeight: 1.3 }}>
+                {path.title}
+              </div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                {path.subtitle}
+              </div>
             </div>
           ))}
         </div>

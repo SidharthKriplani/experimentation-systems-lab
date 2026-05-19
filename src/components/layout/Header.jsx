@@ -7,7 +7,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     { id: 'browser', label: 'Review' },
     { id: 'rca', label: 'RCA' },
     { id: 'cases', label: 'Cases' },
-    { id: 'bank', label: 'Judgment Bank' },
+    { id: 'bank', label: 'Library' },
     { id: 'progress', label: 'Progress' },
     { id: 'about', label: 'Methodology' },
   ];
@@ -51,7 +51,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               Product Analytics Lab
             </span>
             <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)', letterSpacing: '0.02em', lineHeight: 1.1 }}>
-              Analytics judgment gym · V2.0
+              Analytics judgment gym · Beta
             </span>
           </div>
         </button>
