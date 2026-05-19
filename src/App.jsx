@@ -188,13 +188,37 @@ export default function App() {
     return accessible[idx + 1].id;
   }
 
+  function getNextMetricsCaseId(currentId) {
+    const accessible = metricCases.filter(c => c.isFree || unlocked);
+    const idx = accessible.findIndex(c => c.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
+  function getNextRCACaseId(currentId) {
+    const accessible = rcaCases.filter(c => c.isFree || unlocked);
+    const idx = accessible.findIndex(c => c.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
+  function getNextBusinessCaseId(currentId) {
+    const accessible = businessCases.filter(c => c.isFree || unlocked);
+    const idx = accessible.findIndex(c => c.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
   const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
   const activeDesignScenario = designScenarios.find(s => s.id === activeDesignScenarioId);
   const activeStatsModule = statsModules.find(m => m.id === activeStatsModuleId);
   const activeMetricsCase = metricCases.find(m => m.id === activeMetricsCaseId);
+  const nextMetricsCaseId = activeMetricsCaseId ? getNextMetricsCaseId(activeMetricsCaseId) : null;
   const activeRCACase = rcaCases.find(r => r.id === activeRCACaseId);
+  const nextRCACaseId = activeRCACaseId ? getNextRCACaseId(activeRCACaseId) : null;
   const activeBusinessCase = businessCases.find(b => b.id === activeBusinessCaseId);
+  const nextBusinessCaseId = activeBusinessCaseId ? getNextBusinessCaseId(activeBusinessCaseId) : null;
   const activePDScenario = productDesignScenarios.find(s => s.id === activePDScenarioId);
   const activeCodeModule = codeModules.find(m => m.id === activeCodeModuleId);
   const activePrioritizationScenario = prioritizationScenarios.find(s => s.id === activePrioritizationId);
@@ -240,6 +264,7 @@ export default function App() {
             onBack={() => navigate('metrics')}
             onGoToDesign={id => openDesignScenario(id)}
             onGoToReview={id => openScenario(id)}
+            onNext={nextMetricsCaseId ? () => openMetricsCase(nextMetricsCaseId) : undefined}
           />
         )}
 
@@ -290,6 +315,7 @@ export default function App() {
             savedProgress={getRCAProgress(activeRCACaseId)}
             unlocked={unlocked}
             onBack={() => navigate('rca')}
+            onNext={nextRCACaseId ? () => openRCACase(nextRCACaseId) : undefined}
           />
         )}
 
@@ -304,6 +330,7 @@ export default function App() {
             savedProgress={getCaseProgress(activeBusinessCaseId)}
             unlocked={unlocked}
             onBack={() => navigate('cases')}
+            onNext={nextBusinessCaseId ? () => openBusinessCase(nextBusinessCaseId) : undefined}
           />
         )}
 

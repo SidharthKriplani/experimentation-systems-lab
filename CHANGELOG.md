@@ -4,6 +4,44 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.2.3 — Polish Pass (Content, UX, Visual, Accessibility)
+**Date:** May 2026
+**Commit message:** "V3.2.3: Polish pass — content rewrites, next-case nav, expandable steps, WCAG contrast, keyboard a11y, responsive nav"
+**Files changed:** `src/pages/PlaybookBrowser.jsx`, `src/components/rca/RCARunner.jsx`, `src/components/rca/RCADebriefPanel.jsx`, `src/components/metrics/MetricDebriefPanel.jsx`, `src/components/cases/CaseDebriefPanel.jsx`, `src/components/metrics/MetricsRunner.jsx`, `src/components/cases/CaseRunner.jsx`, `src/App.jsx`, `src/index.css`, `src/components/layout/Header.jsx`, `src/pages/MetricsBrowser.jsx`, `src/pages/RCABrowser.jsx`, `src/pages/CasesBrowser.jsx`, `src/pages/DesignBrowser.jsx`, `src/pages/StatsBrowser.jsx`
+
+### Why
+Comprehensive polish sweep across three categories: content depth, UX continuity, and visual/accessibility quality. No new rooms or mechanics — all improvements to existing features.
+
+### Content improvements
+
+**`end-to-end-experiment` full rewrite:** Article opened with an SRM failure discovered during a live experiment, stepped through 8 stages (pre-flight → SRM investigation → business communication), added a Decision Scenarios framework_box, and added 6 keyTakeaways. This was the most-referenced article in the Playbook and deserved flagship treatment.
+
+**`decision-rule` rewrite:** Added story opening (checkout CVR up, latency guardrail degraded, no pre-committed rule = negotiation), added "Why the Conflict Condition Is the Most Important" section, added callout box, added 5 keyTakeaways.
+
+**`five-question-types` rewrite:** Added concrete opening story (analyst uses RCA framing for a causal question), expanded framework_box, added "Most Common Confusions" section, added 5 keyTakeaways.
+
+**`stakeholder-communication` rewrite:** Added concrete 3-audience story (same CSS rendering bug communicated as engineer/PM/exec versions), added 5 keyTakeaways.
+
+**keyTakeaways added to 12 articles:** `p-values`, `confidence-intervals`, `power-mde`, `type1-type2`, `practical-vs-statistical`, `simpsons-paradox`, `bayesian-vs-frequentist`, `dau-mau-ratio`, `segment-before-aggregate`, `mix-shift`, `rca-walkthrough-search`, `two-sided-marketplace-experiments`.
+
+### UX improvements
+
+**RCARunner expandable completed steps:** `CompletedStepCard` components are now clickable — clicking a completed step toggles it between a collapsed summary chip and an expanded view showing your chosen option with feedback text and the best answer. Full keyboard accessibility (role=button, tabIndex, onKeyDown).
+
+**Next-case navigation on all three debrief panels:** Added "Next case →" button to `RCADebriefPanel`, `MetricDebriefPanel`, and `CaseDebriefPanel`. Button only renders when an `onNext` prop is provided. Button uses the room's accent color (yellow/green/purple respectively).
+
+**App.jsx next-case wiring:** Added `getNextRCACaseId`, `getNextMetricsCaseId`, `getNextBusinessCaseId` helper functions (filter accessible cases, findIndex, return next or null). Computed `nextRCACaseId`, `nextMetricsCaseId`, `nextBusinessCaseId` before the render. Passed `onNext` to `RCARunner`, `MetricsRunner`, and `CaseRunner`.
+
+### Visual and accessibility fixes
+
+**WCAG AA contrast fix:** `--text-dim` in light mode changed from `#9ca3af` (contrast ~2.8:1, fails AA) to `#6b7280` (contrast ~4.5:1, passes AA). Dark mode `--text-dim` bumped from `#545b7a` (~2.1:1) to `#8890a8` (~4.5:1).
+
+**Responsive nav:** Header `<nav>` now has `overflowX: 'auto'` and `scrollbarWidth: 'none'` so it scrolls horizontally on narrow viewports without breaking layout. Added `header nav::-webkit-scrollbar { display: none; }` to hide the scrollbar chrome on webkit browsers.
+
+**Keyboard accessibility on card divs:** Added `role="button"`, `tabIndex={0}`, and `onKeyDown` (Enter/Space handlers) to all clickable card `<div>` elements in `MetricsBrowser`, `RCABrowser`, `CasesBrowser`, `DesignBrowser`, and `StatsBrowser`. Locked cards in `CasesBrowser` get `tabIndex={-1}`.
+
+---
+
 ## V3.2.2 — Bug Fix Pass (Routing, Paywall, Reset, Nav, Color)
 **Date:** May 2026
 **Commit message:** "V3.2.2: Bug fixes — routing, paywall, reset progress, nav active state, color variable"

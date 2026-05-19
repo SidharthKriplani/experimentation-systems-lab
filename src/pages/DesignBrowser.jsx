@@ -57,7 +57,10 @@ export function DesignBrowser({ onSelectScenario }) {
                 transition: 'all 0.12s',
                 position: 'relative',
               }}
+              role="button"
+              tabIndex={0}
               onClick={() => onSelectScenario(scenario.id)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectScenario(scenario.id); } }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderColor = 'var(--accent-border)';
                 e.currentTarget.style.boxShadow = 'var(--shadow-sm)';

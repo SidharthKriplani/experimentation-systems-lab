@@ -1,7 +1,7 @@
 // CaseDebriefPanel — senior answer debrief view
 // Props: { businessCase, onRetry, onBack }
 
-export function CaseDebriefPanel({ businessCase, onRetry, onBack }) {
+export function CaseDebriefPanel({ businessCase, onRetry, onBack, onNext }) {
   const sa = businessCase.seniorAnswer;
 
   return (
@@ -99,11 +99,27 @@ export function CaseDebriefPanel({ businessCase, onRetry, onBack }) {
 
       {/* Action buttons */}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', paddingTop: '0.25rem' }}>
+        {onNext && (
+          <button
+            onClick={onNext}
+            style={{
+              background: 'var(--purple)', color: '#fff',
+              border: 'none', borderRadius: 'var(--radius-sm)',
+              padding: '0.55rem 1.1rem',
+              fontSize: '0.86rem', fontWeight: 700, cursor: 'pointer',
+              transition: 'opacity 0.1s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+          >
+            Next case →
+          </button>
+        )}
         <button
           onClick={onRetry}
           style={{
-            background: 'var(--purple)', color: '#fff',
-            border: 'none', borderRadius: 'var(--radius-sm)',
+            background: onNext ? 'none' : 'var(--purple)', color: onNext ? 'var(--text-muted)' : '#fff',
+            border: onNext ? '1px solid var(--border)' : 'none', borderRadius: 'var(--radius-sm)',
             padding: '0.55rem 1.1rem',
             fontSize: '0.86rem', fontWeight: 700, cursor: 'pointer',
             transition: 'opacity 0.1s',

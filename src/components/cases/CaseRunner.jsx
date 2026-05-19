@@ -49,7 +49,7 @@ function computeScore(businessCase, phaseChoices) {
 
 // ─── Main Runner ───
 
-export function CaseRunner({ businessCase, savedProgress, unlocked, onBack }) {
+export function CaseRunner({ businessCase, savedProgress, unlocked, onBack, onNext }) {
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
   const [phaseChoices, setPhaseChoices] = useState({});          // phaseId → optionId (pending)
   const [submittedChoices, setSubmittedChoices] = useState({});  // phaseId → optionId (confirmed)
@@ -224,6 +224,7 @@ export function CaseRunner({ businessCase, savedProgress, unlocked, onBack }) {
             businessCase={businessCase}
             onRetry={handleRetry}
             onBack={onBack}
+            onNext={onNext}
           />
         </div>
       )}

@@ -67,7 +67,10 @@ function CaseCard({ businessCase: bc, progress, isLocked, onSelect, onUnlock }) 
         transition: 'all 0.12s',
         position: 'relative',
       }}
+      role="button"
+      tabIndex={isLocked ? -1 : 0}
       onClick={onSelect}
+      onKeyDown={e => { if (!isLocked && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onSelect(); } }}
       onMouseEnter={e => {
         if (!isLocked) {
           e.currentTarget.style.borderColor = 'var(--purple-border)';

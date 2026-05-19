@@ -57,7 +57,10 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
           return (
             <div
               key={mc.id}
+              role="button"
+              tabIndex={0}
               onClick={() => isLocked ? (onUnlock && onUnlock()) : onSelectCase(mc.id)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); isLocked ? (onUnlock && onUnlock()) : onSelectCase(mc.id); } }}
               style={{
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { RCAStepPanel } from './RCAStepPanel.jsx';
 import { RCAScoreReveal } from './RCAScoreReveal.jsx';
 import { RCADebriefPanel } from './RCADebriefPanel.jsx';
@@ -44,7 +44,7 @@ const SQL_RATINGS = [
 ];
 
 // ─── Main Runner ─────────────────────────────────────────────────────────────
-export function RCARunner({ rcaCase, savedProgress, unlocked, onBack }) {
+export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) {
   const startView = savedProgress ? 'debrief' : 'diagnosis';
   const [view, setView] = useState(startView);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -241,6 +241,7 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack }) {
             rcaCase={rcaCase}
             onRetry={handleRetry}
             onBack={onBack}
+            onNext={onNext}
           />
 
           {/* SQL Step CTA — only if the case has a sqlStep */}
@@ -569,44 +570,90 @@ function SQLValidationStep({ sqlStep, response, onResponseChange, revealed, onRe
   );
 }
 
-// ─── Completed Step Card (collapsed) ─────────────────────────────────────────
+// ─── Completed Step Card (expandable) ────────────────────────────────────────
 function CompletedStepCard({ step, stepNumber, chosenOption }) {
+  const [expanded, setExpanded] = useState(false);
   const dotColor = chosenOption ? (LEVEL_DOT_COLOR[chosenOption.level] || 'var(--text-muted)') : 'var(--text-muted)';
   const levelLabel = chosenOption ? (LEVEL_LABEL_MAP[chosenOption.level] || '') : '';
+  const bestOption = step.options.find(o => o.level === 'strong');
 
   return (
-    <div style={{
-      background: 'var(--surface-2)',
-      border: '1px solid var(--border-subtle)',
-      borderRadius: 'var(--radius-sm)',
-      padding: '0.6rem 0.9rem',
-      display: 'flex', alignItems: 'center', gap: '0.75rem',
-      opacity: 0.8,
-    }}>
-      {/* Dot indicator */}
+    <div
+      style={{
+        background: 'var(--surface-2)',
+        border: `1px solid ${expanded ? 'var(--yellow-border)' : 'var(--border-subtle)'}`,
+        borderRadius: 'var(--radius-sm)',
+        overflow: 'hidden',
+        transition: 'border-color 0.15s',
+        cursor: 'pointer',
+      }}
+      onClick={() => setExpanded(e => !e)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setExpanded(v => !v); }}
+    >
+      {/* Collapsed row */}
       <div style={{
-        width: '10px', height: '10px', borderRadius: '50%', flexShrink: 0,
-        background: dotColor,
-      }} />
-      {/* Step label */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)' }}>
-          Step {stepNumber} · {step.label}
-        </span>
-        {chosenOption && (
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginLeft: '0.6rem' }}>
-            — {chosenOption.label.length > 60 ? chosenOption.label.slice(0, 60) + '…' : chosenOption.label}
+        padding: '0.6rem 0.9rem',
+        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        opacity: expanded ? 1 : 0.8,
+      }}>
+        <div style={{ width: '10px', height: '10px', borderRadius: '50%', flexShrink: 0, background: dotColor }} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)' }}>
+            Step {stepNumber} · {step.label}
+          </span>
+          {chosenOption && (
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginLeft: '0.6rem' }}>
+              — {chosenOption.label.length > 60 ? chosenOption.label.slice(0, 60) + '…' : chosenOption.label}
+            </span>
+          )}
+        </div>
+        {levelLabel && (
+          <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: dotColor, flexShrink: 0 }}>
+            {levelLabel}
           </span>
         )}
-      </div>
-      {/* Level badge */}
-      {levelLabel && (
-        <span style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
-          color: dotColor, flexShrink: 0,
-        }}>
-          {levelLabel}
+        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', flexShrink: 0, marginLeft: '0.25rem' }}>
+          {expanded ? '▲' : '▼'}
         </span>
+      </div>
+
+      {/* Expanded feedback */}
+      {expanded && (
+        <div style={{
+          padding: '0 0.9rem 0.9rem',
+          display: 'flex', flexDirection: 'column', gap: '0.6rem',
+          borderTop: '1px solid var(--border-subtle)',
+          paddingTop: '0.75rem',
+        }}
+        onClick={e => e.stopPropagation()}
+        >
+          {/* Your choice */}
+          {chosenOption && (
+            <div>
+              <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: dotColor, marginBottom: '0.25rem' }}>
+                Your answer
+              </div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text)', lineHeight: 1.5 }}>{chosenOption.label}</div>
+              {chosenOption.feedback && (
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.55, marginTop: '0.3rem' }}>{chosenOption.feedback}</div>
+              )}
+            </div>
+          )}
+          {/* Best answer (if user didn't get strong) */}
+          {bestOption && chosenOption?.level !== 'strong' && (
+            <div style={{
+              background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+              borderRadius: 'var(--radius-sm)', padding: '0.5rem 0.7rem',
+            }}>
+              <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.2rem' }}>
+                Strongest answer
+              </div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text)', lineHeight: 1.5 }}>{bestOption.label}</div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

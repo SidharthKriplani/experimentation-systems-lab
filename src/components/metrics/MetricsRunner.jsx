@@ -24,7 +24,7 @@ function computeScore(metricCase, fieldChoices) {
   return { score, maxScore, level, pct };
 }
 
-export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign, onGoToReview }) {
+export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign, onGoToReview, onNext }) {
   const hasExisting = !!(savedProgress && savedProgress.fieldChoices);
 
   const [fieldChoices, setFieldChoices] = useState(
@@ -161,6 +161,7 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
             metricCase={metricCase}
             onRetry={handleRetry}
             onBack={onBack}
+            onNext={onNext}
           />
         </div>
       )}

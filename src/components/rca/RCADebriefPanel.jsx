@@ -1,4 +1,4 @@
-export function RCADebriefPanel({ rcaCase, onRetry, onBack }) {
+export function RCADebriefPanel({ rcaCase, onRetry, onBack, onNext }) {
   const { seniorDiagnosis } = rcaCase;
 
   return (
@@ -77,6 +77,22 @@ export function RCADebriefPanel({ rcaCase, onRetry, onBack }) {
 
       {/* Action buttons */}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', paddingTop: '0.25rem' }}>
+        {onNext && (
+          <button
+            onClick={onNext}
+            style={{
+              background: 'var(--yellow)', color: '#fff',
+              border: 'none', borderRadius: 'var(--radius)',
+              padding: '0.6rem 1.25rem',
+              fontSize: '0.85rem', fontWeight: 700,
+              cursor: 'pointer', transition: 'opacity 0.12s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+          >
+            Next case →
+          </button>
+        )}
         <button
           onClick={onRetry}
           style={{

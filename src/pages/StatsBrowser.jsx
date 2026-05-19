@@ -52,7 +52,10 @@ export function StatsBrowser({ onSelectModule }) {
           return (
             <div
               key={module.id}
+              role="button"
+              tabIndex={0}
               onClick={() => onSelectModule(module.id)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectModule(module.id); } }}
               style={{
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',

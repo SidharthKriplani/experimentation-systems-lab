@@ -6,7 +6,7 @@ const ROLE_CFG = {
   guardrail:  { label: 'Guardrail',  color: 'var(--yellow)',    bg: 'var(--yellow-bg)',  border: 'var(--yellow-border)' },
 };
 
-export function MetricDebriefPanel({ metricCase, onRetry, onBack }) {
+export function MetricDebriefPanel({ metricCase, onRetry, onBack, onNext }) {
   const { seniorMetricDesign: smd, linkedDesignScenarioIds = [], linkedReviewScenarioIds = [] } = metricCase;
 
   return (
@@ -114,6 +114,20 @@ export function MetricDebriefPanel({ metricCase, onRetry, onBack }) {
 
       {/* Actions */}
       <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', paddingTop: '0.25rem' }}>
+        {onNext && (
+          <button
+            onClick={onNext}
+            style={{
+              background: 'var(--green)', color: '#fff',
+              border: 'none', borderRadius: 'var(--radius)', padding: '0.65rem 1.25rem',
+              fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', transition: 'opacity 0.1s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+          >
+            Next case →
+          </button>
+        )}
         <button
           onClick={onRetry}
           style={{

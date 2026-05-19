@@ -61,7 +61,11 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
         </button>
 
         {/* Nav */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.15rem' }}>
+        <nav style={{
+          display: 'flex', alignItems: 'center', gap: '0.15rem',
+          overflowX: 'auto', flexShrink: 1, minWidth: 0,
+          scrollbarWidth: 'none', msOverflowStyle: 'none',
+        }}>
           {navItems.map(item => {
             const isActive = currentPage === item.id
               || (item.id === 'stats' && currentPage === 'stats-runner')

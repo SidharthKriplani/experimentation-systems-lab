@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { learningPaths } from '../data/learningPaths.js';
 
 const ROLES = [
-  { id: 'both', label: 'DS + PM' },
-  { id: 'ds',   label: 'Product DS' },
-  { id: 'pm',   label: 'Product PM' },
+  { id: 'both', label: 'All rooms' },
+  { id: 'ds',   label: 'Analytics' },
+  { id: 'pm',   label: 'PM' },
 ];
 
 function getSavedRole() {
@@ -96,7 +96,7 @@ export function Home({ onNavigate, onStartScenario }) {
       nav: 'code',
     },
     {
-      id: 'prioritization', label: 'Prioritization Room', color: 'var(--accent)', bg: 'var(--accent-bg)', border: 'var(--accent-border)',
+      id: 'prioritization', label: 'Prioritization Room', color: 'var(--purple)', bg: 'var(--purple-bg)', border: 'var(--purple-border)',
       tagline: 'Stack-rank like a senior PM.',
       description: 'RICE scoring, effort–impact matrices, technical debt tradeoffs, stakeholder conflicts, OKR-level decisions — 6 scenarios from Spotify, Airbnb, Notion, Meta, Duolingo, and Stripe. Structured framework exercises with model answers.',
       meta: '6 scenarios · 1 free + 5 beta · PM · Intermediate → Advanced',
@@ -150,7 +150,7 @@ export function Home({ onNavigate, onStartScenario }) {
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <button
-            onClick={() => onNavigate('stats')}
+            onClick={() => onNavigate(role === 'pm' ? 'product-design' : 'stats')}
             style={{
               background: 'var(--accent)', color: '#fff', border: 'none',
               borderRadius: 'var(--radius)', padding: '0.7rem 1.4rem',
@@ -158,7 +158,7 @@ export function Home({ onNavigate, onStartScenario }) {
               letterSpacing: '-0.01em', boxShadow: 'var(--shadow)',
             }}
           >
-            Start with Stats Room →
+            {role === 'pm' ? 'Start with Product Design →' : 'Start with Stats Room →'}
           </button>
           <button
             onClick={() => onNavigate('progress')}
@@ -170,39 +170,45 @@ export function Home({ onNavigate, onStartScenario }) {
               boxShadow: 'var(--shadow-sm)',
             }}
           >
-            New here? Try the Beginner Path →
+            New here? Try a guided path →
           </button>
         </div>
       </div>
 
       {/* ── Nine rooms ─────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.85rem' }}>
           <div className="label-caps">Nine rooms. Nine judgment muscles.</div>
           {/* Role toggle */}
-          <div style={{ display: 'flex', gap: '0.25rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '0.2rem' }}>
-            {ROLES.map(r => (
-              <button
-                key={r.id}
-                onClick={() => switchRole(r.id)}
-                style={{
-                  background: role === r.id ? 'var(--surface)' : 'none',
-                  border: role === r.id ? '1px solid var(--border)' : '1px solid transparent',
-                  borderRadius: '6px', padding: '0.25rem 0.7rem',
-                  color: role === r.id ? 'var(--text)' : 'var(--text-dim)',
-                  fontWeight: role === r.id ? 600 : 400, fontSize: '0.78rem',
-                  cursor: 'pointer', whiteSpace: 'nowrap',
-                  boxShadow: role === r.id ? 'var(--shadow-sm)' : 'none',
-                }}
-              >
-                {r.label}
-              </button>
-            ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>Sort by track:</span>
+            <div style={{ display: 'flex', gap: '0.2rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '0.2rem' }}>
+              {ROLES.map(r => (
+                <button
+                  key={r.id}
+                  onClick={() => switchRole(r.id)}
+                  style={{
+                    background: role === r.id ? 'var(--surface)' : 'none',
+                    border: role === r.id ? '1px solid var(--border)' : '1px solid transparent',
+                    borderRadius: '6px', padding: '0.25rem 0.65rem',
+                    color: role === r.id ? 'var(--text)' : 'var(--text-muted)',
+                    fontWeight: role === r.id ? 600 : 400, fontSize: '0.78rem',
+                    cursor: 'pointer', whiteSpace: 'nowrap',
+                    boxShadow: role === r.id ? 'var(--shadow-sm)' : 'none',
+                    transition: 'all 0.1s',
+                  }}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         {role !== 'both' && (
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginBottom: '1rem' }}>
-            {role === 'ds' ? 'Showing analytics-first order — Stats, Metrics, Design, Review, RCA, Code first.' : 'Showing PM-first order — Product Design, Prioritization, Cases first.'}
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+            {role === 'ds'
+              ? '↑ Sorted analytics-first — Stats, Metrics, Design, Review, RCA, and Code at the top.'
+              : '↑ Sorted PM-first — Product Design, Prioritization, and Cases at the top.'}
           </p>
         )}
         <div style={{
@@ -300,7 +306,7 @@ export function Home({ onNavigate, onStartScenario }) {
             {
               sign: '✓', signColor: 'var(--green)',
               title: 'No AI grading, no free text',
-              body: 'All scoring is pre-computed from structured choices. Consistent, offline-capable, and zero operating cost at any traffic level.',
+              body: 'All scoring is pre-computed from structured choices. Consistent, instant, and works offline — no waiting for an LLM to grade your answer.',
             },
           ].map((item, i) => (
             <div key={i} style={{
@@ -475,7 +481,7 @@ export function Home({ onNavigate, onStartScenario }) {
           {/* Prioritization Room */}
           <RoomList
             label="✦ Prioritization Room · 6 Scenarios · New"
-            labelColor="var(--accent)" labelBg="var(--accent-bg)" labelBorder="var(--accent-border)"
+            labelColor="var(--purple)" labelBg="var(--purple-bg)" labelBorder="var(--purple-border)"
             items={[
               ['Free', 'Spotify — Feature Backlog Sprint Planning', 'RICE scoring'],
               ['Beta', 'Airbnb — Effort–Impact Matrix', '2×2 quick wins'],
@@ -484,7 +490,7 @@ export function Home({ onNavigate, onStartScenario }) {
               ['Beta', 'Duolingo — OKR-Level Prioritization', 'north star tradeoffs'],
               ['Beta', 'Stripe — Platform vs. Feature Sequencing', 'time horizon decisions'],
             ]}
-            btnColor="var(--accent)"
+            btnColor="var(--purple)"
             btnLabel="Open Prioritization Room →"
             onOpen={() => onNavigate('prioritization')}
             footer="Framework exercises with model answers · RICE, 2×2, OKR, stakeholder conflict"
@@ -509,12 +515,16 @@ export function Home({ onNavigate, onStartScenario }) {
           {learningPaths.map(path => (
             <div
               key={path.id}
+              role="button"
+              tabIndex={0}
               onClick={() => onNavigate('progress')}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onNavigate('progress'); } }}
               style={{
                 background: 'var(--surface)', border: `1px solid ${path.border}`,
                 borderRadius: 'var(--radius)', padding: '1rem 1.1rem',
                 cursor: 'pointer', boxShadow: 'var(--shadow-sm)',
                 display: 'flex', flexDirection: 'column',
+                transition: 'box-shadow 0.1s',
               }}
             >
               <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: path.color, marginBottom: '0.35rem' }}>
@@ -563,10 +573,10 @@ function RoomList({ label, labelColor, labelBg, labelBorder, items, btnColor, bt
       }}>
         <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)' }}>{label}</span>
         <span style={{
-          fontSize: '0.58rem', fontWeight: 700, color: labelColor,
-          background: labelBg, border: `1px solid ${labelBorder}`,
-          borderRadius: '4px', padding: '0.1rem 0.4rem', letterSpacing: '0.04em', textTransform: 'uppercase',
-        }}>V2.2</span>
+          fontSize: '0.58rem', fontWeight: 600, color: 'var(--text-dim)',
+          background: 'var(--surface-2)', border: '1px solid var(--border)',
+          borderRadius: '4px', padding: '0.1rem 0.4rem', letterSpacing: '0.03em',
+        }}>V3</span>
       </div>
 
       {/* ── Zone 2: Scroll area ── */}

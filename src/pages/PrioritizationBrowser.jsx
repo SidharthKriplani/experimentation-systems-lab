@@ -59,9 +59,9 @@ export function PrioritizationBrowser({ onStart, unlocked }) {
             style={{
               padding: '0.3rem 0.75rem',
               borderRadius: '20px',
-              border: activeTag === tag ? '1px solid var(--accent)' : '1px solid var(--border)',
-              background: activeTag === tag ? 'var(--accent-bg)' : 'var(--surface)',
-              color: activeTag === tag ? 'var(--accent)' : 'var(--text-muted)',
+              border: activeTag === tag ? '1px solid var(--purple-border)' : '1px solid var(--border)',
+              background: activeTag === tag ? 'var(--purple-bg)' : 'var(--surface)',
+              color: activeTag === tag ? 'var(--purple)' : 'var(--text-muted)',
               fontSize: '0.8rem',
               fontWeight: activeTag === tag ? 600 : 400,
               cursor: 'pointer',
@@ -93,7 +93,7 @@ export function PrioritizationBrowser({ onStart, unlocked }) {
                 opacity: isLocked ? 0.7 : 1,
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'var(--accent)';
+                e.currentTarget.style.borderColor = 'var(--purple-border)';
                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
               }}
               onMouseLeave={e => {
