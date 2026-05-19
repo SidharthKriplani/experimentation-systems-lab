@@ -235,6 +235,20 @@ export default function App() {
     return accessible[idx + 1].id;
   }
 
+  function getNextPDScenarioId(currentId) {
+    const accessible = productDesignScenarios.filter(s => s.isFree || unlocked);
+    const idx = accessible.findIndex(s => s.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
+  function getNextCodeModuleId(currentId) {
+    const accessible = codeModules.filter(m => m.isFree || unlocked);
+    const idx = accessible.findIndex(m => m.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
   function getNextPrioritizationId(currentId) {
     const accessible = prioritizationScenarios.filter(s => s.isFree || unlocked);
     const idx = accessible.findIndex(s => s.id === currentId);
@@ -254,7 +268,9 @@ export default function App() {
   const activeBusinessCase = businessCases.find(b => b.id === activeBusinessCaseId);
   const nextBusinessCaseId = activeBusinessCaseId ? getNextBusinessCaseId(activeBusinessCaseId) : null;
   const activePDScenario = productDesignScenarios.find(s => s.id === activePDScenarioId);
+  const nextPDScenarioId = activePDScenarioId ? getNextPDScenarioId(activePDScenarioId) : null;
   const activeCodeModule = codeModules.find(m => m.id === activeCodeModuleId);
+  const nextCodeModuleId = activeCodeModuleId ? getNextCodeModuleId(activeCodeModuleId) : null;
   const activePrioritizationScenario = prioritizationScenarios.find(s => s.id === activePrioritizationId);
   const nextPrioritizationId = activePrioritizationId ? getNextPrioritizationId(activePrioritizationId) : null;
 
@@ -389,6 +405,7 @@ export default function App() {
             scenario={activePDScenario}
             savedProgress={getProductDesignProgress(activePDScenarioId)}
             onBack={() => navigate('product-design')}
+            onNext={nextPDScenarioId ? () => openPDScenario(nextPDScenarioId) : undefined}
           />
         )}
 
@@ -407,6 +424,7 @@ export default function App() {
             module={activeCodeModule}
             savedProgress={getCodeProgress(activeCodeModuleId)}
             onBack={() => navigate('code')}
+            onNext={nextCodeModuleId ? () => openCodeModule(nextCodeModuleId) : undefined}
           />
         )}
 

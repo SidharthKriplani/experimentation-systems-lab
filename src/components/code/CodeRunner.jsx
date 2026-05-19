@@ -12,7 +12,7 @@ const TRACK_COLOR = {
   python: 'var(--purple)',
 };
 
-export function CodeRunner({ module, savedProgress, onBack }) {
+export function CodeRunner({ module, savedProgress, onBack, onNext }) {
   const [view, setView]           = useState(savedProgress ? 'reveal' : 'writing');
   const [response, setResponse]   = useState(savedProgress?.response || '');
   const [revealed, setRevealed]   = useState(!!savedProgress);
@@ -212,6 +212,7 @@ export function CodeRunner({ module, savedProgress, onBack }) {
           rating={rating}
           onRate={handleRate}
           onRetry={handleRetry}
+          onNext={onNext}
         />
       )}
     </div>
@@ -257,7 +258,7 @@ function PartialCodePanel({ code, trackColor }) {
 }
 
 // ─── Model Answer Panel ───────────────────────────────────────────────────────
-function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry }) {
+function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry, onNext }) {
   return (
     <div style={{
       background: 'var(--surface-2)',
@@ -332,8 +333,8 @@ function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry }) {
         </div>
       </div>
 
-      {/* Retry */}
-      <div>
+      {/* Retry + Next */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
         <button
           onClick={onRetry}
           style={{
@@ -348,6 +349,19 @@ function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry }) {
         >
           Try again from scratch
         </button>
+        {onNext && (
+          <button
+            onClick={onNext}
+            style={{
+              background: trackColor, color: '#fff', border: 'none',
+              borderRadius: 'var(--radius)', padding: '0.45rem 1.1rem',
+              fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer',
+              marginLeft: 'auto',
+            }}
+          >
+            Next module →
+          </button>
+        )}
       </div>
     </div>
   );

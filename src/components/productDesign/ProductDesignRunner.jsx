@@ -128,7 +128,7 @@ function ModelAnswerPanel({ phase, onRate, currentRating }) {
 }
 
 // ─── Debrief / final results ──────────────────────────────────────────────────
-function DebriefView({ scenario, responses, ratings, result, onRetry, onBack }) {
+function DebriefView({ scenario, responses, ratings, result, onRetry, onBack, onNext }) {
   const levelCfg = LEVEL_CONFIG[result?.level] || LEVEL_CONFIG.needs_practice;
   const [expandedPhase, setExpandedPhase] = useState(null);
 
@@ -246,15 +246,29 @@ function DebriefView({ scenario, responses, ratings, result, onRetry, onBack }) 
             fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
           }}
         >
-          ← Back to Product Design Room
+          ← Back to Room
         </button>
+        {onNext && (
+          <button
+            onClick={onNext}
+            style={{
+              padding: '0.55rem 1.2rem',
+              background: 'var(--purple)', color: '#fff',
+              border: 'none', borderRadius: 'var(--radius-sm)',
+              fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer',
+              marginLeft: 'auto',
+            }}
+          >
+            Next scenario →
+          </button>
+        )}
       </div>
     </div>
   );
 }
 
 // ─── Main Runner ──────────────────────────────────────────────────────────────
-export function ProductDesignRunner({ scenario, savedProgress, onBack }) {
+export function ProductDesignRunner({ scenario, savedProgress, onBack, onNext }) {
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
   const [responses, setResponses] = useState(savedProgress?.responses || {});
   const [ratings, setRatings] = useState(savedProgress?.ratings || {});
@@ -379,6 +393,7 @@ export function ProductDesignRunner({ scenario, savedProgress, onBack }) {
           result={result}
           onRetry={handleRetry}
           onBack={onBack}
+          onNext={onNext}
         />
       )}
 

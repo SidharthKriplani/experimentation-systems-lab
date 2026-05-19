@@ -23,21 +23,31 @@ Running list of product, content, and feature ideas. Not prioritized — just ca
 
 ---
 
-## Horizon: V3.3 Candidates
+## ✅ V3.3 + V3.3.1 — Shipped
 
-Things worth building next, in rough priority order:
+**Next-case nav — all rooms** — Review, Metrics, RCA, Cases (V3.2.3) + Design, Prioritization (V3.3) + ProductDesign, Code (V3.3.1). Every room now has continuous navigation on debrief panels.
 
-**Next-case nav on Review + Design runners** — `ScenarioRunner` and `DesignRunner` don't have "Next →" yet. Metrics/RCA/Cases do. Adds `getNextScenarioId` + `getNextDesignScenarioId` wiring (same pattern as V3.2.3).
+**Progress page learning path status** — GuidedPathCard already rendered X/Y badge + progress bar + per-item checkmarks. Already shipped.
 
-**Progress page learning path status** — Show which path the user is on, how many items completed, % done. Currently Progress shows raw room counts, not path-level completion.
+**Code Room C07–C10** — CUPED SQL (4-CTE covariance pattern), Bootstrap CI Python (10k samples, skewed revenue), Funnel viz matplotlib (side-by-side barh + delta annotations), Retention heatmap Python (cohort pivot + seaborn NaN masking). 10 total modules.
 
-**PrioritizationBrowser "next-case" nav** — Prioritization Runner has no next-case button on debrief. Same onNext pattern needed.
+**Metrics M07–M08** — Feed ranking north-star (Spark, likes vs time-spent vs saves/shares), RTB marketplace liquidity (Clearstream, two-sided metric design). 8 total cases.
 
-**Code Room expansions** — CUPED in SQL, retention heatmap query, bootstrap CI in Python, funnel viz with matplotlib. 3-4 new modules.
+**Stats STAT09–12** — CUPED post-hoc vs pre-specified, novelty decay (week-4 non-significance), Bayesian stopping pre-specification, CTR vs 30-day retention divergence. 12 total modules.
 
-**Metrics Room M07–M08** — Two more cases: (a) engagement metric for a social feed (likes vs time-spent tradeoff), (b) metrics for a real-time bidding marketplace.
+---
 
-**Stats Room STAT09–12** — CUPED/variance reduction, Bayesian stopping rules, novelty effect, long-run vs. short-run metric divergence.
+## Horizon: V3.4 Candidates
+
+**Stats Room next-case nav** — StatsRunner uses a different flow (multiple-choice MCQ, not a debrief panel). Would need a different pattern — a "Next module →" button after the `seniorRead` section. Lower priority since Stats is MCQ not freeform.
+
+**Progress page: Code/PD/Prioritization completionMap** — The completionMap in Progress.jsx excludes Code, ProductDesign, and Prioritization rooms. No learning path currently references those rooms, so it's a non-issue today — but if paths ever include them, completion checkmarks won't light up.
+
+**RCA Room content expansion** — RCA07–RCA08: (a) marketplace seller fraud spike (platform integrity angle), (b) DAU drop post-feature rollout (attribution ambiguity). 6 cases currently.
+
+**New learning path: "Code Track"** — A path using Code modules C01→C04→C07→C08 that walks through funnel → retention → CUPED → bootstrap. For users who want a SQL/Python focus.
+
+**V4.0: DS/ML Engineering Lab** — Separate product, different audience (MLEs, data engineers). Model evaluation, feature stores, PySpark, production ML. Build trigger: PAL has stable traffic + validated monetization.
 
 ---
 

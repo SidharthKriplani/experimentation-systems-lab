@@ -4,6 +4,52 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.3.1 — Next-case nav for Product Design + Code runners
+**Date:** May 2026
+**Commit message:** "feat: V3.3.1 — next-case nav on ProductDesign + Code runners, CHANGELOG/IDEAS update"
+**Files changed:** `src/components/productDesign/ProductDesignRunner.jsx`, `src/components/code/CodeRunner.jsx`, `src/App.jsx`, `CHANGELOG.md`, `IDEAS.md`
+
+### Why
+Next-case navigation was added to Metrics, RCA, Cases, Design, and Prioritization in V3.2.3/V3.3, but ProductDesign and Code runners were missed. Both rooms now have the same "Next →" flow as all other rooms — completing the pattern across the full platform.
+
+### What changed
+- `ProductDesignRunner.jsx`: added `onNext` prop through `DebriefView` inner component; "Next scenario →" button renders alongside "← Back to Room" and "Retry Scenario" in the debrief action row.
+- `CodeRunner.jsx`: added `onNext` prop through `ModelAnswerPanel` inner component; "Next module →" button renders alongside "Try again from scratch" after the model answer.
+- `App.jsx`: added `getNextPDScenarioId` and `getNextCodeModuleId` helpers (same accessible-filter + findIndex pattern as all other rooms); computed `nextPDScenarioId` and `nextCodeModuleId`; passed `onNext` to both runners.
+
+---
+
+## V3.3 — Content Expansion + Universal Next-case Nav
+**Date:** May 2026
+**Commit message:** "feat: V3.3 — next-case nav expansion, 4 Code modules, M07-M08, STAT09-12"
+**Files changed:** `src/components/design/DesignRunner.jsx`, `src/components/design/DesignDebriefPanel.jsx`, `src/components/prioritization/PrioritizationRunner.jsx`, `src/App.jsx`, `src/data/codeModules.js`, `src/data/metricCases.js`, `src/data/statsModules.js`
+
+### Why
+Three categories of work: completing the next-case nav pattern across remaining rooms (Design, Prioritization), and expanding all three content-heavy rooms (Code, Metrics, Stats) with new modules that cover advanced and PM-relevant concepts.
+
+### Next-case nav wiring
+- `DesignRunner` / `DesignDebriefPanel`: added `onNext` prop; "Next scenario →" button alongside "↺ Try again" in debrief footer.
+- `PrioritizationRunner`: added `onNext` prop; "Next scenario →" button in post-reveal action row (purple, `marginLeft: auto`).
+- `App.jsx`: added `getNextDesignScenarioId` and `getNextPrioritizationId` helpers; computed `nextDesignScenarioId` and `nextPrioritizationId`.
+
+### Code Room — C07–C10
+- **C07 CUPED in SQL** (`code07-cuped-sql`): Ardent Commerce, 4-CTE pattern computing theta via covariance formula then applying variance-reduced metric. Analyst difficulty.
+- **C08 Bootstrap CI in Python** (`code08-bootstrap-python`): Loopwise B2B SaaS, 10k bootstrap samples on revenue per user (skewed distribution), percentile CI method. Senior difficulty.
+- **C09 Funnel visualization with matplotlib** (`code09-funnel-viz-python`): Crestline Home, side-by-side barh chart with delta annotations, complete figure save. Analyst difficulty.
+- **C10 Retention heatmap in Python** (`code10-retention-heatmap`): Threadline SaaS, cohort pivot_table, seaborn heatmap with NaN triangle masking. Senior difficulty.
+
+### Metrics Room — M07–M08
+- **M07** (`M07`): Feed ranking north-star metric — Spark social platform. Tradeoff between likes, time-spent, and saves/shares as north star. Tests whether candidates understand that time-spent optimizes for addiction, not value.
+- **M08** (`M08`): RTB marketplace metrics — Clearstream ad exchange. Two-sided liquidity score design vs. revenue-maximizing metrics that destroy long-run marketplace health.
+
+### Stats Room — STAT09–12
+- **STAT09** (`stat09-cuped-variance`): CUPED post-hoc vs pre-specified. Pre/post revenue correlation = 0.68, p_raw = 0.12 → p_cuped = 0.031. Correct answer: valid only if pre-specified.
+- **STAT10** (`stat10-novelty-effect`): Novelty effect decay — week 1 +8% (p<0.001) vs week 4 +1.2% (p=0.21). Correct answer: week-4 result is statistically indistinguishable from zero; don't ship on novelty.
+- **STAT11** (`stat11-bayesian-stopping`): Bayesian stopping rules — P(treatment > control) = 0.96 at day 8 of planned 14-day run. Correct answer: valid only if stopping rule was pre-specified.
+- **STAT12** (`stat12-longrun-shortrun`): CTR vs 30-day retention divergence — Orbit Streaming. CTR +6.2% (p<0.001), retention -0.8% (p=0.31). Correct answer: directionally negative downstream signal warrants longer follow-up before ship.
+
+---
+
 ## V3.2.4 — Performance, Analytics, UX (genai-systems-lab Homogeneity Pass)
 **Date:** May 2026
 **Commit message:** "feat: PostHog analytics, lazy loading, learning path outcomes (V3.2.4)"
