@@ -15,8 +15,7 @@ const LEVEL_CFG = {
   junior:  { label: 'Junior miss',   color: 'var(--yellow)',    bg: 'var(--yellow-bg)',  border: 'var(--yellow-border)' },
 };
 
-export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
-  const freeCount = metricCases.filter(c => c.isFree).length;
+export function MetricsBrowser({ onSelectCase }) {
   const completedCount = metricCases.filter(c => getMetricsProgress(c.id)).length;
 
   return (
@@ -39,7 +38,6 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
         </p>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <RoomBadge />
-          <StatPill n={freeCount} label="free" />
           <StatPill n={completedCount} label="completed" color="var(--green)" />
         </div>
       </div>
@@ -52,32 +50,25 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
       }}>
         {metricCases.map(mc => {
           const progress = getMetricsProgress(mc.id);
-          const isLocked = !mc.isFree && !unlocked;
           const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
           const diffCfg = DIFF_CFG[mc.difficulty] || DIFF_CFG.analyst;
 
           return (
             <div
               key={mc.id}
-              onClick={() => {
-                if (isLocked) { onUnlock(); return; }
-                onSelectCase(mc.id);
-              }}
+              onClick={() => onSelectCase(mc.id)}
               style={{
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',
                 borderRadius: 'var(--radius)',
                 padding: '1.25rem',
-                cursor: isLocked ? 'default' : 'pointer',
-                opacity: isLocked ? 0.65 : 1,
+                cursor: 'pointer',
                 transition: 'all 0.12s',
                 display: 'flex', flexDirection: 'column', gap: '0.6rem',
               }}
               onMouseEnter={e => {
-                if (!isLocked) {
-                  e.currentTarget.style.borderColor = 'var(--green-border)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-                }
+                e.currentTarget.style.borderColor = 'var(--green-border)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border)';
@@ -96,19 +87,6 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
                   color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
                   borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
                 }}>{mc.domain}</span>
-                {mc.isFree ? (
-                  <span style={{
-                    fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-                    color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
-                    borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
-                  }}>Free</span>
-                ) : (
-                  <span style={{
-                    fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-                    color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
-                    borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
-                  }}>Beta</span>
-                )}
                 {levelCfg && (
                   <span style={{
                     fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
@@ -138,16 +116,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
 
               {/* Bottom row */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-                {isLocked ? (
-                  <button
-                    onClick={e => { e.stopPropagation(); onUnlock(); }}
-                    style={{
-                      background: 'var(--surface-2)', border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius-sm)', padding: '0.25rem 0.55rem',
-                      fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer',
-                    }}
-                  >Lock Unlock beta</button>
-                ) : progress ? (
+                {progress ? (
                   <span style={{ fontSize: '0.73rem', color: 'var(--text-dim)' }}>
                     {progress.attempts} attempt{progress.attempts !== 1 ? 's' : ''} · Resume →
                   </span>
@@ -163,26 +132,6 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
         })}
       </div>
 
-      {/* Beta unlock note */}
-      {!unlocked && (
-        <div style={{
-          marginTop: '1.5rem',
-          background: 'var(--surface-2)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem',
-          fontSize: '0.8rem', color: 'var(--text-muted)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
-        }}>
-          <span>🔒 {metricCases.filter(c => !c.isFree).length} beta cases require the unlock code.</span>
-          <button
-            onClick={onUnlock}
-            style={{
-              background: 'none', border: '1px solid var(--green-border)',
-              borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.65rem',
-              color: 'var(--green)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
-            }}
-          >Enter unlock code</button>
-        </div>
-      )}
     </div>
   );
 }

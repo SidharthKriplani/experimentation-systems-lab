@@ -7,6 +7,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     { id: 'browser', label: 'Review' },
     { id: 'rca', label: 'RCA' },
     { id: 'cases', label: 'Cases' },
+    { id: 'blog', label: 'Playbook' },
     { id: 'bank', label: 'Library' },
     { id: 'progress', label: 'Progress' },
     { id: 'about', label: 'Methodology' },

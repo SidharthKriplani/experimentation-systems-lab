@@ -14,10 +14,8 @@ const LEVEL_CFG = {
   wrong:   { label: 'Needs Work',    color: 'var(--red)',    bg: 'var(--red-bg)',     border: 'var(--red-border)' },
 };
 
-export function StatsBrowser({ onSelectModule, unlocked, onUnlock }) {
+export function StatsBrowser({ onSelectModule }) {
   const allProgress = getAllStatsProgress();
-  const freeCount = statsModules.filter(m => m.isFree).length;
-  const betaCount = statsModules.filter(m => !m.isFree).length;
   const completedCount = Object.keys(allProgress).length;
 
   return (
@@ -40,8 +38,7 @@ export function StatsBrowser({ onSelectModule, unlocked, onUnlock }) {
         </p>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <Stat n={statsModules.length} label="modules" />
-          <Stat n={freeCount} label="free" />
-          <Stat n={completedCount} label={`completed`} color="var(--teal)" />
+          <Stat n={completedCount} label="completed" color="var(--teal)" />
         </div>
       </div>
 
@@ -49,29 +46,25 @@ export function StatsBrowser({ onSelectModule, unlocked, onUnlock }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {statsModules.map((module, i) => {
           const progress = allProgress[module.id];
-          const isLocked = !module.isFree && !unlocked;
           const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
           const diffCfg = DIFF_CFG[module.difficulty] || DIFF_CFG.foundational;
 
           return (
             <div
               key={module.id}
-              onClick={() => !isLocked && onSelectModule(module.id)}
+              onClick={() => onSelectModule(module.id)}
               style={{
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',
                 borderRadius: 'var(--radius)',
                 padding: '1.1rem 1.25rem',
-                cursor: isLocked ? 'default' : 'pointer',
-                opacity: isLocked ? 0.65 : 1,
+                cursor: 'pointer',
                 transition: 'all 0.12s',
                 display: 'flex', alignItems: 'flex-start', gap: '1rem',
               }}
               onMouseEnter={e => {
-                if (!isLocked) {
-                  e.currentTarget.style.borderColor = 'var(--accent-border)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-                }
+                e.currentTarget.style.borderColor = 'var(--accent-border)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border)';
@@ -104,13 +97,6 @@ export function StatsBrowser({ onSelectModule, unlocked, onUnlock }) {
                     color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
                     borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em',
                   }}>{module.concept}</span>
-                  {!module.isFree && (
-                    <span style={{
-                      fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-                      color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
-                      borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
-                    }}>Beta</span>
-                  )}
                   {levelCfg && (
                     <span style={{
                       fontSize: '0.58rem', fontWeight: 700,
@@ -126,48 +112,15 @@ export function StatsBrowser({ onSelectModule, unlocked, onUnlock }) {
                   {module.subtitle}
                 </p>
 
-                {isLocked && (
-                  <button
-                    onClick={e => { e.stopPropagation(); onUnlock(); }}
-                    style={{
-                      marginTop: '0.55rem',
-                      background: 'none', border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius-sm)', padding: '0.25rem 0.55rem',
-                      fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer',
-                    }}
-                  >🔒 Unlock beta</button>
-                )}
               </div>
 
               {/* Arrow */}
-              {!isLocked && (
-                <span style={{ color: 'var(--text-dim)', fontSize: '0.82rem', flexShrink: 0, paddingTop: '0.2rem' }}>→</span>
-              )}
+              <span style={{ color: 'var(--text-dim)', fontSize: '0.82rem', flexShrink: 0, paddingTop: '0.2rem' }}>→</span>
             </div>
           );
         })}
       </div>
 
-      {/* Beta unlock note */}
-      {!unlocked && (
-        <div style={{
-          marginTop: '1.5rem',
-          background: 'var(--surface-2)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem',
-          fontSize: '0.8rem', color: 'var(--text-muted)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
-        }}>
-          <span>🔒 {betaCount} beta modules require the unlock code.</span>
-          <button
-            onClick={onUnlock}
-            style={{
-              background: 'none', border: '1px solid var(--accent-border)',
-              borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.65rem',
-              color: 'var(--accent)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
-            }}
-          >Enter unlock code</button>
-        </div>
-      )}
     </div>
   );
 }

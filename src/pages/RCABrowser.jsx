@@ -49,8 +49,7 @@ function Tag({ label, color, bg, border }) {
   );
 }
 
-export function RCABrowser({ onSelectCase, unlocked, onUnlock }) {
-  const freeCount = rcaCases.filter(c => c.isFree).length;
+export function RCABrowser({ onSelectCase }) {
   const completedCount = rcaCases.filter(c => getRCAProgress(c.id)).length;
 
   return (
@@ -80,7 +79,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock }) {
             RCA · {rcaCases.length} Cases
           </span>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-            {freeCount} free · {completedCount} completed
+            {completedCount} completed
           </span>
         </div>
       </div>
@@ -89,7 +88,6 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
         {rcaCases.map((c) => {
           const progress = getRCAProgress(c.id);
-          const isLocked = !c.isFree && !unlocked;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.analyst;
           const domainCfg = DOMAIN_CFG[c.domain] || DOMAIN_CFG.growth;
 
@@ -98,7 +96,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock }) {
               key={c.id}
               rcaCase={c}
               progress={progress}
-              isLocked={isLocked}
+              isLocked={false}
               diffCfg={diffCfg}
               domainCfg={domainCfg}
               onSelectCase={onSelectCase}
@@ -148,15 +146,6 @@ function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCas
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.55rem', flexWrap: 'wrap' }}>
         <Tag label={domainCfg.label} color={domainCfg.color} bg={domainCfg.bg} />
         <Tag label={diffCfg.label} color={diffCfg.color} bg={diffCfg.bg} border={diffCfg.border} />
-        {rcaCase.isFree && (
-          <Tag label="Free" color="var(--green)" bg="var(--green-bg)" border="var(--green-border)" />
-        )}
-        {!rcaCase.isFree && (
-          <Tag label="Beta" color="var(--text-muted)" bg="var(--surface-2)" border="var(--border-subtle)" />
-        )}
-        {isLocked && (
-          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginLeft: 'auto' }}>🔒 Unlock to access</span>
-        )}
         {progress && !isLocked && (
           <span style={{
             marginLeft: 'auto', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',

@@ -1,7 +1,7 @@
 import { businessCases } from '../data/businessCases.js';
 import { getCaseProgress } from '../utils/caseProgress.js';
 
-export function CasesBrowser({ onSelectCase, unlocked, onUnlock }) {
+export function CasesBrowser({ onSelectCase }) {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
@@ -34,43 +34,19 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
         {businessCases.map(bc => {
           const progress = getCaseProgress(bc.id);
-          const isLocked = !bc.isFree && !unlocked;
 
           return (
             <CaseCard
               key={bc.id}
               businessCase={bc}
               progress={progress}
-              isLocked={isLocked}
-              onSelect={() => !isLocked && onSelectCase(bc.id)}
-              onUnlock={onUnlock}
+              isLocked={false}
+              onSelect={() => onSelectCase(bc.id)}
             />
           );
         })}
       </div>
 
-      {/* Beta unlock note */}
-      {!unlocked && businessCases.some(bc => !bc.isFree) && (
-        <div style={{
-          marginTop: '1.5rem',
-          background: 'var(--surface-2)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem',
-          fontSize: '0.8rem', color: 'var(--text-muted)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
-        }}>
-          <span>Some cases require the unlock code.</span>
-          <button
-            onClick={onUnlock}
-            style={{
-              background: 'none', border: '1px solid var(--purple-border)',
-              borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.65rem',
-              color: 'var(--purple)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
-            }}
-          >
-            Enter unlock code
-          </button>
-        </div>
-      )}
     </div>
   );
 }
@@ -106,20 +82,6 @@ function CaseCard({ businessCase: bc, progress, isLocked, onSelect, onUnlock }) 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.45rem', flexWrap: 'wrap' }}>
         <DomainBadge domain={bc.domain} />
         <DifficultyBadge difficulty={bc.difficulty} />
-        {bc.isFree && (
-          <span style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-            color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
-            borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
-          }}>Free</span>
-        )}
-        {!bc.isFree && (
-          <span style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-            color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
-            borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
-          }}>Beta</span>
-        )}
         {levelCfg && (
           <span style={{
             fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',

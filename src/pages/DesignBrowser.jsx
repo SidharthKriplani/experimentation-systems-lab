@@ -7,7 +7,7 @@ const LEVEL_COLORS = {
   analyst_ready: { color: 'var(--blue-text)', bg: 'var(--blue-bg)',   border: 'var(--blue-border)' },
 };
 
-export function DesignBrowser({ onSelectScenario, unlocked, onUnlock }) {
+export function DesignBrowser({ onSelectScenario }) {
   const allProgress = getAllDesignProgress();
 
   return (
@@ -42,7 +42,6 @@ export function DesignBrowser({ onSelectScenario, unlocked, onUnlock }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
         {designScenarios.map(scenario => {
           const progress = allProgress[scenario.id];
-          const isLocked = !scenario.isFree && !unlocked;
           const bestLevel = progress?.bestLevel;
           const levelCfg = bestLevel ? LEVEL_COLORS[bestLevel] : null;
 
@@ -50,21 +49,18 @@ export function DesignBrowser({ onSelectScenario, unlocked, onUnlock }) {
             <div
               key={scenario.id}
               style={{
-                border: `1.5px solid ${isLocked ? 'var(--border)' : 'var(--border)'}`,
+                border: '1.5px solid var(--border)',
                 borderRadius: 'var(--radius)',
                 background: 'var(--surface)',
                 padding: '1.1rem 1.25rem',
-                cursor: isLocked ? 'default' : 'pointer',
-                opacity: isLocked ? 0.7 : 1,
+                cursor: 'pointer',
                 transition: 'all 0.12s',
                 position: 'relative',
               }}
-              onClick={() => !isLocked && onSelectScenario(scenario.id)}
+              onClick={() => onSelectScenario(scenario.id)}
               onMouseEnter={e => {
-                if (!isLocked) {
-                  e.currentTarget.style.borderColor = 'var(--accent-border)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-                }
+                e.currentTarget.style.borderColor = 'var(--accent-border)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border)';
@@ -75,13 +71,6 @@ export function DesignBrowser({ onSelectScenario, unlocked, onUnlock }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.45rem', flexWrap: 'wrap' }}>
                 <DifficultyBadge difficulty={scenario.difficulty} />
                 <IndustryBadge industry={scenario.industry} />
-                {!scenario.isFree && (
-                  <span style={{
-                    fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-                    color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
-                    borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
-                  }}>Beta</span>
-                )}
                 {scenario.pairedReviewScenarioId && (
                   <span style={{
                     fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
@@ -106,20 +95,9 @@ export function DesignBrowser({ onSelectScenario, unlocked, onUnlock }) {
                 {scenario.subtitle}
               </p>
 
-              {/* Progress or lock */}
+              {/* Progress */}
               <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {isLocked ? (
-                  <button
-                    onClick={e => { e.stopPropagation(); onUnlock(); }}
-                    style={{
-                      background: 'var(--surface-2)', border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.65rem',
-                      fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer',
-                    }}
-                  >
-                    🔒 Unlock beta
-                  </button>
-                ) : progress?.attempts > 0 ? (
+                {progress?.attempts > 0 ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
                       {progress.attempts} attempt{progress.attempts > 1 ? 's' : ''} ·{' '}
@@ -146,28 +124,6 @@ export function DesignBrowser({ onSelectScenario, unlocked, onUnlock }) {
         })}
       </div>
 
-      {/* Beta unlock note */}
-      {!unlocked && (
-        <div style={{
-          marginTop: '1.5rem',
-          background: 'var(--surface-2)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem',
-          fontSize: '0.8rem', color: 'var(--text-muted)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
-        }}>
-          <span>🔒 2 beta scenarios require the unlock code.</span>
-          <button
-            onClick={onUnlock}
-            style={{
-              background: 'none', border: '1px solid var(--accent-border)',
-              borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.65rem',
-              color: 'var(--accent)', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
-            }}
-          >
-            Enter unlock code
-          </button>
-        </div>
-      )}
     </div>
   );
 }

@@ -19,6 +19,7 @@ import { Unlock } from './pages/Unlock.jsx';
 import { About } from './pages/About.jsx';
 import { JudgmentBank } from './pages/JudgmentBank.jsx';
 import { QADashboard } from './pages/QADashboard.jsx';
+import { PlaybookBrowser } from './pages/PlaybookBrowser.jsx';
 import { ScenarioRunner } from './components/scenario/ScenarioRunner.jsx';
 import { DesignRunner } from './components/design/DesignRunner.jsx';
 import { StatsRunner } from './components/stats/StatsRunner.jsx';
@@ -275,6 +276,16 @@ export default function App() {
         )}
         {page === 'about' && <About />}
         {page === 'bank' && <JudgmentBank onNavigate={navigate} />}
+        {page === 'blog' && (
+          <PlaybookBrowser onOpenItem={(room, id) => {
+            if (room === 'stats') openStatsModule(id);
+            else if (room === 'metrics') openMetricsCase(id);
+            else if (room === 'design') openDesignScenario(id);
+            else if (room === 'review') openScenario(id);
+            else if (room === 'rca') openRCACase(id);
+            else if (room === 'cases') openBusinessCase(id);
+          }} />
+        )}
         {page === 'qa' && (
           <QADashboard
             onNavigate={navigate}

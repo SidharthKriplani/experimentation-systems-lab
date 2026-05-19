@@ -7,8 +7,6 @@ export function ScenarioBrowser({ scenarios, allProgress, onSelect, unlocked, on
   const [industryFilter, setIndustryFilter] = useState('all');
 
   const completedCount = scenarios.filter(s => allProgress[s.id]?.attempts?.length > 0).length;
-  const freeCount = scenarios.filter(s => s.isFree).length;
-  const paidCount = scenarios.filter(s => !s.isFree).length;
   const industries = [...new Set(scenarios.map(s => s.industry))];
 
   const filteredScenarios = scenarios.filter(s => {
@@ -41,7 +39,6 @@ export function ScenarioBrowser({ scenarios, allProgress, onSelect, unlocked, on
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: 0 }}>
           {completedCount} of {scenarios.length} completed
-          {' · '}{freeCount} free · {paidCount} private beta
           {' · '}Read the readout, make the call, see the senior debrief.
         </p>
       </div>
@@ -50,8 +47,6 @@ export function ScenarioBrowser({ scenarios, allProgress, onSelect, unlocked, on
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.25rem', alignItems: 'center' }}>
         <div style={{ display: 'flex', gap: '0.25rem' }}>
           <FilterBtn active={statusFilter === 'all'} onClick={() => setStatusFilter('all')} label={`All (${scenarios.length})`} />
-          <FilterBtn active={statusFilter === 'free'} onClick={() => setStatusFilter('free')} label={`Free (${freeCount})`} />
-          {!unlocked && <FilterBtn active={statusFilter === 'locked'} onClick={() => setStatusFilter('locked')} label={`Locked (${paidCount})`} />}
           <FilterBtn active={statusFilter === 'completed'} onClick={() => setStatusFilter('completed')} label={`Done (${completedCount})`} />
         </div>
 
@@ -78,30 +73,6 @@ export function ScenarioBrowser({ scenarios, allProgress, onSelect, unlocked, on
         </select>
       </div>
 
-      {/* Unlock banner */}
-      {!unlocked && (
-        <div style={{
-          background: 'var(--surface)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius)', padding: '0.8rem 1.1rem', marginBottom: '1.25rem',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          flexWrap: 'wrap', gap: '0.75rem', boxShadow: 'var(--shadow-sm)',
-        }}>
-          <div>
-            <span style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.875rem' }}>
-              🔒 {paidCount} scenarios require beta access
-            </span>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}> — private beta, paid tier coming soon</span>
-          </div>
-          <button
-            onClick={onUnlock}
-            style={{
-              background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
-              borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.8rem',
-              color: 'var(--accent)', fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer',
-            }}
-          >Enter Unlock Code</button>
-        </div>
-      )}
 
       {/* Grid */}
       <div style={{

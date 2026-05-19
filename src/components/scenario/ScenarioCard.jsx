@@ -1,35 +1,32 @@
 import { DifficultyBadge, IndustryBadge, ThemeBadge } from '../ui/Badge.jsx';
 import { getScoreLevel } from '../../utils/scoring.js';
 
-export function ScenarioCard({ scenario, progress, onClick, unlocked }) {
-  const isLocked = !scenario.isFree && !unlocked;
+export function ScenarioCard({ scenario, progress, onClick }) {
   const isCompleted = progress && progress.attempts?.length > 0;
   const bestScore = progress?.bestScore;
   const scoreLevel = bestScore ? getScoreLevel(bestScore) : null;
 
   return (
     <div
-      onClick={() => !isLocked && onClick(scenario.id)}
+      onClick={() => onClick(scenario.id)}
       style={{
         background: 'var(--surface)',
         border: '1px solid var(--border)',
         borderRadius: '8px',
         padding: '1.1rem',
-        cursor: isLocked ? 'not-allowed' : 'pointer',
+        cursor: 'pointer',
         transition: 'all 0.15s',
         position: 'relative',
-        opacity: isLocked ? 0.65 : 1,
         boxShadow: 'var(--shadow)',
       }}
-      onMouseEnter={e => { if (!isLocked) { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 0 2px var(--accent-bg)'; } }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 0 2px var(--accent-bg)'; }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'var(--shadow)'; }}
     >
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.6rem', gap: '0.5rem' }}>
         <div style={{ flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
-            {isLocked && <span style={{ fontSize: '0.75rem' }}>🔒</span>}
-            {isCompleted && !isLocked && <span style={{ fontSize: '0.75rem', color: 'var(--green)' }}>✓</span>}
+            {isCompleted && <span style={{ fontSize: '0.75rem', color: 'var(--green)' }}>✓</span>}
             <span style={{ fontWeight: 700, fontSize: '0.925rem', color: 'var(--text)' }}>{scenario.title}</span>
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
@@ -50,16 +47,6 @@ export function ScenarioCard({ scenario, progress, onClick, unlocked }) {
           }}>
             {scoreLevel.shortLabel}
           </div>
-        )}
-        {!scenario.isFree && !isLocked && (
-          <span style={{ fontSize: '0.65rem', color: 'var(--green)', fontWeight: 700, background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: '4px', padding: '0.15rem 0.4rem', whiteSpace: 'nowrap' }}>
-            BETA
-          </span>
-        )}
-        {scenario.isFree && (
-          <span style={{ fontSize: '0.65rem', color: 'var(--accent)', fontWeight: 700, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: '4px', padding: '0.15rem 0.4rem', whiteSpace: 'nowrap' }}>
-            FREE
-          </span>
         )}
       </div>
 

@@ -4,6 +4,44 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V2.4 — Blog / Learn Layer (Placeholder)
+**Date:** May 2026
+**Commit message:** "V2.4: Add Learn page — 22 blog topic placeholders, IDEAS.md"
+**Files changed (new):** `src/pages/BlogBrowser.jsx`, `IDEAS.md`
+**Files changed (existing):** `src/App.jsx`, `src/components/layout/Header.jsx`
+
+### Why
+Blog layer adds the learn → practice loop missing from most prep resources. Users can read the framework, then immediately test judgment in the relevant room. Also serves as SEO and organic distribution. Topics derived from existing interview prep PDFs (Metric Universe Atlas, RCA Packet, Experimentation Prep, Ambiguous Problem Breakdown, DS Master Handbook).
+
+### What changed
+- `BlogBrowser.jsx`: 22 placeholder topic cards across 6 categories — Metrics, RCA, Experimentation, Ambiguous Problems, GenAI Analytics, Business Impact. Each card shows title, summary, read time, category badge, "Coming Soon" label, and which room to practice in after reading.
+- `Header.jsx`: Added "Learn" nav item routing to `blog` page (between Cases and Library).
+- `App.jsx`: Wired `blog` page → `BlogBrowser`.
+- `IDEAS.md`: Created at repo root. Documents the blog idea, source material, implementation notes, and other future ideas.
+
+### Status
+Placeholder only — no articles written yet. Start with 5-6 posts that map 1:1 to rooms, each ending with "Practice this now →" CTA.
+
+---
+
+## V2.3 — Full Open Access (Beta)
+**Date:** May 2026
+**Commit message:** "V2.3: Remove paywall — all 44 items free during beta"
+**Files changed:** `src/utils/unlock.js`, `src/pages/StatsBrowser.jsx`, `src/pages/MetricsBrowser.jsx`, `src/pages/ScenarioBrowser.jsx`, `src/pages/DesignBrowser.jsx`, `src/pages/RCABrowser.jsx`, `src/pages/CasesBrowser.jsx`, `src/components/scenario/ScenarioCard.jsx`
+
+### Why
+Beta testing phase with warm community users (~6-8 testers from "Data All In" WhatsApp community). Decision: remove all paywalls during beta to maximize engagement, gather usage data, and build testimonials before introducing paid tiers. No code required to access anything.
+
+### What changed
+- `unlock.js`: `isUnlocked()` now always returns `true`. Unlock code `EXP-LAB-DEV-2026` preserved in file but inactive.
+- All 7 browser/card components: removed `Free`/`Beta` access badges, `isLocked` logic, lock buttons, unlock banners, and "X free" stat pills. All 44 items fully accessible with no gates.
+- `ScenarioBrowser.jsx`: Removed Free/Locked filter tabs. Only All and Done filters remain.
+
+### Business rationale
+Get traffic and habit first. Introduce paid tier after usage data, retention signal, and testimonials exist.
+
+---
+
 ## V2.2 — Beta Launch Polish
 **Date:** May 2026  
 **Commit message:** "V2.2: Polish onboarding and beta launch experience"  
