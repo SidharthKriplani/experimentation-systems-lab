@@ -1,6 +1,5 @@
 export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme }) {
   const navItems = [
-    { id: 'home', label: 'Home' },
     { id: 'stats', label: 'Stats' },
     { id: 'metrics', label: 'Metrics' },
     { id: 'design', label: 'Design' },
@@ -11,9 +10,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     { id: 'product-design', label: 'PM Design' },
     { id: 'prioritization', label: 'Prioritize' },
     { id: 'blog', label: 'Playbook' },
-    { id: 'bank', label: 'Library' },
     { id: 'progress', label: 'Progress' },
-    { id: 'about', label: 'Methodology' },
   ];
 
   return (
@@ -40,31 +37,31 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
           onClick={() => onNavigate('home')}
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: '0.55rem', padding: 0,
+            display: 'flex', alignItems: 'center', gap: '0.5rem',
+            padding: 0, flexShrink: 0,
           }}
         >
           <div style={{
-            width: '26px', height: '26px',
+            width: '24px', height: '24px',
             background: 'linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%)',
             borderRadius: '6px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '13px', flexShrink: 0,
+            fontSize: '12px', flexShrink: 0,
           }}>⚗</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-            <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-              Product Analytics Lab
-            </span>
-            <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)', letterSpacing: '0.02em', lineHeight: 1.1 }}>
-              Analytics judgment gym · Beta
-            </span>
-          </div>
+          <span style={{
+            fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)',
+            letterSpacing: '-0.02em', whiteSpace: 'nowrap',
+          }}>
+            Analytics Lab
+          </span>
         </button>
 
         {/* Nav */}
         <nav style={{
-          display: 'flex', alignItems: 'center', gap: '0.15rem',
+          display: 'flex', alignItems: 'center', gap: '0.05rem',
           overflowX: 'auto', flexShrink: 1, minWidth: 0,
           scrollbarWidth: 'none', msOverflowStyle: 'none',
+          marginLeft: '1.5rem',
         }}>
           {navItems.map(item => {
             const isActive = currentPage === item.id
@@ -85,10 +82,10 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
                   background: isActive ? 'var(--surface-2)' : 'none',
                   border: 'none',
                   borderRadius: '5px',
-                  padding: '0.35rem 0.7rem',
+                  padding: '0.3rem 0.55rem',
                   color: isActive ? 'var(--text)' : 'var(--text-muted)',
                   fontWeight: isActive ? 600 : 400,
-                  fontSize: '0.83rem',
+                  fontSize: '0.8rem',
                   cursor: 'pointer',
                   transition: 'color 0.12s, background 0.12s',
                   whiteSpace: 'nowrap',
@@ -101,7 +98,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
             );
           })}
 
-          <div style={{ width: '1px', height: '18px', background: 'var(--border)', margin: '0 0.35rem' }} />
+          <div style={{ width: '1px', height: '16px', background: 'var(--border)', margin: '0 0.4rem', flexShrink: 0 }} />
 
           {/* Theme toggle */}
           <button
