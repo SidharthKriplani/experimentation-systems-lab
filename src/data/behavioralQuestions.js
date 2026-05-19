@@ -358,4 +358,484 @@ export const behavioralQuestions = [
       'Over-explaining to the point where the audience loses the thread — pick one analogy, one visual, and stop.',
     ],
   },
+
+  // ─────────────────────────────────────────────
+  // Q09 — Pushback from a More Senior Person
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q09',
+    title: 'A Senior Director Publicly Dismissed Your Analysis. What Did You Do?',
+    subtitle: 'Conflict · Analytical Integrity Under Pressure',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Tell me about a time when someone more senior than you publicly dismissed or challenged your analysis in a meeting. How did you handle it?',
+    whatTheyreReallyAsking: 'Can you maintain analytical integrity under social pressure without becoming confrontational or backing down when you were right? How do you disagree up without career self-sabotage?',
+    storyFramework: {
+      situation: 'A director or VP challenged your finding in a meeting — in front of others, creating social pressure to agree with them.',
+      behavior: 'You acknowledged their perspective, asked clarifying questions to understand the source of disagreement, stood your ground on the data points you were confident in, and offered to reconcile the gap privately or with a follow-up analysis.',
+      outcome: 'The analysis held up. You either found a nuance that improved your conclusion, or confirmed the original finding — either way, the disagreement led to a better outcome than if you\'d capitulated immediately.',
+    },
+    strongSignals: [
+      'Distinguishes between "they have more context" (valid reason to update) vs. "they have more authority" (not a valid reason to update)',
+      'Asks questions to understand the source of disagreement rather than defending or caving immediately',
+      'Separates the meeting moment (graceful, non-confrontational) from the resolution (private follow-up with evidence)',
+      'Can articulate what they would have done differently with hindsight',
+    ],
+    weakSignals: [
+      'Immediately backed down because of seniority — no interrogation of whether the senior person was actually right',
+      'Became confrontational or emotional in the moment',
+      'Spent the story describing the senior person\'s unreasonableness rather than their own behavior',
+      'Resolution was the senior person being "proved wrong" with no learning or nuance',
+    ],
+    keyPrinciples: [
+      'Data doesn\'t care about seniority. Your job is to get to the right answer, not to win the argument — and those are different goals.',
+      'In the moment, your goal is to de-escalate and create space for resolution: "That\'s a really interesting point — can you help me understand what data is informing your view? I want to make sure I\'m not missing something."',
+      'After the moment: private follow-up with specific evidence is far more effective than a public debate. Most senior people are more open to being wrong in private than in front of others.',
+    ],
+    antiPatterns: [
+      'Treating seniority as a signal that the senior person is more likely to be analytically correct — experience doesn\'t equal data access',
+      'Framing the story as a battle you won rather than a disagreement you resolved constructively',
+      'Using vague language like "I pushed back" without describing specifically what you said and how you said it',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q10 — Analysis That Changed a Major Decision
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q10',
+    title: 'Tell Me About Analysis That Changed a Major Product or Business Decision.',
+    subtitle: 'Data Impact · Analysis-to-Action',
+    difficulty: 'analyst',
+    isFree: false,
+    prompt: 'Describe a time when your analysis directly changed a significant product or business decision. What was the decision, what did you find, and what happened as a result?',
+    whatTheyreReallyAsking: 'Do you do analysis that matters, or analysis that people read and move on from? Can you connect your work to outcomes? Do you understand the difference between analysis and impact?',
+    storyFramework: {
+      situation: 'A decision was pending or had been made — and your analysis introduced information that changed the direction.',
+      behavior: 'You identified the right question, ran the analysis with appropriate rigor, communicated the finding in a way the decision-maker could act on, and advocated for the implication without just presenting the data.',
+      outcome: 'The decision changed in a specific, measurable way. The outcome of that decision can be described — even if it\'s "we didn\'t ship the feature and avoided a bad outcome."',
+    },
+    strongSignals: [
+      'Can name a specific decision, a specific analysis, and a specific outcome — not a general description of "influencing strategy"',
+      'The analysis uncovered something non-obvious, not just confirmed what everyone expected',
+      'The candidate advocated for an implication, not just presented data',
+      'Understands why the analysis was influential: the right framing, the right audience, the right timing',
+    ],
+    weakSignals: [
+      'Vague: "I did analysis that helped the team make better decisions"',
+      'The decision was minor (changing a button color, adjusting a metric threshold)',
+      'The analysis just confirmed existing belief — no surprise or contrary finding',
+      'The candidate presented the data and "let the team decide" without a recommendation',
+    ],
+    keyPrinciples: [
+      'The difference between analysis and impact is a recommendation. Data says "here is what happened." Impact says "here is what I think we should do and why." Presenting data is not influence — advocating for an implication is.',
+      'Influential analysis often sounds like: "The data shows X. The conventional interpretation is Y. But I think the right interpretation is Z, and here\'s why." That deviation from conventional wisdom is what makes analysis memorable.',
+      'Timing matters as much as content. The same analysis delivered before a decision is made is 10x more influential than the same analysis delivered after.',
+    ],
+    antiPatterns: [
+      'Confusing data presentation with influence — shipping a dashboard that people use to make decisions is not the same as doing analysis that changed a specific decision',
+      'Describing the analysis methodology in detail while being vague about the outcome',
+      'Crediting the team or PM for the decision without demonstrating your specific contribution',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q11 — Disagreeing With PM or Eng Direction
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q11',
+    title: 'Tell Me About a Time You Disagreed With the Product Roadmap Direction.',
+    subtitle: 'Cross-Functional Influence · Product Judgment',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Describe a time when you disagreed with the direction a PM or engineering team was taking. What did you disagree with, how did you raise it, and what happened?',
+    whatTheyreReallyAsking: 'Do you have strong product instincts and the courage to advocate for them? Can you influence without authority? Do you know when to accept a decision you disagree with and move forward?',
+    storyFramework: {
+      situation: 'A PM, engineering lead, or cross-functional team was committed to a direction you believed was analytically or strategically wrong.',
+      behavior: 'You didn\'t just raise a concern — you came with a counter-hypothesis and data. You chose the right moment and forum. You made the case once, clearly. And either changed the direction or, if you didn\'t, accepted the decision and committed to executing it.',
+      outcome: 'Either the direction changed (and the outcome validates your concern), or it didn\'t change (and you describe what you learned about influence, or what the outcome showed about whether you were right).',
+    },
+    strongSignals: [
+      'Had a specific analytical disagreement with a specific claim — not just a "feeling" the decision was wrong',
+      'Came with data and a counter-hypothesis, not just an objection',
+      'Chose the right forum (1:1 before the meeting, not a public challenge)',
+      'Can describe what happened after — either the outcome validated their concern or they accepted the decision professionally',
+    ],
+    weakSignals: [
+      'Disagreed on vibes or strategic intuition without specific data',
+      'Raised the concern publicly in a way that created conflict',
+      'Unable to accept that the decision went against them — still relitigating it in the interview',
+      'The story is mostly about being right and the other person being wrong, with no nuance',
+    ],
+    keyPrinciples: [
+      'Influence without authority is built on: (1) being right frequently enough that people trust your instincts, (2) raising concerns in private before public forums, (3) presenting a counter-hypothesis with evidence rather than just objecting, (4) knowing when to commit after being heard.',
+      '"Disagree and commit" is not capitulation — it means you made your case, you were heard, and you now own the execution of the agreed-upon decision even though you preferred something else. That\'s professionalism.',
+      'The quality of your disagreement is measured by whether you moved people or generated data. If you raised a concern, were ignored, and turned out to be right — you failed at influence, not at analysis.',
+    ],
+    antiPatterns: [
+      'Framing the story as "I was right and they were wrong" with no acknowledgment of the other side\'s reasoning',
+      'Never accepting the decision — continuing to raise the same objection after the decision was made',
+      'Disagreeing on strategic vision or business priorities without any analytical basis',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q12 — Handling Ambiguous or Incomplete Data
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q12',
+    title: 'Tell Me About a Time You Had to Make a Decision With Incomplete Data.',
+    subtitle: 'Decision-Making · Uncertainty Management',
+    difficulty: 'analyst',
+    isFree: false,
+    prompt: 'Describe a situation where you had to provide a recommendation or make a data-driven decision despite having incomplete, conflicting, or unreliable data. How did you proceed?',
+    whatTheyreReallyAsking: 'Can you operate under uncertainty without being paralyzed? Do you know how to bound the uncertainty, make assumptions explicit, and communicate confidence levels? Can you distinguish between "needs more data before deciding" and "enough to act on with stated uncertainty"?',
+    storyFramework: {
+      situation: 'A decision was pending, the data was incomplete or unreliable, and waiting for perfect data wasn\'t an option.',
+      behavior: 'You explicitly bounded what you knew vs. didn\'t know, stated your assumptions, estimated the confidence interval on your conclusion, and recommended action while being clear about the conditions under which you\'d update your recommendation.',
+      outcome: 'The recommendation was acted on. Either the incomplete data was good enough (the decision held up) or the stated assumptions were wrong and the recommendation was updated accordingly.',
+    },
+    strongSignals: [
+      'Can distinguish between "not enough data to act" and "enough data to act with stated confidence" — these are different from "not enough data to act without stated confidence"',
+      'Made assumptions explicit before making conclusions',
+      'Recommended a specific action with a specific confidence level, not "it depends" or "we need more data"',
+      'Built in a review trigger: "I\'d revisit this if X changes"',
+    ],
+    weakSignals: [
+      'Always waited for complete data before making any recommendation',
+      'Provided a recommendation without flagging the incompleteness or assumptions',
+      'Confused "incomplete data" with "bad data" — different problems requiring different responses',
+      'The story is about requesting more data, not making a decision under uncertainty',
+    ],
+    keyPrinciples: [
+      'The right response to incomplete data is not a better analysis — it\'s an explicit uncertainty statement. "Based on X data with Y assumption, my best estimate is Z, and I\'d expect this to be wrong if A happens."',
+      'Senior analysts are valuable not because they have perfect data but because they can make better decisions with imperfect data than junior analysts can. That skill is the whole job at high seniority.',
+      'The cost of waiting for perfect data is always non-zero. Someone with a decision to make will make it with or without your analysis. Your job is to reduce their uncertainty, not to guarantee the right answer.',
+    ],
+    antiPatterns: [
+      'Treating "I recommended we wait for more data" as a good outcome — sometimes it is, but it shouldn\'t be the default response to ambiguous data',
+      'Not naming the specific assumptions that made the incomplete data actionable',
+      'Confusing confidence in the analysis with confidence in the outcome',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q13 — Building a Metric From Scratch
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q13',
+    title: 'Tell Me About a Metric You Built From Scratch That the Team Adopted.',
+    subtitle: 'Metric Design · Organizational Influence',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Describe a situation where you designed a new metric that your team or organization started using to make decisions. What was the problem with existing metrics, what did you build, and how did it get adopted?',
+    whatTheyreReallyAsking: 'Do you think critically about existing measurement frameworks? Can you design metrics that are precise, actionable, and resistant to gaming? Do you understand the organizational work required to make a new metric stick?',
+    storyFramework: {
+      situation: 'The existing metric was imprecise, gameable, or measuring the wrong thing — and this was causing misaligned decisions.',
+      behavior: 'You diagnosed the problem with the existing metric, designed a replacement with clear criteria (what does moving this metric actually require?), validated it against historical data, and worked to get it adopted through influence rather than authority.',
+      outcome: 'The metric was adopted and changed decisions in a specific, describable way. Teams made different choices because of the new measurement framework.',
+    },
+    strongSignals: [
+      'Can articulate precisely what was wrong with the old metric — not just "it wasn\'t good" but "it measured X when the business goal was Y"',
+      'The new metric has explicit anti-gaming properties — what behavior does it reward, and is that behavior actually aligned with the goal?',
+      'Describes the organizational work of adoption, not just the technical design work',
+      'The metric changed at least one real decision',
+    ],
+    weakSignals: [
+      'Built a dashboard rather than a metric — dashboards are collections of numbers, metrics are north-star signals that guide decisions',
+      'The metric replaced a bad metric with a different metric that has the same problems',
+      'Adoption happened because the candidate had authority, not because the metric was compelling',
+      'Cannot describe what behavior the new metric rewards vs. the old one',
+    ],
+    keyPrinciples: [
+      'A good metric rewards the behavior you want to see. The test: if a team optimized solely for this metric, would you be happy with their behavior? If yes, it\'s a good metric.',
+      'Getting a metric adopted is a political problem, not a technical one. People are emotionally attached to metrics that make them look good. Changing the metric changes who wins and who loses.',
+      'The strongest metric adoption stories involve proving the new metric predicts outcomes the old metric missed. Retroactive validation on historical data, showing the new metric would have flagged problems the old one missed, is the most compelling adoption argument.',
+    ],
+    antiPatterns: [
+      'Designing a metric in a vacuum and being surprised when teams don\'t adopt it',
+      'Replacing a simple, understandable metric with a complex formula that nobody can explain to the CEO',
+      'Not testing the metric for perverse incentives — does optimizing for it actually require doing the right things?',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q14 — Working With Stakeholders Who Want Different Answers
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q14',
+    title: 'Tell Me About a Time Stakeholders Had Conflicting Views on What the Data Said.',
+    subtitle: 'Stakeholder Management · Analytical Objectivity',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Describe a situation where two or more stakeholders had different interpretations of the same data, or wanted you to reach a specific conclusion. How did you navigate it?',
+    whatTheyreReallyAsking: 'Can you maintain analytical objectivity when different stakeholders are pulling you toward different conclusions? Do you know how to handle a situation where the data doesn\'t support anyone\'s preferred outcome?',
+    storyFramework: {
+      situation: 'Two stakeholders (e.g., marketing and product, or two PMs, or a PM and an exec) had conflicting interpretations or wanted conflicting recommendations.',
+      behavior: 'You acknowledged the different perspectives, identified the specific analytical question that separated them, ran the analysis that could resolve the disagreement objectively, and reported the result to both stakeholders before the broader meeting.',
+      outcome: 'The disagreement was resolved with evidence rather than politics. Both stakeholders accepted the result, even the one whose interpretation was wrong.',
+    },
+    strongSignals: [
+      'Identified the specific analytical question that could resolve the disagreement — not all stakeholder conflicts are resolvable with more analysis, but many are',
+      'Proactively shared findings with the "losing" stakeholder before the public forum, to give them time to process and respond',
+      'Framed the analysis as "here is what the data shows" rather than "here is why Person A is right and Person B is wrong"',
+      'Describes what they would do when the data genuinely doesn\'t resolve the disagreement — some questions are strategic, not analytical',
+    ],
+    weakSignals: [
+      'Presented the conflicting data to the group and let them fight it out — analysts are not referees',
+      'Sided with the more senior stakeholder regardless of the data',
+      'Produced a "balanced" analysis that didn\'t actually resolve anything — both sides were technically right in a way that avoided conflict',
+      'Couldn\'t distinguish between analytical disputes (resolvable with data) and strategic disputes (require different resolution)',
+    ],
+    keyPrinciples: [
+      'Analytical disputes have a correct answer and are resolved with better methodology. Strategic disputes are about values and priorities — more data doesn\'t resolve them, and pretending it does erodes your credibility.',
+      'The most dangerous stakeholder conflict is when both sides want you to selectively slice the data to support their conclusion. The right response: "I can run both cuts and show you both. But I\'ll also tell you which one I think is the right way to look at the problem, and why."',
+      'Your credibility as an analyst depends on being right more often than you\'re politically convenient. Consistently producing the answer the most powerful stakeholder wants will eventually produce an obviously wrong conclusion that destroys trust with everyone.',
+    ],
+    antiPatterns: [
+      'Producing a "balanced" report that presents both sides without a conclusion — that is not analysis, that is a summary of conflicting opinions',
+      'Implying you would side with whoever controls your performance review',
+      'Treating every stakeholder conflict as an analytical dispute when some are genuinely strategic disagreements that data cannot resolve',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q15 — Fixing a Metric That Was Being Gamed
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q15',
+    title: 'Tell Me About a Time You Discovered a Metric Was Being Gamed.',
+    subtitle: 'Data Integrity · Analytical Courage',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Describe a situation where you discovered that a team or process was optimizing a metric in a way that didn\'t actually reflect the underlying business goal. What did you do?',
+    whatTheyreReallyAsking: 'Do you notice when metrics are being gamed? Do you have the courage to name it when it\'s happening, especially when gaming might be intentional or implicit? Can you redesign metrics to be gaming-resistant?',
+    storyFramework: {
+      situation: 'A metric showed improvement, but the underlying behavior that improvement was supposed to reflect was not improving — or was getting worse.',
+      behavior: 'You identified the specific gaming behavior, quantified the gap between the metric and the actual business outcome, named it clearly to the relevant stakeholders, and recommended a metric redesign or guardrail.',
+      outcome: 'The metric was redesigned, a guardrail was added, or the team\'s behavior changed. The business outcome improved as a result of measuring the right thing.',
+    },
+    strongSignals: [
+      'Identified the gaming behavior without being accusatory — framed it as a measurement problem, not a character problem',
+      'Can articulate precisely why the metric could be improved without improving the underlying outcome',
+      'Proposed a specific redesign that makes the same gaming behavior less rewarding',
+      'Raised it to the right people in the right way — not publicly shaming the team, but not ignoring it either',
+    ],
+    weakSignals: [
+      'Noticed the gaming but didn\'t raise it because it was uncomfortable',
+      'Raised it accusatorially, creating defensiveness rather than problem-solving',
+      'The "fix" was just a different metric with the same gaming potential',
+      'Confused optimization (doing the right thing better) with gaming (doing a different thing that improves the number)',
+    ],
+    keyPrinciples: [
+      'Metric gaming is almost never malicious. People optimize for what they\'re measured on. If the metric is gameable, it will be gamed. The problem is the metric, not the person.',
+      'Goodhart\'s Law: when a measure becomes a target, it ceases to be a good measure. Every metric is gameable at some optimization pressure. The question is whether gaming the metric requires doing something genuinely good or something that only looks good on paper.',
+      'The best response to gaming is a metric redesign that makes gaming require actually doing the right thing — not a louder instruction not to game, not a punishment, not a guardrail. Change what the metric rewards.',
+    ],
+    antiPatterns: [
+      'Framing gaming as a personal integrity failure rather than a measurement design failure',
+      'Adding a secondary guardrail metric without addressing the root cause (the gameable primary metric)',
+      'Noticing gaming only after it caused a significant negative business outcome rather than proactively',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q16 — Handling a Failed Project or Experiment
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q16',
+    title: 'Tell Me About an Experiment or Project That Failed. What Did You Learn?',
+    subtitle: 'Learning · Intellectual Honesty',
+    difficulty: 'analyst',
+    isFree: false,
+    prompt: 'Describe an analysis, experiment, or project that did not produce the expected results or had to be discontinued. What happened, and what did you take away from it?',
+    whatTheyreReallyAsking: 'Can you be honest about failure? Do you take genuine lessons or do you perform learning? Do you distinguish between execution failures (you did something wrong) and hypothesis failures (you were wrong about how the world works)?',
+    storyFramework: {
+      situation: 'A project was abandoned, an experiment showed no effect or a negative effect, or an analysis conclusion turned out to be wrong.',
+      behavior: 'You acknowledged the failure without deflection, diagnosed the root cause (execution issue vs. wrong hypothesis), extracted a specific lesson, and applied that lesson to something later.',
+      outcome: 'The failure led to a specific change in how you approach similar problems — not just "I learned to be more careful" but a concrete behavior change.',
+    },
+    strongSignals: [
+      'The failure is real and meaningful — not a minor setback dressed up as a failure for the purpose of the question',
+      'Distinguishes between "I executed poorly" and "my model of the world was wrong" — both are failures but have different lessons',
+      'Can articulate the specific lesson and a specific subsequent situation where it was applied',
+      'Doesn\'t blame external factors for what was within their control',
+    ],
+    weakSignals: [
+      'The "failure" is a success with minor imperfections — not a genuine failure',
+      'Attributes the failure entirely to external factors (data quality, team dynamics, time pressure)',
+      'The lesson is vague: "I learned to communicate better" without any specific behavior change',
+      'Visibly uncomfortable or defensive when describing the failure',
+    ],
+    keyPrinciples: [
+      'The most informative failures are hypothesis failures — where you were systematically wrong about how something works, not just careless in execution. These are rare and deeply instructive.',
+      'A good answer to this question distinguishes between two types of wrong: wrong about the facts (you analyzed bad data) and wrong about the model (your mental model of user behavior was incorrect). Wrong about the model is more valuable to discuss.',
+      'The lesson should sound like: "I now approach X differently because of this, specifically by doing Y instead of Z." If the lesson can\'t be stated that concretely, the learning wasn\'t real.',
+    ],
+    antiPatterns: [
+      'Describing a "failure" that is really a success story framed negatively to seem more relatable',
+      'Accepting no personal responsibility — the team, the data, the timeline were all to blame, not any decision you made',
+      'Performing humility ("I realized I have a lot to learn") without a specific lesson',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q17 — Scaling Your Impact Beyond Your Team
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q17',
+    title: 'Tell Me About a Time You Made an Impact Beyond Your Direct Team.',
+    subtitle: 'Leadership · Organizational Influence',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Describe a contribution you made that benefited people or teams beyond your immediate team. What did you build, how did it spread, and what impact did it have?',
+    whatTheyreReallyAsking: 'Can you see and solve problems beyond your immediate scope? Do you build things that scale? Do you understand the difference between being busy and being leveraged?',
+    storyFramework: {
+      situation: 'A problem existed that wasn\'t your job to fix, but you saw it and built something to address it.',
+      behavior: 'You identified a reusable pattern or infrastructure gap, built something that other teams could adopt without you being present, and drove adoption through showing usefulness rather than mandate.',
+      outcome: 'Other teams adopted what you built. Specifically: N teams use it, M decisions per quarter are informed by it, or a specific class of problem was eliminated.',
+    },
+    strongSignals: [
+      'The contribution required going beyond the stated scope of their role',
+      'Built something reusable and self-serve, not a one-off analysis that required their involvement every time',
+      'Can quantify the spread: how many teams, what decision types, what cadence',
+      'The adoption was pull-driven (others sought it out) not push-driven (mandated by leadership)',
+    ],
+    weakSignals: [
+      'The contribution was a one-off analysis, not a reusable framework, tool, or process',
+      'Describes "helping other teams" in a vague way without specific artifacts or outcomes',
+      'The adoption was mandated by a manager, not organic',
+      'The story is really about their own team\'s success, with a passing mention of cross-team collaboration',
+    ],
+    keyPrinciples: [
+      'The highest leverage contributions are ones that scale without your ongoing involvement. A metric framework that 5 teams use is worth more than a brilliant one-off analysis that you had to do yourself 5 times.',
+      'Adoption is the unit of impact for cross-team work. A tool nobody uses failed, regardless of how good it was. Getting adoption requires solving a real problem, making the tool easy to use, and being visible enough that the right people know it exists.',
+      'Lateral influence (making something so good that people adopt it voluntarily) is the highest form of organizational influence for an individual contributor. It doesn\'t require authority and it builds your reputation in a way that authority-based contributions don\'t.',
+    ],
+    antiPatterns: [
+      'Describing a contribution that required your ongoing manual involvement rather than a scalable artifact',
+      'Confusing "presenting to multiple teams" with "creating something multiple teams adopted"',
+      'Being vague about what specifically was built and how specifically it was used',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q18 — Balancing Speed and Rigor
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q18',
+    title: 'How Do You Decide When Analysis Is "Good Enough" to Act On?',
+    subtitle: 'Judgment · Speed vs. Rigor Tradeoff',
+    difficulty: 'analyst',
+    isFree: false,
+    prompt: 'Tell me about a time when you had to decide whether to deliver analysis quickly with known limitations, or wait and do a more rigorous analysis. How did you decide, and what happened?',
+    whatTheyreReallyAsking: 'Do you have good judgment about when rigor is required vs. when speed is the right tradeoff? Can you explicitly reason about the cost of delay vs. the cost of a wrong recommendation?',
+    storyFramework: {
+      situation: 'A decision needed to be made on a timeline that was shorter than the time needed for a rigorous analysis.',
+      behavior: 'You assessed the cost of the decision (reversible vs. irreversible), the precision required for the recommended action, and the cost of delay — then either delivered a scoped analysis with stated limitations, or pushed back on the timeline with a specific risk argument.',
+      outcome: 'The decision was made with appropriate rigor for the stakes. Either the quick analysis was good enough, or the timeline was extended because the risk of acting on insufficient data was quantified and accepted by the decision-maker.',
+    },
+    strongSignals: [
+      'Has a clear framework for when to do quick-and-dirty vs. rigorous analysis (stake size, reversibility, precision required)',
+      'Can articulate the specific limitations of the quick analysis and what conditions would change the recommendation',
+      'Has pushed back on timelines when the stakes justified it — doesn\'t always default to "delivering on time"',
+      'Separates analytical rigor from statistical rigor — sometimes quick analysis is directionally correct without being statistically precise',
+    ],
+    weakSignals: [
+      'Always defaults to quick analysis regardless of stakes — "shipping fast" without differentiation',
+      'Always defaults to rigorous analysis regardless of timeline — perfectionism without judgment',
+      'Cannot articulate what "good enough" means for a specific decision',
+      'The story is about technical choices in the analysis rather than the judgment about when to stop',
+    ],
+    keyPrinciples: [
+      'The right amount of rigor is determined by the cost of being wrong, not by how much time is available. A decision that can be easily reversed warrants less rigor than one that cannot.',
+      'Stated limitations are more valuable than unstated ones. "This analysis has 80% confidence and would change if X" is more actionable than a precise-sounding analysis that has hidden assumptions.',
+      'The cost of delay is real. Waiting for perfect analysis on a decision that needed to be made 2 weeks ago is a failure of judgment, not a victory of rigor.',
+    ],
+    antiPatterns: [
+      'Using "the data wasn\'t perfect" as a reason to not deliver rather than a reason to caveat your delivery',
+      'Conflating "I was thorough" with "I was appropriately rigorous" — thoroughness is not a virtue when the decision doesn\'t require it',
+      'Being unable to say "this analysis is good enough to act on" — indecision is a decision, and usually the wrong one',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q19 — Navigating Ethical Tension in Data Work
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q19',
+    title: 'Have You Ever Been Asked to Do Analysis That Made You Uncomfortable? What Did You Do?',
+    subtitle: 'Ethics · Analytical Integrity',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Describe a situation where you were asked to do analysis or present data in a way that raised ethical concerns or felt analytically dishonest. How did you handle it?',
+    whatTheyreReallyAsking: 'Do you have ethical grounding in your analytical work? Do you know the difference between selective analysis (sometimes appropriate) and misleading analysis (never appropriate)? Can you navigate ethical tension without being self-righteous?',
+    storyFramework: {
+      situation: 'You were asked to present data in a way that omitted relevant context, cherry-picked favorable results, or drew conclusions the data didn\'t support.',
+      behavior: 'You named the concern specifically (not generically), proposed an alternative framing that achieved the business goal honestly, and either got agreement on the honest framing or escalated to someone who could resolve the disagreement.',
+      outcome: 'The analysis was presented in a way you were comfortable with. Either you persuaded the requester to accept an honest framing, or you escalated and got the right outcome, or — in the most difficult cases — you declined to do the work in the requested form.',
+    },
+    strongSignals: [
+      'Can distinguish between legitimate data selection (choosing the most relevant cut for the audience) and misleading framing (hiding information that would change the conclusion)',
+      'Named the concern directly: "If we only present this cut, we\'re implying X, which the data doesn\'t actually support"',
+      'Proposed an alternative rather than just objecting: "Can we present both cuts and explain why we\'re highlighting this one?"',
+      'Knows where the line is between "making data accessible to non-technical audiences" and "misrepresenting what the data shows"',
+    ],
+    weakSignals: [
+      'No situation comes to mind — at most companies, data is regularly used to support predetermined conclusions',
+      'Describes a very minor concern (choosing between two valid visualizations) rather than a real ethical tension',
+      'Either always complied without objection or always escalated to HR immediately — neither extreme reflects real-world analytical judgment',
+      'Cannot articulate where the line is between simplification and misrepresentation',
+    ],
+    keyPrinciples: [
+      'Simplification is not misrepresentation. You can legitimately present one cut of the data to a non-technical audience without showing all possible cuts — provided the omitted cuts don\'t change the conclusion.',
+      'Framing can mislead without lying. "Active users grew 15%" with a carefully chosen definition of "active" that inflates the number is analytically dishonest even if the math is correct.',
+      'The test for ethical data presentation: if the decision-maker knew everything you know, would they make the same decision? If the answer is no, the presentation is misleading — regardless of whether it is technically accurate.',
+    ],
+    antiPatterns: [
+      'Treating all selective presentation as unethical — sometimes the audience genuinely doesn\'t need every cut and simplification is appropriate',
+      'Treating all ethical concerns as equally severe — there is a spectrum from "questionable framing" to "material misrepresentation" and they require different responses',
+      'Being unable to describe a specific situation, using vague language about "maintaining data integrity" without examples',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // Q20 — Most Important Analysis You Did Without Being Asked
+  // ─────────────────────────────────────────────
+  {
+    id: 'Q20',
+    title: 'What Is the Most Important Analysis You Initiated Without Being Asked?',
+    subtitle: 'Initiative · Proactive Insight',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Describe the most important or impactful analysis you did on your own initiative — not because someone asked you to do it, but because you saw a question that needed answering. What did you find, and what happened?',
+    whatTheyreReallyAsking: 'Do you have a curious, proactive analytical mind? Can you identify important questions that nobody is asking yet? Do you understand what the business most needs to know, even when nobody has articulated it?',
+    storyFramework: {
+      situation: 'You noticed something — a pattern in data, a decision that seemed to be made without good information, a metric moving in a way nobody was discussing.',
+      behavior: 'You scoped the analysis yourself, ran it without waiting for a ticket or request, shared it with the relevant stakeholders in a way that created action (not just interest), and followed it to a decision or change.',
+      outcome: 'Something changed because of this analysis. A decision was made differently, a risk was avoided, a new opportunity was identified. Not just "people were interested" but a concrete outcome.',
+    },
+    strongSignals: [
+      'The question was non-obvious — most people weren\'t asking it, which is why it needed to be self-initiated',
+      'The analysis required judgment about scope and method, not just execution of a well-defined task',
+      'Led to a concrete change, not just appreciation from stakeholders',
+      'Can explain why this question was important to the business, not just interesting analytically',
+    ],
+    weakSignals: [
+      'The analysis was obvious and someone else would have gotten to it anyway',
+      'The analysis was interesting but didn\'t lead to any decision or change',
+      'The "initiative" was really responding to a loosely worded request — not genuinely self-initiated',
+      'Cannot explain why the question was important to the business',
+    ],
+    keyPrinciples: [
+      'The most valuable proactive analyses often start with a nagging feeling that a commonly accepted conclusion is wrong, or that an important question is being ignored. That instinct — knowing which questions are important before anyone asks them — is the senior data scientist skill that is hardest to teach.',
+      'Proactive analysis succeeds or fails on follow-through. Many analysts do the analysis and present findings. Few analysts track the analysis through to a decision and don\'t let it get lost in inbox noise. The follow-through is half the value.',
+      'The framing for sharing proactive analysis matters: "I noticed X and ran some numbers — I think this might affect Y. Here\'s what I found and here\'s what I think we should do about it." That structure creates a pull for action, not just a push of information.',
+    ],
+    antiPatterns: [
+      'Describing proactive analysis that never got to a decision — a finding that generated appreciation but no action is a half-success at best',
+      'Taking credit for analysis that was actually prompted by a manager or stakeholder comment',
+      'The analysis being technically interesting but strategically irrelevant — analytical initiative that doesn\'t connect to business priorities isn\'t the right kind of initiative',
+    ],
+  },
 ];

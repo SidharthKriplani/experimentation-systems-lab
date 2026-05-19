@@ -1894,3 +1894,717 @@ export const metricCases = [
 ];
 
 export const metricCasesById = Object.fromEntries(metricCases.map(c => [c.id, c]));
+
+  // ─────────────────────────────────────────────
+  // M09 — Creator Monetization Health
+  // ─────────────────────────────────────────────
+  {
+    id: 'M09',
+    title: 'What Proves Creators Are Actually Earning?',
+    subtitle: 'Lumen · Creator Platform · Monetization Health',
+    difficulty: 'analyst',
+    isFree: true,
+    domain: 'creator',
+    linkedConceptIds: ['proxy-metric', 'guardrail-metric', 'primary-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Lumen',
+      product: 'Short-form video creator platform with tipping and subscriptions',
+      businessGoal: 'Grow the share of creators who earn sustainable income on the platform',
+      pressure: 'The monetization team wants to launch a new "Boost" feature — paying creators a performance bonus on viral videos. They need a metric to evaluate whether Boost increases creator monetization health.',
+      trap: 'Total creator revenue looks good but is dominated by the top 1% of creators. The real question is health of the middle tier — creators who could become full-time but haven\'t yet.',
+    },
+    fields: [
+      {
+        id: 'primaryMetric',
+        label: 'Primary metric',
+        type: 'single',
+        prompt: 'Which metric is the best north-star for evaluating whether Boost improves creator monetization health across the platform?',
+        options: [
+          {
+            id: 'a',
+            label: 'Share of active creators earning above a minimum threshold (e.g. $500/month) — "earning rate"',
+            scoreValue: 2,
+            rationale: 'This metric captures the breadth of monetization success, not just depth. If Boost helps the middle tier cross a minimum earning threshold, the earning rate rises. It is immune to being inflated by the top 1% earning more, because it is a share metric across all active creators, not an average that can be skewed.',
+          },
+          {
+            id: 'b',
+            label: 'Total creator revenue on the platform',
+            scoreValue: 0,
+            rationale: 'Total revenue is dominated by the top 1% of creators. A Boost program that exclusively increases payouts to viral creators can lift total revenue while doing nothing for the middle tier. This metric will signal a win even if 95% of creators see no change in their earnings.',
+          },
+          {
+            id: 'c',
+            label: 'Average creator earnings per active creator',
+            scoreValue: 1,
+            rationale: 'Better than total revenue because it normalizes for creator count, but still susceptible to top-creator skew. A small number of breakout creators can pull the average up significantly while median creator earnings stagnate. Median would be better than mean here, but the earning rate is still the superior metric.',
+          },
+          {
+            id: 'd',
+            label: 'Creator retention rate — share of monetized creators still active 90 days later',
+            scoreValue: 1,
+            rationale: 'Retention is a good guardrail — if earning health improves, you expect retention to follow. But as a primary metric for Boost evaluation, it lags too much (90-day window) and conflates earning-driven retention with other retention drivers. Better as a guardrail than a north-star.',
+          },
+        ],
+      },
+      {
+        id: 'guardrailMetrics',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt: 'Which guardrail set best protects against Boost creating platform-level distortions?',
+        options: [
+          {
+            id: 'a',
+            label: 'Viewer tipping rate + organic (non-Boost) creator revenue + creator concentration index (top 1% share of total earnings)',
+            scoreValue: 2,
+            rationale: 'Three critical guardrails: tipping rate catches whether Boost crowds out organic monetization behavior (viewers stop tipping if they know creators get paid by Boost); organic revenue monitors substitution effects; concentration index ensures Boost is not just enriching an already-dominant minority. Together they protect the organic monetization ecosystem.',
+          },
+          {
+            id: 'b',
+            label: 'Platform revenue and gross margin',
+            scoreValue: 0,
+            rationale: 'These are financial guardrails for the business, not for creator ecosystem health. If Boost is too generous, platform margin suffers — that is worth tracking — but these metrics say nothing about whether the creator ecosystem is being distorted in ways that will harm long-run retention.',
+          },
+          {
+            id: 'c',
+            label: 'Total video views and engagement rate',
+            scoreValue: 1,
+            rationale: 'Engagement metrics catch whether Boost changes content creation behavior (creators chasing viral formats to unlock bonuses). But they miss the organic monetization substitution risk and the concentration dynamics that are the most dangerous platform-level distortions.',
+          },
+        ],
+      },
+      {
+        id: 'diagnosticMetrics',
+        label: 'Diagnostic metrics',
+        type: 'single',
+        prompt: 'If the earning rate moves, which diagnostic set best explains why?',
+        options: [
+          {
+            id: 'a',
+            label: 'Earning rate by creator tier (nano / mid / top) + Boost payout distribution + organic earnings change by tier',
+            scoreValue: 2,
+            rationale: 'Segmenting earning rate by creator tier immediately reveals whether Boost is lifting the middle or only rewarding the already-successful. Payout distribution shows whether bonuses are concentrating. Organic earnings change by tier catches substitution — if mid-tier creators\' organic earnings drop while their Boost earnings rise, viewers may be substituting tipping with the assumption that the platform will compensate creators.',
+          },
+          {
+            id: 'b',
+            label: 'Average watch time per video and comment rate',
+            scoreValue: 0,
+            rationale: 'These are content engagement metrics that explain content performance, not creator earning dynamics. They tell you if content quality changed, not if the monetization structure is healthy.',
+          },
+          {
+            id: 'c',
+            label: 'Total Boost payouts issued and number of creators receiving Boost',
+            scoreValue: 1,
+            rationale: 'These are program-level reach metrics. They tell you the scale of Boost but not whether it is helping the right creators or creating substitution distortions. Good for program monitoring, insufficient for diagnosing earning rate movements.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary: 'Creator monetization is a breadth problem disguised as a revenue problem. The top 1% of creators on any platform will generate outsized revenue that makes aggregate metrics look healthy even as the middle tier struggles. The right north-star is the share of active creators crossing a meaningful earning threshold — because that metric is immune to top-creator skew and directly measures platform health for the creators most likely to make or break long-run supply quality. Guardrails must protect the organic monetization ecosystem: Boost programs that crowd out tipping or concentrate earnings in an already-dominant minority create structural fragility.',
+      seniorRead: 'The sophisticated insight in creator platform metric design is that creator concentration risk is a leading indicator of platform fragility. A platform where 1% of creators generate 80% of earnings is one viral creator departure away from a supply crisis. The concentration index guardrail is not about fairness — it is about systemic risk. In interviews, candidates who can name the earning rate as a breadth metric AND explain why the concentration index is a risk guardrail (not just a fairness metric) demonstrate real platform economics understanding.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // M10 — Health App Habit Formation
+  // ─────────────────────────────────────────────
+  {
+    id: 'M10',
+    title: 'When Has a Health App Actually Changed Behavior?',
+    subtitle: 'Vida · Consumer Health · Habit Formation',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'health',
+    linkedConceptIds: ['proxy-metric', 'primary-metric', 'guardrail-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Vida',
+      product: 'Personalized health coaching app — sleep, nutrition, exercise tracking',
+      businessGoal: 'Increase long-run habit formation, not just short-run engagement',
+      pressure: 'The growth team wants to launch a streak feature (daily login reward). They argue it will boost DAU. The head of product is skeptical: "We\'ve seen streak features boost logins but not outcomes. We need to measure the right thing."',
+      trap: 'DAU and streak completion rate measure engagement, not behavior change. The business goal is habit formation — sustainable, intrinsic behavior that persists without app prompts.',
+    },
+    fields: [
+      {
+        id: 'primaryMetric',
+        label: 'Primary metric',
+        type: 'single',
+        prompt: 'What should be the north-star metric for evaluating the streak feature\'s effect on Vida\'s core mission?',
+        options: [
+          {
+            id: 'a',
+            label: 'Sustained behavior rate — share of users completing target health actions (e.g. 3+ logged workouts/week) for 4+ consecutive weeks without streak prompts',
+            scoreValue: 2,
+            rationale: 'This metric directly captures habit formation: consistent behavior over time, sustained without app coercion. The "without streak prompts" qualifier is critical — you want to know if users have internalized the behavior, not just responded to a notification. 4 weeks is the minimum window supported by habit formation research for behavioral consolidation.',
+          },
+          {
+            id: 'b',
+            label: 'Daily active users (DAU)',
+            scoreValue: 0,
+            rationale: 'DAU measures app opens, not behavior change. A streak feature that creates daily "open app to keep streak alive" behavior can double DAU while producing zero change in actual health outcomes. This is the exact trap the Head of Product warned about.',
+          },
+          {
+            id: 'c',
+            label: 'Streak completion rate — share of users who complete their daily streak target',
+            scoreValue: 0,
+            rationale: 'Streak completion rate measures performance on the streak mechanic itself — a metric the feature directly controls. It is circular: the streak feature is designed to increase streak completion. Using streak completion as the success metric tells you nothing about whether real behavior change occurred.',
+          },
+          {
+            id: 'd',
+            label: 'W4 retention — share of new users still active 28 days after install',
+            scoreValue: 1,
+            rationale: 'W4 retention is a reasonable proxy for habit stickiness. Users who form habits tend to remain active. But it conflates habit formation with engagement-driven retention from streak mechanics. A user who opens the app daily to avoid losing a streak counts as retained, even if they haven\'t changed any health behavior.',
+          },
+        ],
+      },
+      {
+        id: 'guardrailMetrics',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt: 'Which guardrails best protect against the streak feature creating hollow engagement?',
+        options: [
+          {
+            id: 'a',
+            label: 'Post-streak-break return rate + health action completion rate (independent of streak) + notification opt-out rate',
+            scoreValue: 2,
+            rationale: 'Post-streak-break return rate is the definitive test of intrinsic motivation: when the streak ends (inevitable), do users come back? If not, the streak was the only motivator. Health action completion independent of streak completion catches whether users are gaming the streak with low-effort logins. Notification opt-out rate monitors whether the streak feature creates annoyance that erodes long-run retention.',
+          },
+          {
+            id: 'b',
+            label: 'Subscription conversion rate and revenue per user',
+            scoreValue: 0,
+            rationale: 'These are business outcome metrics, not behavior guardrails. They cannot distinguish hollow engagement from genuine habit formation, and they lag too much to serve as early-warning guardrails in an experiment.',
+          },
+          {
+            id: 'c',
+            label: 'DAU/MAU ratio and session length',
+            scoreValue: 1,
+            rationale: 'These are engagement intensity metrics. Session length can be informative — longer sessions may indicate deeper engagement with health content vs. quick streak-preservation taps. But they don\'t directly test whether behavior change is intrinsic or streak-dependent.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary: 'Health apps face a fundamental tension between engagement metrics and outcome metrics. Features that maximize engagement — streaks, notifications, social pressure — reliably boost DAU and short-run retention while doing nothing for actual health behavior change. The right metric for Vida is sustained behavior rate: consistent health actions over a multi-week window, measured independently of engagement mechanics. Guardrails must specifically test whether motivation is intrinsic (post-streak-break return) or mechanic-dependent.',
+      seniorRead: 'The deepest insight in health tech metric design is the concept of "hollow engagement" — activity that registers in every standard product metric while producing zero real-world change. Streak features are the canonical example. In interviews, candidates who can name the sustained behavior rate and explain the post-streak-break return guardrail demonstrate understanding of the gap between engagement and outcomes — a distinction that most product analysts conflate. This same framework applies to education apps, financial apps, and any product where the goal is behavior change rather than content consumption.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // M11 — Rideshare Supply-Demand Balance
+  // ─────────────────────────────────────────────
+  {
+    id: 'M11',
+    title: 'What Measures Supply-Demand Health in a Rideshare Market?',
+    subtitle: 'Waypath · Rideshare · Market Liquidity',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'marketplace',
+    linkedConceptIds: ['guardrail-metric', 'primary-metric', 'proxy-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Waypath',
+      product: 'Two-sided rideshare marketplace, 40 cities, 2M weekly rides',
+      businessGoal: 'Improve market liquidity — matching supply (drivers) to demand (riders) efficiently in real time',
+      pressure: 'The marketplace team is A/B testing a new driver incentive program. They need a north-star metric to determine if the incentive improves market liquidity without distorting driver economics.',
+      trap: 'Ride completions and driver utilization look at each side independently. The real question is matching efficiency — how well supply and demand are meeting each other in real time, in the right places.',
+    },
+    fields: [
+      {
+        id: 'primaryMetric',
+        label: 'Primary metric',
+        type: 'single',
+        prompt: 'Which metric is the best north-star for marketplace liquidity in a rideshare context?',
+        options: [
+          {
+            id: 'a',
+            label: 'Rider wait time P75 — 75th percentile wait time from ride request to driver arrival',
+            scoreValue: 2,
+            rationale: 'P75 wait time captures the worst-served 25% of riders, not just the median experience. Rideshare liquidity is most at risk at the tail — when wait times spike for a subset of users, that\'s where demand destruction and cancellations occur. P75 is sensitive to supply shortfalls in specific neighborhoods or times, and improving it requires genuine supply-demand matching, not just increasing driver supply overall.',
+          },
+          {
+            id: 'b',
+            label: 'Total ride completions',
+            scoreValue: 0,
+            rationale: 'Total ride completions measures volume, not matching efficiency. You can increase completions by increasing driver supply while still having severe local imbalances where some users wait 20+ minutes. High total completions with a long P75 wait time indicates liquidity is unevenly distributed.',
+          },
+          {
+            id: 'c',
+            label: 'Driver utilization rate — share of driver hours spent on rides vs. idle',
+            scoreValue: 1,
+            rationale: 'Driver utilization is a supply-side efficiency metric, not a matching quality metric. High utilization can coexist with poor matching (drivers fully booked in low-demand areas, leaving high-demand areas under-served). It is a useful diagnostic but not the north-star for marketplace liquidity.',
+          },
+          {
+            id: 'd',
+            label: 'Request-to-match rate — share of ride requests matched to a driver within 2 minutes',
+            scoreValue: 2,
+            rationale: 'Also an excellent primary metric. Request-to-match rate at a 2-minute threshold captures matching efficiency and directly measures whether supply is available when and where demand arises. Either this or P75 wait time is defensible as the north-star; both measure the quality of the match, not just aggregate supply or demand.',
+          },
+        ],
+      },
+      {
+        id: 'guardrailMetrics',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt: 'The incentive program pays drivers bonuses for working peak hours. Which guardrail set protects against unintended consequences?',
+        options: [
+          {
+            id: 'a',
+            label: 'Driver earnings per hour (vs. baseline) + off-peak driver supply index + ride cancellation rate',
+            scoreValue: 2,
+            rationale: 'Three critical guardrails: earnings per hour catches whether incentives are paying for supply that was already there (waste) or genuinely new supply; off-peak supply index monitors whether drivers are gaming the program by concentrating on peak hours and abandoning off-peak (creating a new imbalance); cancellation rate catches driver cherry-picking behavior (accepting then cancelling to find better trips).',
+          },
+          {
+            id: 'b',
+            label: 'Total driver earnings paid out and program cost per incremental ride',
+            scoreValue: 1,
+            rationale: 'These are financial guardrails for the incentive program budget. They\'re necessary but insufficient — they say nothing about whether the program is distorting driver behavior in ways that harm the marketplace.',
+          },
+          {
+            id: 'c',
+            label: 'Rider satisfaction (NPS) and driver churn rate',
+            scoreValue: 1,
+            rationale: 'Rider satisfaction is a lagging output metric. Driver churn is a supply health metric. Both are valuable but don\'t catch the specific distortions an incentive program can create — time-concentration behavior, cancellation gaming, and supply shifting from off-peak periods.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary: 'Rideshare marketplace health cannot be measured from either side independently. A platform with high driver utilization and high total rides can still have terrible matching quality if supply is geographically or temporally mismatched with demand. P75 wait time and request-to-match rate are the right north-star metrics because they directly measure the matching outcome, not the volume of supply or demand. Incentive programs need guardrails that specifically test for supply concentration effects — drivers gaming peak-hour bonuses while abandoning off-peak, creating new imbalances.',
+      seniorRead: 'The two-sided platform insight that most analysts miss in rideshare: optimizing average metrics hides tail problems that drive churn. P75 wait time is the right percentile because that\'s where cancellations and app abandonment happen. A P50 improvement that worsens P75 is a loss, not a win. In interviews, the ability to articulate why a percentile metric is more appropriate than an average for a liquidity problem demonstrates real marketplace analytics maturity.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // M12 — Fintech Loan Funnel Quality
+  // ─────────────────────────────────────────────
+  {
+    id: 'M12',
+    title: 'What Measures a Lending Funnel\'s True Health?',
+    subtitle: 'Meridian Credit · Fintech · Loan Origination',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'fintech',
+    linkedConceptIds: ['proxy-metric', 'guardrail-metric', 'primary-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Meridian Credit',
+      product: 'Personal loan origination platform — online application to funded loan',
+      businessGoal: 'Increase funded loan volume while maintaining credit quality',
+      pressure: 'The growth team is testing a simplified application flow. They want to know if the new flow improves the funnel without degrading loan quality.',
+      trap: 'Application completion rate and approval rate look at the top of the funnel. The business earns from funded, performing loans — not from completed applications. A funnel that attracts lower-quality borrowers can increase completion rates while creating future credit losses.',
+    },
+    fields: [
+      {
+        id: 'primaryMetric',
+        label: 'Primary metric',
+        type: 'single',
+        prompt: 'Which metric is the right north-star for evaluating the simplified application flow?',
+        options: [
+          {
+            id: 'a',
+            label: 'Funded loan volume per 1,000 applicants, at equivalent or better credit risk score',
+            scoreValue: 2,
+            rationale: 'This metric captures the full funnel efficiency (application → funding) while controlling for the thing that actually determines long-run business health: credit quality. "Per 1,000 applicants" normalizes for volume, and "at equivalent or better credit risk" makes the metric immune to gaming via risk relaxation. It\'s the only metric that simultaneously measures conversion AND quality.',
+          },
+          {
+            id: 'b',
+            label: 'Application completion rate',
+            scoreValue: 0,
+            rationale: 'Completion rate measures top-of-funnel behavior. A simplified flow will almost certainly improve completion rate — that\'s what simplification does. But completed applications from lower-quality borrowers who subsequently default cost the business far more than the volume gain. Completion rate without quality context is a dangerous primary metric in lending.',
+          },
+          {
+            id: 'c',
+            label: 'Approval rate — share of completed applications approved',
+            scoreValue: 0,
+            rationale: 'Approval rate is partially under the control of the underwriting model and can be increased by relaxing credit standards. Using it as a north-star creates an incentive to approve more marginal borrowers to hit the metric, which is precisely the wrong direction for a lending business.',
+          },
+          {
+            id: 'd',
+            label: 'Time-to-fund — average days from application submission to loan disbursement',
+            scoreValue: 1,
+            rationale: 'Speed matters in lending — faster funding improves conversion. But time-to-fund is a UX metric, not a business health metric. Faster funding of bad loans is not a win. This is a useful secondary/diagnostic metric but not the north-star.',
+          },
+        ],
+      },
+      {
+        id: 'guardrailMetrics',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt: 'Which guardrails best protect against the simplified flow attracting riskier borrowers?',
+        options: [
+          {
+            id: 'a',
+            label: 'Average applicant credit score distribution shift + early payment delinquency rate (30-day) + application fraud rate',
+            scoreValue: 2,
+            rationale: 'Credit score distribution shift is an immediate signal that applicant quality has changed — you see it before loans default. Early delinquency rate (30-day) catches the fastest-defaulting borrowers within the experiment window. Fraud rate catches whether a simplified flow lowered barriers for fraudulent applications. Together, these three guardrails catch quality degradation across the full risk spectrum.',
+          },
+          {
+            id: 'b',
+            label: 'Applicant drop-off rate by funnel step',
+            scoreValue: 0,
+            rationale: 'This is a UX diagnostic metric for understanding where applicants abandon the simplified flow. It\'s useful for product iteration but does nothing to guard against quality degradation.',
+          },
+          {
+            id: 'c',
+            label: 'Customer acquisition cost and conversion rate by channel',
+            scoreValue: 1,
+            rationale: 'Channel-level metrics help understand which traffic sources are driving the volume change but don\'t directly measure credit risk changes. High-quality applicants from a new channel can coexist with overall quality degradation — channel cuts are diagnostic, not guardrails for credit risk.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary: 'Fintech funnel metric design requires tracking both sides of the lending equation: conversion efficiency AND credit quality. A simplified application flow that increases completion rate while attracting lower-quality borrowers creates a time-delayed loss that won\'t show up in any standard funnel metric until loans start defaulting — often 90–180 days later. The right north-star explicitly ties funded volume to credit quality in the metric definition. Guardrails must catch quality degradation signals that lead the default curve by at least 30 days.',
+      seniorRead: 'The senior insight in fintech funnel analytics is that credit risk is a lagging signal that looks fine until it catastrophically isn\'t. By the time default rates rise, you have already funded thousands of bad loans. The right architecture catches leading indicators: application fraud rate and credit score distribution shift are available in real time. Early (30-day) delinquency is available within the experiment window. Analysts who design guardrails around these early signals rather than waiting for 90-day default rates demonstrate real credit risk awareness.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // M13 — Enterprise SaaS Feature Adoption
+  // ─────────────────────────────────────────────
+  {
+    id: 'M13',
+    title: 'How Do You Measure Enterprise Feature Adoption?',
+    subtitle: 'Nexus · B2B SaaS · Workflow Automation',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'saas',
+    linkedConceptIds: ['proxy-metric', 'primary-metric', 'guardrail-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Nexus',
+      product: 'B2B workflow automation platform, 800 enterprise customers (avg. 150 seats/account)',
+      businessGoal: 'Drive deep feature adoption to increase NRR (net revenue retention) through expansion and churn prevention',
+      pressure: 'PM shipped a new AI-assisted workflow builder. They\'re measuring "feature activation rate" — share of accounts that tried the feature at least once. At 62%, the team calls it a success. But CS is seeing accounts that "activated" but never got a workflow into production.',
+      trap: '"Tried at least once" is feature awareness, not adoption. Enterprise SaaS value is realized through workflows that run in production, not features that are opened and abandoned.',
+    },
+    fields: [
+      {
+        id: 'primaryMetric',
+        label: 'Primary metric',
+        type: 'single',
+        prompt: 'What is the right north-star for measuring whether the AI workflow builder is being adopted at enterprise scale?',
+        options: [
+          {
+            id: 'a',
+            label: 'Production workflow rate — share of accounts with at least one AI-built workflow that has run in production for 14+ days',
+            scoreValue: 2,
+            rationale: 'Enterprise adoption is measured by workflows in production, not features opened. A workflow that has run in production for 14+ days has survived the deployment process, IT review, and real-world usage — those are the hurdles that determine real enterprise adoption. This metric is immune to the "opened and abandoned" inflation that afflicts any activation metric.',
+          },
+          {
+            id: 'b',
+            label: 'Feature activation rate — share of accounts where at least one user opened the AI builder',
+            scoreValue: 0,
+            rationale: 'This is the metric the PM is using and the one CS is flagging as misleading. 62% "activated" but most didn\'t get to production. Activation conflates curiosity with adoption. In enterprise software, opening a feature is the beginning of a long deployment journey, not the end.',
+          },
+          {
+            id: 'c',
+            label: 'AI workflows created — total count of workflows built using the AI builder',
+            scoreValue: 1,
+            rationale: 'Creation count is better than activation but still misses deployment. In enterprise contexts, teams build workflows in sandbox/staging environments that never reach production. A created workflow that isn\'t deployed produces zero user value and zero expansion revenue.',
+          },
+          {
+            id: 'd',
+            label: 'Time-to-first-workflow — median days from feature activation to first workflow created',
+            scoreValue: 1,
+            rationale: 'Speed to creation is a useful friction diagnostic — if this is high, there\'s an onboarding problem in the builder itself. But it\'s a leading indicator of creation, not a measure of production adoption. Fast creation of workflows that never reach production is still a failed adoption outcome.',
+          },
+        ],
+      },
+      {
+        id: 'guardrailMetrics',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt: 'Which guardrails protect against the AI builder creating complexity that undermines core platform usage?',
+        options: [
+          {
+            id: 'a',
+            label: 'Core workflow editor usage rate + support ticket volume for AI-builder issues + workflow error rate (AI-built vs. manual)',
+            scoreValue: 2,
+            rationale: 'Core editor usage protects against cannibalization — if enterprise users switch to AI-built workflows for everything but the AI produces lower reliability, the platform\'s reputation suffers. Support ticket volume catches the failure-mode where AI-built workflows look adopted but generate ongoing CS burden. Error rate comparison catches reliability issues before they surface in churn data.',
+          },
+          {
+            id: 'b',
+            label: 'Account NRR and expansion revenue',
+            scoreValue: 1,
+            rationale: 'NRR is the ultimate outcome metric but lags feature adoption by quarters. As a guardrail in a feature experiment, it is too slow to provide early warning. It\'s the right annual health metric but not the right guardrail for a feature-level experiment.',
+          },
+          {
+            id: 'c',
+            label: 'DAU and MAU for the AI builder specifically',
+            scoreValue: 0,
+            rationale: 'DAU/MAU on a workflow builder in enterprise software are near-meaningless — workflows are built once and run automatically. A workflow that runs daily without any user interaction counts as zero DAU. Enterprise product usage doesn\'t follow consumer engagement patterns.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary: 'Enterprise SaaS feature adoption follows a fundamentally different arc than consumer product adoption. In B2B, the journey from "tried the feature" to "running in production" involves IT approval, security review, user training, change management, and deployment — a process that can take weeks. Measuring adoption at the awareness stage (activation) instead of the production stage systematically overstates real adoption and leads to false confidence that undermines CS and CS strategy. The right north-star is production deployment rate — the only adoption measure that correlates with expansion revenue and churn prevention.',
+      seniorRead: 'The nuance that separates senior enterprise SaaS analysts from junior ones: enterprise software is operated, not consumed. A consumer might use a feature 50 times in a week; an enterprise automation workflow runs 10,000 times per week with zero user interaction after setup. DAU, session counts, and click metrics are nearly meaningless for automation features. The right measurement frame is: is this feature running in production on behalf of the account? That question only has a binary answer — and that binary answer predicts NRR movements 6 months before they show up in revenue data.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // M14 — Mobile Game Monetization Calibration
+  // ─────────────────────────────────────────────
+  {
+    id: 'M14',
+    title: 'Is the In-App Purchase Funnel Healthy or Extractive?',
+    subtitle: 'Arcane Studios · Mobile Gaming · IAP Monetization',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'gaming',
+    linkedConceptIds: ['guardrail-metric', 'primary-metric', 'proxy-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Arcane Studios',
+      product: 'Mobile RPG — free-to-play, 4M MAU, in-app purchases for characters and upgrades',
+      businessGoal: 'Grow IAP revenue without degrading the free player experience',
+      pressure: 'The monetization team wants to increase "conversion pressure" — more prompts, harder content that pushes players toward purchases. The game design team warns this could create a "pay-to-win" perception that kills organic word-of-mouth.',
+      trap: 'IAP revenue and payer conversion rate go up with conversion pressure in the short run. But extractive monetization erodes the non-paying player base, which is the social context that makes the game worth playing and sharing.',
+    },
+    fields: [
+      {
+        id: 'primaryMetric',
+        label: 'Primary metric',
+        type: 'single',
+        prompt: 'Which metric is the right north-star for evaluating monetization health vs. extraction?',
+        options: [
+          {
+            id: 'a',
+            label: 'Revenue per engaged user (RPEU) — IAP revenue divided by users who completed at least one meaningful game session in the period',
+            scoreValue: 2,
+            rationale: 'RPEU ties revenue to an engaged player base, not just any MAU. If conversion pressure increases IAP revenue while shrinking the engaged non-paying base (because free players churn), RPEU stays flat or falls — correctly signaling that monetization is extractive, not healthy. It is immune to denominator gaming from low-engagement inactive accounts.',
+          },
+          {
+            id: 'b',
+            label: 'Total IAP revenue',
+            scoreValue: 0,
+            rationale: 'Total IAP revenue rises with any conversion pressure increase, at least in the short run. It cannot distinguish between healthy monetization (more players finding value in purchases) and extractive monetization (more pressure converting some players while driving others out). The lagged churn effect means IAP revenue looks great for 60–90 days before the base erosion shows up.',
+          },
+          {
+            id: 'c',
+            label: 'Payer conversion rate — share of MAU who made at least one purchase',
+            scoreValue: 1,
+            rationale: 'Payer conversion captures the breadth of paying behavior but conflates quality monetization with pressure-induced purchases. A player who makes a single $0.99 purchase under pressure and then churns counts as a converted payer — the metric records a win on the day it was a loss. RPEU captures the same conversion signal but weights it against engaged player base health.',
+          },
+          {
+            id: 'd',
+            label: 'ARPU — average revenue per MAU',
+            scoreValue: 1,
+            rationale: 'ARPU is better than total revenue because it normalizes for MAU size. But it has the same timing problem: ARPU rises under conversion pressure before the churn effect fully materializes. It also includes low-engagement ghost accounts in the denominator, making it less sensitive than RPEU.',
+          },
+        ],
+      },
+      {
+        id: 'guardrailMetrics',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt: 'Which guardrails specifically protect the free player experience and long-run game health?',
+        options: [
+          {
+            id: 'a',
+            label: 'Free player D30 retention + "pay-to-win sentiment" proxy (negative review rate or social mention sentiment) + new player D7 progression rate',
+            scoreValue: 2,
+            rationale: 'Free player D30 retention directly measures whether non-payers are staying — if they\'re churning faster, the social base is eroding. Pay-to-win sentiment (reviews, social mentions) catches the perception problem before it fully materializes in churn data. New player D7 progression catches whether content difficulty has become a funnel block for new organic players — a signal that the conversion pressure is breaking the early-game experience.',
+          },
+          {
+            id: 'b',
+            label: 'App store rating and review volume',
+            scoreValue: 1,
+            rationale: 'App store ratings are a useful lagging signal of player sentiment, but they respond to major negative events, not gradual extraction. A game can erode its free player base for 90 days before the rating impact shows up, because engaged (paying) players rate the game positively while disengaged free players just churn without reviewing.',
+          },
+          {
+            id: 'c',
+            label: 'IAP revenue by segment (whale / mid / minnow) and average purchase value',
+            scoreValue: 1,
+            rationale: 'Revenue segmentation is useful diagnostic information — you want to know if growth is coming from healthy expansion of mid-tier payers or increasing whale concentration. But it doesn\'t protect free players or catch pay-to-win dynamics; it only describes the paying population.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary: 'Mobile game monetization creates a classic short-run vs. long-run tension. Conversion pressure reliably increases IAP revenue in the first 60–90 days while simultaneously eroding the non-paying player base that gives the game its social context and organic virality. The right north-star metric ties revenue to engaged player base health, not just revenue volume — so that extraction appears as stagnation or decline rather than growth. Guardrails must specifically monitor the free player experience because that population is the game\'s distribution mechanism.',
+      seniorRead: 'The sophisticated insight in gaming monetization analytics is that free players are not the non-revenue population — they are the virality engine and social context that makes the game worth buying into. Destroying free player retention for short-run IAP gains is a distribution strategy mistake, not just an ethics one. Analysts who can articulate the RPEU metric and explain why free player D30 retention is a revenue guardrail (not just a fairness guardrail) demonstrate real gaming platform economics understanding.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // M15 — Marketplace Supply Depth
+  // ─────────────────────────────────────────────
+  {
+    id: 'M15',
+    title: 'Is There Enough Good Supply for Buyers to Find?',
+    subtitle: 'Crafted · Two-Sided Marketplace · Supply Quality',
+    difficulty: 'analyst',
+    isFree: false,
+    domain: 'marketplace',
+    linkedConceptIds: ['guardrail-metric', 'primary-metric', 'proxy-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Crafted',
+      product: 'Handmade goods marketplace — 40k active sellers, 3M active buyers',
+      businessGoal: 'Improve supply depth so buyers can always find what they want at a competitive price and quality',
+      pressure: 'GMV is growing but "zero-result searches" are up 18% YoY. The supply team suspects the catalog is growing in quantity but not in what buyers actually want. They need a supply quality metric to evaluate a new seller incentive program.',
+      trap: 'Total listings and seller count measure supply volume. The question is supply relevance — whether the catalog is deep in the categories buyers actually search for.',
+    },
+    fields: [
+      {
+        id: 'primaryMetric',
+        label: 'Primary metric',
+        type: 'single',
+        prompt: 'Which metric is the right north-star for supply depth quality?',
+        options: [
+          {
+            id: 'a',
+            label: 'Demand-weighted supply coverage — share of high-demand search queries with 5+ in-stock, rated 4★+ listings available',
+            scoreValue: 2,
+            rationale: 'This metric weights coverage by where demand actually is, not by total catalog size. A marketplace can have millions of listings while having zero coverage for its top 100 search queries if all inventory is in low-demand categories. The 5-listing floor and quality threshold (4★+) ensure coverage means real options, not just presence. "Demand-weighted" makes it impossible to game by listing more products in low-interest categories.',
+          },
+          {
+            id: 'b',
+            label: 'Total active listings',
+            scoreValue: 0,
+            rationale: 'This is the supply volume metric — more listings does not mean more relevant listings. A catalog with 5M listings dominated by similar items in saturated categories provides worse buyer experience than 1M listings with deep coverage across buyer intent categories. Zero-result rate increasing while listing count grows is exactly this failure mode.',
+          },
+          {
+            id: 'c',
+            label: 'Active seller count',
+            scoreValue: 0,
+            rationale: 'Seller count measures supply breadth at the seller level, not inventory relevance at the buyer level. A new seller entering the platform in an already-saturated category doesn\'t improve supply quality for buyers searching in under-covered categories.',
+          },
+          {
+            id: 'd',
+            label: 'Zero-result search rate — share of search queries returning no results',
+            scoreValue: 1,
+            rationale: 'Zero-result rate is a symptom metric rather than a primary metric for supply depth. It\'s responsive and easy to compute, but it only catches the most extreme supply gap (zero results). A buyer getting 3 low-quality or out-of-stock results is nearly as bad as getting zero, but zero-result rate won\'t catch it.',
+          },
+        ],
+      },
+      {
+        id: 'guardrailMetrics',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt: 'The incentive program pays bonuses for sellers who list in under-covered categories. Which guardrails protect against gaming?',
+        options: [
+          {
+            id: 'a',
+            label: 'Listing quality score in incentivized categories + buyer conversion rate in incentivized categories + listing longevity rate (active 30+ days)',
+            scoreValue: 2,
+            rationale: 'Quality score in incentivized categories catches whether sellers are listing junk to claim bonuses — a classic incentive gaming pattern. Conversion rate in those categories tests whether the new supply actually satisfies demand or just adds to catalog noise. Longevity rate catches sellers who list briefly to claim the bonus and then remove listings. Together these protect the quality and permanence of the supply improvement.',
+          },
+          {
+            id: 'b',
+            label: 'Total listings created in incentivized categories',
+            scoreValue: 0,
+            rationale: 'This is exactly the metric that incentive gaming will inflate. If sellers can earn bonuses for listings regardless of quality or longevity, this number will rise for all the wrong reasons.',
+          },
+          {
+            id: 'c',
+            label: 'Seller NPS and seller churn rate',
+            scoreValue: 1,
+            rationale: 'Seller satisfaction metrics matter for supply health long-term, but they don\'t catch the specific gaming dynamics an incentive program creates. Sellers who are gaming the program might rate the program positively while degrading supply quality.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary: 'Marketplace supply depth is fundamentally a relevance problem, not a volume problem. The worst-performing marketplaces often have the most listings — because incentive structures reward listing creation rather than listing relevance. Demand-weighted supply coverage forces you to measure supply quality where demand actually is, making it impossible to show improvement by adding more inventory in already-saturated categories. Guardrails on incentive programs must specifically test for gaming behaviors: low-quality listings, transient listings, and nominal coverage without conversion.',
+      seniorRead: 'The marketplace supply depth insight that separates senior analysts: supply quality is a denominator problem. You need to normalize supply by demand — not by total search queries, but by demand-weighted search queries. A marketplace where the top 1,000 search queries represent 60% of GMV has a well-defined problem: are those 1,000 queries covered with quality supply? If not, no amount of total listing growth fixes the problem. The demand-weighted coverage metric operationalizes this insight and makes it impossible to show metric progress without actually solving the buyer problem.',
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // M16 — Maps / Navigation Quality
+  // ─────────────────────────────────────────────
+  {
+    id: 'M16',
+    title: 'How Do You Measure Navigation Quality When You Rarely Know the Right Answer?',
+    subtitle: 'Wayfind · Consumer Maps · Route Quality',
+    difficulty: 'advanced',
+    isFree: false,
+    domain: 'maps',
+    linkedConceptIds: ['proxy-metric', 'guardrail-metric', 'primary-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Wayfind',
+      product: 'Turn-by-turn navigation app — 12M MAU, car and pedestrian routing',
+      businessGoal: 'Improve route quality — routes that get users to their destination faster and with less frustration',
+      pressure: 'The routing team shipped a new ML model that optimizes for estimated travel time. In A/B test results, estimated ETA improved by 2.1 minutes. But user complaints about "weird routes" are up. The team needs to know if the new model is actually better.',
+      trap: 'Estimated ETA is a model-generated number, not a real-world outcome. The model that generated the route also generates the ETA — so a model that shortens ETA might just be generating more optimistic estimates. Real route quality must be measured against what actually happened, not what the model predicted.',
+    },
+    fields: [
+      {
+        id: 'primaryMetric',
+        label: 'Primary metric',
+        type: 'single',
+        prompt: 'Which metric is the right north-star for real-world route quality?',
+        options: [
+          {
+            id: 'a',
+            label: 'Actual vs. estimated arrival time accuracy (|actual - predicted| / predicted) — "ETA accuracy"',
+            scoreValue: 2,
+            rationale: 'ETA accuracy measures the gap between what the model promised and what actually happened. A model that provides 2.1-minute shorter ETAs but is systematically over-optimistic will show worse ETA accuracy — revealing the improvement as a calibration artifact, not a real quality gain. This metric breaks the circularity of measuring model output with model-generated predictions.',
+          },
+          {
+            id: 'b',
+            label: 'Estimated ETA improvement — model-predicted travel time for treatment vs. control routes',
+            scoreValue: 0,
+            rationale: 'This is the circular metric the team is currently using. The routing model generates both the route and the ETA — a model that generates more optimistic ETAs will show better estimated ETA even if real-world travel time is identical or worse. ETA improvement without ETA accuracy is not a quality measurement.',
+          },
+          {
+            id: 'c',
+            label: 'Route deviation rate — share of navigated routes where users deviate from the suggested route',
+            scoreValue: 2,
+            rationale: 'Also a strong primary metric. Route deviation is an implicit user judgment: when a user overrides the suggested route, they are voting that it was worse than their local knowledge. A model producing more "weird routes" should show higher deviation rate, which matches the user complaint signal. It measures real-world route acceptance without requiring ground truth arrival times.',
+          },
+          {
+            id: 'd',
+            label: 'Session completion rate — share of navigation sessions that reach the destination',
+            scoreValue: 1,
+            rationale: 'Session completion is a useful engagement metric — users who abandon navigation mid-trip are signaling something went wrong. But it conflates abandoned trips (user arrived and turned off nav) with genuinely bad routes. It also catches only the most extreme quality failures; a bad route that still gets you there counts as a success.',
+          },
+        ],
+      },
+      {
+        id: 'guardrailMetrics',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt: 'Which guardrails protect against route quality regression in specific conditions the aggregate metric might miss?',
+        options: [
+          {
+            id: 'a',
+            label: 'Route quality by trip type (local / highway / urban dense) + deviation rate on first-time routes + user complaint rate for "unusual route" category',
+            scoreValue: 2,
+            rationale: 'Route quality by trip type catches regressions that aggregate metrics average away — a model that dramatically improves highway routes while degrading urban dense routing will look neutral in aggregate. Deviation rate on first-time routes is the hardest test: users who don\'t know the area must trust the model, so deviations from first-time users represent genuine model quality failures. The complaint rate with "unusual route" category directly tracks the user signal the team is already seeing.',
+          },
+          {
+            id: 'b',
+            label: 'App store rating and navigation session volume',
+            scoreValue: 0,
+            rationale: 'App store ratings lag quality changes by months and reflect the full app experience, not routing specifically. Session volume is a demand metric — it will remain stable for months after route quality degrades because users don\'t have alternatives. Neither provides early warning for specific route quality regressions.',
+          },
+          {
+            id: 'c',
+            label: 'Average trip duration and average distance per trip',
+            scoreValue: 1,
+            rationale: 'Trip duration is useful — if the new model produces shorter actual durations, that\'s a genuine quality signal. But average duration is sensitive to trip mix changes (more short trips in the treatment group can make duration look better with no routing improvement). It needs to be controlled for trip type and distance to be interpretable.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary: 'Navigation quality presents a fundamental measurement challenge: you rarely have reliable ground truth about what the optimal route was. The key insight is to break the circularity of measuring model quality with model-generated predictions. ETA accuracy compares model predictions against real-world outcomes, catching over-optimism. Route deviation uses user behavior as an implicit quality vote. Together they measure what actually happened and what users actually preferred — not what the model predicted would happen. Segment-level guardrails are essential because aggregate route quality metrics hide regressions in specific trip types.',
+      seniorRead: 'The measurement sophistication required for navigation quality is the same as for any model-generated metric: you must separate model performance from model prediction. A model that predicts its own performance will always look good. The right measurement structure is: (1) measure model output against real-world outcomes (ETA accuracy), (2) use user behavior as an implicit quality signal that the model cannot influence (deviation rate), (3) segment by conditions where the model might be systematically miscalibrated. This framework generalizes to any ML-driven product feature — recommendation engines, fraud models, search ranking — anywhere a model both generates the outcome and predicts whether it was good.',
+    },
+  },

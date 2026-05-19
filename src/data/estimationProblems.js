@@ -644,4 +644,361 @@ Engagement value check: At 30 min/day and $85/year ARPU, Instagram generates $85
       'Forgetting to benchmark against comparable platforms — ARPU estimates without a benchmark have no reality check',
     ],
   },
+
+  {
+    id: 'EST09',
+    title: 'How Many WhatsApp Messages Are Sent Per Day?',
+    subtitle: 'Product Metrics · Messaging',
+    difficulty: 'Senior',
+    isFree: false,
+    tags: ['WhatsApp', 'messaging', 'Meta', 'global-scale', 'product-metrics'],
+    category: 'product-metrics',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate how many WhatsApp messages are sent globally per day.',
+
+    frameworkSteps: [
+      'Step 1 — Estimate WhatsApp MAU and DAU: How many people use WhatsApp, and how many of those are active on any given day?',
+      'Step 2 — Estimate messages per DAU per day: What is the average number of messages a daily active WhatsApp user sends?',
+      'Step 3 — Compute total: DAU × messages/user = total messages/day.',
+      'Step 4 — Sanity check: Compare against WhatsApp\'s disclosed figures and comparable platforms.',
+    ],
+
+    hints: [
+      'WhatsApp reported ~2 billion monthly active users in 2020 and has grown since. It is the dominant messaging app in most non-US markets.',
+      'WhatsApp users are concentrated in high-engagement markets: India (~500M users), Brazil (~120M), Indonesia, Nigeria, and Europe.',
+      'Daily active rate for a messaging app is higher than for social media — around 70-75% of MAU use it on a given day.',
+      'WhatsApp includes group chats, which dramatically increase per-session message volume. A single group message counts once for sends but could reach 100+ recipients.',
+      'WhatsApp has historically disclosed 100 billion messages per day (in 2020). By 2024, the figure is likely higher.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: Estimate WhatsApp DAU.
+
+WhatsApp MAU: ~2.4 billion as of 2024.
+Daily active rate: ~72% (messaging apps have higher daily engagement than social media because they are utility-like communication tools, not entertainment feeds).
+DAU = 2.4B × 0.72 = ~1.73B daily active users.
+
+Step 2: Estimate messages sent per DAU per day.
+
+Segment WhatsApp users by messaging intensity:
+- Heavy users (primarily in South Asia, Brazil, Nigeria, teens and young adults): ~30% of DAU. Use WhatsApp as their primary communication channel. Estimate 40 messages/day (includes group chats, voice message transcription replies, business interactions).
+- Moderate users (Europe, Southeast Asia, everyday communication): ~45% of DAU. Estimate 15 messages/day.
+- Light users (business contacts only, occasional personal): ~25% of DAU. Estimate 4 messages/day.
+
+Weighted average messages/DAU: (0.30 × 40) + (0.45 × 15) + (0.25 × 4) = 12 + 6.75 + 1 = ~20 messages/user/day.
+
+Step 3: Total messages per day.
+1.73B DAU × 20 messages = ~34.6 billion messages/day.
+
+Step 4: Sanity check.
+WhatsApp disclosed 100 billion messages/day in 2020. Our 35B estimate is 3x lower. The discrepancy likely reflects two things: (1) WhatsApp may count received messages, not just sent — a group of 50 people counts each message as 50 received, 1 sent. If the ratio is sent:received = 1:3 on average, our 35B sent becomes ~105B total. (2) Message count may include read receipts, delivery notifications, and status updates.
+
+If the question is "sent messages" (1 per user action), ~35B is the right range. If the question is "messages processed by servers" (including delivery to all recipients), 100B+ is consistent.
+
+Final answer: ~35B messages sent per day, or ~100B messages delivered/processed per day. State both and explain the difference.`,
+      keyAssumptions: [
+        '2.4B MAU — Meta has not disclosed a more recent figure but organic growth in emerging markets is steady',
+        '72% daily active rate — messaging apps have near-utility engagement in high-volume markets',
+        '20 messages/user/day — conservative; heavy group chat users exceed this but light users bring the average down',
+        'Sent vs. delivered distinction — critical for matching against WhatsApp\'s disclosed 100B figure',
+      ],
+      finalEstimate: 'Range: 30B–40B messages sent per day; ~100B messages delivered (counting each recipient)',
+      sanityChecks: [
+        'WhatsApp disclosed 100B messages/day in 2020. Adjusting for sent vs. delivered, our estimate is consistent.',
+        'SMS comparison: at peak, global SMS volume was ~23B messages/day (2012). WhatsApp overtook SMS by 2014 and has grown since — 35B+ sent is plausible.',
+        'Telegram discloses ~700M MAU and is a distant second in engagement to WhatsApp in most markets. WhatsApp should be 3x higher in message volume given its user base advantage.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Distinguishes between messages sent (1 per user action) and messages delivered (1 per recipient) — explains why WhatsApp\'s disclosed 100B figure is not in conflict',
+      'Segments users by intensity rather than applying a flat messages/day estimate',
+      'Notes that group chats inflate message volume asymmetrically (1 sent → N delivered)',
+      'Benchmarks against WhatsApp\'s disclosed figures and other messaging platforms',
+    ],
+
+    commonMistakes: [
+      'Treating WhatsApp like a social media feed — messaging apps have much higher DAU rates and interaction frequency',
+      'Not knowing WhatsApp\'s approximate user base (2B+) — a specific, disclosed number that an interviewer will expect you to know',
+      'Confusing "sent" with "delivered" when citing the 100B figure — this causes apparent contradiction with a bottom-up estimate',
+      'Ignoring group chats — they account for a large share of messages in high-engagement markets',
+    ],
+  },
+
+  {
+    id: 'EST10',
+    title: 'How Much Storage Does Netflix Need for Its Entire Catalog?',
+    subtitle: 'Infrastructure · System Scale',
+    difficulty: 'Senior',
+    isFree: false,
+    tags: ['Netflix', 'storage', 'infrastructure', 'system-design', 'video'],
+    category: 'infrastructure',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate how much total cloud storage Netflix requires to host its entire streaming video catalog.',
+
+    frameworkSteps: [
+      'Step 1 — Estimate Netflix\'s catalog size: How many hours of content does Netflix have?',
+      'Step 2 — Estimate file size per hour of video: How large is one hour of Netflix video, accounting for encoding formats and quality levels?',
+      'Step 3 — Multiply: Total storage = catalog hours × file size per hour.',
+      'Step 4 — Apply redundancy/replication multiplier: Netflix replicates data across multiple regions for availability.',
+      'Step 5 — Sanity check: Compare against Netflix\'s disclosed infrastructure usage.',
+    ],
+
+    hints: [
+      'Netflix reported ~36,000 hours of content as of 2023 (TV episodes + movies + originals).',
+      'Netflix encodes every piece of content in multiple formats: different resolutions (480p, 720p, 1080p, 4K), different codecs (H.264, H.265/HEVC, AV1), and different bitrates for adaptive streaming.',
+      'A typical 1-hour episode at 4K HEVC might be 5–8 GB. At 1080p H.264, it might be 3–5 GB. Netflix maintains ~1,000 different encoding profiles per title.',
+      'Netflix uses Amazon S3 as its primary storage layer and has disclosed heavy investment in AWS infrastructure.',
+      'Netflix stores at least 3 copies of each file for redundancy (distributed across regions). Originals may be stored with higher redundancy.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: Catalog size.
+Netflix reported ~36,000 hours of content in 2023 — this includes movies (~15,000 movies × ~1.8 hours average), TV series (~5,000 series × ~2 seasons × ~8 episodes × 0.7 hours), and documentaries/specials.
+
+Step 2: File size per hour per encoding profile.
+Netflix encodes content in roughly 4 quality tiers:
+- 4K HDR (HEVC/H.265): ~6 GB/hour
+- 1080p (H.265): ~3.5 GB/hour
+- 720p (H.264): ~1.5 GB/hour
+- 480p/360p mobile (H.264/AV1): ~0.5 GB/hour
+
+Netflix maintains ~1,000 encoding profiles per title when you include different device types, adaptive bitrate rungs, language versions, and accessibility tracks (audio descriptions, subtitles embedded in various formats). However, many of these are smaller variants — the primary storage is driven by the top 4-5 quality tiers.
+
+Simplified: 5 main quality tiers averaging ~2.5 GB/hour = 12.5 GB/hour per title across all tiers.
+
+Step 3: Raw catalog storage.
+36,000 hours × 12.5 GB/hour = 450,000 GB = ~450 TB of content before replication.
+
+Step 4: Replication multiplier.
+Netflix replicates data across at least 3 AWS regions for redundancy. Originals (~30% of catalog) may have additional backups. Use a 3.5× replication multiplier:
+450 TB × 3.5 = ~1,575 TB ≈ 1.6 petabytes.
+
+Step 5: Add operational data.
+Netflix also stores user data, analytics, thumbnail images (multiple sizes per title per user context), recommendation model artifacts, and encoding pipeline data. This likely adds another 20-30% on top of raw video. Total: ~2 petabytes.
+
+Range: 1.5–3 petabytes of total storage.
+
+Sanity check: Netflix has disclosed using AWS S3 at massive scale. A 2015 Netflix blog post mentioned storing data at petabyte scale. Our 2 PB estimate for current catalog is consistent with publicly discussed infrastructure scale. Netflix's actual catalog is larger if you include raw footage, but for final-encoded streaming assets, 1.5–3 PB is the right order of magnitude.`,
+      keyAssumptions: [
+        '36,000 hours of final encoded content — Netflix\'s publicly disclosed catalog size',
+        '5 encoding profiles at 12.5 GB/hour average — simplified from ~1,000 profiles; captures dominant storage cost',
+        '3.5× replication factor — standard for high-availability distributed storage at Netflix\'s SLA requirements',
+        'Excludes raw production footage — the question is streaming-ready encoded catalog',
+      ],
+      finalEstimate: 'Range: 1.5–3 petabytes for streaming catalog; ~2 PB central estimate',
+      sanityChecks: [
+        '2 PB at $0.023/GB/month (S3 standard) = ~$46M/month storage cost. Netflix\'s total AWS bill is estimated at ~$1.7B/year. Storage at ~$550M/year is ~32% of that — high but plausible given video-heavy workload.',
+        'Compare: YouTube hosts ~1 billion hours of video — orders of magnitude larger than Netflix. YouTube reportedly uses ~1 exabyte (1,000 PB). Netflix at 1-3 PB for 36,000 hours is proportionally consistent.',
+        'Netflix\'s original content is much higher quality than user-generated video. Per-hour storage cost is higher.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Distinguishes encoding profiles (multiple per title) from raw catalog hours — explains why storage is much larger than catalog hours × one file size',
+      'Applies a replication multiplier explicitly — storage estimates without redundancy understate real infrastructure cost',
+      'Knows Netflix\'s approximate catalog size (~36,000 hours) — shows product knowledge',
+      'Arrives at petabyte scale and sanity checks against storage cost relative to Netflix\'s known AWS spend',
+    ],
+
+    commonMistakes: [
+      'Estimating one file per title — Netflix stores ~1,000 encoding variants per title for adaptive bitrate and multi-device support',
+      'Forgetting replication — cloud storage for production systems is replicated 3+ times; single-copy estimates are wrong',
+      'Estimating in GB instead of TB/PB — not recognizing that 36,000 hours of multi-profile video is petabyte scale',
+      'Confusing catalog hours with total watchtime — catalog hours is what Netflix stores; watchtime per day is a different metric',
+    ],
+  },
+
+  {
+    id: 'EST11',
+    title: 'How Much Does It Cost Uber to Complete One Ride?',
+    subtitle: 'Unit Economics · Marketplace',
+    difficulty: 'Senior',
+    isFree: false,
+    tags: ['Uber', 'unit-economics', 'cost-structure', 'marketplace', 'driver-pay'],
+    category: 'unit-economics',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate the fully loaded cost to Uber of completing one average ride in the United States.',
+
+    frameworkSteps: [
+      'Step 1 — Identify cost categories: What does Uber actually spend to fulfill a single ride?',
+      'Step 2 — Estimate driver pay per ride: This is the largest variable cost component.',
+      'Step 3 — Estimate platform overhead per ride: Payments processing, insurance, tech infrastructure, customer support.',
+      'Step 4 — Allocate fixed costs per ride: S&M, R&D, G&A amortized over ride volume.',
+      'Step 5 — Sanity check: Cross-check against Uber\'s disclosed financial metrics.',
+    ],
+
+    hints: [
+      'The average Uber ride in the US is ~$20 gross booking value. Uber\'s take rate is roughly 25-30%.',
+      'Driver pay is the largest variable cost — drivers receive approximately 70-75% of the fare (before Uber\'s service fee).',
+      'Uber provides $1M liability coverage per ride. Insurance is a significant cost per trip.',
+      'Payments processing fees run at approximately 2-3% of gross booking value.',
+      'Uber\'s adjusted EBITDA margin in 2023 was ~4% of gross bookings. Their adjusted EBITDA margin per trip was roughly $0.80.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: Establish the baseline.
+Average US Uber ride: ~$20 gross booking value.
+Uber net revenue (take rate): ~27% × $20 = $5.40 per ride.
+Driver pay: ~73% × $20 = $14.60 per ride (this is the direct cost paid out of gross bookings).
+
+Note: Uber's P&L shows "Cost of Revenue" as a % of net revenue (the $5.40), not gross bookings. I'll work from gross bookings for clarity.
+
+Step 2: Variable costs per ride.
+
+Driver pay: $14.60 (already established — this is the largest cost)
+Insurance (per-trip): Uber provides commercial auto insurance while the driver is in trip. Commercial rideshare insurance in the US is estimated at ~$0.35–0.50/ride on average. Use $0.45.
+Payment processing: ~2.5% of $20 = $0.50.
+Driver incentives/bonuses (surge, guarantees): ~3-4% of gross bookings annualized = ~$0.70.
+Fraud and chargebacks: ~0.5% of net revenue = ~$0.03.
+Estimated variable cost: $14.60 + $0.45 + $0.50 + $0.70 + $0.03 = ~$16.28.
+
+Step 3: Allocate overhead per ride.
+Uber had ~2.2B trips in 2023 in mobility. Total revenue (net) was ~$14.2B.
+
+Cost of revenue (support, infrastructure): ~38% of net revenue = $5.40 × 0.38 = $2.05/ride.
+But most of this is driver pay and insurance already counted. Incremental overhead (customer support, maps/routing tech, AWS): ~$0.35/ride.
+
+Sales & marketing: ~16% of net revenue = $5.40 × 0.16 = $0.86/ride.
+R&D: ~15% of net revenue = $0.81/ride.
+G&A: ~9% of net revenue = $0.49/ride.
+
+Total overhead per ride: $0.35 + $0.86 + $0.81 + $0.49 = $2.51.
+
+Step 4: Fully loaded cost per ride.
+Variable costs: $16.28
+Overhead allocation: $2.51
+Total: $18.79 per ride.
+
+Revenue (net): $5.40 per ride.
+Gross bookings: $20 per ride.
+
+The math: Uber retains $5.40 from a $20 ride. Their adjusted EBITDA was ~$1.1B on ~$14.2B net revenue in 2023 = ~7.7% of net revenue = ~$0.42/ride in EBITDA. That means total costs from net revenue perspective are $5.40 − $0.42 = $4.98 per ride. Adding back driver pay ($14.60) gives fully loaded cost of ~$19.58 per ride.
+
+Final estimate: ~$18–20 fully loaded cost per ride, leaving $0–$2 in net economics.`,
+      keyAssumptions: [
+        '$20 average gross booking value — mid-range for US UberX; actual average is in the $18–22 range based on disclosed data',
+        '27% take rate — Uber\'s disclosed "take rate" (net revenue / gross bookings)',
+        '$0.45 insurance cost per ride — based on industry data for commercial rideshare auto insurance',
+        'Overhead allocation via % of net revenue — derived from Uber\'s 2023 10-K cost structure',
+      ],
+      finalEstimate: 'Fully loaded cost: ~$18–20 per ride; Uber earns $0–$2 margin per ride at current economics',
+      sanityChecks: [
+        'Uber adjusted EBITDA per trip: ~$0.35–0.50/trip in 2023. Our $0–$2 range is consistent — Uber was marginally profitable on a per-trip basis.',
+        'Driver economics check: A driver earning $14.60 per ride, with a 20-minute average trip, earns ~$43.80/hour gross before fuel, depreciation, and self-employment tax (~30%). Net driver earnings: ~$25–30/hour — consistent with published driver surveys.',
+        'Compare to food delivery: DoorDash\'s contribution margin per order is similarly thin (~$1–2 per order). Platform businesses at scale tend to have 5-10% contribution margins before corporate overhead.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Starts from gross booking value (not net revenue) and correctly allocates driver pay as the dominant cost',
+      'Distinguishes between gross booking value, net revenue (take rate), and unit economics at each layer',
+      'Applies a per-ride overhead allocation using Uber\'s disclosed cost structure ratios',
+      'Arrives at thin margins ($0–$2/ride) and sanity-checks against Uber\'s disclosed EBITDA',
+    ],
+
+    commonMistakes: [
+      'Treating Uber\'s "revenue" as gross bookings rather than net revenue — conflates gross booking value with what Uber actually recognizes',
+      'Forgetting driver pay is the dominant cost (73-75% of gross booking) — understates variable cost',
+      'Not accounting for insurance per ride — a non-trivial fixed variable cost in rideshare',
+      'Computing profit as "take rate minus overhead" without recognizing that Uber\'s "take rate" net revenue still has significant COGS against it',
+    ],
+  },
+
+  {
+    id: 'EST12',
+    title: 'How Many Software Engineers Work at Google?',
+    subtitle: 'Workforce Estimation · Tech Company',
+    difficulty: 'Analyst',
+    isFree: false,
+    tags: ['Google', 'workforce', 'headcount', 'engineering', 'org-design'],
+    category: 'workforce',
+    approach: 'top-down',
+
+    prompt: 'Estimate how many software engineers currently work at Google (Alphabet).',
+
+    frameworkSteps: [
+      'Step 1 — Estimate total Google/Alphabet headcount: What is Alphabet\'s total employee count?',
+      'Step 2 — Estimate the engineering fraction: What share of a tech company\'s workforce is software engineers?',
+      'Step 3 — Cross-check via product surface area: Can you estimate how many engineers different Google products require?',
+      'Step 4 — Sanity check: Alphabet has disclosed headcount in filings.',
+    ],
+
+    hints: [
+      'Alphabet (Google\'s parent) had ~182,000 full-time employees at the end of 2023. They conducted significant layoffs (~12,000) in early 2023.',
+      'Large tech companies typically have 30–40% of their workforce in engineering and technical roles.',
+      'But "software engineer" is narrower than "technical role" — it excludes SREs, data scientists, TPMs, hardware engineers, and IT staff.',
+      'Google operates search, YouTube, Google Cloud, Android, Maps, Gmail, Ads, Workspace, DeepMind, Waymo, and many other products. Each requires substantial engineering.',
+      'A useful proxy: LinkedIn data often shows ~25–30% of Google employees list "software engineer" or "software development" titles.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Approach 1: Top-down from total headcount.
+
+Alphabet total headcount: ~182,000 employees as of end-2023.
+
+Technical workforce breakdown:
+- Software engineers (SWE, SWE II, Senior SWE, Staff, Principal, L3-L9): ~27% of headcount
+- Site reliability engineers (SRE): ~3%
+- Hardware/EE engineers: ~3%
+- Data scientists and ML engineers: ~4%
+- TPMs and PMs: ~6%
+- Sales, ops, legal, finance, HR: ~35%
+- Other technical staff (IT, security, support): ~7%
+- Nontechnical ops (facilities, admin): ~15%
+
+Software engineers specifically: 182,000 × 0.27 = ~49,000.
+
+Approach 2: Bottom-up via product teams.
+
+Google's major products and their approximate engineering headcount:
+- Search + Ads infrastructure: ~8,000 engineers (search ranking, ads serving, quality, relevance)
+- Google Cloud (GCP): ~10,000 (fastest-growing segment with significant hiring in 2021-2022)
+- YouTube: ~4,000 (video pipeline, recommendation, ads)
+- Android + Pixel hardware software: ~5,000
+- Google Maps + Geo products: ~2,500
+- Gmail/Workspace: ~2,000
+- Chrome + V8: ~1,000
+- DeepMind + Google Brain (now Google DeepMind): ~3,000 researchers and engineers
+- Waymo: ~1,500
+- Platforms/infra (Borg, Kubernetes, Spanner, Bigtable, TensorFlow teams): ~5,000
+- Other (Verily, X, Fiber, misc): ~2,000
+- Internal tools + G Suite developer experience: ~3,000
+
+Sum: ~47,000 software engineers.
+
+Both approaches converge on ~45,000–50,000 software engineers.
+
+Final estimate: ~45,000–55,000 software engineers at Google/Alphabet, with a point estimate of ~50,000.`,
+      keyAssumptions: [
+        '182,000 total Alphabet headcount — from 2023 annual report (post-12k layoffs)',
+        '27% software engineering fraction — based on LinkedIn title distribution analysis and tech company benchmarks',
+        'Product team sizes — estimated from public hiring patterns, org charts, and product complexity',
+        'Excludes contractors and TVCs (temps, vendors, contractors) — Google\'s TVC population is estimated at ~100,000+, many of whom are technical',
+      ],
+      finalEstimate: 'Range: 45,000–55,000 full-time software engineers; ~50,000 central estimate',
+      sanityChecks: [
+        'Revenue per engineer: Alphabet 2023 revenue = ~$307B. At 50,000 engineers: $6.1M revenue/engineer. Typical range for scaled tech companies is $1M–10M. $6.1M is toward the high end, consistent with Google\'s asset-light software business model.',
+        'LinkedIn proxy: LinkedIn typically shows ~13,000-17,000 people listing current employment as Google with "software engineer" in title — but this undercounts due to people not updating profiles and privacy settings. A 3x correction gives ~45,000-50,000.',
+        'Meta comparison: Meta had ~87,000 employees in 2023, roughly 40% engineering. ~35,000 engineers. Google is ~2x Meta\'s headcount, so ~50,000-70,000 Google engineers is plausible. Our 50k estimate sits at the low end of that range.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Uses two independent approaches (top-down headcount fraction + bottom-up product teams) and reconciles them',
+      'Knows Alphabet\'s approximate total headcount (~180k) — a foundational fact for any Google sizing question',
+      'Distinguishes SWE from other technical roles (SRE, data scientists, hardware) to answer the specific question asked',
+      'Notes TVC workforce as a caveat — shows awareness that disclosed headcount undercounts technical capacity',
+    ],
+
+    commonMistakes: [
+      'Estimating total Alphabet headcount as much lower (e.g., 50,000) — Google is very large; ~180,000 is publicly disclosed',
+      'Applying a generic 40% engineering fraction — this is for total technical staff, not specifically software engineers',
+      'Not distinguishing SWEs from SREs, data scientists, and hardware engineers — the question asks specifically about software engineers',
+      'Forgetting to note that TVCs (contractor population) likely doubles the effective technical workforce',
+    ],
+  },
 ];

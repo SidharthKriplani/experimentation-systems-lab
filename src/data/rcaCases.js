@@ -3243,6 +3243,1533 @@ Expected output: for post_algorithm cohorts, quintile 1 (fewest impressions) sho
       ],
       interviewPhrase: 'Ranking algorithms optimized for engagement quality create cold-start traps for new supply — any new creator, seller, or contributor starts with structurally worse signals than incumbents, so my first question when new-side retention drops is always whether a ranking change just made the gap bigger.',
     },
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA13 — Push Notification CTR Collapsed
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA13',
+    title: 'Push Notification CTR Dropped 40% in One Week',
+    subtitle: 'Orion · Consumer Mobile · Re-engagement',
+    difficulty: 'analyst',
+    isFree: true,
+    domain: 'engagement',
+    linkedConceptIds: ['segmentation', 'data-quality-check', 'funnel-decomposition'],
+    context: {
+      metricMovement: 'Push notification CTR dropped from 8.2% to 4.9% (-3.3pp) over 7 days',
+      businessImpact: 'Re-engagement is a primary D30 retention driver; CTR decline puts 15% of weekly re-engaged users at risk',
+      timeWindow: 'Gradual decline over 7 days, not overnight',
+      knownFacts: [
+        'No changes to notification content or send logic in the past 30 days',
+        'Send volume is up 12% (more notifications being sent)',
+        'The iOS permission prompt was updated 10 days ago to a new consent flow',
+        'Android CTR is flat; iOS CTR dropped 55%',
+        'New user cohorts (registered last 14 days) have 40% lower notification opt-in rate than historical baseline'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'platform_split',
+        stepNumber: 1,
+        label: 'Platform Segmentation',
+        prompt: 'CTR dropped platform-wide but the clues point to a platform-specific cause. What is your first move?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Segment CTR by platform (iOS vs. Android) to confirm whether the drop is concentrated on one platform',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'The known facts already contain the answer: Android is flat and iOS dropped 55%. Confirming this segmentation first is the right move because it immediately narrows the investigation to iOS-specific causes — eliminating content quality, send logic, and server-side issues as candidates. A platform-specific drop in the same week as an iOS permission flow change has an obvious candidate cause.'
+          },
+          {
+            id: 'b',
+            label: 'Investigate notification content quality — perhaps personalization degraded',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'If content quality degraded, you would expect both platforms to show declines. Android is flat. This means the cause is iOS-specific. Investigating content at this stage wastes diagnostic time and points away from the real cause.'
+          },
+          {
+            id: 'c',
+            label: 'Check send volume and send timing — maybe over-sending is suppressing CTR',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Send volume did increase 12%, which could dilute CTR on its own. But it increased for all users, so Android should also show a CTR impact. Android is flat. The platform asymmetry rules out send volume as the primary driver.'
+          }
+        ]
+      },
+      {
+        id: 'permission_diagnosis',
+        stepNumber: 2,
+        label: 'Root Cause Identification',
+        prompt: 'iOS CTR dropped 55% the same week the iOS permission prompt was updated. What is the most likely root cause, and how do you confirm it?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'The new permission flow lowered opt-in rate — new users are not granting push permission, so the notification-eligible user pool is shrinking while the denominator keeps growing',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Correct. The known fact confirms this: new user opt-in rate dropped 40% after the permission flow change. When opt-in rate falls, new users are still counted in the active user denominator for CTR but generate zero clicks (they never receive notifications). This inflates the denominator without a corresponding numerator, collapsing CTR. Confirm by computing CTR separately for users who were opted-in before the permission change vs. after.'
+          },
+          {
+            id: 'b',
+            label: 'iOS pushed a background app refresh policy change that is suppressing notification delivery',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Plausible but the permission flow change correlating with a 40% opt-in rate drop is the more direct explanation. An OS-level delivery change would affect all opted-in users uniformly, not new user opt-in rates specifically.'
+          },
+          {
+            id: 'c',
+            label: 'Notification content became irrelevant to iOS users due to a personalization model change',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'No content changes occurred in the past 30 days. A content issue affecting iOS but not Android with no code change is implausible.'
+          }
+        ]
+      },
+      {
+        id: 'fix',
+        stepNumber: 3,
+        label: 'Remediation Path',
+        prompt: 'The root cause is confirmed: the new iOS permission flow lowers opt-in rate. What is the right fix?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Redesign the permission flow to show value before the OS prompt — pre-prime users with a custom in-app screen explaining notification benefits',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'The optimal iOS permission strategy is two-step: custom in-app pre-prime → OS permission prompt. Users who see value before being asked opt in at significantly higher rates. This addresses root cause, not symptom.'
+          },
+          {
+            id: 'b',
+            label: 'Revert the permission flow to the old version immediately',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Reverting stops the bleeding but doesn\'t improve the old flow. Design an improved version and A/B test it. Revert may be appropriate as a temporary measure.'
+          },
+          {
+            id: 'c',
+            label: 'Increase notification send frequency to compensate for the lower opt-in pool',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Over-sending to the remaining opted-in base accelerates opt-out, shrinking the pool further. Never compensate for consent attrition with volume.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'New iOS permission consent flow lowered opt-in rate 40% for new users. Active user denominator kept growing with new users who had not opted in, while numerator (clicks) stagnated — collapsing the rate.',
+      lessonsLearned: [
+        'Platform-specific drops always point to platform-specific causes — segment first',
+        'Permission flow changes should always include pre/post opt-in rate measurement as primary success metric',
+        'CTR denominator definition matters — including non-opted-in users makes CTR a mixed metric',
+        'Two-step iOS permission flows consistently outperform direct OS prompts in opt-in rate'
+      ],
+      interviewPhrase: '"Segment by platform first. Android flat, iOS down 55% the same week we changed the permission flow — I\'d check new-user opt-in rate before and after the flow change, then compute CTR separately for pre- and post-change cohorts."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA14 — API Error Rate Spike Post-Deploy
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA14',
+    title: 'API Error Rate Tripled After a Routine Deploy',
+    subtitle: 'Nexus · B2B SaaS · API Reliability',
+    difficulty: 'analyst',
+    isFree: false,
+    domain: 'platform',
+    linkedConceptIds: ['data-quality-check', 'funnel-decomposition', 'segmentation'],
+    context: {
+      metricMovement: 'API error rate (5xx) jumped from 0.3% to 0.9% immediately after deploy at 14:00',
+      businessImpact: '3 enterprise customers have opened P1 support tickets',
+      timeWindow: 'Error rate jump at 14:00, sustained 90 minutes',
+      knownFacts: [
+        'Deploy at 14:00 was a backend refactor — no new features, no schema changes',
+        'Error rate concentrated in /integrations/webhook endpoint (4.8% error rate vs. 0.1% on others)',
+        'Deploy included connection pool configuration change for the integrations database',
+        'Error logs show "connection pool exhausted" for the webhook endpoint',
+        'Traffic volume on webhook endpoint is normal — no traffic spike'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'endpoint_isolation',
+        stepNumber: 1,
+        label: 'Error Isolation',
+        prompt: 'Error rate jumped but is concentrated in one endpoint. What is your first diagnostic move?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Inspect error logs for /integrations/webhook and cross-reference with the deploy changelog',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Endpoint-specific concentration + deploy timing + connection pool config change + "connection pool exhausted" in logs = direct diagnosis. You already have all the information needed. Connect the facts.'
+          },
+          {
+            id: 'b',
+            label: 'Check for a traffic spike on the webhook endpoint',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Traffic volume is explicitly noted as normal. A capacity problem from traffic would require increased traffic.'
+          },
+          {
+            id: 'c',
+            label: 'Roll back the deploy immediately before investigating',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Rollback is a valid emergency response, but diagnosing first means you can make a targeted config fix rather than a full rollback — faster and safer. If P1 tickets remain unresolved after 15 minutes of diagnosis, rollback while continuing to diagnose.'
+          }
+        ]
+      },
+      {
+        id: 'root_cause',
+        stepNumber: 2,
+        label: 'Root Cause Confirmation',
+        prompt: 'Logs confirm "connection pool exhausted" on webhook endpoint. Deploy changed pool config. What is the precise root cause?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Pool size was reduced in the refactor, leaving insufficient connections for the webhook endpoint\'s burst concurrency pattern',
+            isCorrect: true,
+            level: 'strong',
+            feedback: '"Connection pool exhausted" with no traffic increase after a pool config change = pool size reduced below the concurrency requirement. Webhook endpoints have burst concurrency (many integrations firing simultaneously) that requires larger pool headroom than average endpoints.'
+          },
+          {
+            id: 'b',
+            label: 'A memory leak prevents connections from being released back to the pool',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Memory leaks cause gradual exhaustion over hours, not an immediate post-deploy jump. The immediate timing points to configuration, not a new code bug.'
+          },
+          {
+            id: 'c',
+            label: 'The database is under heavy load from the deploy, causing slow queries that hold connections',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Slow queries can contribute but the deploy had no query changes. The pool size reduction is the more direct causal link.'
+          }
+        ]
+      },
+      {
+        id: 'remediation',
+        stepNumber: 3,
+        label: 'Fix and Prevention',
+        prompt: 'Pool size reduced from 50 to 20 in the refactor. What is the right fix and prevention?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Immediate: restore pool size via config change (no full rollback needed). Prevention: add connection pool saturation as a deployment canary metric',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Config-only change restores pool size faster than a full code rollback. Pool saturation as a canary would have caught this within minutes of deploy, not 90 minutes later.'
+          },
+          {
+            id: 'b',
+            label: 'Roll back the full deploy. Prevention: require manual testing of connection pool behavior before every deploy',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Full rollback is slower than a targeted config fix. Manual testing is expensive and doesn\'t catch production-specific load patterns as reliably as automated canary monitoring.'
+          },
+          {
+            id: 'c',
+            label: 'Scale up webhook endpoint capacity. Prevention: document connection pool requirements',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Scaling treats the symptom. Documentation is a weak prevention measure compared to automated monitoring.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Backend refactor reduced connection pool size from 50 to 20. Webhook endpoint burst concurrency exhausted the reduced pool, causing 5xx errors for requests that could not acquire a connection within timeout.',
+      lessonsLearned: [
+        '"Routine refactors" with config changes are not risk-free',
+        'Connection pool saturation should be a standard deployment canary metric',
+        'Config-only hotfixes are faster and safer than full rollbacks — preserve this as an incident response tool'
+      ],
+      interviewPhrase: '"Pool exhaustion errors after a pool config change in a refactor — that\'s a near-certain cause. Immediate fix is a config rollback of just the pool size, not a full code rollback. Prevention is automated pool saturation monitoring as a deployment canary."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA15 — Revenue Declining Despite Growing Signups
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA15',
+    title: 'Revenue Declining Even Though Signups Are at an All-Time High',
+    subtitle: 'Threadline · B2B SaaS · Revenue Paradox',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'revenue',
+    linkedConceptIds: ['funnel-decomposition', 'segmentation', 'cohort-analysis'],
+    context: {
+      metricMovement: 'MRR growth rate slowed from 8% MoM to 2% MoM over 3 months despite record signup volume',
+      businessImpact: 'Investor expectations for 8%+ MoM growth; miss will affect Series B terms',
+      timeWindow: 'Gradual 3-month deceleration',
+      knownFacts: [
+        'New signup volume is up 35% YoY — highest ever',
+        'New signups predominantly from a self-serve free trial channel launched 6 months ago',
+        'Free trial conversion rate to paid: 9%, down from 14% six months ago',
+        'Average contract value (ACV) for new paid customers down 22% YoY',
+        'Net revenue retention (NRR) for cohorts older than 12 months stable at 108%'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'revenue_decomp',
+        stepNumber: 1,
+        label: 'Revenue Decomposition',
+        prompt: 'MRR growth slowing while signups grow. What is the right first decomposition?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Decompose MRR into: new MRR + expansion MRR + contraction MRR + churned MRR, and track each component over 3 months',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'MRR growth is a net of four components. NRR stability for old cohorts tells you retention/expansion is fine. The problem is in new MRR quality: lower conversion and lower ACV from the new self-serve channel. The decomposition confirms this and prevents misdiagnosing a new-customer economics problem as a retention problem.'
+          },
+          {
+            id: 'b',
+            label: 'Compare total signup count this quarter vs. last quarter',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Signup count is already confirmed as all-time high. The problem is quality and conversion, not volume.'
+          },
+          {
+            id: 'c',
+            label: 'Investigate whether a product regression is causing trial cancellations',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'NRR stability for older cohorts suggests the product works for converted customers. The problem is upstream in trial quality or conversion, not product experience after conversion.'
+          }
+        ]
+      },
+      {
+        id: 'root_cause',
+        stepNumber: 2,
+        label: 'Root Cause Identification',
+        prompt: 'Free trial conversion dropped from 14% to 9% and new ACV is down 22%. What is the most likely root cause?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'The self-serve free trial channel is acquiring lower-intent, lower-fit users — the signup mix shifted to a segment that converts less and pays less',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'The evidence points to mix shift. Free trial volume up 35% but conversion down 5pp and ACV down 22% — the marginal new trial user is lower-fit than average 6 months ago. Likely SMB/individuals rather than the enterprise accounts the sales-led channel generated. Stable NRR confirms the product delivers value for the right customer — the problem is acquiring them.'
+          },
+          {
+            id: 'b',
+            label: 'Onboarding degraded after the self-serve channel launched, causing lower conversion across all signups',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'If onboarding degraded universally, converted customers would show lower activation or earlier churn. NRR stability for old cohorts rules this out. The ACV decline points to who is signing up, not how they are onboarded.'
+          },
+          {
+            id: 'c',
+            label: 'The sales team is offering larger discounts to hit quarterly targets',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Discounting could explain ACV decline but not the free trial conversion rate drop, which is a self-serve flow. Both happening simultaneously would require corroborating evidence.'
+          }
+        ]
+      },
+      {
+        id: 'fix',
+        stepNumber: 3,
+        label: 'Remediation',
+        prompt: 'Root cause: self-serve channel is acquiring lower-fit user mix. What is the right strategic response?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Add qualification in signup flow: route SMB signups to a lighter tier, route enterprise-fit signals to sales',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'A qualification layer identifies fit at signup and routes accordingly — high-fit users get a sales touch or enterprise trial, low-fit get a lighter tier or honest redirect. This improves conversion rate by ensuring the trial funnel contains primarily high-fit prospects without reducing top-of-funnel reach.'
+          },
+          {
+            id: 'b',
+            label: 'Reduce free trial marketing spend to lower signup volume',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Volume reduction would improve conversion rate as a metric without improving the business. Route and qualify users rather than excluding them.'
+          },
+          {
+            id: 'c',
+            label: 'Extend the free trial period to give lower-fit users more time to find value',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Low-fit users are not converting because the product doesn\'t solve their problem — not because they ran out of time to discover that it does.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Self-serve free trial channel acquired high signup volume but lower-fit user mix (SMB vs. enterprise). Free trial conversion dropped from 14% to 9% and new ACV fell 22%, creating a new MRR quality problem that offset record signup volume. NRR stability for existing customers confirmed this is a new customer mix problem, not a product or retention problem.',
+      lessonsLearned: [
+        'Volume metrics and quality metrics (conversion rate, ACV) must both be tracked — volume without quality context is misleading',
+        'A new acquisition channel changes user mix and the economics of every downstream conversion metric',
+        'NRR stability for older cohorts rules out product problems and points to acquisition mix issues',
+        'MRR growth decomposition is essential before diagnosing growth deceleration'
+      ],
+      interviewPhrase: '"Decompose MRR first. NRR stability for old cohorts tells me the product works. Conversion drop and ACV decline both coinciding with the self-serve channel launch points to mix shift — lower-fit users converting less and paying less. Fix is a qualification layer at signup, not a product fix."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA16 — Search Quality Degraded After Index Rebuild
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA16',
+    title: 'Search Relevance Degraded 3 Days After Catalog Index Rebuild',
+    subtitle: 'Vela · B2C Marketplace · Search Quality',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'search',
+    linkedConceptIds: ['data-quality-check', 'segmentation', 'funnel-decomposition'],
+    context: {
+      metricMovement: 'Search-to-purchase conversion dropped 11% over 3 days; zero-result rate unchanged',
+      businessImpact: 'Search drives 62% of GMV; 11% conversion drop = ~$340k/day',
+      timeWindow: '3-day gradual decline starting the day after a full catalog index rebuild',
+      knownFacts: [
+        'Full catalog index rebuild completed the day before the decline started',
+        'Zero-result rate unchanged — all searches still return results',
+        'CTR on search results down 18%',
+        'Add-to-cart rate from search results down 24%',
+        'Post-click bounce rate (back to search) up 30%',
+        '"Boost by recency" feature enabled during the index rebuild to surface newer listings'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'result_quality',
+        stepNumber: 1,
+        label: 'Relevance vs. Availability',
+        prompt: 'Zero-result rate is flat but conversion is down. What does this tell you?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'The problem is result quality (relevance), not availability — buyers see results but don\'t click or convert on them',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Zero-result flat = index can find listings. CTR down 18% + post-click bounce up 30% = buyers see results, skip most, and return to search immediately after clicking. Classic relevance degradation signature: results exist but are not the right results.'
+          },
+          {
+            id: 'b',
+            label: 'The problem is in the checkout funnel — post-search conversion dropped but pre-search behavior is normal',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'CTR on the search results page is down 18% — this happens before the checkout funnel.'
+          },
+          {
+            id: 'c',
+            label: 'The problem is seasonal — buyer intent dropped for this period',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Seasonal drops reduce search volume, not specifically CTR while leaving zero-result rate unchanged.'
+          }
+        ]
+      },
+      {
+        id: 'recency_boost',
+        stepNumber: 2,
+        label: 'Feature Attribution',
+        prompt: '"Boost by recency" was enabled during the rebuild. How does this explain the relevance degradation?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Recency boost surfaces newer but lower-quality listings above higher-quality established ones — buyers click, immediately bounce, and convert less',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'New listings have fewer reviews, lower ratings, and less proven conversion. Recency boost ranks them above established high-quality listings. Buyers click (they\'re at the top), immediately see a product that doesn\'t match expectations, and return to search. Post-click bounce rate +30% is the definitive signal.'
+          },
+          {
+            id: 'b',
+            label: 'The index rebuild introduced a bug where certain categories are incorrectly indexed',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Category indexing bugs would show in zero-result rates or category-specific conversion drops. Zero-result rate is flat.'
+          },
+          {
+            id: 'c',
+            label: 'The index took too long and shows out-of-stock listings at the top of results',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'The rebuild is described as completed. The recency boost feature is the more direct explanation.'
+          }
+        ]
+      },
+      {
+        id: 'fix',
+        stepNumber: 3,
+        label: 'Remediation',
+        prompt: 'Root cause: recency boost ranks lower-quality new listings over high-quality established ones. What is the right fix?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Disable pure recency boost; instead add a quality floor — new listings get boosted only above a minimum review/rating threshold',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Quality-gated recency signal preserves the goal of surfacing fresh inventory while protecting buyer experience from unrated low-quality listings. Simple on/off is too blunt — the goal was valid, the calibration was wrong.'
+          },
+          {
+            id: 'b',
+            label: 'Roll back the full index rebuild',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Full rebuild rollback is a large operation when the fix is a specific ranking signal that can be toggled.'
+          },
+          {
+            id: 'c',
+            label: 'Keep recency boost but reduce its weight by 50%',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Halving the weight may not fix the problem if zero-review listings are still ranking above 200-review listings. A quality floor is more precise than weight reduction.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: '"Boost by recency" surfaced newly-listed, low-review items at the top of search results. Buyers clicked fewer results (-18% CTR) and bounced back to search immediately (+30% bounce rate), creating a conversion collapse without any change in result availability.',
+      lessonsLearned: [
+        'Relevance degradation signature: zero-result flat + CTR down + post-click bounce up',
+        'Ranking signal changes need quality guardrails — recency without a quality floor degrades marketplaces with uneven listing quality',
+        'Post-click bounce rate is one of the highest-signal metrics for search relevance'
+      ],
+      interviewPhrase: '"Zero-result flat but CTR and add-to-cart down with post-click bounce up — relevance problem, not coverage. Connect that to recency boost: surfacing newer but lower-quality listings. Fix: quality-gated recency — boost only listings above a minimum quality threshold."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA17 — D7 Retention Dropped After Onboarding Redesign
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA17',
+    title: 'D7 Retention Fell 8pp After Onboarding Redesign',
+    subtitle: 'Spark · Consumer Social · New User Retention',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'retention',
+    linkedConceptIds: ['funnel-decomposition', 'cohort-analysis', 'segmentation'],
+    context: {
+      metricMovement: 'D7 retention dropped from 38% to 30% for new user cohorts registered after the onboarding redesign',
+      businessImpact: 'D7 retention predicts D30 and D90; 8pp drop compounds into significant long-run DAU loss',
+      timeWindow: 'Drop cleanly attributable to post-redesign cohorts; pre-redesign cohorts stable',
+      knownFacts: [
+        'New onboarding flow shipped 3 weeks ago — A/B test ran 2 weeks then fully ramped',
+        'A/B test showed +12% improvement in onboarding completion rate',
+        'Average time-to-first-post dropped from 8 to 4 minutes with new flow',
+        'New flow removed "follow 5 friends" step (replaced with "follow 5 interests")',
+        'Notification permission opt-in rate down 15% with new flow',
+        'New flow users have lower follow counts (avg 3.2 vs. 6.8 in old flow)'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'paradox_resolution',
+        stepNumber: 1,
+        label: 'A/B Test Paradox',
+        prompt: 'A/B test showed better onboarding completion but real-world D7 retention is worse. Why was the test misleading?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Completion rate is a proxy metric — completing onboarding faster doesn\'t mean users are better set up for long-term retention. The test optimized for the wrong outcome.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Classic proxy metric trap. The test measured completion (did users finish all steps?) and time-to-first-post. Both improved. But neither correlates with what drives retention: the quality of the social graph built during onboarding. "Follow 5 friends" was friction-heavy but seeded the social connections that make the feed valuable on days 2–7.'
+          },
+          {
+            id: 'b',
+            label: 'The A/B test had flawed randomization',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Randomization issues are worth checking, but the behavioral mechanism is more direct: fewer follows = sparser feed = fewer reasons to return. Start here before investigating statistical methodology.'
+          },
+          {
+            id: 'c',
+            label: 'The A/B test ran during an unrepresentative time period',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'The cohort comparison is clean (pre vs. post redesign). Timing would need to affect treatment group specifically — a time-of-year effect would hurt both arms equally.'
+          }
+        ]
+      },
+      {
+        id: 'mechanism',
+        stepNumber: 2,
+        label: 'Retention Mechanism',
+        prompt: 'New users have lower follow counts (3.2 vs. 6.8) and lower notification opt-in. Which factor primarily explains the D7 drop?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Lower follow count is primary — fewer social connections means a sparser, less personalized feed with fewer reasons to return',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'At 6.8 follows, users have multiple connections creating content that brings them back. At 3.2 follows, the feed is sparse and dominated by interests rather than social signals. Notification opt-in decline is a compounding factor, but social graph quality affects every session, not just re-engagement prompts.'
+          },
+          {
+            id: 'b',
+            label: 'Notification opt-in decline is primary — users are not being reminded to return',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Notifications can only re-engage users who found value in their first few sessions. If the feed is too sparse for a good first-session experience, successful re-engagement just accelerates recognition that the product isn\'t worth using.'
+          },
+          {
+            id: 'c',
+            label: 'Faster onboarding means less investment in the platform and easier churn',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'The sunk cost theory of retention is weaker than the content relevance mechanism: fewer follows = sparser feed = fewer compelling posts = fewer reasons to return.'
+          }
+        ]
+      },
+      {
+        id: 'fix',
+        stepNumber: 3,
+        label: 'Fix Without Regressing Completion',
+        prompt: 'The new flow improved completion (+12%) but hurt retention. You cannot simply revert. What is the right redesign?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Keep the streamlined flow but restore a social connection step — make "follow 3 people you know" required after interests, with a contact import option to reduce friction',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Interests setup (low friction) + minimum social graph seeding (high retention value, lower friction via contact import). Contact import achieves 5+ follows in 60 seconds vs. the old flow\'s 3+ minutes of manual search.'
+          },
+          {
+            id: 'b',
+            label: 'Revert to the old flow and accept lower completion rate',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Reverts retention but accepts a proven 12% lower completion rate — also a retention problem. Improve both, not choose between them.'
+          },
+          {
+            id: 'c',
+            label: 'Invest in better notification content to compensate for the sparse social graph',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Notifications cannot create the social content that makes re-engagement rewarding. Fix the product experience before investing in re-engagement mechanics.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Onboarding redesign removed "follow 5 friends" step, reducing new user follow counts from 6.8 to 3.2 average. Sparse social graphs produce lower feed quality and fewer compelling posts — the primary D7 retention mechanism in a social product. A/B test measured completion and speed instead of downstream retention, declaring a win on the wrong metric.',
+      lessonsLearned: [
+        'Onboarding A/B tests must measure D7/D14 retention as primary metric, not completion rate',
+        'Social graph seeding is a retention mechanism, not just a setup step — removing it trades short-run completion for long-run retention',
+        'When a proxy metric improves while the business outcome worsens, the test selected the wrong success metric'
+      ],
+      interviewPhrase: '"The A/B test optimized the wrong metric — completion rate is a proxy. Right primary metric for onboarding is D7 retention. Trace the mechanism: fewer follows → sparser feed → less reason to return. Fix: keep the streamlined flow but restore a mandatory social connection step, using contact import to lower friction."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA18 — Ad Revenue Drop During Holiday
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA18',
+    title: 'Ad Revenue Dropped 22% During the Holiday Season',
+    subtitle: 'Prism · Short-Form Video · Ad Monetization',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'monetization',
+    linkedConceptIds: ['funnel-decomposition', 'segmentation', 'data-quality-check'],
+    context: {
+      metricMovement: 'Ad revenue dropped 22% in first week of January vs. last week of December',
+      businessImpact: '22% is outside normal seasonal bounds',
+      timeWindow: '7-day period starting January 2nd',
+      knownFacts: [
+        'Ad impression volume down 18%',
+        'Average CPM down 5%',
+        'Video consumption (DAU × sessions × session length) UP 8% in the same period',
+        'Ad fill rate dropped from 92% to 71% — 21pp decline',
+        'Top-5 advertiser Q4 holiday campaigns ended January 1',
+        'New ad frequency cap (max 3 ads/session) deployed December 28'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'decompose_revenue',
+        stepNumber: 1,
+        label: 'Revenue Decomposition',
+        prompt: 'Ad revenue = impressions × CPM / 1000. Both are down, but video consumption is UP. What is the key anomaly?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Why are impressions down 18% when video consumption is up 8%? The gap between content consumption and ad delivery is the anomaly.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Content up but ad impressions down = problem in ad inventory creation or fill, not in demand or content. Fill rate dropped from 92% to 71% — more video sessions are happening but fewer are being filled with ads. Both the frequency cap (fewer slots per session) and Q4 budget exhaustion (fewer ads available) compound to produce this.'
+          },
+          {
+            id: 'b',
+            label: 'Why did CPM drop 5%? Advertiser demand is soft.',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'A 5% CPM drop explains only 5% of the 22% revenue decline. The primary driver is the 18% impression volume decline despite higher consumption.'
+          },
+          {
+            id: 'c',
+            label: 'Why is DAU down? The consumer base must have shifted.',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Video consumption is UP 8%. Revenue fell despite more users watching more content. Audience decline is not the cause.'
+          }
+        ]
+      },
+      {
+        id: 'fill_rate',
+        stepNumber: 2,
+        label: 'Fill Rate Diagnosis',
+        prompt: 'Fill rate dropped 21pp. Q4 advertiser budgets ended January 1 AND frequency cap deployed December 28. Which is the primary driver?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Both factors compound — advertiser budget exhaustion reduced demand-side supply while frequency capping reduced inventory per session',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Fill rate = demand / inventory slots. Both inputs degraded simultaneously. In a supply-demand system, compounding constraints produce non-linear drops — a 15% demand decline and 12% slot reduction can produce a 25%+ fill rate collapse. This is why the 21pp fill rate drop is larger than either change alone would predict.'
+          },
+          {
+            id: 'b',
+            label: 'The frequency cap is the primary driver — it directly reduced ad slots per session',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Frequency cap was deployed December 28 but the fill rate collapsed January 2+ — aligning more with the Q4 budget end date. The cap amplifies but is not the sole driver.'
+          },
+          {
+            id: 'c',
+            label: 'Q4 advertiser budget exhaustion is the primary driver — January is always soft',
+            isCorrect: false,
+            level: 'partial',
+            feedback: '22% vs. normal seasonal bounds means this is larger than usual January softness. The frequency cap is the amplifier that made a normal seasonal decline abnormally large.'
+          }
+        ]
+      },
+      {
+        id: 'fix',
+        stepNumber: 3,
+        label: 'Remediation',
+        prompt: 'Both factors compound. What is the right fix and long-term structural change?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Short-term: temporarily raise frequency cap floor for January. Long-term: model caps dynamically by fill rate — tighten when demand is strong, relax when fill rate is low.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Dynamic frequency capping is the right structure. A static cap calibrated for 92% fill rate creates over-restriction at 71% fill rate. When demand is soft, cap is the binding constraint — relaxing it recovers impressions without adding user experience cost (few ads available anyway). This is how sophisticated ad platforms manage seasonal cycles.'
+          },
+          {
+            id: 'b',
+            label: 'Remove the frequency cap entirely.',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Frequency caps protect user experience. The problem is a static cap that doesn\'t adapt to demand conditions.'
+          },
+          {
+            id: 'c',
+            label: 'Accelerate Q1 advertiser deals to refill demand.',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Demand development has a long sales cycle. Doesn\'t address the immediate January crisis. Frequency cap adjustment is deployable in days.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Q4 advertiser budget exhaustion (demand-side) compounded with a static frequency cap (supply-side restriction calibrated for peak demand) to collapse fill rate from 92% to 71%, dropping ad impressions 18% despite 8% higher content consumption.',
+      lessonsLearned: [
+        'Ad revenue RCA: decompose impressions × CPM. Consumption up but impressions down = delivery problem, not audience problem',
+        'Static system parameters calibrated for peak conditions fail systematically in off-peak — build adaptive controls',
+        'Fill rate is the highest-signal health metric for ad systems — a >5pp drop requires immediate investigation'
+      ],
+      interviewPhrase: '"Content up but impressions down — delivery problem, not audience. Fill rate dropped 21pp from two compounding factors: Q4 budget exhaustion and the frequency cap reducing per-session inventory. Fix: dynamic cap that relaxes when fill rate is low, not a static cap calibrated for peak demand."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA19 — Activation Half Baseline in New Market
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA19',
+    title: 'Activation Rate Half the Global Baseline in New Market',
+    subtitle: 'Loopwise · B2B SaaS · International Expansion',
+    difficulty: 'analyst',
+    isFree: false,
+    domain: 'growth',
+    linkedConceptIds: ['funnel-decomposition', 'segmentation', 'data-quality-check'],
+    context: {
+      metricMovement: 'New user activation rate in Southeast Asia (SEA) launch: 12% vs. 24% global baseline',
+      businessImpact: '12% activation rate makes unit economics negative — CAC recovery requires 40%+ activation',
+      timeWindow: '6 weeks since SEA launch',
+      knownFacts: [
+        'Product is in English only; SEA market includes Indonesia, Vietnam, Thailand — non-English speakers',
+        'Onboarding email sequence in English only',
+        'Step 1→Step 2 (workspace setup) dropout: 68% in SEA vs. 31% globally',
+        'Support ticket volume from SEA is 3x global rate — top category is "I don\'t know what to do next"',
+        'All SEA acquisitions came through paid performance channel targeting English-search keywords',
+        'Mobile-first users: 78% of SEA signups vs. 31% globally; product has no mobile app'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'funnel_step',
+        stepNumber: 1,
+        label: 'Funnel Step Isolation',
+        prompt: 'Step 1→2 dropout is 68% in SEA vs. 31% globally. What does this tell you?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'The activation problem is concentrated in the first onboarding step — workspace setup. This is the highest-leverage intervention point.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: '68% dropout at the first substantive step means most SEA users never experience the core product. Fixing activation for users who pass Step 2 is less impactful than recovering the 68% who never reach it. Workspace setup involves understanding what the product does — a comprehension challenge for non-English users.'
+          },
+          {
+            id: 'b',
+            label: 'The activation problem is distributed across the entire onboarding flow',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: '68% vs. 31% Step 1→2 dropout is a concentrated, specific problem. The biggest lever is this step.'
+          },
+          {
+            id: 'c',
+            label: 'The activation problem is in user intent — SEA users are lower-intent signups from the paid channel',
+            isCorrect: false,
+            level: 'partial',
+            feedback: '"I don\'t know what to do next" support tickets point to comprehension failure, not low intent. Users who don\'t understand are not the same as users who don\'t want to.'
+          }
+        ]
+      },
+      {
+        id: 'root_cause',
+        stepNumber: 2,
+        label: 'Multi-Factor Root Cause',
+        prompt: 'Language barriers, mobile-only users without an app, and English-search acquisition all present. Which combination drives the problem?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'All three are active contributors: language barrier prevents comprehension; 78% mobile-first users hit a web-only product; English-search acquisition selects for unrepresentative higher-English-proficiency users',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Multi-root-cause RCA. Language barrier explains "don\'t know what to do" and workspace setup dropout. Mobile-without-app explains why 78% of SEA users have a fundamentally broken experience. English-search acquisition means the 12% activation rate is optimistic — if they reached broader audiences, it would be worse.'
+          },
+          {
+            id: 'b',
+            label: 'Language barrier is the only real cause — fix localization and activation will recover',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Localization is the highest-leverage single fix, but ignoring mobile leaves a permanent gap — 78% of SEA users on a non-mobile-optimized experience.'
+          },
+          {
+            id: 'c',
+            label: 'The acquisition channel is the root cause — SEA users from English-search campaigns are the wrong profile',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Channel is a contributing factor but not root cause. Even with better acquisition, the product and onboarding would still fail non-English mobile users.'
+          }
+        ]
+      },
+      {
+        id: 'priority',
+        stepNumber: 3,
+        label: 'Remediation Priority',
+        prompt: 'Three contributing factors. How do you prioritize?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'P1: localize onboarding (UI + emails). P2: launch mobile-first experience. P3: shift acquisition to native-language channels.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Localization is fastest (weeks) with broadest impact. Mobile experience is larger engineering investment but necessary for long-run SEA success. Acquisition channel shift should happen after the product can actually convert the users it acquires — investing in more users before the product works is wasteful.'
+          },
+          {
+            id: 'b',
+            label: 'P1: pause SEA paid acquisition. P2: fix everything. P3: relaunch.',
+            isCorrect: false,
+            level: 'partial',
+            feedback: '"Fix everything then relaunch" is not a priority sequence. Some fixes (localization) can ship in weeks and be tested with ongoing traffic.'
+          },
+          {
+            id: 'c',
+            label: 'P1: improve CS capacity for SEA. P2: create English-language tutorial videos.',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Scaling support for a broken product treats symptoms. Tutorial videos in English don\'t solve a language barrier for non-English speakers.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Three compounding factors: English-only product causing comprehension failure; 78% mobile-first usage with no mobile app; English-search acquisition selecting for higher English proficiency than the actual market.',
+      lessonsLearned: [
+        'International expansion activation problems are almost always multi-factor: language, device/platform, acquisition channel',
+        '"I don\'t know what to do next" support tickets are a localization and UX signal, not an intent signal',
+        'Check mobile vs. desktop usage split immediately in any new international market'
+      ],
+      interviewPhrase: '"68% dropout at workspace setup with \'don\'t know what to do\' support tickets — comprehension failure. Three factors: English-only product, no mobile app for 78% mobile-first users, and English-search acquisition over-indexing on English proficiency. Prioritize: localization first, then mobile experience, then acquisition channel."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA20 — Gross Margin Compressed Despite Revenue Growth
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA20',
+    title: 'Gross Margin Compressed 8pp Despite 25% Revenue Growth',
+    subtitle: 'Vantage Analytics · B2B SaaS · Unit Economics',
+    difficulty: 'advanced',
+    isFree: false,
+    domain: 'financial',
+    linkedConceptIds: ['funnel-decomposition', 'segmentation', 'cohort-analysis'],
+    context: {
+      metricMovement: 'Gross margin dropped from 74% to 66% over two quarters while ARR grew 25%',
+      businessImpact: 'Investor deck targets 75%+ gross margin; trajectory puts Series C valuation at risk',
+      timeWindow: '6-month trend',
+      knownFacts: [
+        'Revenue grew 25% — primarily net new customers, not expansion',
+        'COGS grew 48% — significantly faster than revenue',
+        'Cloud infrastructure costs grew 62%',
+        'New enterprise tier launched 5 months ago with significantly higher data processing requirements',
+        'Enterprise tier: 18% of customers, 41% of compute costs',
+        'Enterprise tier priced at 3× standard but costs 8× more to serve',
+        'CS headcount grew 35% to support enterprise onboarding'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'cogs_decomp',
+        stepNumber: 1,
+        label: 'COGS Decomposition',
+        prompt: 'COGS grew 48% while revenue grew 25%. How do you decompose COGS?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Break COGS into: infrastructure, Customer Success personnel, third-party data/API, professional services — compare each growth rate to revenue',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Infrastructure grew 62%, CS grew 35% — both significantly faster than revenue. The decomposition immediately reveals which component is primary and prevents attributing a multi-factor problem to a single cause.'
+          },
+          {
+            id: 'b',
+            label: 'Compare gross margin year-over-year',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'You already know gross margin is compressed. The RCA asks why — you need to decompose COGS components.'
+          },
+          {
+            id: 'c',
+            label: 'Audit revenue recognition methodology',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Worth a secondary check for accounting artifacts, but infrastructure costs growing 62% is a real cost increase, not an accounting artifact.'
+          }
+        ]
+      },
+      {
+        id: 'enterprise_unit_economics',
+        stepNumber: 2,
+        label: 'Segment Unit Economics',
+        prompt: 'Enterprise tier: 3× price, 8× cost, 18% of customers, 41% of compute. What is the precise unit economics problem?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Enterprise tier has ~31% gross margin (3× price / 8× cost). Growing enterprise share compresses blended margin from 74%.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Math: standard tier at 74% margin → cost = 0.26R. Enterprise cost = 8 × 0.26R = 2.08R. Enterprise revenue = 3R. Enterprise margin = (3R - 2.08R) / 3R = 31%. As enterprise grows from 18% of customers, blended margin falls toward 31%. The pricing did not model compute cost at scale.'
+          },
+          {
+            id: 'b',
+            label: 'Enterprise is profitable — 3× price covers 8× cost because enterprise contracts are larger in absolute value',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: '3× does not cover 8×. Enterprise margin is ~31%, well below the 74% standard tier and 75% investor target.'
+          },
+          {
+            id: 'c',
+            label: 'CS headcount growth is the primary margin driver',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'CS at +35% contributes, but infrastructure grew 62% and represents a larger COGS share for a SaaS company. Both need to be in the analysis but infrastructure is primary.'
+          }
+        ]
+      },
+      {
+        id: 'fix',
+        stepNumber: 3,
+        label: 'Margin Recovery',
+        prompt: 'Enterprise tier is structurally below-margin and growing as a share of revenue. What is the right response?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Reprice enterprise tier to reflect actual cost structure (or cap data processing per tier) + invest in architecture to reduce per-unit compute costs',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Two levers: repricing aligns incentives correctly and captures real cost. Architecture investment lowers the per-unit cost curve. Both are needed — repricing alone slows growth, cost reduction alone leaves the margin gap for the existing base. Target: enterprise pricing should achieve minimum 65%+ tier-level gross margin.'
+          },
+          {
+            id: 'b',
+            label: 'Stop selling enterprise tier to recover margin',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Enterprise customers have higher ACV and typically higher NRR. The problem is pricing and cost structure, not whether to serve them.'
+          },
+          {
+            id: 'c',
+            label: 'Accelerate revenue growth to dilute the margin impact through scale efficiency',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Infrastructure costs here are variable (62% growth correlating with enterprise growth), not fixed. Scaling revenue with a negative-unit-economics product makes the problem worse in absolute terms.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Enterprise tier pricing (3×) did not cover enterprise compute costs (8×), resulting in ~31% gross margin for enterprise vs. 74% for standard. As enterprise grew to 18% of customers and 41% of compute costs, blended gross margin fell from 74% to 66%.',
+      lessonsLearned: [
+        'Tier pricing must be grounded in unit cost modeling — "enterprise features cost more to build" is insufficient; model compute costs per tier at scale',
+        'Gross margin decomposition by customer segment is required when launching a new tier',
+        'Variable compute costs in SaaS do not dilute with volume — "grow your way out" only works for fixed costs',
+        'Pricing constraint: set the floor at minimum acceptable tier-level gross margin (60%+), then price above that for business value'
+      ],
+      interviewPhrase: '"Decompose COGS by category — infrastructure at 62% growth vs. 25% revenue is the headline. Then per-tier unit economics: 3× price for 8× cost = ~31% enterprise gross margin, dragging blended average as enterprise share grows. Fix: reprice to a 65% margin floor and invest in architecture to reduce per-unit compute costs."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA21 — Feature Engagement Spiked Then Crashed
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA21',
+    title: 'New Feature Had 60% Engagement Week 1, Crashed to 8% by Week 6',
+    subtitle: 'Spark · Consumer Social · Feature Durability',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'engagement',
+    linkedConceptIds: ['novelty-effect', 'cohort-analysis', 'segmentation'],
+    context: {
+      metricMovement: 'Audio Rooms feature: W1 engagement 62%, W6 engagement 8%',
+      businessImpact: 'Feature budgeted as a DAU driver; W6 engagement below 20% target used to justify investment',
+      timeWindow: '6-week post-launch measurement window',
+      knownFacts: [
+        'Feature launched with push notifications and home feed placement in week 1',
+        'Home feed placement deprioritized in week 3 (replaced by new feed ranking test)',
+        'Push notifications for Audio Rooms capped at 1/week from week 2',
+        '12% of users (power users) have 61% engagement in week 6; 88% of users have 2% engagement',
+        'Users who hosted a room at least once have 55% ongoing engagement; attendees-only have 6%',
+        'Average room quality (attendee retention within room) stable week over week'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'novelty_vs_distribution',
+        stepNumber: 1,
+        label: 'Novelty vs. Distribution',
+        prompt: 'Engagement dropped from 62% to 8% over 6 weeks. How do you determine if this is novelty effect or distribution loss?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Segment engaged users: if power users are still highly engaged while casual users dropped off, it is a distribution/discovery problem for casual users',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Power users maintaining 61% engagement at week 6 rules out novelty effect — they have not gotten bored. The aggregate drop is casual users losing discovery pathways after notification caps and feed deprioritization. Distribution problem, not feature quality problem.'
+          },
+          {
+            id: 'b',
+            label: 'Compare to other features historically to establish a novelty decay baseline',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Historical comparison can help, but the user segmentation data is more directly informative. Power users at 61% is a clean signal of feature health.'
+          },
+          {
+            id: 'c',
+            label: 'Check room quality metrics to see if content quality is declining',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Room quality is explicitly stable. The problem is discovery, not content.'
+          }
+        ]
+      },
+      {
+        id: 'host_vs_attendee',
+        stepNumber: 2,
+        label: 'Participation Mode Analysis',
+        prompt: 'Hosts have 55% ongoing engagement vs. 6% for attendees-only. What does this tell you?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'The feature retains through creation, not consumption — growing the host base is the compound interest mechanism for long-run engagement',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Hosts have social investment (audience, reputation) creating return-visit motivation. Attendees-only have no stakes — if they miss a week, nothing is lost. Long-run engagement depends on growing the host base. Every new host brings their network, growing supply quality and reach simultaneously.'
+          },
+          {
+            id: 'b',
+            label: 'The feature is only for power users — reposition as niche',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Most successful participatory features have a power-user creation layer and a broad consumption layer. Goal: grow the creator/host base so the consumption layer has more compelling content.'
+          },
+          {
+            id: 'c',
+            label: 'Attendee engagement (6%) is a tracking problem',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'The host vs. attendee split is based on explicit participation mode. The 55% vs. 6% is a real behavioral difference.'
+          }
+        ]
+      },
+      {
+        id: 'intervention',
+        stepNumber: 3,
+        label: 'Recovery Strategy',
+        prompt: 'Feature health is strong for power users but weak in discovery and host acquisition. What is the right intervention?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Restore contextual discovery (feed placement triggered by active rooms) + build host onboarding path to convert high-engagement attendees to first-time hosts',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Contextual discovery (not a blanket notification blast) creates relevant discovery moments. Host conversion funnel targets high-engagement attendees (attended 3+ rooms) with structured first-host support. These two together address both distribution and supply growth.'
+          },
+          {
+            id: 'b',
+            label: 'Increase push notification frequency back to week-1 levels',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'High notification frequency was reduced for a reason. Restoring blast notifications produces a short-term bump then accelerated opt-out. The underlying problem is discovery and host acquisition, not notification volume.'
+          },
+          {
+            id: 'c',
+            label: 'Remove Audio Rooms from the home feed permanently and let it become organic niche discovery',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Participatory features with no established user base will die without active distribution. Without hosts, attendees disappear; without attendees, hosts stop creating — a death spiral.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Distribution problem, not novelty decay. Week-1 discovery driven by full feed placement and unrestricted notifications. When both were reduced (notification cap, feed deprioritization in week 3), casual users lost discovery pathways. Power users and hosts maintained high engagement, confirming genuine long-run value.',
+      lessonsLearned: [
+        'Always segment post-launch engagement by user type to distinguish novelty decay from distribution loss',
+        'Participatory features retain through creation — host conversion is the highest-ROI retention strategy',
+        'Week-1 engagement metrics are inflated by launch promotional activity — evaluate feature health at W4+ using segmented cohorts',
+        'Discovery infrastructure is not free — removing it from a feature that hasn\'t built organic loops collapses engagement'
+      ],
+      interviewPhrase: '"Segment first. Power users at 61% week 6 means real value — not novelty decay. The aggregate drop is casual users losing discovery access. Hosts at 55% vs. attendees at 6% tells me the retention mechanism is creation-led. Two interventions: contextual discovery restoration when quality rooms are live, and a host conversion funnel targeting high-engagement attendees."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA22 — Payment Success Rate Collapsed in One Country
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA22',
+    title: 'Payment Success Rate Collapsed in Brazil Overnight',
+    subtitle: 'Crafted · Marketplace · Cross-Border Payments',
+    difficulty: 'analyst',
+    isFree: false,
+    domain: 'payments',
+    linkedConceptIds: ['segmentation', 'data-quality-check', 'funnel-decomposition'],
+    context: {
+      metricMovement: 'Payment success rate in Brazil dropped from 88% to 41% overnight',
+      businessImpact: 'Brazil is 14% of GMV; $280k/day at risk',
+      timeWindow: 'Drop overnight, detected at 06:00 UTC',
+      knownFacts: [
+        'Brazil is the only affected country',
+        '71% of Brazil payments use Pix (Brazil\'s instant payment system)',
+        'Pix payment success rate: 28%; card payment success rate: 92% (unchanged)',
+        'No code deploy in past 48 hours',
+        'Brazil Central Bank issued a routine API update notification for Pix providers two days ago',
+        'Pix error logs show: "API version mismatch — expected v2, received v1 response format"'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'payment_method_split',
+        stepNumber: 1,
+        label: 'Payment Method Isolation',
+        prompt: 'Overall Brazil success rate collapsed but card payments are unchanged. First move?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Segment by payment method to confirm Pix-specific failure, then check Pix API error logs',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Card payments at 92% confirm payment infrastructure is healthy — the problem is Pix-specific. "API version mismatch" in error logs is the precise root cause: the Pix provider updated their API two days ago and the integration is sending/expecting the wrong version.'
+          },
+          {
+            id: 'b',
+            label: 'Check for a Brazil-specific code deploy or feature flag change',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'No code deploy in 48 hours. The API update notification is the stronger lead.'
+          },
+          {
+            id: 'c',
+            label: 'Escalate to the Pix payment provider immediately before investigating',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Escalation should happen in parallel, but you need the specific error ("your v2 API is returning v1 responses for our integration") not a generic escalation. Specific evidence-backed escalations resolve faster.'
+          }
+        ]
+      },
+      {
+        id: 'api_version',
+        stepNumber: 2,
+        label: 'Root Cause Confirmation',
+        prompt: '"API version mismatch" in logs. Central Bank issued an API update notice 2 days ago. Precise root cause?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Pix provider deployed the API v2 update; Crafted\'s integration hasn\'t been updated to handle v2 response format — all v2 responses fail parsing',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Classic third-party API version break. The provider switched v1→v2. Crafted\'s integration parses v1 — v2 responses fail parsing, payment marked as failed. Country-specific + method-specific + API update notice = direct causal chain.'
+          },
+          {
+            id: 'b',
+            label: 'The API update notice was a scheduled downtime',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: '"API version mismatch" is not a downtime error pattern. Downtime shows connection refused or timeout errors.'
+          },
+          {
+            id: 'c',
+            label: 'Crafted\'s Pix credentials were invalidated by the API update',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Credential expiration produces "authentication failed" errors, not "API version mismatch" errors. Different error types, different root causes.'
+          }
+        ]
+      },
+      {
+        id: 'fix',
+        stepNumber: 3,
+        label: 'Immediate Fix and Prevention',
+        prompt: 'Pix API v2 migration broke Crafted\'s integration. Immediate fix and prevention?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Immediate: update Pix integration to handle v2 format (or request provider maintain v1 endpoint during transition). Prevention: API version monitoring alert via synthetic test transaction.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Integration fix is urgent at $280k/day. V1 endpoint maintenance request can stop bleeding while full v2 migration completes. Automated synthetic test transactions would catch response format changes within minutes of deployment — vs. 8 hours of manual detection here.'
+          },
+          {
+            id: 'b',
+            label: 'Immediate: disable Pix as a payment method until provider fixes their API',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Disabling Pix removes 71% of Brazilian payment options. Appropriate only if fix takes >24 hours, not as first response.'
+          },
+          {
+            id: 'c',
+            label: 'Immediate: refund all failed Pix payments and retry automatically',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Retrying through the broken parser produces the same failures. Fix the integration first, then process retries.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Brazil Central Bank\'s Pix provider deployed v1→v2 response format migration. Crafted\'s integration, built against v1, failed to parse v2 responses. Card payments (different provider, no change) unaffected.',
+      lessonsLearned: [
+        'Country-specific + method-specific payment failure always points to third-party provider change',
+        'Error log message type is the fastest diagnostic: "API version mismatch" vs. "auth failed" vs. "timeout" point to different root causes',
+        'Synthetic test transaction monitoring catches response format changes before production failures'
+      ],
+      interviewPhrase: '"Brazil only, Pix specifically, same day as an API update notice — segment by payment method first, check Pix error logs. \'API version mismatch\' = provider updated their format and our integration is still parsing the old one. Immediate fix: update the parser. Prevention: automated synthetic test transactions to catch format changes before production failures."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA23 — NPS Dropped Despite Healthy Product Metrics
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA23',
+    title: 'All Product Metrics Look Healthy But NPS Dropped 12 Points',
+    subtitle: 'Threadline · B2B SaaS · Satisfaction Divergence',
+    difficulty: 'advanced',
+    isFree: false,
+    domain: 'satisfaction',
+    linkedConceptIds: ['segmentation', 'cohort-analysis', 'proxy-metric'],
+    context: {
+      metricMovement: 'NPS dropped from 42 to 30 over 6 months; all product engagement metrics flat or up',
+      businessImpact: 'NPS is a leading indicator of enterprise renewal — 12-point drop historically precedes churn acceleration by 2-3 quarters',
+      timeWindow: 'Gradual 6-month decline',
+      knownFacts: [
+        'DAU, feature adoption, retention metrics flat or slightly up',
+        'NPS drop concentrated in enterprise accounts (>100 seats): down 18 points; SMB: down 3 points',
+        'Top NPS verbatim themes: "too many features we don\'t use", "AI features feel bolted on", "support response time worse", "we need EU data residency"',
+        '14 new features shipped over 6 months — 11 targeting enterprise deals',
+        'Customer Success headcount flat despite 25% enterprise customer growth',
+        'Average support ticket resolution time increased from 4 hours to 11 hours'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'metric_divergence',
+        stepNumber: 1,
+        label: 'Metric Divergence Analysis',
+        prompt: 'Product metrics are up but NPS is down. What does this divergence tell you?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Product metrics measure what users DO; NPS measures how they FEEL. Divergence means usage continues from switching costs or inertia while satisfaction declines — a classic pre-churn signal.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Enterprise B2B products can have high usage and declining satisfaction simultaneously because switching costs are high. Users continue because leaving is expensive, not because they are satisfied. NPS captures the sentiment product metrics miss. Flat DAU + declining NPS = locked in, not loyal.'
+          },
+          {
+            id: 'b',
+            label: 'NPS measurement is unreliable — the survey methodology may have changed',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Worth verifying, but the verbatim themes align consistently with operational data (support time up, feature velocity high, CS capacity flat). Multiple independent signals reduce the likelihood of measurement artifact.'
+          },
+          {
+            id: 'c',
+            label: 'The product metrics are measuring the wrong things',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'The question is why NPS and product metrics diverged, not whether product metrics have imperfections. The NPS verbatims and support data provide converging evidence for operational issues.'
+          }
+        ]
+      },
+      {
+        id: 'verbatim_analysis',
+        stepNumber: 2,
+        label: 'Root Cause Multi-Factor Analysis',
+        prompt: 'Verbatim themes: feature bloat, AI quality, support degradation, EU data residency. Which two factors have highest leverage on enterprise NPS?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Support degradation (4→11hr resolution) and feature complexity (14 features shipped rapidly) — both directly affect the IT/admin persona who responds to enterprise NPS surveys',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'In enterprise B2B, the NPS respondent is often the IT admin. Their experience is dominated by support quality and platform manageability. Support resolution tripling from 4 to 11 hours is severe. 14 features shipped without consolidation creates operational complexity for IT managing permissions, training, and security reviews. These directly cause the score drop over 6 months.'
+          },
+          {
+            id: 'b',
+            label: 'Missing EU data residency and AI feature quality',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Data residency is a compliance blocker for European customers. AI quality is a product perception issue. Both matter, but data residency is binary (you have it or don\'t, not gradual) and AI quality concerns would show in usage metrics. The gradual 6-month decline aligns better with support degradation timeline.'
+          },
+          {
+            id: 'c',
+            label: 'Feature complexity alone is the driver',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Feature bloat is contributing but rarely drives 12-point NPS drops alone. Support response time tripling is more acute and directly experienced by IT admins repeatedly.'
+          }
+        ]
+      },
+      {
+        id: 'intervention',
+        stepNumber: 3,
+        label: 'Remediation',
+        prompt: 'Support degradation from CS flat vs. 25% account growth. Feature complexity from rapid roadmap execution. Right fix?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Support: hire CS to match enterprise growth ratio + invest in self-service to reduce ticket volume. Features: "depth over breadth" roadmap policy — for every new feature shipped, improve or consolidate one existing feature.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'CS headcount flat with 25% account growth is a ratio problem — hire proportionally or reduce per-account burden through self-service. "Depth over breadth" creates a forcing function to improve existing features and reduce complexity creep. Both address root causes.'
+          },
+          {
+            id: 'b',
+            label: 'Set an internal SLA of 4 hours without hiring. Communicate features better through release notes.',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Setting an SLA without capacity doesn\'t resolve tickets faster. Better release notes address communication, not complexity.'
+          },
+          {
+            id: 'c',
+            label: 'Escalate all enterprise tickets to a named CS rep. Pause the roadmap for one quarter.',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Named rep escalation doesn\'t scale without headcount. Roadmap pause addresses symptom without establishing a structural process for managing it.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Two compounding factors: (1) CS capacity flat while enterprise customers grew 25%, tripling support resolution time. (2) 14 new features shipped in 6 months without consolidation, creating IT complexity. Product usage metrics missed this because switching costs maintained behavioral engagement while satisfaction eroded.',
+      lessonsLearned: [
+        'Product engagement and NPS can diverge in enterprise B2B — switching costs maintain usage independent of satisfaction',
+        'Support resolution time is a leading indicator of enterprise NPS — a 3× increase precedes churn by 1-2 quarters',
+        'CS capacity must scale with enterprise account growth, not headcount budget cycles'
+      ],
+      interviewPhrase: '"Product up, NPS down in enterprise — that\'s switching costs masking satisfaction erosion. Support at 11hr vs. 4hr is the most acute operational issue. CS flat with 25% more accounts is a capacity math problem. Fix CS ratio first, then depth-over-breadth roadmap policy."'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  // RCA24 — Recommendation CTR Dropped Post-ML Update
+  // ─────────────────────────────────────────────
+  {
+    id: 'RCA24',
+    title: 'Recommendation CTR Dropped 19% After ML Model Update',
+    subtitle: 'Prism · Short-Form Video · Personalization',
+    difficulty: 'advanced',
+    isFree: false,
+    domain: 'ml-systems',
+    linkedConceptIds: ['data-quality-check', 'segmentation', 'proxy-metric'],
+    context: {
+      metricMovement: 'Recommendation engine CTR dropped from 8.4% to 6.8% (-19%) within 24 hours of ML model update',
+      businessImpact: 'Recommendations drive 45% of total video views; 19% CTR drop = ~8% total view reduction',
+      timeWindow: '36 hours post-deploy',
+      knownFacts: [
+        'ML update added new features: watch completion rate, share rate, social graph proximity',
+        'Offline A/B test showed +12% estimated CTR improvement in evaluation set',
+        'Online CTR dropped 19% in production — 31pp gap vs. offline estimates',
+        'CTR drop concentrated in new users (<30 days): down 34%. Power users (>6 months): down 8%.',
+        'Social graph proximity has null values for 67% of new users',
+        'Content diversity score dropped 41% — recommendations concentrated in narrow trending topics'
+      ]
+    },
+    diagnosisSteps: [
+      {
+        id: 'offline_online_gap',
+        stepNumber: 1,
+        label: 'Offline-Online Gap',
+        prompt: 'Offline showed +12% but production shows -19%. A 31pp gap indicates systemic failure. Most likely cause?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Training data distribution mismatch: evaluation set over-represented power users (who have social graphs). In production, 67% of new users have null social graph data.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Canonical offline-online gap failure mode. Evaluation set dominated by power users with social graphs → misleadingly positive CTR. In full production population with 67% new users having null social data, the model either falls back to a worse behavior or handles nulls poorly. Offline test measured the right metric on the wrong population.'
+          },
+          {
+            id: 'b',
+            label: 'The model is overfitting to historical training data',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Generic overfitting explanation doesn\'t explain why new users specifically are more impacted than power users. The null social graph data is a more specific and direct explanation.'
+          },
+          {
+            id: 'c',
+            label: 'The diversity collapse indicates the model is overfit to trending content',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'The diversity collapse is a real consequence but secondary to the offline-online gap. The primary cause is null social graph handling for new users.'
+          }
+        ]
+      },
+      {
+        id: 'null_handling',
+        stepNumber: 2,
+        label: 'Technical Root Cause',
+        prompt: 'Social graph proximity is null for 67% of new users. How is this causing the CTR drop?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Null social graph values trigger a suboptimal fallback behavior (likely popularity-based ranking) for new users — less personalized, lower-CTR, diversity-collapsing recommendations',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'When a required feature is null, models route to a fallback — often popularity ranking. New users get served viral/trending content rather than personalized recommendations. This explains both the CTR drop (popular content resonates less than personalized) and the diversity collapse (popularity fallback concentrates recommendations in trending topics).'
+          },
+          {
+            id: 'b',
+            label: 'Social graph proximity has extreme values causing numerical instability',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Numerical instability shows as NaN errors and model prediction failures, not a smooth 19% CTR reduction. The pattern (new users specifically impacted, null values for new users) points to null handling, not instability.'
+          },
+          {
+            id: 'c',
+            label: 'Social graphs need warm-up time before recommendations improve',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Warm-up effects produce gradual improvement over days. The CTR dropped immediately and has been stable at the lower level for 36 hours — a structural failure, not a temporary lag.'
+          }
+        ]
+      },
+      {
+        id: 'fix',
+        stepNumber: 3,
+        label: 'Fix and Prevention',
+        prompt: 'Null social graph handling causes suboptimal fallback for 67% of new users. Immediate fix and structural prevention?',
+        type: 'single',
+        options: [
+          {
+            id: 'a',
+            label: 'Immediate: segment-specific rollback (restore previous model for new users, keep new model for power users). Prevention: add population segment evaluation to offline A/B test protocol — report performance for new users and power users separately.',
+            isCorrect: true,
+            level: 'strong',
+            feedback: 'Segment-specific rollback is more targeted than full rollback — keep the new model for power users where degradation is modest (-8%), restore previous for new users where degradation is severe (-34%). Structural prevention: offline evaluation must explicitly measure by population segment. A model that performs well in aggregate but fails for a 67% population segment would have been caught before deployment.'
+          },
+          {
+            id: 'b',
+            label: 'Immediate: retrain with more new user data',
+            isCorrect: false,
+            level: 'wrong',
+            feedback: 'Retraining takes days-weeks — not appropriate for a 36-hour production degradation. Segment-specific rollback is deployable in hours.'
+          },
+          {
+            id: 'c',
+            label: 'Immediate: full rollback. Prevention: production testing before full deployment.',
+            isCorrect: false,
+            level: 'partial',
+            feedback: 'Full rollback is appropriate if segment-specific rollback is complex. But production testing alone wouldn\'t catch this without explicit new-user segment monitoring. The root fix is segment-specific offline evaluation reporting.'
+          }
+        ]
+      }
+    ],
+    debrief: {
+      rootCause: 'Offline evaluation set over-represented power users with social graphs. In production, null social graph data for 67% of new users triggered suboptimal fallback behavior, causing 34% CTR drop for new users and 41% diversity collapse across all users.',
+      lessonsLearned: [
+        'Offline-online gaps >10pp signal training data distribution mismatch — compare evaluation set composition to production user distribution before deployment',
+        'Features null for a large user segment require explicit null handling design, not just model-level fallbacks',
+        'Offline A/B evaluation must report performance by key user segments, not just aggregate metrics',
+        'Content diversity is an emergent property of recommendation quality — a 41% collapse is a leading indicator of session length decline'
+      ],
+      interviewPhrase: '"31pp offline-online gap = training data distribution mismatch. Evaluation set over-represented power users with social graphs. In production, 67% of new users have null social data — hits a popularity fallback that collapses CTR and diversity. Fix: segment-specific rollback for new users. Prevention: always report offline eval performance by user segment."'
+    }
   }
 ];
 
