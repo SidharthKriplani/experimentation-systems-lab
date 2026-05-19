@@ -4,6 +4,35 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.2.4 — Performance, Analytics, UX (genai-systems-lab Homogeneity Pass)
+**Date:** May 2026
+**Commit message:** "feat: PostHog analytics, lazy loading, learning path outcomes (V3.2.4)"
+**Files changed:** `src/utils/analytics.js` (new), `.env.example` (new), `.gitignore`, `src/main.jsx`, `src/App.jsx`, `src/data/learningPaths.js`, `src/pages/Home.jsx`
+
+### Why
+Three features ported from the sibling product (genai-systems-lab) to maintain ecosystem homogeneity: analytics instrumentation, bundle performance, and guided onboarding clarity. Plus a `.env` security fix caught during audit.
+
+### Analytics (PostHog)
+- `src/utils/analytics.js`: thin PostHog CDN wrapper. Env-var gated (`VITE_POSTHOG_KEY`) — app works identically without it (no-op in prod, console.debug in dev). Strips PII keys (email, name, ip) via `sanitize_properties`. `autocapture: false`, `capture_pageview: false` — only explicit events are collected.
+- `src/main.jsx`: calls `initAnalytics()` before render.
+- `src/App.jsx`: imports `track()` and fires `page_viewed` on all navigation, `case_opened` on every room open (with room + id + title), `paywall_hit` when a locked case is attempted, and `unlocked` on successful beta unlock.
+- `.env.example`: documents `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` for contributors.
+
+### Lazy loading (code splitting)
+- All 19 page and runner components converted from static `import` to `React.lazy()` with named-export `.then(m => ({ default: m.X }))` pattern.
+- Static imports reorganized to the top of `App.jsx` (data, layout, utils), lazy `const` declarations below — valid ESM ordering.
+- `<Suspense fallback={<div>Loading…</div>}>` wraps the entire `<main>` content area.
+- Effect: initial JS bundle excludes all room code. Each room loads its chunk on first visit and is cached thereafter.
+
+### Learning path outcome statements
+- `src/data/learningPaths.js`: added `outcome` field to all 4 paths with concrete "You'll…" statements describing the skill gained.
+- `src/pages/Home.jsx`: path cards now render the outcome below the subtitle in italic, colored with `path.color`.
+
+### Security fix
+- `.gitignore`: added `.env` and `.env.*` (with `!.env.example` exception) — was missing entirely, which would have committed any local PostHog key.
+
+---
+
 ## V3.2.3 — Polish Pass (Content, UX, Visual, Accessibility)
 **Date:** May 2026
 **Commit message:** "V3.2.3: Polish pass — content rewrites, next-case nav, expandable steps, WCAG contrast, keyboard a11y, responsive nav"

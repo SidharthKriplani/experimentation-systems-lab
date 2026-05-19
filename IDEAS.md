@@ -4,6 +4,43 @@ Running list of product, content, and feature ideas. Not prioritized — just ca
 
 ---
 
+## ✅ Analytics + Performance + Onboarding Clarity — Shipped V3.2.4
+
+### PostHog Analytics
+- `src/utils/analytics.js` — CDN wrapper, env-var gated, no PII, no autocapture
+- Events: `page_viewed`, `case_opened` (room + id + title), `paywall_hit`, `unlocked`
+- `.env.example` documents setup for contributors
+- `.gitignore` patched to exclude `.env` and `.env.*`
+
+### Lazy Loading
+- All 19 page/runner components wrapped in `React.lazy()` with named-export pattern
+- `<Suspense>` wraps `<main>` — each room loads its JS chunk on first visit
+- Static imports (data, layout, utils) kept at top; lazy `const` declarations below
+
+### Learning Path Outcome Statements
+- `outcome` field added to all 4 paths in `learningPaths.js`
+- Home.jsx path cards render it in italic below subtitle, colored with path accent
+
+---
+
+## Horizon: V3.3 Candidates
+
+Things worth building next, in rough priority order:
+
+**Next-case nav on Review + Design runners** — `ScenarioRunner` and `DesignRunner` don't have "Next →" yet. Metrics/RCA/Cases do. Adds `getNextScenarioId` + `getNextDesignScenarioId` wiring (same pattern as V3.2.3).
+
+**Progress page learning path status** — Show which path the user is on, how many items completed, % done. Currently Progress shows raw room counts, not path-level completion.
+
+**PrioritizationBrowser "next-case" nav** — Prioritization Runner has no next-case button on debrief. Same onNext pattern needed.
+
+**Code Room expansions** — CUPED in SQL, retention heatmap query, bootstrap CI in Python, funnel viz with matplotlib. 3-4 new modules.
+
+**Metrics Room M07–M08** — Two more cases: (a) engagement metric for a social feed (likes vs time-spent tradeoff), (b) metrics for a real-time bidding marketplace.
+
+**Stats Room STAT09–12** — CUPED/variance reduction, Bayesian stopping rules, novelty effect, long-run vs. short-run metric divergence.
+
+---
+
 ## Blog / Learn Layer
 
 **Status:** Placeholder page built (BlogBrowser.jsx). Content not written yet.
