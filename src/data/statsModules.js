@@ -587,6 +587,290 @@ export const statsModules = [
       connectsTo: ['review'],
     },
   },
+
+  // ─────────────────────────────────────────────
+  // STAT09 — CUPED / Variance Reduction (Advanced)
+  // Trap: post-hoc CUPED on a failed test reframes p=0.12 as p=0.031
+  // ─────────────────────────────────────────────
+  {
+    id: 'stat09-cuped-variance',
+    title: 'Same Experiment, Half the Sample Size Needed',
+    subtitle: 'CUPED and variance reduction',
+    concept: 'cuped',
+    difficulty: 'advanced',
+    isFree: false,
+    linkedConceptIds: ['cuped', 'variance-reduction', 'p-value', 'pre-registration'],
+
+    situation: {
+      company: 'Fenwick Commerce',
+      product: 'E-commerce recommendation widget — A/B testing revenue per user',
+      context: 'The experiment team ran a 4-week test on the recommendation widget and got p = 0.12 — not significant. A senior analyst suggests re-analyzing with CUPED using pre-experiment revenue as a covariate. After the CUPED adjustment, p = 0.031 on the same data. The team is excited.',
+      decisionPressure: 'The head of product wants to declare this a win and ship the widget. The analyst says the CUPED result is the right one to use.',
+    },
+
+    setup: {
+      metric: '7-day revenue per user (primary)',
+      baseline: '$12.40',
+      observedResult: 'Treatment: $12.91 (+4.1%). p_raw = 0.12. p_cuped = 0.031.',
+      sampleInfo: 'n = 45,000 per arm. Pre-experiment revenue correlation with test-period revenue: 0.68.',
+      caveat: 'CUPED was applied after the raw result was known. No pre-registered analysis plan specifying CUPED was filed before the experiment launched.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"CUPED found a significant effect that the raw analysis missed. The recommendation widget is working — we should ship."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Valid — CUPED is a legitimate variance reduction technique and p = 0.031 is significant. Ship it.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'CUPED is legitimate, but the claim skips the most important question: was it pre-specified? Applying CUPED after seeing p = 0.12 is a form of post-hoc analysis shopping — you are choosing your analysis method based on which one gives you significance. With a correlation of 0.68 between pre- and post-period revenue, CUPED reduces variance by roughly 46%, which is why the p-value shifted so dramatically. That power increase is only valid if the method was committed to before the data was unblinded. Using it retrospectively inflates Type I error in exactly the same way that peeking at results does.',
+      },
+      {
+        id: 'b',
+        label: 'Valid with caveat — CUPED is a sound technique, but applying it post-hoc to a failed test requires pre-registration or strong methodological justification to avoid inflated Type I error.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. CUPED is not cherry-picking — it is a principled variance reduction method with a solid theoretical foundation. The correlation of 0.68 between pre- and post-period revenue makes it exceptionally powerful here, reducing variance by ~46% and explaining the dramatic p-value shift from 0.12 to 0.031. If the analysis plan specified CUPED before launch, this is a clean result and the ship decision is defensible. If it was applied after seeing the raw result, the p-value is no longer calibrated — you have introduced researcher degrees of freedom and the result needs holdout validation or external review before acting on it.',
+      },
+      {
+        id: 'c',
+        label: 'Invalid — switching analysis methods after seeing results always inflates Type I error regardless of which method you switch to.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'This is too absolute. CUPED that was pre-registered before the experiment launched is completely valid — the method of analysis does not inherently inflate error, only the timing of the decision to use it. If a team always applies CUPED to revenue experiments as a standing policy, applying it here is not inflation. The problem is specifically retrospective selection: choosing CUPED because it produced significance. The method itself is not the issue; the decision process is.',
+      },
+      {
+        id: 'd',
+        label: 'Cannot determine — need to see the CUPED formula applied correctly before evaluating this claim.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'The issue here is methodological and procedural, not computational. Whether the CUPED math was executed correctly is not the primary question — the question is whether applying a more powerful analysis after observing a non-significant result is a valid practice. Asking to verify the formula sidesteps the core concern entirely. Even perfectly executed CUPED, chosen after seeing p = 0.12, does not give you a calibrated p-value.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'CUPED is a variance reduction technique, not a second chance at significance. The key question is whether it was pre-specified.',
+      why: 'CUPED (Controlled-experiment Using Pre-Experiment Data) works by regressing out variance in the outcome metric that is explained by a pre-period covariate. With a pre-to-post correlation of 0.68, the variance reduction is approximately 1 − 0.68² ≈ 46%. That is why p drops from 0.12 to 0.031 — it is equivalent to having run the experiment with roughly double the effective sample size. This is a legitimate and widely used technique at companies like Microsoft, Netflix, and Booking.com. The power gain is real and correct when pre-specified.\n\nThe danger is using it as an analytical escape hatch. If your standing practice is to run CUPED on revenue experiments, document that before the experiment launches. If a senior analyst proposes it after seeing the raw result fail, you have a researcher-degree-of-freedom problem — you are selecting your method based on the outcome it produces. The p-value of 0.031 in that scenario is not calibrated to α = 0.05.\n\nThe right path forward: if CUPED was not pre-specified, treat p = 0.031 as an exploratory finding. Run a holdout on a separate cohort using CUPED as the pre-registered analysis method. If that replicates, you have a valid result. If the team wants to ship on the current data, they need to acknowledge the methodological limitation explicitly and accept the elevated false positive risk.',
+      commonMistake: 'Treating CUPED as a "better" analysis that supersedes the pre-registered method. Variance reduction is only valid when the choice of whether to apply it was made independently of the data. Post-hoc method switching is p-hacking with extra steps, regardless of how principled the method itself is.',
+      interviewPhrase: '"CUPED is a powerful and legitimate tool when pre-specified. The correlation of 0.68 here means roughly 46% variance reduction — that\'s why the p-value moved so much. But if we applied it after seeing p = 0.12, the result needs holdout validation before we ship on it."',
+      connectsTo: ['design', 'review'],
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // STAT10 — Novelty Effect (Intermediate)
+  // Trap: +8% in week 1 collapses to +1.2% (p=0.21) by week 4
+  // ─────────────────────────────────────────────
+  {
+    id: 'stat10-novelty-effect',
+    title: 'Week 1: +8%. Week 4: +1.2%. What Happened?',
+    subtitle: 'Novelty effect and long-run metric stability',
+    concept: 'novelty-effect',
+    difficulty: 'intermediate',
+    isFree: false,
+    linkedConceptIds: ['novelty-effect', 'confidence-interval', 'p-value'],
+
+    situation: {
+      company: 'Prism Learning',
+      product: 'Edtech platform — personalized lesson recommendation feature',
+      context: 'The team ran a new personalized lesson recommendation feature. Week 1 showed +8% completion rate with p < 0.001. The team was about to ship when a senior analyst said "wait — let\'s see week 4." Week 4 shows +1.2%, p = 0.21. The PM wants to know what happened and whether to ship.',
+      decisionPressure: 'The PM is frustrated. The week-1 result looked like a clear win. Stakeholders were briefed. The analyst is now blocking the ship based on week-4 data.',
+    },
+
+    setup: {
+      metric: 'Lesson completion rate (primary)',
+      baseline: '31%',
+      observedResult: 'Week 1 treatment: 33.5% (+8%, p < 0.001). Week 4 treatment: 31.4% (+1.2%, p = 0.21).',
+      sampleInfo: 'n = 28,000 per arm per week.',
+      caveat: 'Week-over-week treatment effect is declining consistently from week 1 through week 4.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"The feature had a real positive effect in week 1. The week 4 result just means users adapted and the effect normalized — we should ship since there\'s still a directional positive trend."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Valid — any positive directional trend supports shipping.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'A directional positive trend is not a sufficient basis for shipping when the statistical test cannot distinguish that direction from zero. p = 0.21 at week 4 means that a +1.2% result is well within the range of noise. With n = 28,000 per arm, this experiment has sufficient power to detect meaningful effects — if the effect were real and persistent at +1.2%, you would expect a tighter p-value. "Directional" is not a substitute for "real."',
+      },
+      {
+        id: 'b',
+        label: 'Valid with caution — the week 1 effect was real, but the week 4 result (p = 0.21) means we cannot distinguish +1.2% from zero. The novelty hypothesis needs more investigation before shipping.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. The week 1 result is real — p < 0.001 with large sample size is not noise. The question is what it measured. A sharp decline from +8% to +1.2% over four weeks, ending at a non-significant result, is the hallmark pattern of novelty-driven engagement: users interact more with new features out of curiosity, then revert toward baseline as the novelty wears off. The week 4 result being non-significant means the long-run effect is statistically indistinguishable from zero. Shipping on the assumption that the week-4 effect is "real but small" requires evidence that the effect has stabilized, which you do not have.',
+      },
+      {
+        id: 'c',
+        label: 'Invalid — the true long-run effect is zero since week 4 is not significant.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Too definitive in the opposite direction. p = 0.21 means you cannot reject the null — it does not prove the null is true. The true long-run effect could be small but nonzero, or it could be zero. The wide CI at week 4 captures this uncertainty. The correct framing is that you lack sufficient evidence to distinguish +1.2% from zero, not that the effect is proven to be zero. Absence of statistical significance is not absence of effect.',
+      },
+      {
+        id: 'd',
+        label: 'Valid — +1.2% at scale has real business value even if not statistically significant.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'This confuses practical significance with statistical noise. At n = 28,000 per arm, a p-value of 0.21 means the +1.2% observed result is well within sampling variability — you cannot confidently attribute it to the feature. Practical significance arguments are only meaningful when the effect is statistically distinguishable from zero. Citing scale to justify shipping a non-significant result is a form of motivated reasoning that bypasses the evidential standard the experiment was designed to enforce.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'Classic novelty effect. The week-1 lift was real but measured user curiosity, not durable behavioral change. Week 4 non-significance means the long-run effect cannot be distinguished from zero.',
+      why: 'Novelty effects are one of the most dangerous traps in experimentation, precisely because week-1 data looks like strong evidence. Users interact differently with new features — they explore them, they engage out of curiosity, they spend time understanding them. This produces genuine statistical significance on short-run metrics that has nothing to do with lasting behavioral change.\n\nThe signature of a novelty effect is a declining treatment effect week over week, converging toward zero. Going from +8% (p < 0.001) to +1.2% (p = 0.21) over four weeks is a textbook decay curve. The week-4 result being non-significant is the more important signal: it tells you the sustained effect of this feature on lesson completion is statistically indistinguishable from zero.\n\nThe right framework for features that might have novelty effects: track the treatment effect by cohort week and look for stabilization. If the effect is still declining in week 4, you need more time, not a ship decision. If it stabilizes at a meaningful and significant level, that is your long-run effect estimate. Shipping on week-1 data for an edtech feature — where long-run learning outcomes are the actual value — is particularly risky.',
+      commonMistake: 'Using week-1 aggregate results as the effect estimate for features that change habitual behavior. Novelty effects are invisible in aggregate data — you have to plot week-over-week treatment effects to see the decay. Always do this for engagement and behavior-change features before declaring a result.',
+      interviewPhrase: '"For this type of feature, I\'d look at treatment effect by cohort week, not the aggregate. The decay from +8% to +1.2% over four weeks is the story — that\'s a novelty curve, not a feature effect. I wouldn\'t ship until I see stabilization at a significant level."',
+      connectsTo: ['review', 'design'],
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // STAT11 — Bayesian Stopping Rules (Advanced)
+  // Trap: P(treatment > control) = 0.96 after 8 days, PM wants to stop early
+  // ─────────────────────────────────────────────
+  {
+    id: 'stat11-bayesian-stopping',
+    title: 'We Hit 95% Probability. Can We Stop?',
+    subtitle: 'Bayesian stopping rules and optional stopping',
+    concept: 'bayesian-ab-testing',
+    difficulty: 'advanced',
+    isFree: false,
+    linkedConceptIds: ['bayesian-ab-testing', 'optional-stopping', 'pre-registration'],
+
+    situation: {
+      company: 'Volta Fintech',
+      product: 'Loan application flow — A/B testing a redesigned completion funnel',
+      context: 'Volta is using a Bayesian framework with a beta-binomial model on application completion rate. After 8 days of a planned 14-day experiment, the dashboard shows P(treatment > control) = 0.96. The PM wants to stop early and ship.',
+      decisionPressure: 'The PM argues that Bayesian methods are specifically designed to allow early stopping — that\'s the whole point. The team planned to run 14 days but the probability threshold has been hit.',
+    },
+
+    setup: {
+      metric: 'Loan application completion rate (primary)',
+      baseline: 'Control: 22.4%',
+      observedResult: 'Treatment: 24.1% (+7.6%). P(treatment > control) = 0.96.',
+      sampleInfo: 'n = 18,000 per arm at day 8. Planned n = 35,000 per arm.',
+      caveat: 'No written experiment plan specifying the stopping rule was filed before the experiment launched. The 95% threshold was set informally.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"We\'ve hit our 95% probability threshold. Bayesian methods allow stopping when you\'ve hit the threshold — there\'s no need to wait for the full sample size."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Valid — 96% probability exceeds the threshold and Bayesian rules allow early stopping.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'This is the most common Bayesian experimentation misconception: that reaching a probability threshold automatically justifies stopping, regardless of when or how the threshold was set. A Bayesian stopping rule is only valid when it is pre-specified — including the threshold level, the prior, and the model. If you look at the dashboard, see P = 0.96, and decide now to use that as a stopping criterion, you are doing optional stopping. The probability threshold gives you false comfort because it sounds principled, but the calibration depends entirely on the rule being committed to before the data was observed.',
+      },
+      {
+        id: 'b',
+        label: 'Valid if and only if this stopping rule was pre-specified before the experiment started. Ad-hoc stopping when the probability looks good reintroduces the same inflation issues as frequentist peeking.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. Bayesian stopping rules are valid when pre-specified. The experiment plan should have stated: "We will stop when P(treatment > control) > 0.95 OR when we reach n = 35,000 per arm, whichever comes first." If that plan existed and was filed before launch, stopping at day 8 with P = 0.96 is clean and defensible — this is one of the genuine advantages of Bayesian experimentation. If the threshold was set informally or the decision to stop was made after observing the probability, the same inflation problem that affects frequentist peeking applies here. The mathematical framework does not protect you from researcher degrees of freedom.',
+      },
+      {
+        id: 'c',
+        label: 'Invalid — Bayesian methods do not allow early stopping under any circumstances.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'This is incorrect in the opposite direction. Pre-specified Bayesian stopping rules are one of the genuinely useful features of the Bayesian framework for experimentation. Companies like VWO and Optimizely have built their testing platforms around exactly this capability. When the stopping criterion is defined before the experiment launches — including the prior, model, and threshold — reaching that threshold is a valid basis for stopping. The problem is not Bayesian stopping per se; it is optional stopping without pre-specification.',
+      },
+      {
+        id: 'd',
+        label: 'Cannot determine — need the prior distribution to evaluate whether this claim is valid.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'The prior matters for calibrating the probability estimate, but it is not the main issue here. The primary concern is whether the stopping rule was pre-specified — and the answer to that question does not depend on the prior. Even with a well-chosen, documented prior, stopping ad-hoc when the dashboard looks good is methodologically problematic. The prior is a secondary consideration; the pre-specification question is the critical one.',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'Bayesian stopping rules are valid when pre-specified. The intuition that "Bayesian = peek anytime" is a widespread misconception that leads to inflated false positive rates.',
+      why: 'The Bayesian framework does not eliminate the optional stopping problem — it reframes it. In a frequentist context, peeking at p-values and stopping when p < 0.05 inflates the Type I error rate because the p-value distribution shifts under repeated testing. In a Bayesian context, looking at a posterior probability and stopping when P(B > A) > 0.95 has the same inflation property when the decision to check is correlated with the result.\n\nThe mathematical resolution is identical to the frequentist case: pre-specification. A valid Bayesian stopping rule looks like this in the experiment plan: "Using a Beta(1,1) prior on both arms, we will stop when P(treatment > control) > 0.95 or when n = 35,000 per arm, whichever occurs first." This makes the stopping criterion fixed and independent of the observed data at any given moment. If a team builds this into their experiment infrastructure and follows it consistently, early stopping is a genuine advantage — it reduces opportunity cost when effects are large.\n\nThe failure mode is treating Bayesian probability as a live decision criterion that you can invoke whenever it feels right. A PM who sees P = 0.96 on day 8 and decides "now is a good time to stop" is doing optional stopping regardless of the mathematical framework. The correct response: check whether the stopping rule was pre-specified. If yes, stopping is valid. If no, run to the planned sample size.',
+      commonMistake: '"Bayesian methods let you stop whenever the probability threshold is hit." This is true only when the threshold, prior, and model were committed to before the experiment launched. Retrospective invocation of a probability threshold is optional stopping with a Bayesian aesthetic.',
+      interviewPhrase: '"Bayesian stopping rules are valid when pre-specified. If the experiment plan said stop at P > 0.95 before we launched, we can stop now. If we\'re looking at the dashboard and deciding to use that threshold because it looks good, we need to run to the planned n."',
+      connectsTo: ['design', 'review'],
+    },
+  },
+
+  // ─────────────────────────────────────────────
+  // STAT12 — Long-run vs Short-run Metric Divergence (Advanced)
+  // Trap: CTR primary metric +6.2% significant, 30-day retention -0.8% (non-sig)
+  // ─────────────────────────────────────────────
+  {
+    id: 'stat12-longrun-shortrun',
+    title: 'The Metric We Optimized Moved. The One We Care About Didn\'t.',
+    subtitle: 'Metric hierarchy and long-run vs short-run divergence',
+    concept: 'metric-hierarchy',
+    difficulty: 'advanced',
+    isFree: false,
+    linkedConceptIds: ['metric-hierarchy', 'proxy-metric', 'guardrail-metric', 'p-value'],
+
+    situation: {
+      company: 'Orbit Streaming',
+      product: 'Content recommendation algorithm — A/B testing a new personalization model',
+      context: 'The team A/B tested a new content recommendation algorithm. The primary experiment metric — next-session click-through rate (CTR) — is up +6.2% with p < 0.001. But 30-day retention, which drives subscription revenue, is -0.8% with p = 0.31. The head of product says CTR is the north star for algorithm experiments and wants to ship.',
+      decisionPressure: 'The algo team\'s quarterly OKR is CTR improvement. The head of product has been pushing for a meaningful algo win for two quarters. The 30-day follow-up data is available but deprioritized.',
+    },
+
+    setup: {
+      metric: 'CTR (primary, pre-specified): +6.2%, p < 0.001. 30-day retention: -0.8%, p = 0.31. Revenue per user at day 30: -1.1%, p = 0.19.',
+      baseline: 'CTR baseline: not specified. 30-day retention baseline: implicit from control arm.',
+      observedResult: 'CTR: +6.2% (p < 0.001). 30-day retention: -0.8% (p = 0.31). Day-30 revenue per user: -1.1% (p = 0.19).',
+      sampleInfo: 'n = 85,000 per arm. 30-day follow-up available.',
+      caveat: 'Both retention and revenue signals are directionally negative, even if not statistically significant at conventional thresholds.',
+    },
+
+    question: 'Evaluate this claim.',
+    claim: '"CTR is our pre-specified primary metric for algorithm experiments. It moved significantly and in the right direction. The retention result is noisy and could be positive or negative. We should ship."',
+
+    options: [
+      {
+        id: 'a',
+        label: 'Valid — pre-specified primary metrics should be respected, and CTR moved significantly.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'Respecting pre-specified primary metrics is a sound principle, but it assumes the primary metric is the right proxy for business value. CTR is a short-run behavioral measure — it tells you users clicked. It does not tell you whether what they watched was satisfying, whether they returned, or whether they renewed their subscription. With 30-day retention directionally negative and day-30 revenue directionally negative, there is real evidence that CTR optimization here may be actively working against the long-run outcome the business cares about. Pre-specification is a methodological tool, not a reason to ignore a directionally negative signal from the metric that actually drives revenue.',
+      },
+      {
+        id: 'b',
+        label: 'Valid if CTR is truly the right north star for this decision — but the data suggests it may not be. A 30-day retention signal that is directionally negative (even if not significant) should trigger a longer follow-up before shipping.',
+        isCorrect: true,
+        level: 'strong',
+        feedback: 'Correct. The methodological discipline of pre-specifying CTR as the primary metric is sound — it prevents post-hoc metric shopping. But a primary metric is only as good as its validity as a proxy for business value. In streaming, CTR optimizes for the initial decision to watch something. If the algorithm is serving clickable-but-ultimately-unsatisfying content, CTR goes up while long-run engagement erodes. The fact that both 30-day retention and day-30 revenue are directionally negative — even with n = 85,000 per arm and 30 days of follow-up — is a meaningful warning signal. The right call is a longer follow-up, not a ship based on a short-run proxy that may be misaligned.',
+      },
+      {
+        id: 'c',
+        label: 'Invalid — 30-day retention not moving means the CTR lift has no business value.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'This overclaims in the opposite direction. The 30-day retention result is -0.8% with p = 0.31 — that is a non-significant result, not proof of zero effect. The true retention impact could be negative, zero, or small positive. It would be equally wrong to declare the feature definitively harmful as to declare it definitively helpful. The appropriate response is uncertainty, not a confident negative conclusion. The question is whether the CTR north star is valid, not whether retention is proven to be zero.',
+      },
+      {
+        id: 'd',
+        label: 'Cannot determine — the experiment ran too short to measure true retention impact.',
+        isCorrect: false,
+        level: 'wrong',
+        feedback: 'The experiment actually has 30-day follow-up data, which is the relevant window for retention measurement on a streaming platform. The issue is not that the experiment ran too short — it is that the pre-specified primary metric (CTR) may not be the right north star for the ship decision, given that the downstream metrics it is meant to proxy are directionally negative. "Cannot determine" framing deflects from the core question: should CTR, a short-run click metric, be the basis for shipping an algorithm change when 30-day retention and revenue are directionally negative?',
+      },
+    ],
+
+    seniorRead: {
+      shortAnswer: 'CTR optimizes for clicks, not for what happens after the click. Do not ship. Run a longer follow-up and validate whether CTR is actually a good proxy for retention on this platform.',
+      why: 'In streaming, a recommendation algorithm that serves clickable-but-ultimately-unsatisfying content will reliably boost next-session CTR. Users click on thumbnails that catch attention — but if what they watch is not satisfying, they disengage more quickly, return less often, and eventually churn. The short-run CTR metric captures the first behavior; the long-run retention and revenue metrics capture the cumulative consequence of all those behaviors over a subscription period.\n\nThe directionally negative retention and revenue signals here are not noise to dismiss. With n = 85,000 per arm and 30 days of follow-up, the confidence intervals on those metrics are not wide because of insufficient data — they are non-significant because the effect sizes are small. But -0.8% retention and -1.1% revenue per user, even if not significant, are consistent with a scenario where the algorithm trades long-run satisfaction for short-run click appeal. At scale on a subscription business, -0.8% retention compounds meaningfully over 12 months.\n\nThe right action is not to ignore the CTR result — it is to validate whether CTR is genuinely a leading indicator of retention on this platform. That is an empirical question. If historically CTR gains have been followed by retention gains, this experiment is probably fine. If CTR gains have been uncorrelated or negatively correlated with retention historically, the pre-specification of CTR as the north star needs to be revisited before the next algorithm experiment.',
+      commonMistake: 'Treating "primary metric moved significantly" as sufficient for a ship decision when the primary metric is a behavioral proxy with uncertain relationship to business value. Proxy validity is not guaranteed — it has to be established empirically and re-verified when the algorithm or product context changes significantly.',
+      interviewPhrase: '"CTR moving significantly tells me users clicked more. It doesn\'t tell me the algorithm is improving long-run retention. With 30-day retention directionally negative and 30-day revenue directionally negative, I\'d want to understand the CTR-retention correlation historically before treating this CTR lift as a win."',
+      connectsTo: ['design', 'review', 'metrics', 'rca'],
+    },
+  },
 ];
 
 export const statsModulesById = Object.fromEntries(statsModules.map(m => [m.id, m]));

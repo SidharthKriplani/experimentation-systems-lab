@@ -13,7 +13,7 @@ const RATING_STYLE = {
   miss:    { color: 'var(--red)',    bg: 'var(--red-bg)',    border: 'var(--red-border)' },
 };
 
-export function PrioritizationRunner({ scenario, onBack }) {
+export function PrioritizationRunner({ scenario, onBack, onNext }) {
   const existing = getPrioritizationProgress(scenario.id);
   const [response, setResponse] = useState(existing?.response || '');
   const [revealed, setRevealed] = useState(!!existing?.rating);
@@ -313,7 +313,7 @@ export function PrioritizationRunner({ scenario, onBack }) {
           </div>
 
           {/* Actions */}
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
             <button onClick={handleRetry} style={{
               background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '7px',
               padding: '0.5rem 1rem', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer',
@@ -321,11 +321,20 @@ export function PrioritizationRunner({ scenario, onBack }) {
               ↺ Try again
             </button>
             <button onClick={onBack} style={{
-              background: 'var(--accent)', border: 'none', borderRadius: '7px',
-              padding: '0.5rem 1.1rem', color: '#fff', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
+              background: 'none', border: '1px solid var(--border)', borderRadius: '7px',
+              padding: '0.5rem 1.1rem', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer',
             }}>
               ← Back to Room
             </button>
+            {onNext && (
+              <button onClick={onNext} style={{
+                background: 'var(--purple)', border: 'none', borderRadius: '7px',
+                padding: '0.5rem 1.2rem', color: '#fff', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
+                marginLeft: 'auto',
+              }}>
+                Next scenario →
+              </button>
+            )}
           </div>
         </div>
       )}

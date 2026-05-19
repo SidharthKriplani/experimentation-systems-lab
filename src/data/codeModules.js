@@ -765,6 +765,577 @@ ORDER BY segment;`,
       `Sum the mix_effect + rate_effect across both segments to reconstruct the total observed margin change — the two components should add up to approximately -7pp`,
     ],
   },
+
+  // ─────────────────────────────────────────────
+  // CODE07 — CUPED Variance Reduction in SQL (SQL · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code07-cuped-sql',
+    title: 'Apply CUPED Variance Reduction in SQL',
+    subtitle: 'SQL · CUPED · Pre-experiment Covariate · CTEs',
+    track: 'sql',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['CUPED', 'variance reduction', 'CTEs', 'experimentation', 'covariate adjustment'],
+
+    scenario: {
+      company: 'Ardent Commerce',
+      context: `Ardent Commerce ran a two-week A/B test on a new recommendations widget. The head of experimentation flags that the test is slightly underpowered on revenue — there's a real effect, but the p-value is hovering around 0.07. She asks you to apply CUPED using last week's revenue (pre-experiment) as the covariate. You have the raw assignment and orders tables in the warehouse. Do the full CUPED adjustment entirely in SQL.`,
+      schema: [
+        { table: 'experiment_assignments', description: 'One row per user, assigned at experiment start', columns: ['user_id', 'variant', 'assigned_at'] },
+        { table: 'orders', description: 'One row per order', columns: ['user_id', 'order_ts', 'revenue'] },
+        { table: '—', description: 'Experiment ran 2024-01-15 to 2024-01-28. Pre-experiment window: 2024-01-08 to 2024-01-14.', columns: [] },
+      ],
+      task: `Write a SQL query that computes CUPED-adjusted revenue per user. Steps: (1) aggregate pre-experiment revenue per user as covariate X, (2) aggregate experiment-period revenue per user as outcome Y, (3) compute theta = Cov(Y, X) / Var(X) using SQL aggregate functions, (4) compute Y_cuped = Y - theta * (X - mean_X) for each user.`,
+    },
+
+    hints: [
+      'Cov(Y, X) in SQL: AVG(Y * X) - AVG(Y) * AVG(X) — the definitional formula works cleanly as window or subquery aggregates',
+      'Var(X) in SQL: AVG(X * X) - AVG(X) * AVG(X) — same pattern as covariance but both columns are X',
+      'theta is a single scalar — compute it in one CTE, then cross-join it into the per-user CTE so every row can use it',
+      'Users with zero pre-experiment revenue still get a CUPED adjustment (X=0, so the correction is -theta * (0 - mean_X) = +theta * mean_X)',
+    ],
+
+    partialCode: `WITH pre_revenue AS (
+  -- Covariate X: revenue per user in the week BEFORE the experiment
+  SELECT
+    ea.user_id,
+    ea.variant,
+    COALESCE(SUM(o.revenue), 0) AS pre_rev
+  FROM experiment_assignments ea
+  LEFT JOIN orders o
+    ON ea.user_id = o.user_id
+    AND o.order_ts BETWEEN '2024-01-08' AND '2024-01-14'
+  GROUP BY 1, 2
+),
+
+exp_revenue AS (
+  -- Outcome Y: revenue per user DURING the experiment
+  SELECT
+    ea.user_id,
+    COALESCE(SUM(o.revenue), 0) AS exp_rev
+  FROM experiment_assignments ea
+  LEFT JOIN orders o
+    ON ea.user_id = o.user_id
+    -- TODO: filter order_ts to the experiment window (2024-01-15 to 2024-01-28)
+  GROUP BY 1
+),
+
+combined AS (
+  SELECT
+    pr.user_id,
+    pr.variant,
+    pr.pre_rev   AS x,   -- covariate
+    er.exp_rev   AS y    -- outcome
+  FROM pre_revenue pr
+  JOIN exp_revenue er ON pr.user_id = er.user_id
+),
+
+theta_calc AS (
+  -- theta = Cov(Y, X) / Var(X)
+  -- TODO: compute cov_yx = AVG(y * x) - AVG(y) * AVG(x)
+  -- TODO: compute var_x  = AVG(x * x) - AVG(x) * AVG(x)
+  -- TODO: theta = cov_yx / NULLIF(var_x, 0)
+  SELECT
+    ___ AS mean_x,
+    ___ AS cov_yx,
+    ___ AS var_x,
+    ___ AS theta
+  FROM combined
+)
+
+SELECT
+  c.user_id,
+  c.variant,
+  c.y                                                        AS raw_revenue,
+  -- TODO: compute cuped_revenue = y - theta * (x - mean_x)
+  ___                                                        AS cuped_revenue,
+  t.theta,
+  t.mean_x
+FROM combined c
+CROSS JOIN theta_calc t
+ORDER BY c.user_id;`,
+
+    modelAnswer: `WITH pre_revenue AS (
+  -- Covariate X: revenue per user in the week before the experiment
+  SELECT
+    ea.user_id,
+    ea.variant,
+    COALESCE(SUM(o.revenue), 0) AS pre_rev
+  FROM experiment_assignments ea
+  LEFT JOIN orders o
+    ON ea.user_id = o.user_id
+    AND o.order_ts BETWEEN '2024-01-08' AND '2024-01-14'
+  GROUP BY 1, 2
+),
+
+exp_revenue AS (
+  -- Outcome Y: revenue per user during the experiment period
+  SELECT
+    ea.user_id,
+    COALESCE(SUM(o.revenue), 0) AS exp_rev
+  FROM experiment_assignments ea
+  LEFT JOIN orders o
+    ON ea.user_id = o.user_id
+    AND o.order_ts BETWEEN '2024-01-15' AND '2024-01-28'
+  GROUP BY 1
+),
+
+combined AS (
+  SELECT
+    pr.user_id,
+    pr.variant,
+    pr.pre_rev  AS x,   -- covariate (pre-experiment revenue)
+    er.exp_rev  AS y    -- outcome (experiment-period revenue)
+  FROM pre_revenue pr
+  JOIN exp_revenue er ON pr.user_id = er.user_id
+),
+
+theta_calc AS (
+  -- Compute theta = Cov(Y, X) / Var(X) using the definitional formulas
+  -- Cov(Y, X) = E[YX] - E[Y]*E[X]
+  -- Var(X)    = E[X^2] - E[X]^2
+  SELECT
+    AVG(x)                                                         AS mean_x,
+    AVG(y * x) - AVG(y) * AVG(x)                                  AS cov_yx,
+    AVG(x * x) - AVG(x) * AVG(x)                                  AS var_x,
+    (AVG(y * x) - AVG(y) * AVG(x))
+      / NULLIF(AVG(x * x) - AVG(x) * AVG(x), 0)                  AS theta
+  FROM combined
+)
+
+-- Final output: CUPED-adjusted revenue per user
+-- Y_cuped = Y - theta * (X - mean_X)
+SELECT
+  c.user_id,
+  c.variant,
+  c.y                                                              AS raw_revenue,
+  c.y - t.theta * (c.x - t.mean_x)                               AS cuped_revenue,
+  c.x                                                              AS pre_revenue_covariate,
+  ROUND(t.theta,  4)                                               AS theta,
+  ROUND(t.mean_x, 4)                                               AS mean_pre_revenue
+
+FROM combined c
+CROSS JOIN theta_calc t
+ORDER BY c.user_id;
+
+-- To get per-variant summary after this, wrap in another CTE:
+-- SELECT variant, AVG(cuped_revenue) AS mean_cuped_rev, VARIANCE(cuped_revenue) AS var_cuped
+-- FROM (...above...) GROUP BY variant`,
+
+    keyInsights: [
+      `theta = Cov(Y,X) / Var(X) is the OLS regression coefficient of Y on X. In SQL, Cov(Y,X) = AVG(Y*X) - AVG(Y)*AVG(X) and Var(X) = AVG(X^2) - AVG(X)^2 — the definitional formula computes cleanly as aggregate expressions`,
+      `CROSS JOIN theta_calc distributes the single scalar theta and mean_x to every row without a correlated subquery — this is the idiomatic SQL pattern for broadcasting a global statistic into per-row calculations`,
+      `CUPED works best when pre-experiment and experiment-period revenue are highly correlated (r > 0.5). For e-commerce, weekly revenue typically has r ≈ 0.6–0.8, giving 35–65% variance reduction`,
+      `Users with no pre-experiment orders get x=0. Their adjustment becomes -theta*(0 - mean_x) = +theta*mean_x, slightly shifting their adjusted revenue upward — this is correct behavior, not a bug`,
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE08 — Bootstrap Confidence Interval in Python (Python · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code08-bootstrap-python',
+    title: 'Compute a Bootstrap Confidence Interval',
+    subtitle: 'Python · Bootstrap · Skewed Distributions · Resampling',
+    track: 'python',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['bootstrap', 'confidence intervals', 'numpy', 'skewed distributions', 'A/B testing'],
+
+    scenario: {
+      company: 'Loopwise',
+      context: `Loopwise ran an A/B test on a new onboarding flow for 21 days. The metric is 30-day revenue per user. The distribution is highly skewed: 74% of users pay nothing, and a small fraction drives the bulk of revenue. A standard normal-theory confidence interval assumes the sampling distribution of the mean is approximately normal — an assumption that breaks down with this kind of zero-inflated, heavy-tailed data at moderate sample sizes. The senior analyst asks you to compute a 95% bootstrap CI for the treatment effect (mean revenue difference) using 10,000 bootstrap samples.`,
+      schema: [
+        { table: 'DataFrame: df', description: 'One row per user', columns: ['user_id', 'variant', 'revenue_30d'] },
+        { table: '—', description: 'variant: "control" | "treatment". revenue_30d: float, many zeros', columns: [] },
+      ],
+      task: `Write Python code that: (1) separates control and treatment revenue arrays, (2) runs 10,000 bootstrap iterations — sampling with replacement from each arm and recording the mean difference — (3) computes the 2.5th and 97.5th percentiles of the bootstrap delta distribution as the 95% CI, (4) prints the observed lift, the CI, and whether the CI excludes zero.`,
+    },
+
+    hints: [
+      'np.random.choice(arr, size=len(arr), replace=True) draws a bootstrap sample of the same size as the original',
+      'Compute the delta for each bootstrap iteration as: np.mean(boot_treatment) - np.mean(boot_control)',
+      'The percentile CI is np.percentile(deltas, [2.5, 97.5]) — no normal approximation needed',
+      'Set np.random.seed(42) for reproducibility before the loop',
+    ],
+
+    partialCode: `import numpy as np
+import pandas as pd
+
+# Assume df is loaded with columns: user_id, variant, revenue_30d
+np.random.seed(42)
+
+# 1. Separate the two arms into numpy arrays
+control_rev   = df.loc[df['variant'] == 'control',   'revenue_30d'].values
+treatment_rev = df.loc[df['variant'] == 'treatment', 'revenue_30d'].values
+
+# Observed lift (point estimate)
+observed_lift = treatment_rev.mean() - control_rev.mean()
+print(f"Observed lift: \${observed_lift:.4f}")
+print(f"Control mean:   \${control_rev.mean():.4f}  (n={len(control_rev):,})")
+print(f"Treatment mean: \${treatment_rev.mean():.4f}  (n={len(treatment_rev):,})")
+
+# 2. Bootstrap loop — 10,000 iterations
+n_boot = 10_000
+boot_deltas = np.zeros(n_boot)
+
+for i in range(n_boot):
+    # TODO: draw a bootstrap sample from control_rev (same size, with replacement)
+    boot_control   = ___
+
+    # TODO: draw a bootstrap sample from treatment_rev (same size, with replacement)
+    boot_treatment = ___
+
+    # TODO: store the mean difference in boot_deltas[i]
+    boot_deltas[i] = ___
+
+# 3. Compute the 95% percentile CI
+# TODO: use np.percentile to get the 2.5th and 97.5th percentiles
+ci_lower, ci_upper = ___
+
+print(f"\\n95% Bootstrap CI: [\${ci_lower:.4f}, \${ci_upper:.4f}]")
+print(f"CI excludes zero (significant): {ci_lower > 0 or ci_upper < 0}")`,
+
+    modelAnswer: `import numpy as np
+import pandas as pd
+
+# Assume df is loaded with columns: user_id, variant, revenue_30d
+np.random.seed(42)
+
+# 1. Separate arms
+control_rev   = df.loc[df['variant'] == 'control',   'revenue_30d'].values
+treatment_rev = df.loc[df['variant'] == 'treatment', 'revenue_30d'].values
+
+observed_lift = treatment_rev.mean() - control_rev.mean()
+print(f"Observed lift:  \${observed_lift:.4f}")
+print(f"Control mean:   \${control_rev.mean():.4f}  (n={len(control_rev):,})")
+print(f"Treatment mean: \${treatment_rev.mean():.4f}  (n={len(treatment_rev):,})")
+print(f"\\nRevenue distribution (% zero-revenue users):")
+print(f"  Control:   {(control_rev == 0).mean():.1%} zeros")
+print(f"  Treatment: {(treatment_rev == 0).mean():.1%} zeros")
+
+# 2. Bootstrap loop
+n_boot = 10_000
+boot_deltas = np.zeros(n_boot)
+
+for i in range(n_boot):
+    # Sample with replacement — same size as each arm's original n
+    boot_control   = np.random.choice(control_rev,   size=len(control_rev),   replace=True)
+    boot_treatment = np.random.choice(treatment_rev, size=len(treatment_rev), replace=True)
+    boot_deltas[i] = boot_treatment.mean() - boot_control.mean()
+
+# 3. Percentile CI — no normal approximation, reads directly from the bootstrap distribution
+ci_lower, ci_upper = np.percentile(boot_deltas, [2.5, 97.5])
+
+print(f"\\n95% Bootstrap CI: [\${ci_lower:.4f}, \${ci_upper:.4f}]")
+print(f"Observed lift:    \${observed_lift:.4f}")
+print(f"CI excludes zero (significant at 95%): {ci_lower > 0 or ci_upper < 0}")
+
+# 4. Bootstrap distribution summary
+print(f"\\nBootstrap delta distribution:")
+print(f"  Mean of bootstrap deltas: \${boot_deltas.mean():.4f}  (should ≈ observed lift)")
+print(f"  Std of bootstrap deltas:  \${boot_deltas.std():.4f}   (bootstrap SE)")
+print(f"  Skewness of deltas: {((boot_deltas - boot_deltas.mean())**3).mean() / boot_deltas.std()**3:.3f}")`,
+
+    keyInsights: [
+      `The percentile bootstrap CI is non-parametric — it makes no assumption about the sampling distribution shape. This matters for zero-inflated revenue where the CLT convergence is slow at moderate sample sizes (n < 50k per arm)`,
+      `np.random.choice(arr, size=len(arr), replace=True) is the canonical bootstrap sample. The key is replace=True and size equal to the original n — drawing fewer or more changes the variance estimate`,
+      `10,000 iterations is the practical standard: it gives stable CI estimates (bootstrap SE of the CI endpoint is small) without being computationally expensive. For production use, 1,000 iterations is often enough; 100,000 adds precision but rarely changes decisions`,
+      `The bootstrap delta distribution mean should closely match the observed lift — if it doesn't, check that you're sampling from the right arrays. The standard deviation of boot_deltas is the bootstrap standard error of the lift estimate`,
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE09 — Funnel Visualization with Matplotlib (Python · Analyst)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code09-funnel-viz-python',
+    title: 'Visualize Funnel Conversion Rates',
+    subtitle: 'Python · Matplotlib · Horizontal Bar Chart · Annotations',
+    track: 'python',
+    difficulty: 'analyst',
+    isFree: false,
+    tags: ['matplotlib', 'funnel', 'visualization', 'bar chart', 'annotations'],
+
+    scenario: {
+      company: 'Crestline Home',
+      context: `The same checkout funnel from the SQL module. The PM has already run the SQL query and has pre-computed conversion rates for pre- vs post-deployment in a DataFrame. Now she needs a clean horizontal bar chart to drop into the all-hands deck — one that shows both periods side by side at each funnel step, with the delta annotated so the audience can immediately see where the drop happened. She wants it to look polished, not like a default matplotlib output.`,
+      schema: [
+        { table: 'DataFrame: df', description: 'Pre-computed funnel conversion rates', columns: ['step', 'pre_rate', 'post_rate'] },
+        { table: '—', description: 'step: e.g. "Cart Viewed", "Payment Page", "Payment Submitted", "Order Confirmed"', columns: [] },
+        { table: '—', description: 'pre_rate, post_rate: conversion rate as a percentage float, e.g. 78.4', columns: [] },
+      ],
+      task: `Write Python/matplotlib code that produces a horizontal bar chart: y-axis = funnel steps, x-axis = conversion rate (%), two bars per step (pre-deploy in blue, post-deploy in orange), with a delta annotation (e.g. "▼ 3.2pp") displayed to the right of the longer bar for each step.`,
+    },
+
+    hints: [
+      'Use ax.barh() twice — once for pre_rate and once for post_rate. Offset the y positions by bar_height/2 to create the side-by-side layout',
+      'Enumerate the steps with np.arange(len(df)) for numeric y positions, then set ax.set_yticks and ax.set_yticklabels to label them',
+      'For each step, compute delta = post_rate - pre_rate. Use "▲" if positive, "▼" if negative',
+      'ax.text(x, y, label, va="center") places the annotation. Use max(pre_rate, post_rate) + 1 as the x position to place it just past the longer bar',
+    ],
+
+    partialCode: `import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import numpy as np
+
+# Sample data — replace with your actual df
+import pandas as pd
+df = pd.DataFrame({
+    'step':      ['Cart Viewed', 'Payment Page', 'Payment Submitted', 'Order Confirmed'],
+    'pre_rate':  [100.0, 78.4, 61.2, 54.7],
+    'post_rate': [100.0, 77.1, 55.3, 48.9],
+})
+
+# Chart setup
+fig, ax = plt.subplots(figsize=(10, 5))
+bar_height = 0.35
+y = np.arange(len(df))
+
+# TODO: draw the pre_rate bars (blue, label='Pre-deploy')
+# Hint: ax.barh(y + bar_height/2, df['pre_rate'], height=bar_height, ...)
+bars_pre  = ___
+
+# TODO: draw the post_rate bars (orange, label='Post-deploy')
+bars_post = ___
+
+# TODO: annotate each step with the delta
+# For each i, compute delta = post - pre, choose arrow symbol, call ax.text(...)
+for i, row in df.iterrows():
+    delta = ___
+    arrow = ___   # '▲' if delta > 0 else '▼'
+    label = ___   # e.g. '▼ 3.2pp'
+    x_pos = ___   # just past the longer of the two bars
+    # TODO: call ax.text to place the annotation
+
+# Axis labels and formatting
+ax.set_xlabel('Conversion Rate (%)', fontsize=12)
+ax.set_title('Checkout Funnel: Pre vs Post Deployment', fontsize=14, fontweight='bold')
+
+# TODO: set y-tick positions and labels (use y and df['step'])
+ax.set_yticks(___)
+ax.set_yticklabels(___)
+
+ax.set_xlim(0, 115)
+ax.legend(handles=[bars_pre, bars_post], loc='lower right')
+ax.spines[['top', 'right']].set_visible(False)
+
+plt.tight_layout()
+plt.show()`,
+
+    modelAnswer: `import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import numpy as np
+import pandas as pd
+
+# Sample data
+df = pd.DataFrame({
+    'step':      ['Cart Viewed', 'Payment Page', 'Payment Submitted', 'Order Confirmed'],
+    'pre_rate':  [100.0, 78.4, 61.2, 54.7],
+    'post_rate': [100.0, 77.1, 55.3, 48.9],
+})
+
+fig, ax = plt.subplots(figsize=(10, 5))
+bar_height = 0.35
+y = np.arange(len(df))
+
+# Draw bars — offset by half bar_height to create side-by-side layout
+bars_pre  = ax.barh(y + bar_height / 2, df['pre_rate'],  height=bar_height,
+                    color='#4C72B0', label='Pre-deploy',  alpha=0.85)
+bars_post = ax.barh(y - bar_height / 2, df['post_rate'], height=bar_height,
+                    color='#DD8452', label='Post-deploy', alpha=0.85)
+
+# Annotate each step with the delta
+for i, row in df.iterrows():
+    delta  = row['post_rate'] - row['pre_rate']
+    arrow  = '▲' if delta > 0 else '▼'
+    color  = '#2ca02c' if delta > 0 else '#d62728'
+    label  = f'{arrow} {abs(delta):.1f}pp'
+    x_pos  = max(row['pre_rate'], row['post_rate']) + 1.5
+    ax.text(x_pos, y[i], label, va='center', ha='left',
+            fontsize=10, color=color, fontweight='bold')
+
+# Axis formatting
+ax.set_xlabel('Conversion Rate (%)', fontsize=12)
+ax.set_title('Checkout Funnel: Pre vs Post Deployment', fontsize=14, fontweight='bold')
+ax.set_yticks(y)
+ax.set_yticklabels(df['step'], fontsize=11)
+ax.set_xlim(0, 120)
+ax.axvline(x=100, color='grey', linestyle='--', linewidth=0.8, alpha=0.5)
+
+# Legend
+ax.legend(handles=[bars_pre, bars_post], loc='lower right', fontsize=10)
+ax.spines[['top', 'right']].set_visible(False)
+ax.tick_params(axis='x', labelsize=10)
+
+plt.tight_layout()
+plt.show()`,
+
+    keyInsights: [
+      `Horizontal bar charts are preferred over vertical for funnel steps because the step labels are long strings — horizontal layout gives them natural reading space on the y-axis without rotation or truncation`,
+      `The side-by-side layout uses y + bar_height/2 for one series and y - bar_height/2 for the other. This centers the pair of bars on the tick mark. bar_height = 0.35 leaves a small gap between pairs, making the grouping visually clear`,
+      `Delta annotations use ax.text() positioned at max(pre_rate, post_rate) + 1.5 so the label always clears the longer bar regardless of which period is higher. Color-coding green/red makes the direction immediately scannable`,
+      `ax.spines[['top', 'right']].set_visible(False) is a single line that removes the two chart borders that add no information, giving the chart a cleaner, more presentation-ready look`,
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE10 — Retention Heatmap in Python (Python · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code10-retention-heatmap',
+    title: 'Build a Cohort Retention Heatmap',
+    subtitle: 'Python · Seaborn · Cohort Analysis · Pivot Tables',
+    track: 'python',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['retention', 'cohort analysis', 'seaborn', 'heatmap', 'pivot_table'],
+
+    scenario: {
+      company: 'Threadline · B2B SaaS',
+      context: `Threadline's growth team wants to understand long-term retention by signup cohort. They need a classic cohort retention heatmap: rows are weekly signup cohorts (e.g. "2024-W01"), columns are weeks since signup (W0 through W12), and each cell shows the percentage of that cohort still active in that week. The raw data is a long-format DataFrame with one row per user per week they were active. You need to pivot it into the cohort × week matrix, normalize by cohort size, and render it as a seaborn heatmap.`,
+      schema: [
+        { table: 'DataFrame: df', description: 'One row per user per week they were active', columns: ['user_id', 'signup_week', 'activity_week'] },
+        { table: '—', description: 'signup_week: ISO week string like "2024-W01"', columns: [] },
+        { table: '—', description: 'activity_week: ISO week string like "2024-W03" (can be any week on or after signup_week)', columns: [] },
+      ],
+      task: `Write Python code that: (1) computes weeks_since_signup for each row, (2) counts distinct active users per cohort × week-offset cell, (3) divides by cohort size to get retention rates (0–100%), (4) renders the result as a seaborn heatmap with percentage annotations. Handle the NaN triangle (future cohorts have no data for later weeks) gracefully.`,
+    },
+
+    hints: [
+      'Convert signup_week and activity_week to actual dates using pd.to_datetime(df["signup_week"] + "-1", format="%G-W%V-%u") to get Monday of each ISO week',
+      'weeks_since_signup = (activity_week_dt - signup_week_dt).dt.days // 7',
+      'Use df.pivot_table(index="signup_week", columns="weeks_since_signup", values="user_id", aggfunc="nunique", fill_value=0) to get the activity counts matrix',
+      'Divide each row by cohort_sizes (a Series indexed by signup_week) using retention_matrix.div(cohort_sizes, axis=0) then multiply by 100',
+    ],
+
+    partialCode: `import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+
+# Assume df is loaded with columns: user_id, signup_week, activity_week
+# Example signup_week values: '2024-W01', '2024-W02', ...
+
+# 1. Convert ISO week strings to dates (Monday of each week)
+df['signup_week_dt']   = pd.to_datetime(df['signup_week']   + '-1', format='%G-W%V-%u')
+df['activity_week_dt'] = pd.to_datetime(df['activity_week'] + '-1', format='%G-W%V-%u')
+
+# 2. Compute weeks since signup
+df['weeks_since_signup'] = (df['activity_week_dt'] - df['signup_week_dt']).dt.days // 7
+
+# 3. Cohort sizes: distinct users per signup_week
+cohort_sizes = df.groupby('signup_week')['user_id'].nunique()
+print("Cohort sizes:")
+print(cohort_sizes)
+
+# 4. Pivot: rows = signup_week, columns = weeks_since_signup, values = distinct active users
+# TODO: use pd.pivot_table with aggfunc='nunique' and fill_value=0
+activity_matrix = ___
+
+# 5. Normalize by cohort size to get retention rates (0–100%)
+# TODO: divide activity_matrix by cohort_sizes (align on signup_week index) and multiply by 100
+retention_matrix = ___
+
+# 6. Keep only W0 through W12
+retention_matrix = retention_matrix.loc[:, 0:12]
+
+# 7. Render heatmap
+fig, ax = plt.subplots(figsize=(14, 7))
+
+# TODO: call sns.heatmap with annot=True, fmt='.0f', cmap='Blues_r'
+# Hint: use mask=retention_matrix.isna() to leave the NaN triangle blank
+___
+
+ax.set_title('Weekly Cohort Retention Heatmap (%)', fontsize=14, fontweight='bold', pad=12)
+ax.set_xlabel('Weeks Since Signup', fontsize=11)
+ax.set_ylabel('Signup Week', fontsize=11)
+plt.tight_layout()
+plt.show()`,
+
+    modelAnswer: `import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Assume df is loaded with columns: user_id, signup_week, activity_week
+
+# 1. Convert ISO week strings to Monday dates
+df['signup_week_dt']   = pd.to_datetime(df['signup_week']   + '-1', format='%G-W%V-%u')
+df['activity_week_dt'] = pd.to_datetime(df['activity_week'] + '-1', format='%G-W%V-%u')
+
+# 2. Weeks since signup (integer offset)
+df['weeks_since_signup'] = (df['activity_week_dt'] - df['signup_week_dt']).dt.days // 7
+
+# 3. Cohort sizes — distinct users who signed up each week
+cohort_sizes = df.groupby('signup_week')['user_id'].nunique()
+
+# 4. Activity counts matrix: unique users active in each cohort × week-offset cell
+activity_matrix = df.pivot_table(
+    index='signup_week',
+    columns='weeks_since_signup',
+    values='user_id',
+    aggfunc='nunique',
+    fill_value=0
+)
+
+# 5. Retention rates: divide by cohort size, convert to percentage
+#    .div(cohort_sizes, axis=0) aligns on the signup_week index
+retention_matrix = activity_matrix.div(cohort_sizes, axis=0) * 100
+
+# 6. Trim to W0–W12 (filter out negative offsets or beyond W12)
+cols_to_keep = [c for c in range(0, 13) if c in retention_matrix.columns]
+retention_matrix = retention_matrix[cols_to_keep]
+
+# 7. Build the NaN mask: future cohorts have no data for later weeks
+#    Any cell where the cohort hasn't had enough time is already 0 from fill_value.
+#    Re-apply NaN for cells where activity was truly impossible (week offset > cohort age).
+cohort_age = {
+    week: (retention_matrix.columns.max() - i)
+    for i, week in enumerate(retention_matrix.index)
+}
+mask = pd.DataFrame(False, index=retention_matrix.index, columns=retention_matrix.columns)
+for i, week in enumerate(retention_matrix.index):
+    max_observable_week = len(retention_matrix.index) - 1 - i
+    for col in retention_matrix.columns:
+        if col > max_observable_week:
+            mask.loc[week, col] = True
+            retention_matrix.loc[week, col] = np.nan
+
+# 8. Heatmap
+fig, ax = plt.subplots(figsize=(14, 7))
+
+sns.heatmap(
+    retention_matrix,
+    annot=True,
+    fmt='.0f',
+    cmap='Blues_r',           # Reversed Blues: darker = better retention
+    mask=mask,
+    linewidths=0.4,
+    linecolor='#e0e0e0',
+    vmin=0,
+    vmax=100,
+    cbar_kws={'label': 'Retention %', 'shrink': 0.6},
+    ax=ax
+)
+
+ax.set_title('Weekly Cohort Retention Heatmap (%)', fontsize=14, fontweight='bold', pad=12)
+ax.set_xlabel('Weeks Since Signup', fontsize=11)
+ax.set_ylabel('Signup Week', fontsize=11)
+ax.tick_params(axis='both', labelsize=9)
+
+plt.tight_layout()
+plt.show()`,
+
+    keyInsights: [
+      `The pivot_table pattern (index=cohort, columns=week_offset, aggfunc='nunique') is the core of cohort analysis. fill_value=0 ensures cohorts with zero activity in a week show 0 not NaN — you separately apply NaN only to the future triangle where data is structurally impossible`,
+      `Dividing by cohort_sizes with .div(cohort_sizes, axis=0) normalizes each row by its own cohort's starting size. Critically, this uses absolute cohort size as the denominator throughout — not the previous week's active users — so W8 retention is always "% of original cohort", not "% of W7 survivors"`,
+      `The NaN triangle arises because recent cohorts simply haven't existed long enough to have W8, W9, ... data. Masking these cells (mask=True in sns.heatmap) leaves them blank in the heatmap, preventing them from being misread as zero retention`,
+      `cmap='Blues_r' (reversed) maps high retention to dark blue and low retention to light/white. This is the convention for retention heatmaps — the visual gradient flows naturally from the dense dark diagonal (W0 = 100%) outward`,
+    ],
+  },
 ];
 
 export const codeModulesById = Object.fromEntries(codeModules.map(m => [m.id, m]));

@@ -8,6 +8,7 @@ export function DesignDebriefPanel({
   onOpenConcept,
   onGoToReview,   // navigate to the paired Review Room scenario
   onRetry,        // clear progress and re-attempt
+  onNext,         // navigate to the next design scenario
 }) {
   const allFields = scenario.designPhases.flatMap(p => p.fields);
   const fieldsById = Object.fromEntries(allFields.map(f => [f.id, f]));
@@ -170,8 +171,8 @@ export function DesignDebriefPanel({
         </section>
       )}
 
-      {/* Retry */}
-      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '0.5rem' }}>
+      {/* Next scenario + Retry row */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.5rem', gap: '0.75rem', flexWrap: 'wrap' }}>
         <button
           onClick={onRetry}
           style={{
@@ -180,17 +181,26 @@ export function DesignDebriefPanel({
             color: 'var(--text-muted)', fontSize: '0.78rem', cursor: 'pointer',
             transition: 'all 0.12s',
           }}
-          onMouseEnter={e => {
-            e.currentTarget.style.borderColor = 'var(--accent-border)';
-            e.currentTarget.style.color = 'var(--accent)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.borderColor = 'var(--border)';
-            e.currentTarget.style.color = 'var(--text-muted)';
-          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-border)'; e.currentTarget.style.color = 'var(--accent)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
         >
           ↺ Try again from scratch
         </button>
+        {onNext && (
+          <button
+            onClick={onNext}
+            style={{
+              background: 'var(--accent)', color: '#fff', border: 'none',
+              borderRadius: 'var(--radius-sm)', padding: '0.5rem 1.1rem',
+              fontSize: '0.875rem', fontWeight: 700, cursor: 'pointer',
+              transition: 'opacity 0.1s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+          >
+            Next scenario →
+          </button>
+        )}
       </div>
     </div>
   );

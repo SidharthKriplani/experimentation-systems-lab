@@ -11,7 +11,7 @@ import {
 
 // Three views: 'form' | 'reveal' | 'debrief'
 
-export function DesignRunner({ scenario, savedProgress, onBack, onGoToReview }) {
+export function DesignRunner({ scenario, savedProgress, onBack, onGoToReview, onNext }) {
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
   const [answers, setAnswers] = useState(savedProgress?.answers || {});
   const [completedPhaseIds, setCompletedPhaseIds] = useState(savedProgress?.completedPhaseIds || []);
@@ -219,6 +219,7 @@ export function DesignRunner({ scenario, savedProgress, onBack, onGoToReview }) 
             onOpenConcept={handleOpenConcept}
             onGoToReview={scenario.pairedReviewScenarioId ? () => onGoToReview(scenario.pairedReviewScenarioId) : null}
             onRetry={handleRetry}
+            onNext={onNext}
           />
         </div>
       )}

@@ -1601,6 +1601,296 @@ export const metricCases = [
         "For a GenAI support bot, deflection rate is the wrong primary metric because it rewards making escalation hard to find. I'd use resolved contact rate with a 24-hour window instead, and I'd require a repeat contact guardrail to confirm resolutions are genuine. The one thing I'd add that's specific to AI support is a hallucination flag rate guardrail — a model that sounds authoritative while being wrong will damage customer relationships before CSAT data shows the problem.",
     },
   },
+
+  {
+    id: 'M07',
+    title: 'What Should We Optimize in the Feed?',
+    subtitle: 'Spark · Consumer Social · Feed Ranking',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'engagement',
+    linkedConceptIds: ['proxy-metric', 'metric-gaming', 'guardrail-metric', 'primary-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Spark',
+      product: 'Short-video feed ranking model',
+      businessGoal: 'Improve feed ranking to drive genuine user value and long-run retention',
+      pressure:
+        'The growth team is running a ranking model experiment and needs a metric framework before the next sprint. Stakeholders are split between optimizing for likes/comments (easy to measure, high signal volume) vs. time-spent (deeper consumption, but ambiguous).',
+      trap:
+        'Likes and comments are emotionally reactive signals that optimize for provocative or outrage-inducing content, not genuine value. Time-spent conflates passive scroll-trap behavior with genuine enjoyment — a user stuck in a dopamine loop looks identical to a user discovering content they love. The real north star is intentional action: saves and shares to close friends require deliberate effort and predict long-run retention far better than passive consumption signals.',
+    },
+    fields: [
+      {
+        id: 'northStar',
+        label: 'North-star metric',
+        type: 'single',
+        prompt:
+          'Spark is testing a new feed ranking model. Which metric should be the single north star for the experiment?',
+        options: [
+          {
+            id: 'a',
+            label: 'Avg session depth — average number of posts viewed per session',
+            scoreValue: 0,
+            rationale:
+              'Session depth measures how far users scroll, which is maximized by an infinite-scroll trap rather than by delivering content users genuinely value. A ranking model optimized for session depth will learn to surface addictive, hard-to-stop content rather than content users find meaningful — producing a metric win alongside a degraded user experience.',
+          },
+          {
+            id: 'b',
+            label: 'Like + comment rate — combined like and comment interactions per post impression',
+            scoreValue: 0,
+            rationale:
+              'Like and comment signals are heavily weighted toward emotionally provocative content — outrage, controversy, and shock drive high reaction rates. A ranking model trained on these signals will systematically surface content that triggers emotional reactions over content that delivers genuine value, producing a well-documented long-term retention and wellbeing problem.',
+          },
+          {
+            id: 'c',
+            label: 'Save rate + share-to-close-friend rate — intentional value actions per post impression',
+            scoreValue: 2,
+            rationale:
+              'Saves and direct shares to close friends are deliberate, high-effort actions that users only perform when content genuinely resonates. Unlike likes or watch time, these actions require conscious intent — they cannot be triggered by outrage or passive inertia. Research across social platforms consistently shows that save and close-friend share rates predict long-run retention and content satisfaction better than reactive engagement signals.',
+          },
+          {
+            id: 'd',
+            label: 'Daily active users — unique users with any app open each day',
+            scoreValue: 1,
+            rationale:
+              'DAU provides a broad health signal that is independent of the specific engagement trap risks, making it a reasonable guardrail or secondary metric. However, it is too high-level and too slow-moving to serve as the north star for a ranking model experiment — it aggregates organic growth, notification-driven opens, and genuine content engagement into an undifferentiated count.',
+          },
+        ],
+      },
+      {
+        id: 'guardrails',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt:
+          'Which guardrail set best protects against a ranking model that optimizes for scroll-trap behavior at the expense of user wellbeing?',
+        options: [
+          {
+            id: 'a',
+            label: 'Regret signal rate (user closes app immediately after session) + creator diversity index (breadth of creators in feed)',
+            scoreValue: 2,
+            rationale:
+              'The regret signal rate — users who close the app immediately after a session, especially after long sessions — is a direct behavioral proxy for the scroll-trap failure mode: users spent time they did not intend to spend and felt bad about it. The creator diversity index guards against the filter-bubble risk of a save/share-optimized model, which could aggressively narrow the feed to a small set of proven creators, reducing the discovery that drives long-term platform health.',
+          },
+          {
+            id: 'b',
+            label: 'Session count — total number of sessions per user per day',
+            scoreValue: 0,
+            rationale:
+              'Session count is a broad engagement volume metric with no diagnostic power for the scroll-trap failure mode. A model that creates dopamine-loop content will increase session count as users return compulsively — making this guardrail directionally perverse: it would signal danger as improvement.',
+          },
+          {
+            id: 'c',
+            label: 'Notification open rate — % of push notifications that result in an app open',
+            scoreValue: 0,
+            rationale:
+              'Notification open rate measures the quality of the notification channel, not feed ranking quality. It operates in a different product funnel and provides no signal about whether the ranking model is creating genuine value or a scroll trap.',
+          },
+          {
+            id: 'd',
+            label: 'Time-between-opens — average hours between consecutive app sessions',
+            scoreValue: 1,
+            rationale:
+              'Time-between-opens provides a partial signal: a scroll-trap model may reduce time-between-opens as users return compulsively, which would correctly flag a problem. However, it is a lagging and noisy signal that conflates notification-driven returns with organic habit — the regret signal rate and creator diversity index provide more direct and actionable measurement of the specific failure modes.',
+          },
+        ],
+      },
+      {
+        id: 'diagnosticMetrics',
+        label: 'Diagnostic metrics',
+        type: 'single',
+        prompt:
+          'Which diagnostic set best explains why the north-star metric (save rate + share-to-close-friend rate) moved or failed to move?',
+        options: [
+          {
+            id: 'a',
+            label: 'Content category breakdown of saves + shares by cohort + scroll depth distribution by user segment',
+            scoreValue: 2,
+            rationale:
+              'Breaking saves and shares by content category reveals which content types are driving the north-star improvement — essential for understanding whether the ranking model is surfacing genuinely diverse valuable content or over-indexing on a narrow category. Scroll depth distribution by user segment distinguishes between users who are engaging deeply with curated content versus users showing passive over-consumption patterns, providing the diagnostic layer needed to separate healthy engagement from scroll traps.',
+          },
+          {
+            id: 'b',
+            label: 'Total video plays — raw count of videos played per day',
+            scoreValue: 0,
+            rationale:
+              'Total video plays is a volume metric that measures how often the feed auto-advances, which correlates more with scroll depth and session length than with intentional engagement. It cannot distinguish saves and shares from passive consumption and provides no causal diagnostic for north-star metric movement.',
+          },
+          {
+            id: 'c',
+            label: 'Follower growth rate — net new followers gained by creators in the experiment period',
+            scoreValue: 0,
+            rationale:
+              'Follower growth is a creator-side supply metric that is influenced by many factors beyond feed ranking quality, including external promotion, trends, and notification strategies. It provides no diagnostic signal about why individual user engagement with the feed changed.',
+          },
+          {
+            id: 'd',
+            label: 'DAU/MAU ratio — daily to monthly active user ratio as an engagement depth proxy',
+            scoreValue: 1,
+            rationale:
+              'DAU/MAU provides a useful habit-formation signal and is independent of the gaming risks of the other options. However, it is too aggregated to explain why the save and share rate moved — it conflates session frequency, content quality, notification effects, and seasonal patterns into a single ratio with limited diagnostic resolution for a ranking model experiment.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary:
+        'The core tension in feed ranking metric design is optimizing for engagement versus optimizing for genuine user value. Likes and comments optimize for emotionally reactive content — they are the path to outrage-driven feeds. Time-spent optimizes for passivity — it is the path to scroll traps. The right north star captures intentional user actions that require deliberate effort and reflect real content value: saves signal "I want to return to this" and direct shares signal "this is worth someone else\'s attention." Both actions predict long-run retention and user satisfaction better than any passive consumption metric because they cannot be manufactured by content that exploits psychological vulnerabilities.',
+      seniorRead:
+        'A senior analyst recognizes that the choice of engagement metric is not neutral — it shapes the content ecosystem. A like-optimized feed becomes an outrage machine; a time-spent-optimized feed becomes a scroll trap; a save/share-optimized feed has structural pressure toward content with genuine informational or emotional value. The guardrail design is equally important: the regret signal rate operationalizes the scroll-trap failure mode in behavioral terms, and the creator diversity index prevents the save/share north star from collapsing the feed into a small set of proven creators at the expense of discovery. In an interview, the strongest answer frames this as a values choice embedded in a metric, not just a measurement problem.',
+      commonMistake:
+        'The most common mistake is optimizing for a high-volume engagement signal (likes, comments, time-spent) because it is easy to measure and shows clear movement. This produces exactly the content ecosystem the platform claims not to want. The subtler mistake is treating time-spent as a neutral north star — it sounds like it rewards quality, but it structurally rewards addiction. Candidates who cannot explain why save rate is superior to watch time have not internalized the difference between behavioral intent and passive consumption.',
+      interviewPhrase:
+        'I\'d ask what user action the metric requires deliberate intent to perform. Likes are reactive — one thumb tap in a fraction of a second. Watch time is passive — doing nothing is enough. Saves and direct shares require a user to stop, think "this is worth keeping or sharing," and take an extra action. That deliberate intent is the signal. A ranking model trained on deliberate intent will surface content that earns it. A ranking model trained on watch time will surface content that captures attention, which is a very different optimization target.',
+      connectsTo: ['proxy-metric', 'metric-gaming', 'guardrail-metric'],
+    },
+  },
+
+  {
+    id: 'M08',
+    title: 'What Proves the Bidding Engine Is Winning?',
+    subtitle: 'Clearstream · B2B · Ad Tech Marketplace',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'marketplace',
+    linkedConceptIds: ['marketplace-interference', 'guardrail-metric', 'primary-metric'],
+    linkedDesignScenarioIds: [],
+    linkedReviewScenarioIds: [],
+    context: {
+      company: 'Clearstream',
+      product: 'Real-time bidding (RTB) platform — new bidding algorithm evaluation',
+      businessGoal: 'Evaluate a new bidding algorithm that improves marketplace efficiency for both advertisers and publishers',
+      pressure:
+        'The head of product wants a clear metric framework before the algorithm experiment launches. The engineering team is pushing to use total revenue cleared as the success metric because it is easy to compute.',
+      trap:
+        'Total revenue cleared is the most intuitive metric but conflates volume with marketplace health. A bidding algorithm that extracts higher CPMs will increase revenue short-term while churning cost-sensitive advertisers. An algorithm that improves fill rate will delight publishers but may accept low-quality bids that degrade advertiser ROAS. In a two-sided marketplace, optimizing one side at the expense of the other is the canonical failure mode — and revenue is always a lagging indicator of that deterioration.',
+    },
+    fields: [
+      {
+        id: 'northStar',
+        label: 'North-star metric',
+        type: 'single',
+        prompt:
+          'Clearstream is testing a new bidding algorithm. Which metric should be the primary judge of whether the algorithm improves the marketplace?',
+        options: [
+          {
+            id: 'a',
+            label: 'Total cleared spend — total advertiser spend transacted through the platform per period',
+            scoreValue: 1,
+            rationale:
+              'Total cleared spend captures marketplace volume and is a real business outcome, making it a reasonable secondary metric. However, it conflates healthy volume growth with growth driven by CPM extraction or fill-rate gaming — a new algorithm that forces higher prices will improve cleared spend while accelerating advertiser churn, and this metric will not detect the deterioration until it is too late to course correct.',
+          },
+          {
+            id: 'b',
+            label: 'Marketplace liquidity score — clearance rate × avg CPM × demand concentration index',
+            scoreValue: 2,
+            rationale:
+              'Marketplace liquidity score is the only single metric that simultaneously captures all three dimensions of a healthy RTB marketplace: clearance rate (are auctions resolving?), average CPM (are prices healthy for publishers?), and demand concentration index (is demand diverse enough that losing one advertiser is not catastrophic?). It cannot be improved by gaming any one dimension — raising CPM while reducing clearance rate or concentrating demand will lower the composite score, making it resistant to the single-sided optimization that total spend enables.',
+          },
+          {
+            id: 'c',
+            label: 'Publisher fill rate — % of available ad inventory that is filled with a winning bid',
+            scoreValue: 0,
+            rationale:
+              'Publisher fill rate measures the supply side of the marketplace only. An algorithm that accepts any bid, including very low-quality or low-CPM bids, can achieve near-100% fill rate while degrading publisher revenue and advertiser quality simultaneously. Fill rate optimization without CPM and ROAS guardrails is one of the most common RTB algorithm failure modes.',
+          },
+          {
+            id: 'd',
+            label: 'Advertiser ROAS — return on ad spend for advertisers on the platform',
+            scoreValue: 0,
+            rationale:
+              'Advertiser ROAS measures the demand side of the marketplace only. An algorithm that improves ROAS by aggressively filtering low-performing inventory will delight advertisers while destroying publisher revenue and reducing inventory supply — degrading marketplace liquidity even as the demand-side metric improves. One-sided metrics are structurally incapable of evaluating a two-sided marketplace algorithm.',
+          },
+        ],
+      },
+      {
+        id: 'guardrails',
+        label: 'Guardrail metrics',
+        type: 'single',
+        prompt:
+          'Which guardrail set best protects against a bidding algorithm that improves the north-star metric by degrading one side of the marketplace?',
+        options: [
+          {
+            id: 'a',
+            label: 'Advertiser 7-day retention rate + publisher floor price breach rate',
+            scoreValue: 2,
+            rationale:
+              'Advertiser 7-day retention catches the demand-side churn signal before it compounds into lost volume — advertisers who pause campaigns within 7 days of the new algorithm going live are the early warning that CPM extraction or poor ROAS is eroding the demand side. Publisher floor price breach rate catches the supply-side failure mode: if the algorithm is accepting bids below publisher floor prices to inflate fill rate or clearance metrics, this guardrail will surface it before publisher relationship damage accumulates.',
+          },
+          {
+            id: 'b',
+            label: 'Total impressions served — raw count of ad impressions delivered per period',
+            scoreValue: 0,
+            rationale:
+              'Total impressions served is a volume metric that can be improved by accepting low-quality bids, reducing floor prices, or degrading targeting quality — all failure modes of RTB algorithms. It does not protect either side of the marketplace and provides no directional signal about which side is being harmed.',
+          },
+          {
+            id: 'c',
+            label: 'Average bid price — mean price submitted by advertisers per auction',
+            scoreValue: 0,
+            rationale:
+              'Average bid price measures advertiser willingness to pay at submission, not the health of the clearing mechanism or the experience of either side post-auction. It is influenced heavily by audience quality and targeting changes that are independent of the bidding algorithm, making it a noisy and non-diagnostic guardrail.',
+          },
+          {
+            id: 'd',
+            label: 'Publisher revenue per 1000 impressions (RPM) — publisher-side yield per unit of inventory',
+            scoreValue: 1,
+            rationale:
+              'Publisher RPM captures the supply-side health of the marketplace — it is a genuine guardrail against algorithms that sacrifice publisher yield for fill rate or clearance metrics. However, it covers only the publisher side, leaving the advertiser churn risk unmonitored. A complete guardrail set requires both sides of the marketplace to be protected simultaneously.',
+          },
+        ],
+      },
+      {
+        id: 'diagnosticMetrics',
+        label: 'Diagnostic metrics',
+        type: 'single',
+        prompt:
+          'Which diagnostic set best explains why the marketplace liquidity score moved — or failed to move — in the experiment?',
+        options: [
+          {
+            id: 'a',
+            label: 'Bid density curve (bids per auction by price tier) + win rate by advertiser segment + fill rate by inventory category',
+            scoreValue: 2,
+            rationale:
+              'The bid density curve reveals whether the new algorithm is changing the competitive dynamics of auctions — are more advertisers bidding at each price tier, or has concentration increased? Win rate by advertiser segment identifies whether specific advertiser cohorts (large vs. small, performance vs. brand) are benefiting or being excluded. Fill rate by inventory category pinpoints which publisher inventory types are affected, enabling targeted diagnosis of supply-side impacts. Together these three diagnostics decompose every component of the liquidity score.',
+          },
+          {
+            id: 'b',
+            label: 'Total auctions run — count of auctions held per period',
+            scoreValue: 0,
+            rationale:
+              'Total auctions run is an operational throughput metric driven by publisher supply volume and platform infrastructure, not by the quality of the bidding algorithm. It cannot explain why clearance rate, CPM, or demand concentration changed and provides no causal diagnostic value for algorithm evaluation.',
+          },
+          {
+            id: 'c',
+            label: 'Revenue per advertiser — average cleared spend per advertiser account',
+            scoreValue: 1,
+            rationale:
+              'Revenue per advertiser provides a useful demand-side diagnostic — it reveals whether the algorithm is growing per-advertiser spend (healthy expansion) or concentrating spend in fewer, larger advertisers (concentration risk). However, it covers only the demand side and cannot diagnose supply-side dynamics or auction mechanism changes, making it a partial diagnostic that requires supply-side metrics to be complete.',
+          },
+          {
+            id: 'd',
+            label: 'Publisher CPM distribution — histogram of CPMs achieved across publisher inventory',
+            scoreValue: 1,
+            rationale:
+              'Publisher CPM distribution is a valuable supply-side diagnostic that reveals whether the algorithm is improving yields across inventory types or concentrating value in premium inventory while degrading the long tail. Like revenue per advertiser, it covers one side of the marketplace well but cannot diagnose the demand-side or auction mechanism dynamics that explain the full liquidity score movement.',
+          },
+        ],
+      },
+    ],
+    debrief: {
+      summary:
+        'RTB marketplaces present the hardest metric design problem in product analytics: you are evaluating an algorithm that operates on a two-sided dynamic system where improving one side can erode the other. The sophisticated analyst rejects revenue throughput as the primary metric because it is a lagging indicator that conflates health with extraction. The right north star — marketplace liquidity — captures the simultaneous health of both sides through a composite that cannot be gamed by single-sided optimization. Guardrails on advertiser retention and publisher floor price breaches provide early warning on both sides independently, and the diagnostic tier decomposes the liquidity score into its auction-mechanism, demand-side, and supply-side components.',
+      seniorRead:
+        'The senior insight in RTB metric design is understanding that marketplace liquidity is not a metaphor — it is an operationalizable composite metric. Clearance rate measures whether auctions are resolving (the mechanism works). Average CPM measures whether prices are healthy for the supply side. Demand concentration index measures whether the marketplace has systemic fragility from over-reliance on a small number of large advertisers. A bidding algorithm that improves clearance and CPM while concentrating demand is building a structurally fragile marketplace that looks healthy in aggregate metrics until the top advertiser churns. The concentration index guardrails against exactly this risk. In an interview, candidates who can define marketplace liquidity as a composite and explain each component demonstrate a genuine understanding of two-sided platform dynamics that most product analysts miss.',
+      commonMistake:
+        'The most common mistake is using total revenue cleared as the primary metric because it is the most visible business outcome. This produces an algorithm that maximizes short-term extraction — higher CPMs delight publishers and increase revenue, but accelerate advertiser churn. The subtler mistake is using a single-sided metric (fill rate or ROAS) as the north star, which is equivalent to optimizing a two-player game by only looking at one player\'s score. Candidates who do not immediately recognize that any single-sided metric is structurally insufficient for a two-sided marketplace evaluation need to develop their marketplace mechanics intuition.',
+      interviewPhrase:
+        'In a two-sided marketplace, any single-sided metric is a trap. Fill rate maximization will accept terrible bids to fill inventory. ROAS maximization will filter so aggressively that publishers lose yield. Revenue maximization will extract CPMs until advertisers churn. The right framework asks: what does a healthy marketplace look like on both sides simultaneously? That\'s marketplace liquidity — auctions clearing at healthy prices with diverse demand. I\'d build the primary metric as a composite of those three dimensions, put advertiser retention and publisher floor price breach rates as guardrails for early-warning on both sides, and decompose the composite with bid density and segment win-rate diagnostics when I need to explain the movement.',
+      connectsTo: ['marketplace-interference', 'guardrail-metric', 'primary-metric'],
+    },
+  },
 ];
 
 export const metricCasesById = Object.fromEntries(metricCases.map(c => [c.id, c]));

@@ -228,9 +228,24 @@ export default function App() {
     return accessible[idx + 1].id;
   }
 
+  function getNextDesignScenarioId(currentId) {
+    const accessible = designScenarios.filter(s => s.isFree || unlocked);
+    const idx = accessible.findIndex(s => s.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
+  function getNextPrioritizationId(currentId) {
+    const accessible = prioritizationScenarios.filter(s => s.isFree || unlocked);
+    const idx = accessible.findIndex(s => s.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
   const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
   const activeDesignScenario = designScenarios.find(s => s.id === activeDesignScenarioId);
+  const nextDesignScenarioId = activeDesignScenarioId ? getNextDesignScenarioId(activeDesignScenarioId) : null;
   const activeStatsModule = statsModules.find(m => m.id === activeStatsModuleId);
   const activeMetricsCase = metricCases.find(m => m.id === activeMetricsCaseId);
   const nextMetricsCaseId = activeMetricsCaseId ? getNextMetricsCaseId(activeMetricsCaseId) : null;
@@ -241,6 +256,7 @@ export default function App() {
   const activePDScenario = productDesignScenarios.find(s => s.id === activePDScenarioId);
   const activeCodeModule = codeModules.find(m => m.id === activeCodeModuleId);
   const activePrioritizationScenario = prioritizationScenarios.find(s => s.id === activePrioritizationId);
+  const nextPrioritizationId = activePrioritizationId ? getNextPrioritizationId(activePrioritizationId) : null;
 
   function getPairedDesignId(reviewScenarioId) {
     const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
@@ -303,6 +319,7 @@ export default function App() {
             savedProgress={getDesignProgress(activeDesignScenarioId)}
             onBack={() => navigate('design')}
             onGoToReview={id => openScenario(id)}
+            onNext={nextDesignScenarioId ? () => openDesignScenario(nextDesignScenarioId) : undefined}
           />
         )}
 
@@ -405,6 +422,7 @@ export default function App() {
             key={activePrioritizationId}
             scenario={activePrioritizationScenario}
             onBack={() => navigate('prioritization')}
+            onNext={nextPrioritizationId ? () => openPrioritizationScenario(nextPrioritizationId) : undefined}
           />
         )}
 
