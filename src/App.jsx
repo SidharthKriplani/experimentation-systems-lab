@@ -325,11 +325,18 @@ export default function App() {
     return accessible[idx + 1].id;
   }
 
+  function getNextStatsId(currentId) {
+    const accessible = statsModules.filter(m => m.isFree || unlocked);
+    const idx = accessible.findIndex(m => m.id === currentId);
+    return idx >= 0 && idx < accessible.length - 1 ? accessible[idx + 1].id : null;
+  }
+
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
   const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
   const activeDesignScenario = designScenarios.find(s => s.id === activeDesignScenarioId);
   const nextDesignScenarioId = activeDesignScenarioId ? getNextDesignScenarioId(activeDesignScenarioId) : null;
   const activeStatsModule = statsModules.find(m => m.id === activeStatsModuleId);
+  const nextStatsModuleId = activeStatsModuleId ? getNextStatsId(activeStatsModuleId) : null;
   const activeMetricsCase = metricCases.find(m => m.id === activeMetricsCaseId);
   const nextMetricsCaseId = activeMetricsCaseId ? getNextMetricsCaseId(activeMetricsCaseId) : null;
   const activeRCACase = rcaCases.find(r => r.id === activeRCACaseId);
