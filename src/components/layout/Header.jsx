@@ -12,7 +12,8 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     { id: 'prioritization', label: 'Prioritize' },
     { id: 'behavioral', label: 'Behavioral' },
     { id: 'estimation', label: 'Estimation' },
-    { id: 'blog', label: 'Playbook' },
+    { id: 'blog', label: 'Learn' },
+    { id: 'playbook', label: 'Playbook' },
     { id: 'progress', label: 'Progress' },
   ];
 

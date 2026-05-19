@@ -4,11 +4,23 @@ import { getAllMetricsProgress } from '../utils/metricsProgress.js';
 import { getAllRCAProgress } from '../utils/rcaProgress.js';
 import { getAllCaseProgress } from '../utils/caseProgress.js';
 import { getDesignProgress } from '../utils/designProgress.js';
+import { getAllCodeProgress } from '../utils/codeProgress.js';
+import { getProductDesignProgress } from '../utils/productDesignProgress.js';
+import { getAllPrioritizationProgress } from '../utils/prioritizationProgress.js';
+import { getAllBehavioralProgress } from '../utils/behavioralProgress.js';
+import { getAllEstimationProgress } from '../utils/estimationProgress.js';
+import { getAllStatFoundationsProgress } from '../utils/statsFoundationsProgress.js';
 import { statsModules } from '../data/statsModules.js';
 import { metricCases } from '../data/metricCases.js';
 import { rcaCases } from '../data/rcaCases.js';
 import { businessCases } from '../data/businessCases.js';
 import { designScenarios } from '../data/designScenarios.js';
+import { codeModules } from '../data/codeModules.js';
+import { productDesignScenarios } from '../data/productDesignScenarios.js';
+import { prioritizationScenarios } from '../data/prioritizationScenarios.js';
+import { behavioralQuestions } from '../data/behavioralQuestions.js';
+import { estimationProblems } from '../data/estimationProblems.js';
+import { statsFoundationsModules } from '../data/statsFoundationsModules.js';
 import { learningPaths } from '../data/learningPaths.js';
 import { GuidedPathCard } from '../components/paths/GuidedPathCard.jsx';
 
@@ -74,6 +86,11 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   const metricsProgress = getAllMetricsProgress();
   const rcaProgress = getAllRCAProgress();
   const caseProgress = getAllCaseProgress();
+  const codeProgress = getAllCodeProgress();
+  const priProgress = getAllPrioritizationProgress();
+  const behavioralProgress = getAllBehavioralProgress();
+  const estimationProg = getAllEstimationProgress();
+  const sfProgress = getAllStatFoundationsProgress();
 
   const statsCompleted = statsModules.filter(m => statsProgress[m.id]?.attempts > 0);
   const metricsCompleted = metricCases.filter(c => metricsProgress[c.id]?.attempts > 0);
@@ -144,6 +161,12 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   scenarios.forEach(s => { if (allProgress[s.id]?.attempts?.length > 0) completionMap[`review:${s.id}`] = true; });
   rcaCases.forEach(c => { if (rcaProgress[c.id]?.attempts > 0) completionMap[`rca:${c.id}`] = true; });
   businessCases.forEach(c => { if (caseProgress[c.id]?.attempts > 0) completionMap[`cases:${c.id}`] = true; });
+  codeModules.forEach(m => { if (codeProgress[m.id]?.completedAt) completionMap[`code:${m.id}`] = true; });
+  productDesignScenarios.forEach(s => { const p = getProductDesignProgress(s.id); if (p?.submittedPhases && Object.keys(p.submittedPhases).length > 0) completionMap[`product-design:${s.id}`] = true; });
+  prioritizationScenarios.forEach(s => { if (priProgress[s.id]?.completedAt) completionMap[`prioritization:${s.id}`] = true; });
+  behavioralQuestions.forEach(q => { if (behavioralProgress[q.id]?.rating) completionMap[`behavioral:${q.id}`] = true; });
+  estimationProblems.forEach(p => { if (estimationProg[p.id]?.rating) completionMap[`estimation:${p.id}`] = true; });
+  statsFoundationsModules.forEach(m => { if (sfProgress[m.id]?.completedAt) completionMap[`stat-foundations:${m.id}`] = true; });
 
   function handleClear() {
     if (window.confirm('Clear all progress across all rooms? This cannot be undone.')) {

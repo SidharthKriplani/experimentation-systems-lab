@@ -13,7 +13,7 @@ const DIFFICULTY_CFG = {
   senior:       { label: 'Senior',       color: 'var(--teal)',      bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
 };
 
-export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoToDesign }) {
+export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoToDesign, onNext }) {
   const [view, setView] = useState(savedProgress?.selectedOptionId ? 'debrief' : 'question');
   const [selectedId, setSelectedId] = useState(savedProgress?.selectedOptionId || null);
   const [submitted, setSubmitted] = useState(!!savedProgress?.selectedOptionId);
@@ -161,6 +161,20 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
             onGoToDesign={onGoToDesign}
             onRetry={handleRetry}
           />
+          {onNext && (
+            <div style={{ marginTop: '1.25rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                onClick={onNext}
+                style={{
+                  background: 'var(--accent)', border: 'none', borderRadius: '7px',
+                  padding: '0.5rem 1.2rem', color: '#fff', fontSize: '0.85rem',
+                  fontWeight: 600, cursor: 'pointer',
+                }}
+              >
+                Next module →
+              </button>
+            </div>
+          )}
         </div>
       )}
 

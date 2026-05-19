@@ -43,6 +43,7 @@ const ProductDesignBrowser  = lazy(() => import('./pages/ProductDesignBrowser.js
 const CodeBrowser           = lazy(() => import('./pages/CodeBrowser.jsx').then(m => ({ default: m.CodeBrowser })));
 const PrioritizationBrowser = lazy(() => import('./pages/PrioritizationBrowser.jsx').then(m => ({ default: m.PrioritizationBrowser })));
 const PlaybookBrowser       = lazy(() => import('./pages/PlaybookBrowser.jsx').then(m => ({ default: m.PlaybookBrowser })));
+const BlogBrowser           = lazy(() => import('./pages/BlogBrowser.jsx').then(m => ({ default: m.BlogBrowser })));
 const Progress              = lazy(() => import('./pages/Progress.jsx').then(m => ({ default: m.Progress })));
 const Unlock                = lazy(() => import('./pages/Unlock.jsx').then(m => ({ default: m.Unlock })));
 const About                 = lazy(() => import('./pages/About.jsx').then(m => ({ default: m.About })));
@@ -386,6 +387,7 @@ export default function App() {
             onBack={() => navigate('stats')}
             onGoToReview={id => openScenario(id)}
             onGoToDesign={id => openDesignScenario(id)}
+            onNext={nextStatsModuleId ? () => { setActiveStatsModuleId(nextStatsModuleId); } : null}
           />
         )}
 
@@ -588,6 +590,9 @@ export default function App() {
         {page === 'about' && <About />}
         {page === 'bank' && <JudgmentBank onNavigate={navigate} />}
         {page === 'blog' && (
+          <BlogBrowser onNavigate={navigate} />
+        )}
+        {page === 'playbook' && (
           <PlaybookBrowser onOpenItem={(room, id) => {
             if (room === 'stats') openStatsModule(id);
             else if (room === 'metrics') openMetricsCase(id);
