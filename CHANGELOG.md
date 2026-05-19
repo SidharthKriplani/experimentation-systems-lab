@@ -4,6 +4,91 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.1 — SQL Validation Step + Code Room + GenAI Playbook Articles
+**Date:** May 2026
+**Commit message:** "V3.1: SQL step in RCA, Code Room, GenAI playbook"
+**Files changed (new):** `src/data/codeModules.js`, `src/pages/CodeBrowser.jsx`, `src/components/code/CodeRunner.jsx`, `src/utils/codeProgress.js`
+**Files changed (existing):** `src/data/rcaCases.js`, `src/components/rca/RCARunner.jsx`, `src/App.jsx`, `src/pages/Home.jsx`, `src/components/layout/Header.jsx`, `src/pages/PlaybookBrowser.jsx`
+
+### Why
+V3.1 completes the three features identified in the IDEAS.md backlog: SQL validation in RCA (unique in the prep space — no one else bridges diagnosis to code), a Code Room for analytics SQL + Python in product context (not syntax drills), and GenAI threading through the Playbook (new articles on LLM eval, hallucination, and AI experiment design).
+
+### What changed
+
+**SQL Validation Step in RCA Room:**
+- `rcaCases.js`: Added `sqlStep: { prompt, hints, modelQuery, annotation }` to all 6 RCA cases (RCA01–RCA06). Each query is specific to the case's confirmed hypothesis — not generic SQL, but the exact query a senior analyst would write to validate that diagnosis (e.g., RCA01: Visa success rate by platform pre/post deploy; RCA06: true resolution rate with re-contact classification by intent + confidence bucket).
+- `RCARunner.jsx`: Added `SQL_RATINGS` constant and three new state variables (`sqlResponse`, `sqlRevealed`, `sqlRating`). Added `SQLValidationStep` component (free-text textarea, hints, model query code block with annotation, self-rating). Added SQL step CTA to the bottom of the debrief view (only renders if `rcaCase.sqlStep` exists). New `'sql'` view state navigates to `SQLValidationStep` and back. Gated reveal: ≥20 chars required. Same design language as Product Design Room (partial/strong/miss self-rating).
+
+**Code Room (new room #8):**
+- `codeModules.js`: 6 modules — 4 SQL, 2 Python. Each module has: `scenario` (company context + schema + task), `hints[]`, `partialCode` (code with blanks), `modelAnswer` (complete solution), `keyInsights[]`. Modules: CODE01 Funnel Query (free), CODE02 Retention Cohort (SQL), CODE03 A/B Test Significance (Python/scipy), CODE04 CUPED (Python/Pandas), CODE05 SRM Detection (SQL/chi-squared), CODE06 Mix Shift Decomposition (SQL/shift-share). All grounded in scenarios from existing RCA/Metrics/Cases rooms.
+- `CodeBrowser.jsx`: Track filter (SQL/Python/All), module cards with track badge, difficulty badge, scenario context snippet, tags, and completion state. Lock gate for non-free modules.
+- `CodeRunner.jsx`: Scenario panel with schema + task. Hints collapsible. Starter code collapsible. Free-text textarea (≥30 chars to reveal). Model answer panel with syntax-highlighted pre block + key insights. Self-rating (Nailed it / Got the idea / Needs more practice). Retry from scratch button.
+- `codeProgress.js`: localStorage save/load via key `pal-code-progress-v1`. Saves response, rating, completedAt per module.
+- `App.jsx`: Added `activeCodeModuleId` state, `openCodeModule()` function, `code` and `code-runner` page routing, imports for all new files.
+- `Header.jsx`: Added `code` nav item between Cases and Playbook. Added `code-runner` to active-state detection.
+- `Home.jsx`: Added Code Room as 8th room card. Added RoomList entry with 6 module lines. Updated hero copy from "seven rooms" to "eight rooms", "52 items" to "58 items".
+
+**GenAI Playbook Articles (3 new articles):**
+- `llm-eval-metrics`: LLM evaluation metrics — reference-based (BLEU/ROUGE), reference-free, LLM-as-judge, the evaluation paradox, pairing offline and online signals. 7 min read. Full keyTakeaways + references.
+- `hallucination-as-metric`: Hallucination as a guardrail — three types (fabrication, attribution, contradiction), production definition, stratified sampling approach, using hallucination as a hard guardrail in experiments. 6 min read. Full keyTakeaways + references.
+- `ai-experiment-design`: Designing AI experiments — trust lag problem, adjusted runtime (3 weeks minimum), task completion as primary metric, latency as first-class guardrail, novelty check by cohort-day. 6 min read. Full keyTakeaways + references.
+
+### Architectural decisions
+- SQL step is optional (renders via CTA at bottom of debrief, not forced) — keeps the core RCA flow clean while adding depth for users who want it
+- Code Room uses the same self-rating pattern as Product Design Room — consistent with the open-ended room philosophy: the goal is judgment, not automated scoring
+- GenAI articles positioned as a lens (added to existing GenAI Analytics category, not a new section) — aligns with the IDEAS.md architecture decision that GenAI is a thread, not a standalone room
+
+---
+
+## V3.0 — Product Design Room + Content Audit + PM Layer Begin
+**Date:** May 2026
+**Commit message:** "V3.0: Product Design Room + content audit"
+**Files changed (new):** `src/data/productDesignScenarios.js`, `src/pages/ProductDesignBrowser.jsx`, `src/components/productDesign/ProductDesignRunner.jsx`, `src/utils/productDesignProgress.js`
+**Files changed (existing):** `src/App.jsx`, `src/pages/Home.jsx`, `src/components/playbook/PostDetail.jsx`, `src/pages/PlaybookBrowser.jsx`, `src/pages/BlogBrowser.jsx`
+
+### Why
+V3.0 begins the PM layer of the product — extending from pure DS/analytics prep into product management preparation. The core thesis: product analysts, aspiring PMs, and DS-PM hybrid roles all need PM judgment alongside analytics judgment. Product design (the "how would you build X?" question) is the most common PM interview question type and was completely absent from the platform.
+
+Simultaneously, a content audit pass improved the Learn layer: emotional/human-tone rewrites, key takeaways, and citation references on the 10 highest-traffic playbook articles.
+
+### What changed
+
+**Product Design Room (new room #7):**
+- `productDesignScenarios.js`: 8 full PM product design scenarios. Companies: Spotify (podcast discovery), Airbnb (host response lag), Slack (notification fatigue), Google Maps (EV drivers), LinkedIn (application quality), DoorDash (post-order cancellations), Stripe (SMB revenue understanding), Instagram (creator growth). Each scenario has 5 phases: Clarify & Scope, User Segments, Goals & Metrics, Generate Solutions, Prioritize & Next Steps. Each phase has: `prompt`, `guidance`, `criteria` checklist (5–7 items), `modelAnswer` (full senior PM model response).
+- `ProductDesignBrowser.jsx`: Browser with company badges, difficulty tags, category badges, phase progress pips, completion state rendering.
+- `ProductDesignRunner.jsx`: Free-text textarea per phase. Gated reveal: user must write ≥20 characters before seeing model answer. Self-rating per phase (Strong/Partial/Missed). Full debrief view with expandable phase breakdowns comparing user answer to model answer. Self-scored via `computeProductDesignScore()`.
+- `productDesignProgress.js`: localStorage save/load for responses, ratings, completed phase IDs, and result. `computeProductDesignScore()` maps self-ratings to a 0–4 score with levels: excellent/strong/developing/needs_practice.
+- `App.jsx`: Added `activePDScenarioId` state, `openPDScenario()` function, `product-design` and `product-design-runner` page routing, imports for all new files.
+- `Home.jsx`: Added Product Design Room as 7th room card in the rooms grid. Added RoomList entry showing all 8 scenarios. Updated hero copy from "44 practice cases across six rooms" to "52 practice cases across seven rooms". Updated section labels.
+
+**PostDetail.jsx — reading experience upgrades (from prior session, committed this release):**
+- `ReadingProgress` component: fixed 3px progress bar at viewport top, color matches article category (via `CATEGORY_CONFIG`), throttled scroll listener with `{ passive: true }`.
+- `KeyTakeaways` component: renders optional `post.keyTakeaways: string[]` as a highlighted summary block before practice links.
+- `References` component: renders optional `post.references: [{ label, url?, note? }]` as a numbered "Further Reading & Sources" section with clickable external links.
+- Extended `ROOM_CONFIG` with `product-design` (purple) and `prioritization` (teal) rooms.
+- Extended `CATEGORY_CONFIG` with `The Big Picture`, `Product Design`, `Prioritization`, `PM Strategy`, `PM Career`.
+
+**Content audit — PlaybookBrowser.jsx:**
+10 top articles received: (1) emotional/story-first opening paragraph rewrites, (2) `keyTakeaways: string[]` (5 bullets), (3) `references: [...]` with real citations, URLs, and notes.
+
+Articles audited: `srm`, `novelty-effect`, `sutva`, `peeking`, `cuped`, `denominator-discipline`, `five-metric-types`, `guardrails`, `guardrail-conflicts`, `multiple-testing`, `cdshv-framework`, `meta-dau-drop`, `airbnb-booking-drop`.
+
+Opening rewrites emphasize: scenario hooks before definitions, the human stakes of getting it wrong, pressure and ambiguity as the real context. Examples: SRM opens with a champagne-celebration scenario that turns out to be broken data; peeking opens with the "it feels responsible" rationalization before naming the false positive inflation.
+
+### Architecture decisions
+- Product Design Room uses free-text + self-rating (unlike other rooms which use structured multiple-choice). This was intentional: PM design questions are too open-ended for pre-computed scoring. Self-rating with model answers is the honest tradeoff.
+- `keyTakeaways` and `references` are optional fields on article objects — backward compatible with all 99 existing articles. Components render nothing if the fields are absent.
+- `ROOM_CONFIG` and `CATEGORY_CONFIG` in PostDetail.jsx are forward-expanded for V3.x PM rooms that haven't been built yet (product-design, prioritization).
+
+### Status
+- Product Design Room: fully functional, 1 free + 7 beta scenarios
+- Prioritization Room: data file and components not yet built (V3.x)
+- PM Playbook articles: not yet written (V3.x)
+- Home role toggle (DS/PM/Both): not yet built (V3.x)
+- SQL validation step in RCA Room: captured in IDEAS.md, high-priority V3.x addition
+
+---
+
 ## V2.4 — Blog / Learn Layer (Placeholder)
 **Date:** May 2026
 **Commit message:** "V2.4: Add Learn page — 22 blog topic placeholders, IDEAS.md"

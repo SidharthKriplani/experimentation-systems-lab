@@ -1,0 +1,770 @@
+// Product Analytics Lab — Code Room Module Data
+// V3.1 — Analytics SQL + Python/Pandas in product context.
+// Not generic coding. Every module presents a product scenario and a real analyst task.
+
+export const codeModules = [
+
+  // ─────────────────────────────────────────────
+  // CODE01 — Funnel Conversion Rate by Cohort (SQL · FREE)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code01-funnel-sql',
+    title: 'Write a Funnel Query',
+    subtitle: 'SQL · Funnel Analysis · Conversion Rates',
+    track: 'sql',
+    difficulty: 'analyst',
+    isFree: true,
+    tags: ['funnel', 'conversion', 'window functions'],
+
+    scenario: {
+      company: 'Crestline Home',
+      context: `Checkout conversion dropped 5pp overnight. You've confirmed it's real. Now the head of product wants a query that shows step-by-step funnel conversion rates for the 7 days before and after Tuesday's deployment — so she can see exactly where in the checkout flow users are dropping.`,
+      schema: [
+        { table: 'funnel_events', description: 'One row per user per funnel step', columns: ['user_id', 'session_id', 'event_name', 'event_ts', 'platform'] },
+        { table: '—', description: 'event_name values: "viewed_cart", "viewed_payment", "submitted_payment", "order_confirmed"', columns: [] },
+      ],
+      task: 'Write a SQL query that shows the conversion rate at each funnel step (users who reached step N / users who started checkout), split by pre- and post-deployment period.',
+    },
+
+    hints: [
+      'Use COUNT(DISTINCT user_id) at each step — not COUNT(*), which double-counts session restarts',
+      'A CASE WHEN on event_ts creates the pre/post deployment flag',
+      'Funnel step rate = users at step N / users at step 1 (not step N / step N-1)',
+      'Use conditional aggregation: SUM(CASE WHEN event_name = \'...\' THEN 1 ELSE 0 END)',
+    ],
+
+    partialCode: `SELECT
+  deploy_period,
+  COUNT(DISTINCT CASE WHEN event_name = 'viewed_cart' THEN user_id END) AS step1_cart,
+  -- TODO: add step2 (viewed_payment), step3 (submitted_payment), step4 (order_confirmed)
+
+  -- TODO: compute conversion rates from step1 to each step
+  -- payment_page_rate = step2 / step1
+  -- payment_submit_rate = step3 / step1
+  -- order_confirmed_rate = step4 / step1
+
+FROM (
+  SELECT
+    user_id,
+    event_name,
+    -- TODO: create deploy_period column: 'pre_deploy' vs 'post_deploy'
+    -- Deployment was Tuesday 2024-01-16 at 3pm
+    CASE
+      WHEN event_ts < '2024-01-16 15:00:00' THEN ___
+      ELSE ___
+    END AS deploy_period
+  FROM funnel_events
+  WHERE event_ts BETWEEN '2024-01-09' AND '2024-01-23'  -- 7 days each side
+) base
+GROUP BY 1
+ORDER BY deploy_period;`,
+
+    modelAnswer: `SELECT
+  deploy_period,
+
+  -- Step counts (unique users who reached each step)
+  COUNT(DISTINCT CASE WHEN event_name = 'viewed_cart'         THEN user_id END) AS step1_cart,
+  COUNT(DISTINCT CASE WHEN event_name = 'viewed_payment'      THEN user_id END) AS step2_payment_page,
+  COUNT(DISTINCT CASE WHEN event_name = 'submitted_payment'   THEN user_id END) AS step3_payment_submit,
+  COUNT(DISTINCT CASE WHEN event_name = 'order_confirmed'     THEN user_id END) AS step4_confirmed,
+
+  -- Conversion rates (each step / step 1 = overall funnel depth)
+  ROUND(
+    100.0 * COUNT(DISTINCT CASE WHEN event_name = 'viewed_payment'    THEN user_id END)
+    / NULLIF(COUNT(DISTINCT CASE WHEN event_name = 'viewed_cart'      THEN user_id END), 0),
+    1
+  ) AS payment_page_rate_pct,
+
+  ROUND(
+    100.0 * COUNT(DISTINCT CASE WHEN event_name = 'submitted_payment' THEN user_id END)
+    / NULLIF(COUNT(DISTINCT CASE WHEN event_name = 'viewed_cart'      THEN user_id END), 0),
+    1
+  ) AS payment_submit_rate_pct,
+
+  ROUND(
+    100.0 * COUNT(DISTINCT CASE WHEN event_name = 'order_confirmed'   THEN user_id END)
+    / NULLIF(COUNT(DISTINCT CASE WHEN event_name = 'viewed_cart'      THEN user_id END), 0),
+    1
+  ) AS checkout_conversion_rate_pct
+
+FROM (
+  SELECT
+    user_id,
+    event_name,
+    CASE
+      WHEN event_ts < '2024-01-16 15:00:00' THEN 'pre_deploy'
+      ELSE 'post_deploy'
+    END AS deploy_period
+  FROM funnel_events
+  WHERE event_ts BETWEEN '2024-01-09' AND '2024-01-23'
+) base
+
+GROUP BY 1
+ORDER BY deploy_period;`,
+
+    keyInsights: [
+      `COUNT(DISTINCT CASE WHEN event_name = '...' THEN user_id END) — this pattern counts unique users who reached a step in a single pass over the table, no subquery needed`,
+      `Funnel rates use step1 as the denominator, not step N-1. This measures "what % of cart viewers completed checkout", which is more meaningful than step-to-step dropout rate`,
+      `NULLIF prevents division-by-zero if a deploy_period bucket has no cart views`,
+      `Expected output: payment_submit_rate_pct drops notably in post_deploy — confirming the drop is at the payment submission step, not at page view`,
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE02 — Retention Cohort Query (SQL · Analyst)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code02-retention-sql',
+    title: 'Build a Retention Cohort Table',
+    subtitle: 'SQL · Cohort Analysis · Window Functions',
+    track: 'sql',
+    difficulty: 'analyst',
+    isFree: false,
+    tags: ['retention', 'cohort analysis', 'window functions', 'DATE_DIFF'],
+
+    scenario: {
+      company: 'Orion · Consumer Mobile App',
+      context: `D7 retention fell 5pp for the cohort that received a new re-engagement push campaign. The PM wants a cohort table showing Day 1, Day 7, and Day 30 retention for install cohorts over the past 8 weeks — to see if the drop is recent or if it predates the campaign.`,
+      schema: [
+        { table: 'users', description: 'One row per user', columns: ['user_id', 'install_date', 'cohort_type'] },
+        { table: 'app_sessions', description: 'One row per session', columns: ['user_id', 'session_date'] },
+      ],
+      task: `Write a SQL query that produces a retention cohort table: one row per install week, with D1, D7, and D30 retention rates as columns.`,
+    },
+
+    hints: [
+      'A CTE for "install cohort" + a CTE for "return sessions" keeps things readable',
+      'Use DATE_DIFF(session_date, install_date, DAY) to compute days since install',
+      'D7 retention = users with any session on days 6-8 (±1 day tolerance is industry standard) / users who installed that week',
+      'Use a LEFT JOIN from cohorts to sessions so install weeks with 0 retention still appear',
+    ],
+
+    partialCode: `WITH install_cohorts AS (
+  -- Weekly install cohorts
+  SELECT
+    user_id,
+    install_date,
+    DATE_TRUNC('week', install_date) AS install_week
+  FROM users
+  WHERE install_date >= CURRENT_DATE - INTERVAL '56 days'  -- 8 weeks
+),
+
+return_events AS (
+  SELECT
+    ic.user_id,
+    ic.install_week,
+    DATE_DIFF(s.session_date, ic.install_date, DAY) AS days_since_install
+  FROM install_cohorts ic
+  -- TODO: join to app_sessions on user_id
+  -- TODO: only include sessions after install date
+),
+
+cohort_retention AS (
+  SELECT
+    install_week,
+    COUNT(DISTINCT user_id) AS cohort_size,
+
+    -- TODO: count users retained on D1 (day 1 ± tolerance)
+    COUNT(DISTINCT CASE WHEN days_since_install BETWEEN ___ AND ___ THEN user_id END) AS d1_retained,
+
+    -- TODO: count D7 retained users (days 6-8)
+
+    -- TODO: count D30 retained users (days 29-31)
+  FROM return_events
+  GROUP BY 1
+)
+
+SELECT
+  install_week,
+  cohort_size,
+  d1_retained,
+  -- TODO: compute D1, D7, D30 retention rates as percentages
+FROM cohort_retention
+ORDER BY install_week;`,
+
+    modelAnswer: `WITH install_cohorts AS (
+  SELECT
+    user_id,
+    install_date,
+    DATE_TRUNC('week', install_date) AS install_week
+  FROM users
+  WHERE install_date >= CURRENT_DATE - INTERVAL '56 days'
+),
+
+return_events AS (
+  -- Every session for each installed user, with days since install
+  SELECT
+    ic.user_id,
+    ic.install_week,
+    ic.install_date,
+    DATE_DIFF(s.session_date, ic.install_date, DAY) AS days_since_install
+  FROM install_cohorts ic
+  LEFT JOIN app_sessions s
+    ON ic.user_id = s.user_id
+    AND s.session_date > ic.install_date  -- Exclude the install day itself
+),
+
+cohort_retention AS (
+  SELECT
+    install_week,
+    COUNT(DISTINCT user_id)                                                     AS cohort_size,
+    COUNT(DISTINCT CASE WHEN days_since_install BETWEEN 1  AND 2  THEN user_id END) AS d1_retained,
+    COUNT(DISTINCT CASE WHEN days_since_install BETWEEN 6  AND 8  THEN user_id END) AS d7_retained,
+    COUNT(DISTINCT CASE WHEN days_since_install BETWEEN 29 AND 31 THEN user_id END) AS d30_retained
+  FROM return_events
+  GROUP BY 1
+)
+
+SELECT
+  install_week,
+  cohort_size,
+  d1_retained,
+  d7_retained,
+  d30_retained,
+
+  ROUND(100.0 * d1_retained  / NULLIF(cohort_size, 0), 1) AS d1_retention_pct,
+  ROUND(100.0 * d7_retained  / NULLIF(cohort_size, 0), 1) AS d7_retention_pct,
+  ROUND(100.0 * d30_retained / NULLIF(cohort_size, 0), 1) AS d30_retention_pct
+
+FROM cohort_retention
+ORDER BY install_week;`,
+
+    keyInsights: [
+      `Day ±1 tolerance (days 6-8 for D7) is industry standard — many apps don't require users to open on exactly day 7, so a 3-day window avoids undercounting`,
+      `LEFT JOIN from install_cohorts to app_sessions ensures cohorts with zero return events still appear in the output with NULL/0 retention`,
+      `COUNT(DISTINCT user_id) in the CASE WHEN pattern counts each user once per retention bucket, even if they had multiple sessions in that window`,
+      `This query produces the exact table the PM asked for — one row per install week, D1/D7/D30 as columns. You can now scan down the install_week column and see if the D7 drop started the week the campaign launched`,
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE03 — A/B Test Significance in Python (Python · Analyst)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code03-ab-test-python',
+    title: 'Run an A/B Test Significance Check',
+    subtitle: 'Python · scipy.stats · Confidence Intervals',
+    track: 'python',
+    difficulty: 'analyst',
+    isFree: false,
+    tags: ['A/B testing', 'scipy', 'confidence intervals', 'hypothesis testing'],
+
+    scenario: {
+      company: 'Crestline Home · Checkout A/B Test',
+      context: `The new payment provider experiment ran for 14 days. You have the results: control (old provider) had 62.4% checkout conversion on 294,000 users. Treatment (new provider) had 63.8% conversion on 292,000 users. The PM asks: "Is this significant? What's the 95% CI on the lift?"`,
+      schema: [
+        { table: 'Python variables already defined:', description: '', columns: [] },
+        { table: '—', description: 'control_users = 294000, control_conversions = 183456', columns: [] },
+        { table: '—', description: 'treatment_users = 292000, treatment_conversions = 186216', columns: [] },
+      ],
+      task: `Write Python code that computes: (1) conversion rates for both arms, (2) the absolute lift, (3) a two-proportion z-test p-value, and (4) a 95% confidence interval on the lift.`,
+    },
+
+    hints: [
+      'Use scipy.stats.proportions_ztest for the two-proportion z-test',
+      'The 95% CI on a proportion difference can be computed with the standard error: SE = sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)',
+      'z* for 95% CI is 1.96',
+      'Report lift in both absolute (pp) and relative (%) terms — PMs understand both',
+    ],
+
+    partialCode: `import numpy as np
+from scipy import stats
+
+# Given data
+control_users       = 294_000
+control_conversions = 183_456
+treatment_users     = 292_000
+treatment_conversions = 186_216
+
+# 1. Compute conversion rates
+control_rate   = ___
+treatment_rate = ___
+abs_lift_pp    = ___          # Absolute lift in percentage points
+rel_lift_pct   = ___          # Relative lift as a %
+
+print(f"Control:   {control_rate:.2%}")
+print(f"Treatment: {treatment_rate:.2%}")
+print(f"Lift:      {abs_lift_pp:+.2f}pp  ({rel_lift_pct:+.1f}% relative)")
+
+# 2. Two-proportion z-test
+# H0: treatment_rate == control_rate
+stat, p_value = stats.proportions_ztest(
+    count=___,    # [treatment_conversions, control_conversions]
+    nobs=___,     # [treatment_users, control_users]
+    alternative='two-sided'
+)
+print(f"\\np-value: {p_value:.4f}")
+print(f"Significant at 0.05: {p_value < 0.05}")
+
+# 3. 95% Confidence interval on the lift
+z_star = 1.96
+se = ___   # Standard error of the difference
+ci_lower = ___
+ci_upper = ___
+print(f"\\n95% CI: [{ci_lower:+.2f}pp, {ci_upper:+.2f}pp]")`,
+
+    modelAnswer: `import numpy as np
+from scipy import stats
+
+# Given data
+control_users         = 294_000
+control_conversions   = 183_456
+treatment_users       = 292_000
+treatment_conversions = 186_216
+
+# 1. Conversion rates and lift
+control_rate   = control_conversions   / control_users
+treatment_rate = treatment_conversions / treatment_users
+abs_lift_pp    = (treatment_rate - control_rate) * 100   # In percentage points
+rel_lift_pct   = (treatment_rate - control_rate) / control_rate * 100
+
+print(f"Control:   {control_rate:.2%}")
+print(f"Treatment: {treatment_rate:.2%}")
+print(f"Lift:      {abs_lift_pp:+.2f}pp  ({rel_lift_pct:+.1f}% relative)")
+
+# 2. Two-proportion z-test
+stat, p_value = stats.proportions_ztest(
+    count=[treatment_conversions, control_conversions],
+    nobs=[treatment_users, control_users],
+    alternative='two-sided'
+)
+print(f"\\nZ-statistic: {stat:.3f}")
+print(f"p-value:      {p_value:.4f}")
+print(f"Significant at α=0.05: {p_value < 0.05}")
+
+# 3. 95% Confidence interval on the absolute lift
+z_star = 1.96
+se = np.sqrt(
+    (treatment_rate * (1 - treatment_rate) / treatment_users) +
+    (control_rate   * (1 - control_rate)   / control_users)
+)
+ci_lower = abs_lift_pp - z_star * se * 100
+ci_upper = abs_lift_pp + z_star * se * 100
+print(f"\\n95% CI on lift: [{ci_lower:+.2f}pp, {ci_upper:+.2f}pp]")
+print(f"\\nInterpretation: Treatment conversion is {abs_lift_pp:+.2f}pp higher.")
+print(f"We're 95% confident the true lift is between {ci_lower:.2f}pp and {ci_upper:.2f}pp.")`,
+
+    keyInsights: [
+      `proportions_ztest takes count= (conversions) and nobs= (total users) as lists — [treatment, control] order`,
+      `The SE formula sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2) uses each arm's own rate — not the pooled rate — for the CI (use pooled for the test statistic itself, which scipy handles internally)`,
+      `Report absolute lift (pp) for product decisions, relative lift (%) for percentage context — PMs care about both`,
+      `With n=~290k per arm, almost any real effect will be significant. Always check the CI width — a 95% CI of [+0.1pp, +2.7pp] is very different from [+1.2pp, +1.6pp] in business terms`,
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE04 — CUPED Variance Reduction (Python · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code04-cuped-python',
+    title: 'Implement CUPED Variance Reduction',
+    subtitle: 'Python · Pandas · Pre-experiment Covariate',
+    track: 'python',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['CUPED', 'variance reduction', 'pandas', 'OLS regression', 'experimentation'],
+
+    scenario: {
+      company: 'Vantage Analytics · B2B SaaS',
+      context: `Your A/B test on a new onboarding flow is underpowered — you only have 12,000 users and need 20,000 to reach 80% power at your expected effect size. The stats team suggests applying CUPED using each user's pre-experiment revenue (last 30 days before the experiment) as the covariate. You have the experiment data in a DataFrame.`,
+      schema: [
+        { table: 'DataFrame: df', description: 'One row per user', columns: ['user_id', 'variant', 'post_revenue', 'pre_revenue'] },
+        { table: '—', description: 'variant: "control" | "treatment"', columns: [] },
+        { table: '—', description: 'post_revenue: revenue during the experiment period (outcome)', columns: [] },
+        { table: '—', description: 'pre_revenue: revenue in the 30 days before the experiment (covariate)', columns: [] },
+      ],
+      task: `Implement CUPED: regress post_revenue on pre_revenue to estimate theta, compute the CUPED-adjusted outcome, then run a t-test comparing adjusted treatment vs. control. Report the variance reduction achieved.`,
+    },
+
+    hints: [
+      'CUPED adjusted metric: Y_adj = Y - theta * (X - mean(X))',
+      'theta = Cov(Y, X) / Var(X) — this is the OLS regression coefficient of Y on X',
+      'Use numpy.cov or just fit a simple OLS with scipy.stats.linregress to get theta',
+      'Variance reduction = (1 - Var(Y_adj) / Var(Y)) * 100 — the higher this is, the more power you gained',
+    ],
+
+    partialCode: `import pandas as pd
+import numpy as np
+from scipy import stats
+
+# Assume df is already loaded with columns: user_id, variant, post_revenue, pre_revenue
+
+# 1. Estimate theta — the regression coefficient of post_revenue on pre_revenue
+#    theta = Cov(Y, X) / Var(X)
+theta = ___
+
+print(f"Theta (covariate coefficient): {theta:.4f}")
+
+# 2. Compute the global mean of pre_revenue (used to center the covariate)
+pre_mean = ___
+
+# 3. Apply CUPED adjustment
+#    Y_adj = Y - theta * (X - mean(X))
+df['post_revenue_cuped'] = ___
+
+# 4. Run t-test on CUPED-adjusted outcomes
+control_adj   = df.loc[df['variant'] == 'control',   'post_revenue_cuped']
+treatment_adj = df.loc[df['variant'] == 'treatment', 'post_revenue_cuped']
+
+t_stat, p_value = stats.ttest_ind(treatment_adj, control_adj)
+lift = treatment_adj.mean() - control_adj.mean()
+
+print(f"\\nCUPED-adjusted lift: ${lift:.2f}")
+print(f"p-value: {p_value:.4f}")
+
+# 5. Report variance reduction
+var_original = ___   # Variance of unadjusted post_revenue
+var_adjusted = ___   # Variance of CUPED-adjusted post_revenue
+variance_reduction = ___
+print(f"\\nVariance reduction: {variance_reduction:.1f}%")
+print(f"Equivalent sample size multiplier: {1 / (1 - variance_reduction/100):.2f}x")`,
+
+    modelAnswer: `import pandas as pd
+import numpy as np
+from scipy import stats
+
+# 1. Estimate theta using numpy covariance matrix
+cov_matrix = np.cov(df['post_revenue'], df['pre_revenue'])
+theta = cov_matrix[0, 1] / cov_matrix[1, 1]   # Cov(Y,X) / Var(X)
+
+print(f"Theta (covariate coefficient): {theta:.4f}")
+
+# 2. Global mean of pre_revenue (centering the covariate)
+pre_mean = df['pre_revenue'].mean()
+
+# 3. Apply CUPED adjustment: Y_adj = Y - theta * (X - mean(X))
+df['post_revenue_cuped'] = df['post_revenue'] - theta * (df['pre_revenue'] - pre_mean)
+
+# 4. T-test on CUPED-adjusted outcomes
+control_adj   = df.loc[df['variant'] == 'control',   'post_revenue_cuped']
+treatment_adj = df.loc[df['variant'] == 'treatment', 'post_revenue_cuped']
+
+t_stat, p_value = stats.ttest_ind(treatment_adj, control_adj)
+lift           = treatment_adj.mean() - control_adj.mean()
+
+print(f"\\nCUPED-adjusted lift:  ${lift:.2f}")
+print(f"T-statistic:          {t_stat:.3f}")
+print(f"p-value:              {p_value:.4f}")
+
+# 5. Variance reduction
+var_original       = df['post_revenue'].var()
+var_adjusted       = df['post_revenue_cuped'].var()
+variance_reduction = (1 - var_adjusted / var_original) * 100
+
+print(f"\\nOriginal variance:    {var_original:.2f}")
+print(f"Adjusted variance:    {var_adjusted:.2f}")
+print(f"Variance reduction:   {variance_reduction:.1f}%")
+
+# Equivalent sample size multiplier: 1 / (1 - VR) tells you how much "more data" CUPED simulated
+# A 50% variance reduction is equivalent to doubling sample size
+equiv_multiplier = 1 / (1 - variance_reduction / 100)
+print(f"Sample size multiplier: {equiv_multiplier:.2f}x  (CUPED simulated {equiv_multiplier:.2f}x your actual n)")`,
+
+    keyInsights: [
+      `theta = Cov(Y,X) / Var(X) is exactly the OLS coefficient from regressing post_revenue on pre_revenue — numpy.cov gives you the 2×2 covariance matrix, and [0,1]/[1,1] extracts it`,
+      `Centering the covariate (X - mean(X)) ensures the adjustment doesn't shift the mean of Y — only reduces variance`,
+      `A 50% variance reduction is equivalent to doubling your sample size. With high correlation between pre and post revenue (typical in SaaS: r ≈ 0.7-0.85), you often achieve 40-70% variance reduction`,
+      `CUPED does not change the point estimate of the lift — only the standard error, making the same lift more statistically detectable`,
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE05 — SRM Detection in SQL (SQL · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code05-srm-sql',
+    title: 'Detect a Sample Ratio Mismatch',
+    subtitle: 'SQL · Chi-squared Test · Experiment Integrity',
+    track: 'sql',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['SRM', 'chi-squared', 'experiment integrity', 'data quality'],
+
+    scenario: {
+      company: 'Threadline · B2B SaaS',
+      context: `You're reviewing the assignment logs for a 50/50 experiment that ran for 14 days. The platform engineer tells you the split "looks roughly right." Before trusting any results, you need to run an SRM check — a chi-squared test to determine whether the assignment ratio is statistically consistent with the expected 50/50 split.`,
+      schema: [
+        { table: 'experiment_assignments', description: 'One row per user assignment', columns: ['user_id', 'experiment_id', 'variant', 'assigned_at'] },
+      ],
+      task: `Write a SQL query that computes the observed assignment counts per variant, the expected counts (assuming perfect 50/50), and the chi-squared statistic. Flag whether an SRM is detected at α = 0.05 (chi-squared critical value: 3.841 for 1 degree of freedom).`,
+    },
+
+    hints: [
+      'Chi-squared = SUM((observed - expected)^2 / expected) across variants',
+      'Expected count = total_users * expected_proportion (0.5 for each arm in a 50/50 split)',
+      'You can compute this entirely in SQL using window functions for the total',
+      'Flag SRM: chi_sq > 3.841 means p < 0.05 — the assignment ratio is significantly non-random',
+    ],
+
+    partialCode: `WITH assignment_counts AS (
+  SELECT
+    variant,
+    COUNT(DISTINCT user_id) AS observed_count
+  FROM experiment_assignments
+  WHERE experiment_id = 'exp_onboarding_v2'
+    AND assigned_at BETWEEN '2024-01-01' AND '2024-01-14'
+  GROUP BY 1
+),
+
+totals AS (
+  SELECT SUM(observed_count) AS total_users
+  FROM assignment_counts
+),
+
+chi_sq_components AS (
+  SELECT
+    ac.variant,
+    ac.observed_count,
+    t.total_users,
+
+    -- Expected count for a 50/50 split
+    ___ AS expected_count,
+
+    -- Chi-squared component: (O - E)^2 / E
+    ___ AS chi_sq_component
+
+  FROM assignment_counts ac
+  CROSS JOIN totals t
+)
+
+SELECT
+  -- Show per-variant breakdown
+  variant,
+  observed_count,
+  ROUND(expected_count, 0)               AS expected_count,
+  ROUND(100.0 * observed_count / SUM(observed_count) OVER (), 2) AS observed_pct,
+  ROUND(chi_sq_component, 4)             AS chi_sq_component,
+
+  -- Total chi-squared statistic
+  ROUND(SUM(chi_sq_component) OVER (), 4) AS chi_sq_total,
+
+  -- SRM flag: chi_sq > 3.841 => p < 0.05
+  CASE WHEN SUM(chi_sq_component) OVER () > ___ THEN 'SRM DETECTED ⚠️' ELSE 'No SRM ✓' END AS srm_status
+
+FROM chi_sq_components
+ORDER BY variant;`,
+
+    modelAnswer: `WITH assignment_counts AS (
+  SELECT
+    variant,
+    COUNT(DISTINCT user_id) AS observed_count
+  FROM experiment_assignments
+  WHERE experiment_id = 'exp_onboarding_v2'
+    AND assigned_at BETWEEN '2024-01-01' AND '2024-01-14'
+  GROUP BY 1
+),
+
+totals AS (
+  SELECT SUM(observed_count) AS total_users
+  FROM assignment_counts
+),
+
+chi_sq_components AS (
+  SELECT
+    ac.variant,
+    ac.observed_count,
+    t.total_users,
+
+    -- Expected count: total * 0.5 for a 50/50 split
+    t.total_users * 0.5                                        AS expected_count,
+
+    -- Chi-squared component per variant: (O - E)^2 / E
+    POWER(ac.observed_count - t.total_users * 0.5, 2)
+    / NULLIF(t.total_users * 0.5, 0)                          AS chi_sq_component
+
+  FROM assignment_counts ac
+  CROSS JOIN totals t
+)
+
+SELECT
+  variant,
+  observed_count,
+  ROUND(expected_count, 0)                                       AS expected_count,
+  ROUND(100.0 * observed_count / SUM(observed_count) OVER (), 2) AS observed_pct,
+  ROUND(chi_sq_component, 4)                                     AS chi_sq_component,
+
+  -- Sum across all variants using window function (no GROUP BY needed)
+  ROUND(SUM(chi_sq_component) OVER (), 4)                       AS chi_sq_total,
+
+  -- Critical value for df=1 at α=0.05 is 3.841
+  CASE
+    WHEN SUM(chi_sq_component) OVER () > 3.841
+    THEN 'SRM DETECTED ⚠️  — do not trust results'
+    ELSE 'No SRM ✓  — assignment looks clean'
+  END AS srm_status
+
+FROM chi_sq_components
+ORDER BY variant;`,
+
+    keyInsights: [
+      `SUM(...) OVER () is a window function that computes the total chi-squared across all variant rows without collapsing them — you get one row per variant with the total displayed on each`,
+      `POWER(O - E, 2) / E is the per-variant chi-squared component. Sum these across all k variants to get the test statistic`,
+      `For a 2-variant (1 df) experiment, the chi-squared critical value at α=0.05 is 3.841. Any value above this means p < 0.05 — the assignment is statistically non-random`,
+      `An SRM doesn't tell you what caused the imbalance — it tells you something went wrong in assignment (bots, caching, early stopping). You must pause the experiment and investigate before trusting any metric results`,
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE06 — Mix Shift Decomposition in SQL (SQL · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code06-mix-shift-sql',
+    title: 'Decompose a Mix Shift',
+    subtitle: 'SQL · Shift-Share Analysis · Business Decomposition',
+    track: 'sql',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['mix shift', 'shift-share', 'business decomposition', 'margin analysis'],
+
+    scenario: {
+      company: 'Vantage Analytics · B2B SaaS',
+      context: `Overall gross margin compressed from 71% to 64% last quarter. The CFO asks: "How much of this is because our customer mix changed (more SMB, less enterprise) vs. each segment's margin actually getting worse?" This is a mix shift decomposition — separating mix effect from rate effect.`,
+      schema: [
+        { table: 'segment_margin_history', description: 'Quarterly margin by segment', columns: ['quarter', 'segment', 'revenue', 'gross_profit'] },
+        { table: '—', description: 'quarter: "2024_Q2" | "2024_Q3". segment: "enterprise" | "smb"', columns: [] },
+      ],
+      task: `Write a SQL query that decomposes the 7pp margin compression into (a) mix effect — how much compression is explained by the shift toward SMB — and (b) rate effect — how much compression came from each segment's own margin changing.`,
+    },
+
+    hints: [
+      'Mix effect = change in segment weight × prior period margin rate (if the rate stayed constant, how much would mix alone move the needle?)',
+      'Rate effect = prior period weight × change in segment margin rate',
+      'Total change ≈ mix effect + rate effect (interaction term is small and usually omitted)',
+      'This is a shift-share decomposition — the same logic used in economic regional analysis',
+    ],
+
+    partialCode: `WITH quarterly_margins AS (
+  SELECT
+    quarter,
+    segment,
+    revenue,
+    gross_profit,
+    ROUND(100.0 * gross_profit / NULLIF(revenue, 0), 2) AS margin_rate
+  FROM segment_margin_history
+),
+
+-- Pivot to get Q2 and Q3 side by side per segment
+pivoted AS (
+  SELECT
+    segment,
+    MAX(CASE WHEN quarter = '2024_Q2' THEN revenue    END) AS q2_revenue,
+    MAX(CASE WHEN quarter = '2024_Q2' THEN margin_rate END) AS q2_margin,
+    MAX(CASE WHEN quarter = '2024_Q3' THEN revenue    END) AS q3_revenue,
+    MAX(CASE WHEN quarter = '2024_Q3' THEN margin_rate END) AS q3_margin
+  FROM quarterly_margins
+  GROUP BY 1
+),
+
+-- Compute total revenue per period for weight calculation
+totals AS (
+  SELECT
+    SUM(q2_revenue) AS total_q2_rev,
+    SUM(q3_revenue) AS total_q3_rev
+  FROM pivoted
+),
+
+decomposition AS (
+  SELECT
+    p.segment,
+    p.q2_revenue, p.q2_margin,
+    p.q3_revenue, p.q3_margin,
+
+    -- Segment weight in each period
+    ___ AS q2_weight,   -- q2_revenue / total_q2_rev
+    ___ AS q3_weight,   -- q3_revenue / total_q3_rev
+
+    -- Mix effect: (q3_weight - q2_weight) * q2_margin
+    ___ AS mix_effect_pp,
+
+    -- Rate effect: q2_weight * (q3_margin - q2_margin)
+    ___ AS rate_effect_pp
+
+  FROM pivoted p CROSS JOIN totals t
+)
+
+SELECT
+  segment,
+  ROUND(q2_weight * 100, 1) AS q2_weight_pct,
+  ROUND(q3_weight * 100, 1) AS q3_weight_pct,
+  ROUND(q2_margin, 1) AS q2_margin_pct,
+  ROUND(q3_margin, 1) AS q3_margin_pct,
+  ROUND(mix_effect_pp,  2) AS mix_effect_pp,
+  ROUND(rate_effect_pp, 2) AS rate_effect_pp,
+  ROUND(mix_effect_pp + rate_effect_pp, 2) AS total_explained_pp
+FROM decomposition
+ORDER BY segment;`,
+
+    modelAnswer: `WITH quarterly_margins AS (
+  SELECT
+    quarter,
+    segment,
+    revenue,
+    gross_profit,
+    ROUND(100.0 * gross_profit / NULLIF(revenue, 0), 2) AS margin_rate
+  FROM segment_margin_history
+),
+
+pivoted AS (
+  SELECT
+    segment,
+    MAX(CASE WHEN quarter = '2024_Q2' THEN revenue    END) AS q2_revenue,
+    MAX(CASE WHEN quarter = '2024_Q2' THEN margin_rate END) AS q2_margin,
+    MAX(CASE WHEN quarter = '2024_Q3' THEN revenue    END) AS q3_revenue,
+    MAX(CASE WHEN quarter = '2024_Q3' THEN margin_rate END) AS q3_margin
+  FROM quarterly_margins
+  GROUP BY 1
+),
+
+totals AS (
+  SELECT
+    SUM(q2_revenue) AS total_q2_rev,
+    SUM(q3_revenue) AS total_q3_rev
+  FROM pivoted
+),
+
+decomposition AS (
+  SELECT
+    p.segment,
+    p.q2_revenue, p.q2_margin,
+    p.q3_revenue, p.q3_margin,
+
+    -- Segment weights
+    p.q2_revenue / t.total_q2_rev  AS q2_weight,
+    p.q3_revenue / t.total_q3_rev  AS q3_weight,
+
+    -- Mix effect: weight shift × prior-period rate
+    -- "If rates hadn't changed, how much would the mix shift move overall margin?"
+    (p.q3_revenue / t.total_q3_rev - p.q2_revenue / t.total_q2_rev) * p.q2_margin
+      AS mix_effect_pp,
+
+    -- Rate effect: prior-period weight × rate change
+    -- "If the mix hadn't changed, how much would the rate change move overall margin?"
+    (p.q2_revenue / t.total_q2_rev) * (p.q3_margin - p.q2_margin)
+      AS rate_effect_pp
+
+  FROM pivoted p CROSS JOIN totals t
+)
+
+SELECT
+  segment,
+  ROUND(q2_weight * 100, 1)             AS q2_weight_pct,
+  ROUND(q3_weight * 100, 1)             AS q3_weight_pct,
+  ROUND(q2_margin, 1)                   AS q2_margin_pct,
+  ROUND(q3_margin, 1)                   AS q3_margin_pct,
+  ROUND(mix_effect_pp,  2)              AS mix_effect_pp,
+  ROUND(rate_effect_pp, 2)              AS rate_effect_pp,
+  ROUND(mix_effect_pp + rate_effect_pp, 2) AS total_explained_pp
+
+FROM decomposition
+ORDER BY segment;`,
+
+    keyInsights: [
+      `Mix effect = weight change × prior rate: answers "if segment margins had stayed flat, how much would the compositional shift alone change overall margin?"`,
+      `Rate effect = prior weight × rate change: answers "if the mix hadn't changed, how much would each segment's own margin movement have caused?"`,
+      `If mix_effect_pp for SMB is negative (larger SMB weight × lower SMB margin), that's the mix drag. If rate_effect_pp for SMB is also negative, SMB's margin got worse within the quarter too`,
+      `Sum the mix_effect + rate_effect across both segments to reconstruct the total observed margin change — the two components should add up to approximately -7pp`,
+    ],
+  },
+];
+
+export const codeModulesById = Object.fromEntries(codeModules.map(m => [m.id, m]));

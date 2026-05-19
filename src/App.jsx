@@ -37,6 +37,10 @@ import { isUnlocked } from './utils/unlock.js';
 import { productDesignScenarios } from './data/productDesignScenarios.js';
 import { ProductDesignBrowser } from './pages/ProductDesignBrowser.jsx';
 import { ProductDesignRunner } from './components/productDesign/ProductDesignRunner.jsx';
+import { codeModules } from './data/codeModules.js';
+import { CodeBrowser } from './pages/CodeBrowser.jsx';
+import { CodeRunner } from './components/code/CodeRunner.jsx';
+import { getCodeProgress } from './utils/codeProgress.js';
 
 function getInitialTheme() {
   try {
@@ -55,6 +59,7 @@ export default function App() {
   const [activeRCACaseId, setActiveRCACaseId] = useState(null);
   const [activeBusinessCaseId, setActiveBusinessCaseId] = useState(null);
   const [activePDScenarioId, setActivePDScenarioId] = useState(null);
+  const [activeCodeModuleId, setActiveCodeModuleId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
   const [theme, setTheme] = useState(getInitialTheme);
@@ -81,6 +86,7 @@ export default function App() {
     setActiveRCACaseId(null);
     setActiveBusinessCaseId(null);
     setActivePDScenarioId(null);
+    setActiveCodeModuleId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -138,6 +144,15 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function openCodeModule(id) {
+    const m = codeModules.find(m => m.id === id);
+    if (!m) return;
+    if (!m.isFree && !unlocked) { setPage('unlock'); return; }
+    setActiveCodeModuleId(id);
+    setPage('code-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function openPDScenario(id) {
     const s = productDesignScenarios.find(s => s.id === id);
     if (!s) return;
@@ -167,6 +182,7 @@ export default function App() {
   const activeRCACase = rcaCases.find(r => r.id === activeRCACaseId);
   const activeBusinessCase = businessCases.find(b => b.id === activeBusinessCaseId);
   const activePDScenario = productDesignScenarios.find(s => s.id === activePDScenarioId);
+  const activeCodeModule = codeModules.find(m => m.id === activeCodeModuleId);
 
   function getPairedDesignId(reviewScenarioId) {
     const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
@@ -290,6 +306,24 @@ export default function App() {
             scenario={activePDScenario}
             savedProgress={getProductDesignProgress(activePDScenarioId)}
             onBack={() => navigate('product-design')}
+          />
+        )}
+
+        {/* ── Code Room ── */}
+        {page === 'code' && (
+          <CodeBrowser
+            modules={codeModules}
+            onSelectModule={openCodeModule}
+            unlocked={unlocked}
+            onUnlock={() => navigate('unlock')}
+          />
+        )}
+        {page === 'code-runner' && activeCodeModule && (
+          <CodeRunner
+            key={activeCodeModuleId}
+            module={activeCodeModule}
+            savedProgress={getCodeProgress(activeCodeModuleId)}
+            onBack={() => navigate('code')}
           />
         )}
 

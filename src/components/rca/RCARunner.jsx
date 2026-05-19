@@ -36,6 +36,13 @@ const LEVEL_DOT = {
   wrong:   'var(--red)',
 };
 
+// ─── SQL Step Rating options ──────────────────────────────────────────────────
+const SQL_RATINGS = [
+  { id: 'strong',  label: 'Nailed it',       color: 'var(--teal)',      bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
+  { id: 'partial', label: 'Close enough',    color: 'var(--yellow)',    bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
+  { id: 'miss',    label: 'Missed key parts', color: 'var(--text-muted)', bg: 'var(--surface-2)', border: 'var(--border)' },
+];
+
 // ─── Main Runner ─────────────────────────────────────────────────────────────
 export function RCARunner({ rcaCase, savedProgress, unlocked, onBack }) {
   const startView = savedProgress ? 'debrief' : 'diagnosis';
@@ -49,6 +56,11 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack }) {
       : {}
   );
   const [scoreResult, setScoreResult] = useState(null);
+
+  // SQL step state
+  const [sqlResponse, setSqlResponse] = useState('');
+  const [sqlRevealed, setSqlRevealed] = useState(false);
+  const [sqlRating, setSqlRating] = useState(null);
 
   const steps = rcaCase.diagnosisSteps;
   const currentStep = steps[currentStepIndex];
@@ -224,10 +236,64 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack }) {
 
       {/* ─── Debrief ────────────────────────────────────────────────── */}
       {view === 'debrief' && (
-        <RCADebriefPanel
-          rcaCase={rcaCase}
-          onRetry={handleRetry}
-          onBack={onBack}
+        <>
+          <RCADebriefPanel
+            rcaCase={rcaCase}
+            onRetry={handleRetry}
+            onBack={onBack}
+          />
+
+          {/* SQL Step CTA — only if the case has a sqlStep */}
+          {rcaCase.sqlStep && (
+            <div style={{
+              marginTop: '1.5rem',
+              background: 'var(--surface-2)',
+              border: '1.5px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              padding: '1.25rem',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
+                <span style={{ fontSize: '1rem' }}>🛠</span>
+                <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)' }}>
+                  Bonus: SQL Validation
+                </span>
+              </div>
+              <p style={{ margin: '0 0 0.9rem', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                A senior analyst doesn't stop at "I hypothesize X." They write the query that proves it. Practice translating this diagnosis into SQL.
+              </p>
+              <button
+                onClick={() => setView('sql')}
+                style={{
+                  background: 'var(--yellow-bg)',
+                  border: '1.5px solid var(--yellow-border)',
+                  color: 'var(--yellow)',
+                  borderRadius: 'var(--radius)',
+                  padding: '0.6rem 1.25rem',
+                  fontSize: '0.85rem', fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'background 0.12s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--yellow)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'var(--yellow-bg)'}
+              >
+                Write the validation query →
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* ─── SQL Validation Step ────────────────────────────────────── */}
+      {view === 'sql' && rcaCase.sqlStep && (
+        <SQLValidationStep
+          sqlStep={rcaCase.sqlStep}
+          response={sqlResponse}
+          onResponseChange={setSqlResponse}
+          revealed={sqlRevealed}
+          onReveal={() => setSqlRevealed(true)}
+          rating={sqlRating}
+          onRate={setSqlRating}
+          onBack={() => setView('debrief')}
         />
       )}
     </div>
@@ -307,6 +373,203 @@ const LEVEL_LABEL_MAP = {
   wrong:   'Incorrect',
 };
 
+// ─── SQL Validation Step ──────────────────────────────────────────────────────
+function SQLValidationStep({ sqlStep, response, onResponseChange, revealed, onReveal, rating, onRate, onBack }) {
+  const canReveal = response.trim().length >= 20;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+      {/* Header */}
+      <div style={{
+        background: 'var(--surface-2)',
+        border: '1px solid var(--border-subtle)',
+        borderRadius: 'var(--radius)',
+        padding: '1rem 1.25rem',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem' }}>
+          <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)' }}>
+            Step 6 · SQL Validation
+          </span>
+          <span style={{
+            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
+            color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
+          }}>
+            Optional
+          </span>
+        </div>
+        <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text)', lineHeight: 1.65, whiteSpace: 'pre-line' }}>
+          {sqlStep.prompt}
+        </p>
+      </div>
+
+      {/* Hints */}
+      {sqlStep.hints && sqlStep.hints.length > 0 && (
+        <div style={{
+          background: 'var(--surface-2)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-sm)',
+          padding: '0.75rem 1rem',
+        }}>
+          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+            Schema hints
+          </div>
+          <ul style={{ margin: 0, paddingLeft: '1.1rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+            {sqlStep.hints.map((hint, i) => (
+              <li key={i} style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{hint}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Textarea */}
+      <div>
+        <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+          Your SQL query
+        </div>
+        <textarea
+          value={response}
+          onChange={e => onResponseChange(e.target.value)}
+          disabled={revealed}
+          placeholder={`SELECT\n  ...\nFROM ...\nWHERE ...`}
+          style={{
+            width: '100%',
+            minHeight: '180px',
+            padding: '0.75rem',
+            background: revealed ? 'var(--surface-2)' : 'var(--bg)',
+            border: '1.5px solid var(--border)',
+            borderRadius: 'var(--radius-sm)',
+            color: 'var(--text)',
+            fontFamily: '"SF Mono", "Fira Code", "Cascadia Code", monospace',
+            fontSize: '0.8rem',
+            lineHeight: 1.6,
+            resize: 'vertical',
+            outline: 'none',
+            boxSizing: 'border-box',
+            opacity: revealed ? 0.7 : 1,
+          }}
+        />
+        {!revealed && (
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+            {response.trim().length < 20
+              ? `Write at least ${20 - response.trim().length} more characters to reveal the model answer`
+              : '✓ Ready to reveal'}
+          </div>
+        )}
+      </div>
+
+      {/* Reveal button */}
+      {!revealed && (
+        <button
+          onClick={onReveal}
+          disabled={!canReveal}
+          style={{
+            alignSelf: 'flex-start',
+            background: canReveal ? 'var(--yellow-bg)' : 'var(--surface-2)',
+            border: `1.5px solid ${canReveal ? 'var(--yellow-border)' : 'var(--border)'}`,
+            color: canReveal ? 'var(--yellow)' : 'var(--text-muted)',
+            borderRadius: 'var(--radius)',
+            padding: '0.6rem 1.25rem',
+            fontSize: '0.85rem', fontWeight: 700,
+            cursor: canReveal ? 'pointer' : 'not-allowed',
+          }}
+        >
+          Reveal model query
+        </button>
+      )}
+
+      {/* Model answer panel */}
+      {revealed && (
+        <div style={{
+          background: 'var(--surface-2)',
+          border: '1.5px solid var(--border)',
+          borderRadius: 'var(--radius)',
+          padding: '1.25rem',
+          display: 'flex', flexDirection: 'column', gap: '1rem',
+        }}>
+          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--teal)' }}>
+            Model Query
+          </div>
+
+          {/* SQL code block */}
+          <pre style={{
+            margin: 0,
+            padding: '1rem',
+            background: 'var(--bg)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-sm)',
+            fontFamily: '"SF Mono", "Fira Code", "Cascadia Code", monospace',
+            fontSize: '0.75rem',
+            lineHeight: 1.65,
+            color: 'var(--text)',
+            overflowX: 'auto',
+            whiteSpace: 'pre',
+          }}>
+            {sqlStep.modelQuery}
+          </pre>
+
+          {/* Annotation */}
+          <div>
+            <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+              Annotation
+            </div>
+            <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+              {sqlStep.annotation}
+            </p>
+          </div>
+
+          {/* Self-rating */}
+          <div>
+            <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+              How did you do?
+            </div>
+            <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+              {SQL_RATINGS.map(r => (
+                <button
+                  key={r.id}
+                  onClick={() => onRate(r.id)}
+                  style={{
+                    background: rating === r.id ? r.bg : 'transparent',
+                    border: `1.5px solid ${rating === r.id ? r.border : 'var(--border)'}`,
+                    color: rating === r.id ? r.color : 'var(--text-muted)',
+                    borderRadius: 'var(--radius)',
+                    padding: '0.45rem 1rem',
+                    fontSize: '0.8rem', fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.1s',
+                  }}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Back to debrief */}
+      <button
+        onClick={onBack}
+        style={{
+          alignSelf: 'flex-start',
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: 600,
+          padding: '0.25rem 0',
+          display: 'flex', alignItems: 'center', gap: '0.3rem',
+        }}
+        onMouseEnter={e => e.currentTarget.style.color = 'var(--yellow)'}
+        onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+      >
+        ← Back to debrief
+      </button>
+    </div>
+  );
+}
+
+// ─── Completed Step Card (collapsed) ─────────────────────────────────────────
 function CompletedStepCard({ step, stepNumber, chosenOption }) {
   const dotColor = chosenOption ? (LEVEL_DOT_COLOR[chosenOption.level] || 'var(--text-muted)') : 'var(--text-muted)';
   const levelLabel = chosenOption ? (LEVEL_LABEL_MAP[chosenOption.level] || '') : '';

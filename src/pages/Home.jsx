@@ -59,6 +59,15 @@ export function Home({ onNavigate, onStartScenario }) {
       cta: 'Open Product Design Room →',
       nav: 'product-design',
     },
+    {
+      id: 'code', label: 'Code Room', color: 'var(--teal)', bg: 'var(--teal-bg)', border: 'var(--teal-border)',
+      tagline: 'Write the query that proves your diagnosis.',
+      description: 'Analytics SQL and Python in product context — not syntax drills. Each module presents a real product scenario (metric drop, experiment, margin question) and asks you to write the query or script that answers it.',
+      meta: '6 modules · 1 free + 5 beta · SQL + Python · Analyst → Senior',
+      badge: '✦ New',
+      cta: 'Open Code Room →',
+      nav: 'code',
+    },
   ];
 
   return (
@@ -95,7 +104,7 @@ export function Home({ onNavigate, onStartScenario }) {
           marginBottom: '0.6rem',
           maxWidth: '560px',
         }}>
-          52 practice cases across seven rooms. Each one puts you in a real product scenario —
+          58 practice cases across eight rooms. Each one puts you in a real product scenario —
           messy data, stakeholder pressure, no clean answer — then shows you how a senior analyst or PM read it.
         </p>
 
@@ -132,7 +141,7 @@ export function Home({ onNavigate, onStartScenario }) {
 
       {/* ── Six rooms ──────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
-        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>Seven rooms. Seven judgment muscles.</div>
+        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>Eight rooms. Eight judgment muscles.</div>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
@@ -248,7 +257,7 @@ export function Home({ onNavigate, onStartScenario }) {
 
       {/* ── 44 playable items ──────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
-        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>52 playable items — what's inside</div>
+        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>58 playable items — what's inside</div>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -378,6 +387,23 @@ export function Home({ onNavigate, onStartScenario }) {
             btnLabel="Open Product Design Room →"
             onOpen={() => onNavigate('product-design')}
             footer="5-phase open-ended framework · Self-scored with model PM answers"
+          />
+
+          <RoomList
+            label="Code Room"
+            labelColor="var(--teal)" labelBg="var(--teal-bg)" labelBorder="var(--teal-border)"
+            items={[
+              ['Free', 'Write a Funnel Query', 'SQL · funnel analysis'],
+              ['Beta', 'Build a Retention Cohort Table', 'SQL · window functions'],
+              ['Beta', 'Run an A/B Test Significance Check', 'Python · scipy.stats'],
+              ['Beta', 'Implement CUPED Variance Reduction', 'Python · Pandas'],
+              ['Beta', 'Detect a Sample Ratio Mismatch', 'SQL · chi-squared'],
+              ['Beta', 'Decompose a Mix Shift', 'SQL · shift-share analysis'],
+            ]}
+            btnColor="var(--teal)"
+            btnLabel="Open Code Room →"
+            onOpen={() => onNavigate('code')}
+            footer="Complete partial code → reveal model answer · SQL + Python tracks"
           />
         </div>
       </div>
