@@ -398,24 +398,31 @@ export function Home({ onNavigate, onStartScenario }) {
 }
 
 // ─── RoomList card ────────────────────────────────────────────────────────────
-// Equal-height cards: flex column layout with scrollable list body and
-// CTA button always pinned at the bottom.
-// Subtle fade gradient appears when list has more items than the visible window.
-const LIST_MAX_HEIGHT = '256px'; // ~8 item rows visible before scroll kicks in
+// Fixed-height card (420px) with three non-overlapping zones:
+//   1. Header — flex-shrink: 0
+//   2. Scroll area — flex: 1; min-height: 0  ← the critical pair for flex overflow
+//   3. Footer + CTA — flex-shrink: 0
+//
+// min-height: 0 overrides the flex default (auto) so the scroll area actually
+// shrinks when the card is constrained, enabling overflow-y: auto to work.
+// Scrollbar is hidden via .room-list-scroll CSS class (see index.css).
+// Fade gradient is always rendered as a scroll affordance hint.
 
 function RoomList({ label, labelColor, labelBg, labelBorder, items, btnColor, btnLabel, onOpen, footer }) {
-  const hasOverflow = items.length > 8;
-
   return (
     <div style={{
       background: 'var(--surface)', border: '1px solid var(--border)',
       borderRadius: 'var(--radius-lg)', padding: '1.4rem',
       boxShadow: 'var(--shadow-sm)',
       display: 'flex', flexDirection: 'column',
+      height: '420px',  /* fixed card height — all 6 cards same size */
     }}>
 
-      {/* ── Card header ── */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+      {/* ── Zone 1: Header ── */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginBottom: '1rem', flexShrink: 0,
+      }}>
         <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)' }}>{label}</span>
         <span style={{
           fontSize: '0.58rem', fontWeight: 700, color: labelColor,
@@ -424,20 +431,15 @@ function RoomList({ label, labelColor, labelBg, labelBorder, items, btnColor, bt
         }}>V2.2</span>
       </div>
 
-      {/* ── Scrollable list body with fade ── */}
-      <div style={{
-        position: 'relative',
-        marginBottom: footer ? '0.5rem' : '0.75rem',
-        /* flex: 1 intentionally omitted — list stays at natural height,
-           gap between list and button is handled by marginTop: auto on button */
-      }}>
-        <div style={{
-          overflowY: hasOverflow ? 'auto' : 'visible',
-          maxHeight: LIST_MAX_HEIGHT,
-          /* thin scrollbar */
-          scrollbarWidth: 'thin',
-          scrollbarColor: 'var(--border) transparent',
-        }}>
+      {/* ── Zone 2: Scroll area ── */}
+      {/* flex:1 + min-height:0 is the required pair — without min-height:0   */}
+      {/* the flex item refuses to shrink below content size and overflow:auto */}
+      {/* never activates. position:relative contains the fade overlay.        */}
+      <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
+        <div
+          className="room-list-scroll"
+          style={{ overflowY: 'auto', height: '100%' }}
+        >
           {items.map(([tier, title, concept], i) => (
             <div key={i} style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
@@ -458,29 +460,24 @@ function RoomList({ label, labelColor, labelBg, labelBorder, items, btnColor, bt
             </div>
           ))}
         </div>
-
-        {/* Subtle bottom fade — shown only when list overflows */}
-        {hasOverflow && (
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0,
-            height: '2.5rem',
-            background: 'linear-gradient(to bottom, transparent, var(--surface))',
-            pointerEvents: 'none',
-          }} />
-        )}
+        {/* Subtle scroll-affordance fade — always rendered, pointer-events off */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '2rem',
+          background: 'linear-gradient(to bottom, transparent, var(--surface))',
+          pointerEvents: 'none',
+        }} />
       </div>
 
-      {/* ── Optional footer note ── */}
+      {/* ── Zone 3: Footer note + CTA ── */}
       {footer && (
         <div style={{
-          fontSize: '0.72rem', color: 'var(--accent)', marginBottom: '0.85rem',
+          fontSize: '0.72rem', color: 'var(--accent)',
+          marginTop: '0.65rem', flexShrink: 0,
           display: 'flex', alignItems: 'center', gap: '0.3rem',
         }}>
-          <span>{footer}</span>
+          {footer}
         </div>
       )}
-
-      {/* ── CTA — marginTop: auto pushes button to card bottom ── */}
       <button
         onClick={onOpen}
         style={{
@@ -488,7 +485,7 @@ function RoomList({ label, labelColor, labelBg, labelBorder, items, btnColor, bt
           background: btnColor, color: '#fff', border: 'none',
           borderRadius: 'var(--radius)', padding: '0.55rem',
           fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer',
-          marginTop: 'auto',
+          marginTop: '0.75rem', flexShrink: 0,
         }}
       >
         {btnLabel}

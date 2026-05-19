@@ -190,5 +190,13 @@ button { font-family: inherit; }
   color: var(--text-dim);
 }
 
+/* ── Room-list card scroll area — hide scrollbar, preserve scroll behavior ── */
+.room-list-scroll {
+  scrollbar-width: none; /* Firefox */
+}
+.room-list-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
 /* ── Metric table — base table reset for the runner ─────────────────────── */
 table { border-collapse: collapse; }
