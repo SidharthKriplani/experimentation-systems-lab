@@ -15,7 +15,7 @@ const LEVEL_CFG = {
   junior:  { label: 'Junior miss',   color: 'var(--yellow)',    bg: 'var(--yellow-bg)',  border: 'var(--yellow-border)' },
 };
 
-export function MetricsBrowser({ onSelectCase }) {
+export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
   const completedCount = metricCases.filter(c => getMetricsProgress(c.id)).length;
 
   return (
@@ -52,11 +52,12 @@ export function MetricsBrowser({ onSelectCase }) {
           const progress = getMetricsProgress(mc.id);
           const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
           const diffCfg = DIFF_CFG[mc.difficulty] || DIFF_CFG.analyst;
+          const isLocked = !mc.isFree && !unlocked;
 
           return (
             <div
               key={mc.id}
-              onClick={() => onSelectCase(mc.id)}
+              onClick={() => isLocked ? (onUnlock && onUnlock()) : onSelectCase(mc.id)}
               style={{
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',

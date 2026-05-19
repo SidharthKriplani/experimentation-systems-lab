@@ -49,7 +49,7 @@ function Tag({ label, color, bg, border }) {
   );
 }
 
-export function RCABrowser({ onSelectCase }) {
+export function RCABrowser({ onSelectCase, unlocked, onUnlock }) {
   const completedCount = rcaCases.filter(c => getRCAProgress(c.id)).length;
 
   return (
@@ -96,7 +96,7 @@ export function RCABrowser({ onSelectCase }) {
               key={c.id}
               rcaCase={c}
               progress={progress}
-              isLocked={false}
+              isLocked={!c.isFree && !unlocked}
               diffCfg={diffCfg}
               domainCfg={domainCfg}
               onSelectCase={onSelectCase}
