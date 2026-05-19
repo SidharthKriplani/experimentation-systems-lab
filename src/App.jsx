@@ -1,31 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
+import { track } from './utils/analytics.js';
+// Data
 import { scenarios } from './data/scenarios.js';
 import { designScenarios } from './data/designScenarios.js';
 import { statsModules } from './data/statsModules.js';
 import { metricCases } from './data/metricCases.js';
 import { rcaCases } from './data/rcaCases.js';
 import { businessCases } from './data/businessCases.js';
+import { productDesignScenarios } from './data/productDesignScenarios.js';
+import { codeModules } from './data/codeModules.js';
+import { prioritizationScenarios } from './data/prioritizationScenarios.js';
+// Layout (always needed — not lazy)
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
-import { Home } from './pages/Home.jsx';
-import { ScenarioBrowser } from './pages/ScenarioBrowser.jsx';
-import { DesignBrowser } from './pages/DesignBrowser.jsx';
-import { StatsBrowser } from './pages/StatsBrowser.jsx';
-import { MetricsBrowser } from './pages/MetricsBrowser.jsx';
-import { RCABrowser } from './pages/RCABrowser.jsx';
-import { CasesBrowser } from './pages/CasesBrowser.jsx';
-import { Progress } from './pages/Progress.jsx';
-import { Unlock } from './pages/Unlock.jsx';
-import { About } from './pages/About.jsx';
-import { JudgmentBank } from './pages/JudgmentBank.jsx';
-import { QADashboard } from './pages/QADashboard.jsx';
-import { PlaybookBrowser } from './pages/PlaybookBrowser.jsx';
-import { ScenarioRunner } from './components/scenario/ScenarioRunner.jsx';
-import { DesignRunner } from './components/design/DesignRunner.jsx';
-import { StatsRunner } from './components/stats/StatsRunner.jsx';
-import { MetricsRunner } from './components/metrics/MetricsRunner.jsx';
-import { RCARunner } from './components/rca/RCARunner.jsx';
-import { CaseRunner } from './components/cases/CaseRunner.jsx';
+// Utils
 import { getAllProgress } from './utils/progress.js';
 import { getDesignProgress } from './utils/designProgress.js';
 import { getStatsProgress } from './utils/statsProgress.js';
@@ -33,18 +21,38 @@ import { getMetricsProgress } from './utils/metricsProgress.js';
 import { getRCAProgress } from './utils/rcaProgress.js';
 import { getCaseProgress } from './utils/caseProgress.js';
 import { getProductDesignProgress } from './utils/productDesignProgress.js';
-import { isUnlocked } from './utils/unlock.js';
-import { productDesignScenarios } from './data/productDesignScenarios.js';
-import { ProductDesignBrowser } from './pages/ProductDesignBrowser.jsx';
-import { ProductDesignRunner } from './components/productDesign/ProductDesignRunner.jsx';
-import { codeModules } from './data/codeModules.js';
-import { CodeBrowser } from './pages/CodeBrowser.jsx';
-import { CodeRunner } from './components/code/CodeRunner.jsx';
 import { getCodeProgress } from './utils/codeProgress.js';
-import { prioritizationScenarios } from './data/prioritizationScenarios.js';
-import { PrioritizationBrowser } from './pages/PrioritizationBrowser.jsx';
-import { PrioritizationRunner } from './components/prioritization/PrioritizationRunner.jsx';
 import { getPrioritizationProgress } from './utils/prioritizationProgress.js';
+import { isUnlocked } from './utils/unlock.js';
+
+// Pages — lazy-loaded for code splitting
+const Home                  = lazy(() => import('./pages/Home.jsx').then(m => ({ default: m.Home })));
+const ScenarioBrowser       = lazy(() => import('./pages/ScenarioBrowser.jsx').then(m => ({ default: m.ScenarioBrowser })));
+const DesignBrowser         = lazy(() => import('./pages/DesignBrowser.jsx').then(m => ({ default: m.DesignBrowser })));
+const StatsBrowser          = lazy(() => import('./pages/StatsBrowser.jsx').then(m => ({ default: m.StatsBrowser })));
+const MetricsBrowser        = lazy(() => import('./pages/MetricsBrowser.jsx').then(m => ({ default: m.MetricsBrowser })));
+const RCABrowser            = lazy(() => import('./pages/RCABrowser.jsx').then(m => ({ default: m.RCABrowser })));
+const CasesBrowser          = lazy(() => import('./pages/CasesBrowser.jsx').then(m => ({ default: m.CasesBrowser })));
+const ProductDesignBrowser  = lazy(() => import('./pages/ProductDesignBrowser.jsx').then(m => ({ default: m.ProductDesignBrowser })));
+const CodeBrowser           = lazy(() => import('./pages/CodeBrowser.jsx').then(m => ({ default: m.CodeBrowser })));
+const PrioritizationBrowser = lazy(() => import('./pages/PrioritizationBrowser.jsx').then(m => ({ default: m.PrioritizationBrowser })));
+const PlaybookBrowser       = lazy(() => import('./pages/PlaybookBrowser.jsx').then(m => ({ default: m.PlaybookBrowser })));
+const Progress              = lazy(() => import('./pages/Progress.jsx').then(m => ({ default: m.Progress })));
+const Unlock                = lazy(() => import('./pages/Unlock.jsx').then(m => ({ default: m.Unlock })));
+const About                 = lazy(() => import('./pages/About.jsx').then(m => ({ default: m.About })));
+const JudgmentBank          = lazy(() => import('./pages/JudgmentBank.jsx').then(m => ({ default: m.JudgmentBank })));
+const QADashboard           = lazy(() => import('./pages/QADashboard.jsx').then(m => ({ default: m.QADashboard })));
+
+// Runners — lazy-loaded
+const ScenarioRunner        = lazy(() => import('./components/scenario/ScenarioRunner.jsx').then(m => ({ default: m.ScenarioRunner })));
+const DesignRunner          = lazy(() => import('./components/design/DesignRunner.jsx').then(m => ({ default: m.DesignRunner })));
+const StatsRunner           = lazy(() => import('./components/stats/StatsRunner.jsx').then(m => ({ default: m.StatsRunner })));
+const MetricsRunner         = lazy(() => import('./components/metrics/MetricsRunner.jsx').then(m => ({ default: m.MetricsRunner })));
+const RCARunner             = lazy(() => import('./components/rca/RCARunner.jsx').then(m => ({ default: m.RCARunner })));
+const CaseRunner            = lazy(() => import('./components/cases/CaseRunner.jsx').then(m => ({ default: m.CaseRunner })));
+const ProductDesignRunner   = lazy(() => import('./components/productDesign/ProductDesignRunner.jsx').then(m => ({ default: m.ProductDesignRunner })));
+const CodeRunner            = lazy(() => import('./components/code/CodeRunner.jsx').then(m => ({ default: m.CodeRunner })));
+const PrioritizationRunner  = lazy(() => import('./components/prioritization/PrioritizationRunner.jsx').then(m => ({ default: m.PrioritizationRunner })));
 
 function getInitialTheme() {
   try {
@@ -83,6 +91,7 @@ export default function App() {
   }
 
   function navigate(target) {
+    track('page_viewed', { page: target });
     setPage(target);
     setActiveScenarioId(null);
     setActiveDesignScenarioId(null);
@@ -98,7 +107,8 @@ export default function App() {
   function openStatsModule(id) {
     const module = statsModules.find(m => m.id === id);
     if (!module) return;
-    if (!module.isFree && !unlocked) { setPage('unlock'); return; }
+    if (!module.isFree && !unlocked) { track('paywall_hit', { room: 'stats', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'stats', id, title: module.title });
     setActiveStatsModuleId(id);
     setPage('stats-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -107,7 +117,8 @@ export default function App() {
   function openDesignScenario(id) {
     const scenario = designScenarios.find(s => s.id === id);
     if (!scenario) return;
-    if (!scenario.isFree && !unlocked) { setPage('unlock'); return; }
+    if (!scenario.isFree && !unlocked) { track('paywall_hit', { room: 'design', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'design', id, title: scenario.title });
     setActiveDesignScenarioId(id);
     setPage('design-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -116,7 +127,8 @@ export default function App() {
   function openScenario(id) {
     const scenario = scenarios.find(s => s.id === id);
     if (!scenario) return;
-    if (!scenario.isFree && !unlocked) { setPage('unlock'); return; }
+    if (!scenario.isFree && !unlocked) { track('paywall_hit', { room: 'review', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'review', id, title: scenario.title });
     setActiveScenarioId(id);
     setPage('runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -125,7 +137,8 @@ export default function App() {
   function openMetricsCase(id) {
     const c = metricCases.find(m => m.id === id);
     if (!c) return;
-    if (!c.isFree && !unlocked) { setPage('unlock'); return; }
+    if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'metrics', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'metrics', id, title: c.title });
     setActiveMetricsCaseId(id);
     setPage('metrics-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -134,7 +147,8 @@ export default function App() {
   function openRCACase(id) {
     const c = rcaCases.find(r => r.id === id);
     if (!c) return;
-    if (!c.isFree && !unlocked) { setPage('unlock'); return; }
+    if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'rca', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'rca', id, title: c.title });
     setActiveRCACaseId(id);
     setPage('rca-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -143,7 +157,8 @@ export default function App() {
   function openBusinessCase(id) {
     const c = businessCases.find(b => b.id === id);
     if (!c) return;
-    if (!c.isFree && !unlocked) { setPage('unlock'); return; }
+    if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'cases', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'cases', id, title: c.title });
     setActiveBusinessCaseId(id);
     setPage('cases-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -152,7 +167,8 @@ export default function App() {
   function openCodeModule(id) {
     const m = codeModules.find(m => m.id === id);
     if (!m) return;
-    if (!m.isFree && !unlocked) { setPage('unlock'); return; }
+    if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'code', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'code', id, title: m.title });
     setActiveCodeModuleId(id);
     setPage('code-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -161,7 +177,8 @@ export default function App() {
   function openPrioritizationScenario(id) {
     const s = prioritizationScenarios.find(s => s.id === id);
     if (!s) return;
-    if (!s.isFree && !unlocked) { setPage('unlock'); return; }
+    if (!s.isFree && !unlocked) { track('paywall_hit', { room: 'prioritization', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'prioritization', id, title: s.title });
     setActivePrioritizationId(id);
     setPage('prioritization-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -170,13 +187,15 @@ export default function App() {
   function openPDScenario(id) {
     const s = productDesignScenarios.find(s => s.id === id);
     if (!s) return;
-    if (!s.isFree && !unlocked) { setPage('unlock'); return; }
+    if (!s.isFree && !unlocked) { track('paywall_hit', { room: 'product-design', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'product-design', id, title: s.title });
     setActivePDScenarioId(id);
     setPage('product-design-runner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleUnlocked() {
+    track('unlocked');
     setUnlocked(true);
     navigate('browser');
   }
@@ -232,6 +251,11 @@ export default function App() {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
       <Header currentPage={page} onNavigate={navigate} unlockedStatus={unlocked} theme={theme} onToggleTheme={toggleTheme} />
       <main style={{ flex: 1 }}>
+        <Suspense fallback={
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+            Loading…
+          </div>
+        }>
         {page === 'home' && (
           <Home onNavigate={navigate} onStartScenario={openScenario} />
         )}
@@ -443,6 +467,7 @@ export default function App() {
             }}
           />
         )}
+        </Suspense>
       </main>
       <Footer onNavigate={navigate} />
     </div>

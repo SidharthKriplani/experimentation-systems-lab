@@ -533,9 +533,14 @@ export function Home({ onNavigate, onStartScenario }) {
               <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.25rem', lineHeight: 1.3 }}>
                 {path.title}
               </div>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.5, flex: 1 }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                 {path.subtitle}
               </div>
+              {path.outcome && (
+                <div style={{ fontSize: '0.73rem', color: path.color, lineHeight: 1.5, marginTop: '0.55rem', fontStyle: 'italic', opacity: 0.9 }}>
+                  {path.outcome}
+                </div>
+              )}
             </div>
           ))}
         </div>
