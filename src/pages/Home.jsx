@@ -134,6 +134,7 @@ export function Home({ onNavigate, onStartScenario }) {
               background: 'var(--surface)', border: '1px solid var(--border)',
               borderRadius: 'var(--radius-lg)', padding: '1.4rem 1.5rem',
               boxShadow: 'var(--shadow-sm)',
+              display: 'flex', flexDirection: 'column',
             }}>
               <div style={{
                 fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
@@ -142,7 +143,8 @@ export function Home({ onNavigate, onStartScenario }) {
               <h3 style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 0.45rem', letterSpacing: '-0.01em', lineHeight: 1.4 }}>
                 {room.tagline}
               </h3>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: '0 0 0.85rem' }}>
+              {/* description grows to fill available space, keeping meta+button anchored at bottom */}
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: '0 0 0.85rem', flex: 1 }}>
                 {room.description}
               </p>
               <div style={{ fontSize: '0.73rem', color: 'var(--text-dim)', marginBottom: '1rem' }}>
@@ -223,12 +225,13 @@ export function Home({ onNavigate, onStartScenario }) {
               borderRadius: 'var(--radius)',
               padding: '1.1rem 1.2rem',
               boxShadow: 'var(--shadow-sm)',
+              display: 'flex', flexDirection: 'column',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.4rem' }}>
                 <span style={{ fontWeight: 800, fontSize: '0.82rem', color: item.signColor, lineHeight: 1 }}>{item.sign}</span>
                 <span style={{ fontWeight: 600, fontSize: '0.86rem', color: 'var(--text)' }}>{item.title}</span>
               </div>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 }}>{item.body}</p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0, flex: 1 }}>{item.body}</p>
             </div>
           ))}
         </div>
@@ -241,7 +244,7 @@ export function Home({ onNavigate, onStartScenario }) {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '1.1rem',
-          alignItems: 'start',
+          /* removed alignItems:'start' so grid rows equalize card heights */
         }}>
           {/* Stats */}
           <RoomList
@@ -373,6 +376,7 @@ export function Home({ onNavigate, onStartScenario }) {
                 background: 'var(--surface)', border: `1px solid ${path.border}`,
                 borderRadius: 'var(--radius)', padding: '1rem 1.1rem',
                 cursor: 'pointer', boxShadow: 'var(--shadow-sm)',
+                display: 'flex', flexDirection: 'column',
               }}
             >
               <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: path.color, marginBottom: '0.35rem' }}>
@@ -381,7 +385,7 @@ export function Home({ onNavigate, onStartScenario }) {
               <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.25rem', lineHeight: 1.3 }}>
                 {path.title}
               </div>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.5, flex: 1 }}>
                 {path.subtitle}
               </div>
             </div>
@@ -393,42 +397,80 @@ export function Home({ onNavigate, onStartScenario }) {
   );
 }
 
+// ─── RoomList card ────────────────────────────────────────────────────────────
+// Equal-height cards: flex column layout with scrollable list body and
+// CTA button always pinned at the bottom.
+// Subtle fade gradient appears when list has more items than the visible window.
+const LIST_MAX_HEIGHT = '256px'; // ~8 item rows visible before scroll kicks in
+
 function RoomList({ label, labelColor, labelBg, labelBorder, items, btnColor, btnLabel, onOpen, footer }) {
+  const hasOverflow = items.length > 8;
+
   return (
     <div style={{
       background: 'var(--surface)', border: '1px solid var(--border)',
       borderRadius: 'var(--radius-lg)', padding: '1.4rem',
       boxShadow: 'var(--shadow-sm)',
+      display: 'flex', flexDirection: 'column',
     }}>
+
+      {/* ── Card header ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
         <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)' }}>{label}</span>
         <span style={{
           fontSize: '0.58rem', fontWeight: 700, color: labelColor,
           background: labelBg, border: `1px solid ${labelBorder}`,
           borderRadius: '4px', padding: '0.1rem 0.4rem', letterSpacing: '0.04em', textTransform: 'uppercase',
-        }}>V2.0</span>
+        }}>V2.2</span>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', marginBottom: footer ? '0.5rem' : '0.75rem' }}>
-        {items.map(([tier, title, concept], i) => (
-          <div key={i} style={{
-            display: 'flex', alignItems: 'center', gap: '0.5rem',
-            padding: '0.4rem 0',
-            borderBottom: i < items.length - 1 ? '1px solid var(--border-subtle)' : 'none',
-            fontSize: '0.82rem',
-          }}>
-            <span style={{
-              fontSize: '0.58rem', fontWeight: 700,
-              color: tier === 'Free' ? 'var(--accent)' : 'var(--teal)',
-              background: tier === 'Free' ? 'var(--accent-bg)' : 'var(--teal-bg)',
-              border: `1px solid ${tier === 'Free' ? 'var(--accent-border)' : 'var(--teal-border)'}`,
-              borderRadius: '3px', padding: '0.08rem 0.3rem',
-              whiteSpace: 'nowrap', flexShrink: 0, textTransform: 'uppercase', letterSpacing: '0.04em',
-            }}>{tier}</span>
-            <span style={{ color: 'var(--text-secondary)', fontWeight: 500, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</span>
-            <span style={{ color: 'var(--text-dim)', whiteSpace: 'nowrap', fontSize: '0.72rem', flexShrink: 0 }}>{concept}</span>
-          </div>
-        ))}
+
+      {/* ── Scrollable list body with fade ── */}
+      <div style={{
+        position: 'relative',
+        marginBottom: footer ? '0.5rem' : '0.75rem',
+        /* flex: 1 intentionally omitted — list stays at natural height,
+           gap between list and button is handled by marginTop: auto on button */
+      }}>
+        <div style={{
+          overflowY: hasOverflow ? 'auto' : 'visible',
+          maxHeight: LIST_MAX_HEIGHT,
+          /* thin scrollbar */
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'var(--border) transparent',
+        }}>
+          {items.map(([tier, title, concept], i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              padding: '0.4rem 0',
+              borderBottom: i < items.length - 1 ? '1px solid var(--border-subtle)' : 'none',
+              fontSize: '0.82rem',
+            }}>
+              <span style={{
+                fontSize: '0.58rem', fontWeight: 700,
+                color: tier === 'Free' ? 'var(--accent)' : 'var(--teal)',
+                background: tier === 'Free' ? 'var(--accent-bg)' : 'var(--teal-bg)',
+                border: `1px solid ${tier === 'Free' ? 'var(--accent-border)' : 'var(--teal-border)'}`,
+                borderRadius: '3px', padding: '0.08rem 0.3rem',
+                whiteSpace: 'nowrap', flexShrink: 0, textTransform: 'uppercase', letterSpacing: '0.04em',
+              }}>{tier}</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 500, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</span>
+              <span style={{ color: 'var(--text-dim)', whiteSpace: 'nowrap', fontSize: '0.72rem', flexShrink: 0 }}>{concept}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Subtle bottom fade — shown only when list overflows */}
+        {hasOverflow && (
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            height: '2.5rem',
+            background: 'linear-gradient(to bottom, transparent, var(--surface))',
+            pointerEvents: 'none',
+          }} />
+        )}
       </div>
+
+      {/* ── Optional footer note ── */}
       {footer && (
         <div style={{
           fontSize: '0.72rem', color: 'var(--accent)', marginBottom: '0.85rem',
@@ -437,6 +479,8 @@ function RoomList({ label, labelColor, labelBg, labelBorder, items, btnColor, bt
           <span>{footer}</span>
         </div>
       )}
+
+      {/* ── CTA — marginTop: auto pushes button to card bottom ── */}
       <button
         onClick={onOpen}
         style={{
@@ -444,6 +488,7 @@ function RoomList({ label, labelColor, labelBg, labelBorder, items, btnColor, bt
           background: btnColor, color: '#fff', border: 'none',
           borderRadius: 'var(--radius)', padding: '0.55rem',
           fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer',
+          marginTop: 'auto',
         }}
       >
         {btnLabel}
