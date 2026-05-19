@@ -12,6 +12,7 @@ import { codeModules } from './data/codeModules.js';
 import { prioritizationScenarios } from './data/prioritizationScenarios.js';
 import { behavioralQuestions } from './data/behavioralQuestions.js';
 import { estimationProblems } from './data/estimationProblems.js';
+import { statsFoundationsModules } from './data/statsFoundationsModules.js';
 // Layout (always needed — not lazy)
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -27,6 +28,7 @@ import { getCodeProgress } from './utils/codeProgress.js';
 import { getPrioritizationProgress } from './utils/prioritizationProgress.js';
 import { getBehavioralProgress } from './utils/behavioralProgress.js';
 import { getEstimationProgress } from './utils/estimationProgress.js';
+import { getStatFoundationsProgress } from './utils/statsFoundationsProgress.js';
 import { isUnlocked } from './utils/unlock.js';
 
 // Pages — lazy-loaded for code splitting
@@ -61,6 +63,8 @@ const BehavioralBrowser     = lazy(() => import('./pages/BehavioralBrowser.jsx')
 const BehavioralRunner      = lazy(() => import('./components/behavioral/BehavioralRunner.jsx').then(m => ({ default: m.BehavioralRunner })));
 const EstimationBrowser     = lazy(() => import('./pages/EstimationBrowser.jsx').then(m => ({ default: m.EstimationBrowser })));
 const EstimationRunner      = lazy(() => import('./components/estimation/EstimationRunner.jsx').then(m => ({ default: m.EstimationRunner })));
+const StatsFoundationsBrowser = lazy(() => import('./pages/StatsFoundationsBrowser.jsx').then(m => ({ default: m.StatsFoundationsBrowser })));
+const StatsFoundationsRunner  = lazy(() => import('./components/statsFoundations/StatsFoundationsRunner.jsx').then(m => ({ default: m.StatsFoundationsRunner })));
 
 function getInitialTheme() {
   try {
@@ -83,6 +87,7 @@ export default function App() {
   const [activePrioritizationId, setActivePrioritizationId] = useState(null);
   const [activeBehavioralId, setActiveBehavioralId] = useState(null);
   const [activeEstimationId, setActiveEstimationId] = useState(null);
+  const [activeStatFoundationsId, setActiveStatFoundationsId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
   const [theme, setTheme] = useState(getInitialTheme);
@@ -113,6 +118,7 @@ export default function App() {
     setActiveCodeModuleId(null);
     setActiveBehavioralId(null);
     setActiveEstimationId(null);
+    setActiveStatFoundationsId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -216,6 +222,16 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function openStatFoundationsModule(id) {
+    const m = statsFoundationsModules.find(m => m.id === id);
+    if (!m) return;
+    if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'stat-foundations', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'stat-foundations', id, title: m.title });
+    setActiveStatFoundationsId(id);
+    setPage('stat-foundations-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function openPDScenario(id) {
     const s = productDesignScenarios.find(s => s.id === id);
     if (!s) return;
@@ -302,6 +318,13 @@ export default function App() {
     return accessible[idx + 1].id;
   }
 
+  function getNextStatFoundationsId(currentId) {
+    const accessible = statsFoundationsModules.filter(m => m.isFree || unlocked);
+    const idx = accessible.findIndex(m => m.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
   const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
   const activeDesignScenario = designScenarios.find(s => s.id === activeDesignScenarioId);
@@ -323,6 +346,8 @@ export default function App() {
   const nextBehavioralId = activeBehavioralId ? getNextBehavioralId(activeBehavioralId) : null;
   const activeEstimationProblem = estimationProblems.find(p => p.id === activeEstimationId);
   const nextEstimationId = activeEstimationId ? getNextEstimationId(activeEstimationId) : null;
+  const activeStatFoundationsModule = statsFoundationsModules.find(m => m.id === activeStatFoundationsId);
+  const nextStatFoundationsId = activeStatFoundationsId ? getNextStatFoundationsId(activeStatFoundationsId) : null;
 
   function getPairedDesignId(reviewScenarioId) {
     const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
@@ -520,6 +545,25 @@ export default function App() {
           />
         )}
 
+        {/* ── Stat Foundations Room ── */}
+        {page === 'stat-foundations' && (
+          <StatsFoundationsBrowser
+            onStart={openStatFoundationsModule}
+            unlocked={unlocked}
+          />
+        )}
+        {page === 'stat-foundations-runner' && activeStatFoundationsModule && (
+          <StatsFoundationsRunner
+            key={activeStatFoundationsId}
+            moduleId={activeStatFoundationsId}
+            onBack={() => setPage('stat-foundations')}
+            onNext={nextStatFoundationsId
+              ? () => openStatFoundationsModule(nextStatFoundationsId)
+              : () => setPage('stat-foundations')}
+            unlocked={unlocked}
+          />
+        )}
+
         {/* ── Support pages ── */}
         {page === 'progress' && (
           <Progress
@@ -568,7 +612,8 @@ export default function App() {
               ['exp-lab-progress-v1', 'pal-design-progress-v1', 'pal-stats-progress-v1',
                'pal-metrics-progress-v2', 'pal-rca-progress-v2', 'pal-cases-progress-v2',
                'pal-code-progress-v1', 'pal-pri-progress-v1',
-               'pal-behavioral-progress-v1', 'pal-estimation-progress-v1'
+               'pal-behavioral-progress-v1', 'pal-estimation-progress-v1',
+               'pal-stat-foundations-progress-v1'
               ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
               // Clear per-scenario product-design progress (prefix: pd-progress-)
               try {

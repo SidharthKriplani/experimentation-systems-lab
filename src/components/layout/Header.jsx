@@ -1,5 +1,6 @@
 export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme }) {
   const navItems = [
+    { id: 'stat-foundations', label: 'Foundations' },
     { id: 'stats', label: 'Stats' },
     { id: 'metrics', label: 'Metrics' },
     { id: 'design', label: 'Design' },
@@ -77,7 +78,8 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               || (item.id === 'product-design' && currentPage === 'product-design-runner')
               || (item.id === 'prioritization' && currentPage === 'prioritization-runner')
               || (item.id === 'behavioral' && currentPage === 'behavioral-runner')
-              || (item.id === 'estimation' && currentPage === 'estimation-runner');
+              || (item.id === 'estimation' && currentPage === 'estimation-runner')
+              || (item.id === 'stat-foundations' && currentPage === 'stat-foundations-runner');
             return (
               <button
                 key={item.id}
