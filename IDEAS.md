@@ -127,27 +127,29 @@ Model query: window function over `payments` table, segmented by `platform` and 
 
 ---
 
-## PM Layer — V3.0 Complete, Sessions 2–4 Pending
+## PM Layer — V3.0 + V3.2 Complete
 
 ### Completed (V3.0)
 - Product Design Room: 8 scenarios, 5-phase open-ended runner, self-scored with model answers
 - PostDetail.jsx: Reading progress bar, KeyTakeaways, References components
 - Content audit: 10 articles rewritten with emotional tone + keyTakeaways + references
 
-### V3.x — Prioritization Room
-- Build `PrioritizationBrowser.jsx` + `PrioritizationRunner.jsx`
-- 6 scenarios: RICE scoring, effort/impact matrix, stakeholder conflict, technical debt vs. features, competing team requests, OKR-level prioritization
-- Format: structured framework exercise (fill in the RICE table, defend your stack-rank)
+### ✅ Prioritization Room — Shipped V3.2
+- `PrioritizationBrowser.jsx` + `PrioritizationRunner.jsx` + `prioritizationScenarios.js` + `prioritizationProgress.js`
+- 6 scenarios: PRI01 (Spotify RICE), PRI02 (Airbnb 2×2), PRI03 (Notion tech debt), PRI04 (Meta stakeholder conflict), PRI05 (Duolingo OKR), PRI06 (Stripe platform vs. feature)
+- Multi-schema model answer renderer: RICE table, 2×2 matrix, velocity tax calc, alignment memo, OKR scoring, platform analysis
+- Tag filter, difficulty badges, completion tracking
 
-### V3.x — PM Playbook Articles
-- 15 new articles across: Product Design, Prioritization, PM Strategy, PM Career
-- Same `keyTakeaways` + `references` schema as existing articles
-- Topics: Jobs To Be Done, How to Write a PRD, PM Interview Archetypes, How to Influence Without Authority, The North Star vs. OKR tension
+### ✅ PM Playbook Articles (15) — Shipped V3.2
+- 4 new categories: Product Design, Prioritization, PM Strategy, PM Career
+- 15 articles: JTBD, CIRCLES+HEART, PRD, User Research, RICE, Effort-Impact, North Star vs. OKR, Stakeholder Conflict, Tech Debt, Influence Without Authority, PM Archetypes, Making Bets, DS-to-PM, First 90 Days, Analytics PM vs. Growth PM
+- CATEGORY_CONFIG extended with 4 color-coded entries
 
-### V3.x — Home Role Toggle
-- DS Prep / PM Prep / DS + PM toggle saved to localStorage
-- Each mode filters room cards and reorders learning paths
-- Relevant for users who know their target role
+### ✅ Home Role Toggle — Shipped V3.2
+- `Product DS` / `Product PM` / `DS + PM` toggle in Home.jsx
+- Saved to localStorage (`pal-role-toggle`)
+- DS mode: analytics-first room ordering; PM mode: Product Design/Prioritization/Cases first
+- Renders inline next to the section header
 
 ---
 
@@ -163,4 +165,4 @@ Model query: window function over `payments` table, segmented by `platform` and 
 
 ---
 
-*Last updated: May 2026*
+*Last updated: May 2026 (V3.2)*

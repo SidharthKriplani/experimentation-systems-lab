@@ -4,6 +4,57 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.2 — PM Playbook Articles + Prioritization Room + Home Role Toggle
+**Date:** May 2026
+**Commit message:** "V3.2: PM playbook, Prioritization Room, role toggle"
+**Files changed (new):** `src/data/prioritizationScenarios.js`, `src/pages/PrioritizationBrowser.jsx`, `src/components/prioritization/PrioritizationRunner.jsx`, `src/utils/prioritizationProgress.js`
+**Files changed (existing):** `src/pages/PlaybookBrowser.jsx`, `src/App.jsx`, `src/components/layout/Header.jsx`, `src/pages/Home.jsx`
+
+### Why
+V3.2 completes the PM layer started in V3.0 (Product Design Room): a Playbook article foundation for the PM track (15 articles across 4 new categories), a structured framework practice room for prioritization (the single most tested PM skill in interviews), and a role toggle on the home page so users can self-identify as DS or PM and see a relevant room ordering.
+
+### What changed
+
+**PM Playbook Articles (15 new):**
+- `PlaybookBrowser.jsx`: Added 15 articles across 4 new categories:
+  - *Product Design* (4): Jobs To Be Done, Product Design Frameworks (CIRCLES + HEART), How to Write a PRD, User Research in PM Interviews
+  - *Prioritization* (5): RICE Framework, Effort–Impact Matrix, North Star vs. OKR Tension, Prioritization Under Stakeholder Conflict, Technical Debt as Velocity Tax
+  - *PM Strategy* (3): Influence Without Authority, PM Interview Archetypes (Analytics PM / Growth PM / Core PM), Making Product Bets
+  - *PM Career* (3): DS-to-PM Transition, The First 90 Days as a PM, Analytics PM vs. Growth PM
+- `CATEGORY_CONFIG` extended with 4 new entries: Product Design (purple), Prioritization (accent), PM Strategy (blue), PM Career (muted).
+
+**Prioritization Room (Room #9, 6 scenarios):**
+- `prioritizationScenarios.js`: 6 scenarios covering the full prioritization interview surface:
+  - PRI01 (Free): Spotify — Feature Backlog Sprint Planning (RICE scoring, 5-item backlog, 6-sprint capacity constraint)
+  - PRI02: Airbnb — Effort–Impact Matrix (8 initiatives, 60-day VP ask, quick win identification)
+  - PRI03: Notion — Technical Debt vs. New Features (velocity tax quantification, exec summary format)
+  - PRI04: Meta — Growth vs. Safety Stakeholder Conflict (interest mapping, option expansion, alignment memo)
+  - PRI05: Duolingo — OKR-Level Prioritization (DAU vs. learning efficacy dual mandate, CEO framing impact)
+  - PRI06: Stripe — Platform vs. Feature Sequencing (3 internal requests, 2 engineers, 2-quarter plan)
+- `PrioritizationBrowser.jsx`: Tag filter (RICE, effort-impact, technical debt, stakeholder conflict, OKRs, platform vs. feature), difficulty badges, completion indicators with rating color.
+- `PrioritizationRunner.jsx`: Multi-schema model answer renderer (handles RICE table, 2×2 matrix, velocity tax, stakeholder memo, OKR scoring, platform analysis). Scenario-aware data display (items table, situation data, requests panel). Same self-rating pattern (Nailed it / Mostly there / Needs more work). Framework collapsible (formula + steps or quadrant grid).
+- `prioritizationProgress.js`: localStorage key `pal-pri-progress-v1`.
+
+**Home Role Toggle:**
+- `Home.jsx`: Added `ROLES` constant (`DS + PM`, `Product DS`, `Product PM`). Toggle saved to localStorage (`pal-role-toggle`). DS mode sorts rooms in analytics-first order (Stats, Metrics, Design, Review, RCA, Code…). PM mode sorts rooms in PM-first order (Product Design, Prioritization, Cases…). Toggle rendered inline with the section header. Subtitle text explains the active ordering.
+
+**Platform counts updated:**
+- Hero: "64 practice cases across nine rooms" (was 58 / eight)
+- Section label: "Nine rooms. Nine judgment muscles." (was Eight)
+- "64 playable items" section label updated
+
+**App.jsx routing:**
+- Imports: `prioritizationScenarios`, `PrioritizationBrowser`, `PrioritizationRunner`, `getPrioritizationProgress`
+- State: `activePrioritizationId`
+- Function: `openPrioritizationScenario(id)` — lock-check + navigate to `prioritization-runner`
+- Routes: `'prioritization'` → `PrioritizationBrowser`, `'prioritization-runner'` → `PrioritizationRunner`
+
+**Header.jsx:**
+- Added `{ id: 'prioritization', label: 'Prioritize' }` between Code and Playbook
+- Active state check includes `'prioritization-runner'`
+
+---
+
 ## V3.1 — SQL Validation Step + Code Room + GenAI Playbook Articles
 **Date:** May 2026
 **Commit message:** "V3.1: SQL step in RCA, Code Room, GenAI playbook"

@@ -1,6 +1,33 @@
+import { useState } from 'react';
 import { learningPaths } from '../data/learningPaths.js';
 
+const ROLES = [
+  { id: 'both', label: 'DS + PM' },
+  { id: 'ds',   label: 'Product DS' },
+  { id: 'pm',   label: 'Product PM' },
+];
+
+function getSavedRole() {
+  try { return localStorage.getItem('pal-role-toggle') || 'both'; } catch { return 'both'; }
+}
+
+function saveRole(role) {
+  try { localStorage.setItem('pal-role-toggle', role); } catch {}
+}
+
+// Which nav IDs are prioritized for each role
+const DS_ROOMS  = ['stats', 'metrics', 'design', 'review', 'rca', 'code', 'cases', 'product-design', 'prioritization'];
+const PM_ROOMS  = ['product-design', 'prioritization', 'cases', 'review', 'metrics', 'rca', 'design', 'stats', 'code'];
+const ALL_ROOMS = ['stats', 'metrics', 'design', 'review', 'rca', 'cases', 'code', 'product-design', 'prioritization'];
+
 export function Home({ onNavigate, onStartScenario }) {
+  const [role, setRole] = useState(getSavedRole);
+
+  function switchRole(r) {
+    setRole(r);
+    saveRole(r);
+  }
+
   const rooms = [
     {
       id: 'stats', label: 'Stats Room', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)',
@@ -68,6 +95,15 @@ export function Home({ onNavigate, onStartScenario }) {
       cta: 'Open Code Room →',
       nav: 'code',
     },
+    {
+      id: 'prioritization', label: 'Prioritization Room', color: 'var(--accent)', bg: 'var(--accent-bg)', border: 'var(--accent-border)',
+      tagline: 'Stack-rank like a senior PM.',
+      description: 'RICE scoring, effort–impact matrices, technical debt tradeoffs, stakeholder conflicts, OKR-level decisions — 6 scenarios from Spotify, Airbnb, Notion, Meta, Duolingo, and Stripe. Structured framework exercises with model answers.',
+      meta: '6 scenarios · 1 free + 5 beta · PM · Intermediate → Advanced',
+      badge: '✦ New',
+      cta: 'Open Prioritization Room →',
+      nav: 'prioritization',
+    },
   ];
 
   return (
@@ -104,7 +140,7 @@ export function Home({ onNavigate, onStartScenario }) {
           marginBottom: '0.6rem',
           maxWidth: '560px',
         }}>
-          58 practice cases across eight rooms. Each one puts you in a real product scenario —
+          64 practice cases across nine rooms. Each one puts you in a real product scenario —
           messy data, stakeholder pressure, no clean answer — then shows you how a senior analyst or PM read it.
         </p>
 
@@ -139,15 +175,45 @@ export function Home({ onNavigate, onStartScenario }) {
         </div>
       </div>
 
-      {/* ── Six rooms ──────────────────────────────────────────────────── */}
+      {/* ── Nine rooms ─────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
-        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>Eight rooms. Eight judgment muscles.</div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.1rem' }}>
+          <div className="label-caps">Nine rooms. Nine judgment muscles.</div>
+          {/* Role toggle */}
+          <div style={{ display: 'flex', gap: '0.25rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '0.2rem' }}>
+            {ROLES.map(r => (
+              <button
+                key={r.id}
+                onClick={() => switchRole(r.id)}
+                style={{
+                  background: role === r.id ? 'var(--surface)' : 'none',
+                  border: role === r.id ? '1px solid var(--border)' : '1px solid transparent',
+                  borderRadius: '6px', padding: '0.25rem 0.7rem',
+                  color: role === r.id ? 'var(--text)' : 'var(--text-dim)',
+                  fontWeight: role === r.id ? 600 : 400, fontSize: '0.78rem',
+                  cursor: 'pointer', whiteSpace: 'nowrap',
+                  boxShadow: role === r.id ? 'var(--shadow-sm)' : 'none',
+                }}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {role !== 'both' && (
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginBottom: '1rem' }}>
+            {role === 'ds' ? 'Showing analytics-first order — Stats, Metrics, Design, Review, RCA, Code first.' : 'Showing PM-first order — Product Design, Prioritization, Cases first.'}
+          </p>
+        )}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
           gap: '0.65rem',
         }}>
-          {rooms.map(room => (
+          {(role === 'ds' ? [...rooms].sort((a, b) => DS_ROOMS.indexOf(a.nav) - DS_ROOMS.indexOf(b.nav))
+            : role === 'pm' ? [...rooms].sort((a, b) => PM_ROOMS.indexOf(a.nav) - PM_ROOMS.indexOf(b.nav))
+            : rooms
+          ).map(room => (
             <div key={room.id} style={{
               background: 'var(--surface)', border: '1px solid var(--border)',
               borderRadius: 'var(--radius-lg)', padding: '1.4rem 1.5rem',
@@ -257,7 +323,7 @@ export function Home({ onNavigate, onStartScenario }) {
 
       {/* ── 44 playable items ──────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
-        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>58 playable items — what's inside</div>
+        <div className="label-caps" style={{ marginBottom: '1.1rem' }}>64 playable items — what's inside</div>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -404,6 +470,24 @@ export function Home({ onNavigate, onStartScenario }) {
             btnLabel="Open Code Room →"
             onOpen={() => onNavigate('code')}
             footer="Complete partial code → reveal model answer · SQL + Python tracks"
+          />
+
+          {/* Prioritization Room */}
+          <RoomList
+            label="✦ Prioritization Room · 6 Scenarios · New"
+            labelColor="var(--accent)" labelBg="var(--accent-bg)" labelBorder="var(--accent-border)"
+            items={[
+              ['Free', 'Spotify — Feature Backlog Sprint Planning', 'RICE scoring'],
+              ['Beta', 'Airbnb — Effort–Impact Matrix', '2×2 quick wins'],
+              ['Beta', 'Notion — Technical Debt vs. New Features', 'velocity tax'],
+              ['Beta', 'Meta — Growth vs. Safety Conflict', 'stakeholder negotiation'],
+              ['Beta', 'Duolingo — OKR-Level Prioritization', 'north star tradeoffs'],
+              ['Beta', 'Stripe — Platform vs. Feature Sequencing', 'time horizon decisions'],
+            ]}
+            btnColor="var(--accent)"
+            btnLabel="Open Prioritization Room →"
+            onOpen={() => onNavigate('prioritization')}
+            footer="Framework exercises with model answers · RICE, 2×2, OKR, stakeholder conflict"
           />
         </div>
       </div>

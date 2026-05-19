@@ -41,6 +41,10 @@ import { codeModules } from './data/codeModules.js';
 import { CodeBrowser } from './pages/CodeBrowser.jsx';
 import { CodeRunner } from './components/code/CodeRunner.jsx';
 import { getCodeProgress } from './utils/codeProgress.js';
+import { prioritizationScenarios } from './data/prioritizationScenarios.js';
+import { PrioritizationBrowser } from './pages/PrioritizationBrowser.jsx';
+import { PrioritizationRunner } from './components/prioritization/PrioritizationRunner.jsx';
+import { getPrioritizationProgress } from './utils/prioritizationProgress.js';
 
 function getInitialTheme() {
   try {
@@ -60,6 +64,7 @@ export default function App() {
   const [activeBusinessCaseId, setActiveBusinessCaseId] = useState(null);
   const [activePDScenarioId, setActivePDScenarioId] = useState(null);
   const [activeCodeModuleId, setActiveCodeModuleId] = useState(null);
+  const [activePrioritizationId, setActivePrioritizationId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
   const [theme, setTheme] = useState(getInitialTheme);
@@ -153,6 +158,15 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function openPrioritizationScenario(id) {
+    const s = prioritizationScenarios.find(s => s.id === id);
+    if (!s) return;
+    if (!s.isFree && !unlocked) { setPage('unlock'); return; }
+    setActivePrioritizationId(id);
+    setPage('prioritization-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function openPDScenario(id) {
     const s = productDesignScenarios.find(s => s.id === id);
     if (!s) return;
@@ -183,6 +197,7 @@ export default function App() {
   const activeBusinessCase = businessCases.find(b => b.id === activeBusinessCaseId);
   const activePDScenario = productDesignScenarios.find(s => s.id === activePDScenarioId);
   const activeCodeModule = codeModules.find(m => m.id === activeCodeModuleId);
+  const activePrioritizationScenario = prioritizationScenarios.find(s => s.id === activePrioritizationId);
 
   function getPairedDesignId(reviewScenarioId) {
     const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
@@ -324,6 +339,21 @@ export default function App() {
             module={activeCodeModule}
             savedProgress={getCodeProgress(activeCodeModuleId)}
             onBack={() => navigate('code')}
+          />
+        )}
+
+        {/* ── Prioritization Room ── */}
+        {page === 'prioritization' && (
+          <PrioritizationBrowser
+            onStart={openPrioritizationScenario}
+            unlocked={unlocked}
+          />
+        )}
+        {page === 'prioritization-runner' && activePrioritizationScenario && (
+          <PrioritizationRunner
+            key={activePrioritizationId}
+            scenario={activePrioritizationScenario}
+            onBack={() => navigate('prioritization')}
           />
         )}
 
