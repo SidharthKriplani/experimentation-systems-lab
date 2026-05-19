@@ -18,6 +18,7 @@ import { Progress } from './pages/Progress.jsx';
 import { Unlock } from './pages/Unlock.jsx';
 import { About } from './pages/About.jsx';
 import { JudgmentBank } from './pages/JudgmentBank.jsx';
+import { QADashboard } from './pages/QADashboard.jsx';
 import { ScenarioRunner } from './components/scenario/ScenarioRunner.jsx';
 import { DesignRunner } from './components/design/DesignRunner.jsx';
 import { StatsRunner } from './components/stats/StatsRunner.jsx';
@@ -274,8 +275,30 @@ export default function App() {
         )}
         {page === 'about' && <About />}
         {page === 'bank' && <JudgmentBank onNavigate={navigate} />}
+        {page === 'qa' && (
+          <QADashboard
+            onNavigate={navigate}
+            unlocked={unlocked}
+            onOpenItem={(room, id) => {
+              if (room === 'stats') openStatsModule(id);
+              else if (room === 'metrics') openMetricsCase(id);
+              else if (room === 'design') openDesignScenario(id);
+              else if (room === 'review') openScenario(id);
+              else if (room === 'rca') openRCACase(id);
+              else if (room === 'cases') openBusinessCase(id);
+            }}
+            onUnlock={() => setUnlocked(true)}
+            onLock={() => setUnlocked(false)}
+            onResetAllProgress={() => {
+              ['exp-lab-progress-v1', 'pal-design-progress-v1', 'pal-stats-progress-v1',
+               'pal-metrics-progress-v2', 'pal-rca-progress-v2', 'pal-cases-progress-v2'
+              ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
+              refreshProgress();
+            }}
+          />
+        )}
       </main>
-      <Footer />
+      <Footer onNavigate={navigate} />
     </div>
   );
 }
