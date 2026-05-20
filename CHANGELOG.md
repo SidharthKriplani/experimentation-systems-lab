@@ -4,6 +4,35 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## V3.6 — Monetization Layer + SEO + Mobile Fixes
+**Date:** May 2026
+**Commit message:** "feat: V3.6 — Pricing page, SEO layer, mobile responsive fixes"
+**Files changed:** `src/pages/Pricing.jsx` (NEW), `src/pages/Unlock.jsx`, `src/utils/unlock.js`, `src/App.jsx`, `src/components/layout/Header.jsx`, `index.html`, `public/sitemap.xml` (NEW), `public/robots.txt` (NEW), `public/og-image.png` (NEW), `src/pages/StatsFoundationsBrowser.jsx`, `src/components/statsFoundations/StatsFoundationsRunner.jsx`, `src/components/statsFoundations/modules/Module01_WhatIsData.jsx`, `src/pages/Home.jsx`, `src/pages/StatsBrowser.jsx`
+
+### Why
+Three production-readiness tracks: a monetization layer so the lab can move from free beta to paid access, an SEO layer so the site is discoverable, and a mobile responsive audit so the experience works on phones.
+
+### Monetization
+- `src/pages/Pricing.jsx` — two-tier pricing page: Free (Stat Foundations 2 modules, Stats 2 cases, Playbook read-only) vs Full Access ($49 one-time, all 100+ cases, all rooms, lifetime access)
+- Stripe CTA reads `VITE_STRIPE_PAYMENT_LINK` env var — set in Vercel dashboard when ready to go live
+- `Unlock.jsx` — updated copy ("100+ practice cases across 9 rooms"), added "Buy Full Access →" button above the access-code form
+- `unlock.js` — `isUnlocked()` still returns `true` for beta; marked with `// TODO: set to false when Stripe goes live`
+- "Pricing" added to nav and App.jsx routing
+
+### SEO
+- `index.html` — OG tags (og:type, og:url, og:title, og:description, og:image), Twitter card (summary_large_image), JSON-LD structured data (WebApplication schema with offers)
+- `public/og-image.png` — 1200×630 social preview image: dark background, yellow accent bar, product name, feature pills, URL
+- `public/sitemap.xml` — 13 URLs covering all rooms + blog + playbook + pricing, with priorities
+- `public/robots.txt` — allow all, sitemap pointer
+- `App.jsx` — `useEffect` updates `document.title` on every route change (15 distinct titles)
+
+### Mobile responsive fixes
+- `Header.jsx` — nav buttons get `minHeight: 44px` and `flexShrink: 0` for 44px touch targets
+- `Home.jsx`, `StatsFoundationsBrowser.jsx`, `StatsFoundationsRunner.jsx`, `StatsBrowser.jsx` — added `width: '100%'` and `boxSizing: 'border-box'` to main containers
+- `Module01_WhatIsData.jsx` — `flexWrap: 'wrap'` on drop-zones row so columns stack on narrow screens
+
+---
+
 ## V3.5 — Stat Foundations Room + Blog Layer + New Learning Paths + Content Completions
 **Date:** May 2026
 **Commit message:** "feat: V3.5 — Stat Foundations Room, Blog layer fully populated, new learning paths, stats next-case nav, completionMap, playbook worked examples"
