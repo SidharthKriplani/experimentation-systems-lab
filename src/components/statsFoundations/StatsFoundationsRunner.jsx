@@ -14,6 +14,13 @@ import { Module10_CI } from './modules/Module10_CI.jsx';
 import { Module11_HypothesisTesting } from './modules/Module11_HypothesisTesting.jsx';
 import { Module12_Power } from './modules/Module12_Power.jsx';
 import { Module13_ExperimentDesigner } from './modules/Module13_ExperimentDesigner.jsx';
+import { Module14_Correlation } from './modules/Module14_Correlation.jsx';
+import { Module15_SimpsonsParadox } from './modules/Module15_SimpsonsParadox.jsx';
+import { Module16_Skewness } from './modules/Module16_Skewness.jsx';
+import { Module17_MultipleTesting } from './modules/Module17_MultipleTesting.jsx';
+import { Module18_RegressionToMean } from './modules/Module18_RegressionToMean.jsx';
+import { Module19_SelectionBias } from './modules/Module19_SelectionBias.jsx';
+import { Module20_PracticalSignificance } from './modules/Module20_PracticalSignificance.jsx';
 
 const MODULE_COMPONENTS = {
   sf01: Module01_WhatIsData,
@@ -29,6 +36,13 @@ const MODULE_COMPONENTS = {
   sf11: Module11_HypothesisTesting,
   sf12: Module12_Power,
   sf13: Module13_ExperimentDesigner,
+  sf14: Module14_Correlation,
+  sf15: Module15_SimpsonsParadox,
+  sf16: Module16_Skewness,
+  sf17: Module17_MultipleTesting,
+  sf18: Module18_RegressionToMean,
+  sf19: Module19_SelectionBias,
+  sf20: Module20_PracticalSignificance,
 };
 
 const TOTAL = statsFoundationsModules.length;
@@ -201,7 +215,21 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
 
       {/* ── Unlocked: render module ── */}
       {!isLocked && (
-        <ModuleComponent module={module} onNext={handleNext} />
+        <>
+          <ModuleComponent module={module} onNext={handleNext} />
+          {module.playbookLinks?.length > 0 && (
+            <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 16px 32px', boxSizing: 'border-box' }}>
+              <div style={{ padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>📖 Playbook Reading</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {module.playbookLinks.map(link => (
+                    <span key={link.id} style={{ fontSize: 13, color: 'var(--accent)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 6, padding: '4px 10px', cursor: 'default' }}>{link.label}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

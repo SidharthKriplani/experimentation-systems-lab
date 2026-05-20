@@ -13,6 +13,7 @@ export const statsFoundationsModules = [
     isFree: true,
     keyInsight: 'Every A/B test is just measuring a numerical variable on two groups and comparing them.',
     connection: 'When you define a metric in an experiment — DAU, CVR, revenue per user — you are choosing a numerical variable to measure on each observation (user or session).',
+    playbookLinks: [],
   },
   {
     id: 'sf02',
@@ -25,6 +26,7 @@ export const statsFoundationsModules = [
     isFree: true,
     keyInsight: 'Median is your friend in skewed data — revenue, session length, and spend distributions are almost always right-skewed.',
     connection: 'When you report experiment results, you\'re reporting a mean. But outlier users can inflate it.',
+    playbookLinks: [{ id: 'simpsons-paradox', label: "Simpson's Paradox" }],
   },
   {
     id: 'sf03',
@@ -37,6 +39,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'Standard deviation is the "typical distance from the mean." It\'s the denominator of almost every significance calculation.',
     connection: 'Test statistics divide observed effect by standard deviation. Small SD = more signal per data point.',
+    playbookLinks: [{ id: 'practical-vs-statistical', label: 'Practical vs Statistical Significance' }],
   },
   {
     id: 'sf04',
@@ -49,6 +52,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'The normal distribution is fully described by just two numbers: mean and SD. Most phenomena that are sums of independent effects converge to it.',
     connection: 'Under the CLT, sample means follow a normal distribution — which is why we can use normal-distribution math to assess experiments.',
+    playbookLinks: [{ id: 'p-values', label: 'p-values' }, { id: 'confidence-intervals', label: 'Confidence Intervals' }],
   },
   {
     id: 'sf05',
@@ -61,6 +65,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'A z-score answers "how many standard deviations from the mean is this value?" It lets you compare values across different scales and distributions.',
     connection: 'The test statistic in a t-test is essentially a z-score: (observed effect - expected under null) / standard error.',
+    playbookLinks: [{ id: 'p-values', label: 'p-values' }],
   },
   {
     id: 'sf06',
@@ -73,6 +78,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'The area under the normal curve between two z-scores is the probability a random draw falls between them. This is literally what p-values are.',
     connection: 'P-values are areas under the null distribution beyond your test statistic.',
+    playbookLinks: [{ id: 'p-values', label: 'p-values' }, { id: 'type1-type2', label: 'Type I vs Type II Errors' }],
   },
   {
     id: 'sf07',
@@ -85,6 +91,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'Every sample gives a slightly different mean. This isn\'t error — it\'s the expected behavior of random sampling. The question is how much the mean varies.',
     connection: 'In an A/B test, you never measure all users — you measure a sample. The observed lift is an estimate, not truth.',
+    playbookLinks: [{ id: 'randomization-unit', label: 'Randomization Unit' }, { id: 'srm', label: 'SRM' }],
   },
   {
     id: 'sf08',
@@ -97,6 +104,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'SE = σ/√n. To halve your standard error (and thus your confidence interval width), you need 4× the sample size.',
     connection: 'Minimum detectable effect (MDE) is directly proportional to SE. More users = smaller SE = can detect smaller effects.',
+    playbookLinks: [{ id: 'cuped', label: 'CUPED: More Power Without Running Longer' }, { id: 'power-mde', label: 'Power & MDE' }],
   },
   {
     id: 'sf09',
@@ -109,6 +117,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'No matter what the original distribution looks like, the distribution of sample means approaches normal as n grows. This is why normal-distribution statistics work on skewed revenue data.',
     connection: 'CLT justifies applying z-tests and t-tests to any metric — even highly skewed ones — at sufficient sample sizes.',
+    playbookLinks: [{ id: 'p-values', label: 'p-values' }, { id: 'confidence-intervals', label: 'Confidence Intervals' }],
   },
   {
     id: 'sf10',
@@ -121,6 +130,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'A 95% CI doesn\'t mean there\'s a 95% chance the true value is inside. It means: if we repeated this experiment 100 times, ~95 of those intervals would contain the true value.',
     connection: 'Experiment results are reported as "lift: +2.3% (95% CI: +0.8% to +3.8%)". The CI tells you how much you should trust the point estimate.',
+    playbookLinks: [{ id: 'confidence-intervals', label: 'Confidence Intervals' }, { id: 'practical-vs-statistical', label: 'Practical vs Statistical Significance' }],
   },
   {
     id: 'sf11',
@@ -133,6 +143,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'A p-value answers: "If the null hypothesis were true, how likely is it that we\'d see a result this extreme or more extreme?" Small p = the data is hard to explain under the null.',
     connection: 'Experiment decisions hinge on p < α. Understanding what p-value actually measures prevents the most common experiment interpretation mistakes.',
+    playbookLinks: [{ id: 'p-values', label: 'p-values' }, { id: 'type1-type2', label: 'Type I vs Type II Errors' }, { id: 'peeking', label: 'Peeking' }, { id: 'decision-rule', label: 'Pre-Committed Decision Rule' }],
   },
   {
     id: 'sf12',
@@ -145,6 +156,7 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'Power = probability of detecting a real effect. 80% power means a 20% chance of missing a true effect. Underpowered experiments are the #1 cause of false negatives in product analytics.',
     connection: 'MDE, power, α, and sample size are locked together. Fix three and the fourth is determined. Most companies target 80% power at α=0.05.',
+    playbookLinks: [{ id: 'power-mde', label: 'Power & MDE' }, { id: 'type1-type2', label: 'Type I vs Type II Errors' }, { id: 'practical-vs-statistical', label: 'Practical vs Statistical Significance' }],
   },
   {
     id: 'sf13',
@@ -157,6 +169,84 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'Sample size, MDE, α, and power are locked together — fix three and the fourth is determined. Halving the MDE requires roughly 4× the sample size.',
     connection: 'This is the practical capstone: before running any experiment, you need to calculate whether you can detect the effect you care about with the sample size you can collect.',
+    playbookLinks: [{ id: 'experiment-design-primary-metric', label: 'Pre-Committing Primary Metric' }, { id: 'decision-rule', label: 'Pre-Committed Decision Rule' }, { id: 'power-mde', label: 'Power & MDE' }, { id: 'end-to-end-experiment', label: 'End-to-End Experiment' }],
+  },
+  {
+    id: 'sf14', index: 14, title: 'Correlation & Covariance',
+    subtitle: 'How two variables move together — and why that\'s not causation',
+    difficulty: 'Intermediate',
+    tags: ['correlation', 'covariance', 'r value', 'scatter plot', 'causation'],
+    estimatedMin: 7, isFree: false,
+    keyInsight: 'Correlation measures linear co-movement (r from -1 to +1). r² tells you what fraction of variance is explained. But correlation never tells you which variable causes which.',
+    connection: 'Before running experiments, you need correlation to identify candidate features. After experiments, correlation in residuals signals confounding.',
+    playbookLinks: [{ id: 'simpsons-paradox', label: "Simpson's Paradox" }],
+  },
+  {
+    id: 'sf15', index: 15, title: "Simpson's Paradox",
+    subtitle: 'When segment-level truth reverses at the aggregate level',
+    difficulty: 'Advanced',
+    tags: ["simpson's paradox", 'aggregation', 'confounding', 'segmentation', 'A/B testing'],
+    estimatedMin: 8, isFree: false,
+    keyInsight: "A treatment can win in every segment yet lose in aggregate — if treatment assignment is correlated with a baseline rate difference. Always segment before concluding.",
+    connection: "Critical for A/B test analysis: if randomization creates unequal segment distributions (e.g., more mobile users in treatment), aggregated conversion rates will be confounded.",
+    playbookLinks: [
+      { id: 'simpsons-paradox', label: "Simpson's Paradox" },
+      { id: 'srm', label: 'SRM: Sample Ratio Mismatch' },
+      { id: 'randomization-unit', label: 'Randomization Unit' },
+    ],
+  },
+  {
+    id: 'sf16', index: 16, title: 'Skewness & Log-Normal Distributions',
+    subtitle: 'Why product metrics lie when you assume normality',
+    difficulty: 'Intermediate',
+    tags: ['skewness', 'log-normal', 'right-skewed', 'mean vs median', 'outliers', 'revenue'],
+    estimatedMin: 7, isFree: false,
+    keyInsight: 'Revenue, session length, and LTV are right-skewed. The mean is dragged by the top 1%. When your metric is log-normal, median is more honest than mean, and log-transforming before A/B testing gives cleaner results.',
+    connection: 'This directly affects how you run and interpret A/B tests on revenue metrics. A significant mean lift might be driven by 3 whale users. A non-significant result might mask a real median lift.',
+    playbookLinks: [
+      { id: 'practical-vs-statistical', label: 'Practical vs Statistical Significance' },
+      { id: 'p-values', label: 'p-values' },
+    ],
+  },
+  {
+    id: 'sf17', index: 17, title: 'Multiple Testing & Corrections',
+    subtitle: 'Why more metrics means more false positives — and how to fix it',
+    difficulty: 'Advanced',
+    tags: ['multiple testing', 'bonferroni', 'FDR', 'family-wise error rate', 'false positives'],
+    estimatedMin: 7, isFree: false,
+    keyInsight: 'Run 20 tests at α=0.05 and expect ~1 false positive even if nothing is real. Bonferroni corrects this but kills power. FDR control (Benjamini-Hochberg) is the practical middle ground.',
+    connection: 'Every time you add a secondary metric to your experiment, you inflate your false positive rate. This is why pre-committing your primary metric before the experiment matters.',
+    playbookLinks: [{ id: 'multiple-testing', label: 'Multiple Testing' }, { id: 'p-values', label: 'p-values' }],
+  },
+  {
+    id: 'sf18', index: 18, title: 'Regression to the Mean',
+    subtitle: 'Why your worst performers almost always improve — with or without intervention',
+    difficulty: 'Intermediate',
+    tags: ['regression to the mean', 'random variation', 'noise', 'intervention', 'measurement'],
+    estimatedMin: 6, isFree: false,
+    keyInsight: 'Extreme values on first measurement tend toward average on second measurement — not because of any intervention, but because extreme outcomes contain random noise that averages out. Always use a control group.',
+    connection: 'Classic trap in product analytics: you target underperforming cohorts with an intervention and they improve. Was it the intervention or regression to the mean? Only a control group tells you.',
+    playbookLinks: [{ id: 'novelty-effect', label: 'Novelty Effect' }, { id: 'practical-vs-statistical', label: 'Practical vs Statistical Significance' }],
+  },
+  {
+    id: 'sf19', index: 19, title: 'Selection Bias & Survivorship',
+    subtitle: 'The data you never see is the data that matters most',
+    difficulty: 'Advanced',
+    tags: ['selection bias', 'survivorship bias', 'missing data', 'churned users', 'denominator'],
+    estimatedMin: 7, isFree: false,
+    keyInsight: 'You only analyze users who stayed. Churned users are missing from your dashboard — and they are systematically different from retained users. Measuring only survivors inflates every quality metric.',
+    connection: 'Directly affects feature analysis (only engaged users see the feature), satisfaction surveys (only happy users respond), and retention analysis (only retained users are in the cohort).',
+    playbookLinks: [{ id: 'srm', label: 'SRM' }, { id: 'hte', label: 'Heterogeneous Treatment Effects' }],
+  },
+  {
+    id: 'sf20', index: 20, title: 'Practical vs Statistical Significance',
+    subtitle: 'When significant is real but too small to matter — and the reverse',
+    difficulty: 'Advanced',
+    tags: ['practical significance', 'statistical significance', 'effect size', "cohen's h", 'business impact', 'MDE'],
+    estimatedMin: 8, isFree: false,
+    keyInsight: 'With 10M users, a 0.001% lift is statistically significant but worth nothing. With 1,000 users, a 5% lift might not reach significance yet. Effect size + business impact calculation must accompany every p-value.',
+    connection: 'The capstone concept: you now have all the tools — distributions, CLT, CI, hypothesis testing, power, MDE — to evaluate whether a result is both statistically trustworthy and practically worth acting on.',
+    playbookLinks: [{ id: 'practical-vs-statistical', label: 'Practical vs Statistical Significance' }, { id: 'power-mde', label: 'Power & MDE' }, { id: 'p-values', label: 'p-values' }],
   },
 ];
 
