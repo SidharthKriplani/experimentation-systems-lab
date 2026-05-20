@@ -13,6 +13,7 @@ import { prioritizationScenarios } from './data/prioritizationScenarios.js';
 import { behavioralQuestions } from './data/behavioralQuestions.js';
 import { estimationProblems } from './data/estimationProblems.js';
 import { statsFoundationsModules } from './data/statsFoundationsModules.js';
+import { growthAnalyticsCases } from './data/growthAnalyticsCases.js';
 // Layout (always needed — not lazy)
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -29,6 +30,7 @@ import { getPrioritizationProgress } from './utils/prioritizationProgress.js';
 import { getBehavioralProgress } from './utils/behavioralProgress.js';
 import { getEstimationProgress } from './utils/estimationProgress.js';
 import { getStatFoundationsProgress } from './utils/statsFoundationsProgress.js';
+import { getGrowthAnalyticsProgress } from './utils/growthAnalyticsProgress.js';
 import { isUnlocked } from './utils/unlock.js';
 
 // Pages — lazy-loaded for code splitting
@@ -67,6 +69,8 @@ const EstimationBrowser     = lazy(() => import('./pages/EstimationBrowser.jsx')
 const EstimationRunner      = lazy(() => import('./components/estimation/EstimationRunner.jsx').then(m => ({ default: m.EstimationRunner })));
 const StatsFoundationsBrowser = lazy(() => import('./pages/StatsFoundationsBrowser.jsx').then(m => ({ default: m.StatsFoundationsBrowser })));
 const StatsFoundationsRunner  = lazy(() => import('./components/statsFoundations/StatsFoundationsRunner.jsx').then(m => ({ default: m.StatsFoundationsRunner })));
+const GrowthAnalyticsBrowser  = lazy(() => import('./pages/GrowthAnalyticsBrowser.jsx').then(m => ({ default: m.GrowthAnalyticsBrowser })));
+const GrowthAnalyticsRunner   = lazy(() => import('./components/growthAnalytics/GrowthAnalyticsRunner.jsx').then(m => ({ default: m.GrowthAnalyticsRunner })));
 
 function getInitialTheme() {
   try {
@@ -90,6 +94,7 @@ export default function App() {
   const [activeBehavioralId, setActiveBehavioralId] = useState(null);
   const [activeEstimationId, setActiveEstimationId] = useState(null);
   const [activeStatFoundationsId, setActiveStatFoundationsId] = useState(null);
+  const [activeGrowthAnalyticsId, setActiveGrowthAnalyticsId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
   const [theme, setTheme] = useState(getInitialTheme);
@@ -111,6 +116,7 @@ export default function App() {
       behavioral: 'Behavioral Room — Product Analytics Lab',
       estimation: 'Estimation Room — Product Analytics Lab',
       'stat-foundations': 'Stat Foundations — Product Analytics Lab',
+      'growth-analytics': 'Growth Analytics Room — Product Analytics Lab',
       blog: 'Learn — Product Analytics Lab',
       playbook: 'Playbook — Product Analytics Lab',
       pricing: 'Pricing — Product Analytics Lab',
@@ -142,6 +148,7 @@ export default function App() {
     setActiveBehavioralId(null);
     setActiveEstimationId(null);
     setActiveStatFoundationsId(null);
+    setActiveGrowthAnalyticsId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -255,6 +262,16 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function openGrowthAnalyticsCase(id) {
+    const c = growthAnalyticsCases.find(c => c.id === id);
+    if (!c) return;
+    if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'growth-analytics', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'growth-analytics', id, title: c.title });
+    setActiveGrowthAnalyticsId(id);
+    setPage('growth-analytics-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function openPDScenario(id) {
     const s = productDesignScenarios.find(s => s.id === id);
     if (!s) return;
@@ -348,6 +365,13 @@ export default function App() {
     return accessible[idx + 1].id;
   }
 
+  function getNextGrowthAnalyticsId(currentId) {
+    const accessible = growthAnalyticsCases.filter(c => c.isFree || unlocked);
+    const idx = accessible.findIndex(c => c.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
   function getNextStatsId(currentId) {
     const accessible = statsModules.filter(m => m.isFree || unlocked);
     const idx = accessible.findIndex(m => m.id === currentId);
@@ -378,6 +402,8 @@ export default function App() {
   const nextEstimationId = activeEstimationId ? getNextEstimationId(activeEstimationId) : null;
   const activeStatFoundationsModule = statsFoundationsModules.find(m => m.id === activeStatFoundationsId);
   const nextStatFoundationsId = activeStatFoundationsId ? getNextStatFoundationsId(activeStatFoundationsId) : null;
+  const activeGrowthAnalyticsCase = growthAnalyticsCases.find(c => c.id === activeGrowthAnalyticsId);
+  const nextGrowthAnalyticsId = activeGrowthAnalyticsId ? getNextGrowthAnalyticsId(activeGrowthAnalyticsId) : null;
 
   function getPairedDesignId(reviewScenarioId) {
     const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
@@ -592,6 +618,23 @@ export default function App() {
               ? () => openStatFoundationsModule(nextStatFoundationsId)
               : () => setPage('stat-foundations')}
             unlocked={unlocked}
+          />
+        )}
+
+        {/* ── Growth Analytics Room ── */}
+        {page === 'growth-analytics' && (
+          <GrowthAnalyticsBrowser
+            onSelectCase={openGrowthAnalyticsCase}
+            unlocked={unlocked}
+          />
+        )}
+        {page === 'growth-analytics-runner' && activeGrowthAnalyticsCase && (
+          <GrowthAnalyticsRunner
+            key={activeGrowthAnalyticsId}
+            caseData={activeGrowthAnalyticsCase}
+            unlocked={unlocked}
+            onBack={() => navigate('growth-analytics')}
+            onNext={nextGrowthAnalyticsId ? () => openGrowthAnalyticsCase(nextGrowthAnalyticsId) : undefined}
           />
         )}
 

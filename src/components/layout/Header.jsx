@@ -12,6 +12,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     { id: 'prioritization', label: 'Prioritize' },
     { id: 'behavioral', label: 'Behavioral' },
     { id: 'estimation', label: 'Estimation' },
+    { id: 'growth-analytics', label: 'Growth' },
     { id: 'blog', label: 'Learn' },
     { id: 'playbook', label: 'Playbook' },
     { id: 'pricing', label: 'Pricing' },
@@ -81,7 +82,8 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               || (item.id === 'prioritization' && currentPage === 'prioritization-runner')
               || (item.id === 'behavioral' && currentPage === 'behavioral-runner')
               || (item.id === 'estimation' && currentPage === 'estimation-runner')
-              || (item.id === 'stat-foundations' && currentPage === 'stat-foundations-runner');
+              || (item.id === 'stat-foundations' && currentPage === 'stat-foundations-runner')
+              || (item.id === 'growth-analytics' && currentPage === 'growth-analytics-runner');
             return (
               <button
                 key={item.id}

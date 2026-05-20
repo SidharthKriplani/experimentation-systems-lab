@@ -1,0 +1,220 @@
+import { growthAnalyticsCases } from '../data/growthAnalyticsCases.js';
+import { getAllGrowthAnalyticsProgress } from '../utils/growthAnalyticsProgress.js';
+
+const DIFF_CFG = {
+  analyst: { label: 'Analyst', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
+  senior:  { label: 'Senior',  color: 'var(--yellow)',    bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
+  staff:   { label: 'Staff',   color: 'var(--teal)',      bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
+};
+
+const DOMAIN_LABEL = {
+  'growth-accounting': 'Growth Accounting',
+  'retention':         'Retention',
+  'funnel':            'Funnel',
+  'ltv':               'LTV',
+  'engagement':        'Engagement',
+  'acquisition':       'Acquisition',
+};
+
+const RATING_COLOR = {
+  strong:  'var(--green)',
+  partial: 'var(--yellow)',
+  miss:    'var(--red)',
+};
+
+export function GrowthAnalyticsBrowser({ onSelectCase, unlocked }) {
+  const allProgress = getAllGrowthAnalyticsProgress();
+  const completedCount = Object.keys(allProgress).length;
+
+  return (
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+
+      {/* Header */}
+      <div style={{ marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+          <span style={{
+            width: '36px', height: '36px', borderRadius: '9px',
+            background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.1rem', flexShrink: 0,
+          }}>
+            ↗
+          </span>
+          <div>
+            <div style={{
+              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              letterSpacing: '0.1em', color: 'var(--teal)', marginBottom: '0.15rem',
+            }}>
+              Growth Analytics Room
+            </div>
+            <h1 style={{
+              fontSize: '1.6rem', fontWeight: 700, color: 'var(--text)',
+              margin: 0, letterSpacing: '-0.02em',
+            }}>
+              Growth Analytics
+            </h1>
+          </div>
+        </div>
+
+        <p style={{
+          color: 'var(--text-muted)', fontSize: '0.95rem',
+          margin: '0 0 0.75rem', maxWidth: '640px', lineHeight: 1.6,
+        }}>
+          DAU decomposition, retention curves, funnel analysis, LTV, and acquisition quality — the practitioner toolkit for diagnosing growth.
+        </p>
+
+        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
+            {growthAnalyticsCases.length} cases
+          </span>
+          {completedCount > 0 && (
+            <span style={{ fontSize: '0.82rem', color: 'var(--teal)' }}>
+              ✓ {completedCount} completed
+            </span>
+          )}
+          <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
+            {growthAnalyticsCases.filter(c => c.isFree).length} free to try
+          </span>
+        </div>
+      </div>
+
+      {/* Case cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+        {growthAnalyticsCases.map(c => {
+          const prog = allProgress[c.id];
+          const isLocked = !c.isFree && !unlocked;
+          const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.analyst;
+
+          return (
+            <div
+              key={c.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelectCase(c.id)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectCase(c.id); } }}
+              style={{
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderRadius: '10px',
+                padding: '1.1rem 1.25rem',
+                cursor: 'pointer',
+                transition: 'border-color 0.15s, box-shadow 0.15s',
+                opacity: isLocked ? 0.7 : 1,
+                position: 'relative',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'var(--teal-border)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'var(--border)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
+                <div style={{ flex: 1 }}>
+                  {/* Badge row */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.3rem', flexWrap: 'wrap' }}>
+                    <span style={{
+                      fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-dim)',
+                      letterSpacing: '0.04em', textTransform: 'uppercase',
+                    }}>
+                      {c.id}
+                    </span>
+
+                    <span style={{
+                      fontSize: '0.7rem', fontWeight: 600,
+                      color: diffCfg.color, background: diffCfg.bg, border: `1px solid ${diffCfg.border}`,
+                      borderRadius: '4px', padding: '0.1rem 0.4rem',
+                    }}>
+                      {diffCfg.label}
+                    </span>
+
+                    <span style={{
+                      fontSize: '0.7rem', fontWeight: 500,
+                      color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+                      borderRadius: '4px', padding: '0.1rem 0.4rem',
+                    }}>
+                      {DOMAIN_LABEL[c.domain] || c.domain}
+                    </span>
+
+                    <span style={{
+                      fontSize: '0.7rem', fontWeight: 500,
+                      color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
+                      borderRadius: '4px', padding: '0.1rem 0.4rem',
+                    }}>
+                      {c.company}
+                    </span>
+
+                    {c.isFree && (
+                      <span style={{
+                        fontSize: '0.7rem', fontWeight: 600,
+                        color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
+                        borderRadius: '4px', padding: '0.1rem 0.4rem',
+                      }}>
+                        Free
+                      </span>
+                    )}
+
+                    {isLocked && <span style={{ fontSize: '0.75rem' }}>🔒</span>}
+
+                    {prog && (
+                      <span style={{
+                        fontSize: '0.7rem', fontWeight: 600,
+                        color: RATING_COLOR[prog.rating] || 'var(--teal)',
+                      }}>
+                        ✓
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <div style={{
+                    fontWeight: 600, fontSize: '0.97rem', color: 'var(--text)', marginBottom: '0.2rem',
+                  }}>
+                    {c.title}
+                  </div>
+
+                  {/* Subtitle */}
+                  <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginBottom: '0.55rem' }}>
+                    {c.subtitle}
+                  </div>
+
+                  {/* Tags */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                    {c.tags.map(tag => (
+                      <span key={tag} style={{
+                        fontSize: '0.72rem', color: 'var(--text-dim)',
+                        background: 'var(--surface-2)', borderRadius: '4px',
+                        padding: '0.1rem 0.45rem', border: '1px solid var(--border-subtle)',
+                      }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Completion indicator */}
+                {prog && (
+                  <div style={{
+                    fontSize: '0.75rem', fontWeight: 600,
+                    color: RATING_COLOR[prog.rating] || 'var(--teal)',
+                    background: 'var(--surface-2)', border: '1px solid var(--border)',
+                    borderRadius: '6px', padding: '0.3rem 0.6rem',
+                    whiteSpace: 'nowrap', flexShrink: 0,
+                  }}>
+                    {prog.rating === 'strong'
+                      ? '✓ Nailed it'
+                      : prog.rating === 'partial'
+                      ? '~ Close'
+                      : '✗ Revisit'}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
