@@ -143,7 +143,7 @@ Recommendation: (1) Add segment-stratified DAU/MAU to the weekly dashboard so th
       'Power user stickiness is usually the right leading indicator for marketplace health — protect and monitor it separately.',
     ],
     playbookLinks: [{ id: 'growth-accounting', label: 'Growth Accounting' }, { id: 'notification-driven-dau', label: 'Notification-Driven DAU' }],
-    leadershipNote: 'An Analytics Director would immediately ask: "What is our stickiness target and why?" Before segmenting, they would establish whether the current DAU/MAU is above or below the product's natural cadence. The framing matters: a weekly-use product at 30% is healthy; a daily-use product at 30% is a crisis.',
+    leadershipNote: 'An Analytics Director would immediately ask: "What is our stickiness target and why?" Before segmenting, they would establish whether the current DAU/MAU is above or below the product\'s natural cadence. The framing matters: a weekly-use product at 30% is healthy; a daily-use product at 30% is a crisis.',
   },
 
   {
@@ -224,7 +224,7 @@ Actions: (1) Stop investing in self-serve SMB acquisition at current unit econom
       'A GTM problem masquerading as a product problem is extremely common in early SaaS — always segment cohorts by acquisition channel and customer profile before diagnosing.',
     ],
     playbookLinks: [{ id: 'cohort-retention-curves', label: 'Cohort Retention Curves' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
-    leadershipNote: 'A Staff DS would build a retention model that automatically flags when a new cohort's Day-7 curve falls outside the historical confidence band — not just report the numbers. They would also have pre-written the "retention dropped" communication template so the response time from detection to stakeholder briefing is under 2 hours.',
+    leadershipNote: 'A Staff DS would build a retention model that automatically flags when a new cohort\'s Day-7 curve falls outside the historical confidence band — not just report the numbers. They would also have pre-written the "retention dropped" communication template so the response time from detection to stakeholder briefing is under 2 hours.',
   },
 
   {
@@ -600,7 +600,7 @@ Actions: (1) Audit why organic referral collapsed — instrument K-factor by acq
       'A sustainable growth engine has a healthy organic base that amplifies paid. Paid-dependent growth at declining LTV:CAC is a treadmill, not a flywheel.',
     ],
     playbookLinks: [{ id: 'organic-growth-quality', label: 'Organic vs Paid Growth' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
-    leadershipNote: 'A Staff DS would track organic/paid DAU ratio as a leading indicator of brand health and product-market fit, separate from the growth team's attribution reporting. They would build a "growth quality index" — a single score combining organic share, Day-30 retention by channel, and CAC payback — and present it monthly to the leadership team.',
+    leadershipNote: 'A Staff DS would track organic/paid DAU ratio as a leading indicator of brand health and product-market fit, separate from the growth team\'s attribution reporting. They would build a "growth quality index" — a single score combining organic share, Day-30 retention by channel, and CAC payback — and present it monthly to the leadership team.',
   },
 
   {
