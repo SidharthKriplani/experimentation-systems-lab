@@ -16,18 +16,29 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
         { id: 'behavioral', label: 'Behavioral' },
         { id: 'estimation', label: 'Estimation' },
         { id: 'growth-analytics', label: 'Growth' },
+        { id: 'bi', label: 'BI' },
+        { id: 'instrumentation', label: '📡 Instrum.' },
+      ],
+    },
+    {
+      label: 'PRACTICE',
+      items: [
         { id: 'challenges', label: '⚡ Challenges' },
+        { id: 'spot-the-flaw', label: '🐛 Spot Flaw' },
+        { id: 'take-home', label: '📝 Take-Home' },
+        { id: 'simulator', label: 'Simulate' },
+        { id: 'ab-interpreter', label: 'A/B Tool' },
       ],
     },
     {
       label: 'TOOLS',
       items: [
         { id: 'search', label: '🔍 Search' },
-        { id: 'simulator', label: 'Simulate' },
-        { id: 'ab-interpreter', label: 'A/B Tool' },
-        { id: 'bookmarks', label: '🔖 Saved' },
-        { id: 'consult', label: '💬 Consult' },
         { id: 'trainer', label: '🎯 Trainer' },
+        { id: 'consult', label: '💬 Consult' },
+        { id: 'company-tracks', label: 'Companies' },
+        { id: 'defense-doc', label: '🛡️ Defense' },
+        { id: 'bookmarks', label: '🔖 Saved' },
       ],
     },
     {
@@ -35,7 +46,6 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
       items: [
         { id: 'blog', label: 'Learn' },
         { id: 'playbook', label: 'Playbook' },
-        { id: 'company-tracks', label: 'Companies' },
       ],
     },
     {
@@ -69,7 +79,12 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
       || (itemId === 'consult' && currentPage === 'consult')
       || (itemId === 'trainer' && currentPage === 'trainer')
       || (itemId === 'company-tracks' && currentPage === 'company-tracks')
-      || (itemId === 'challenges' && (currentPage === 'challenges' || currentPage === 'challenges-runner'));
+      || (itemId === 'challenges' && (currentPage === 'challenges' || currentPage === 'challenges-runner'))
+      || (itemId === 'bi' && (currentPage === 'bi' || currentPage === 'bi-runner'))
+      || (itemId === 'spot-the-flaw' && (currentPage === 'spot-the-flaw' || currentPage === 'stf-runner'))
+      || (itemId === 'take-home' && (currentPage === 'take-home' || currentPage === 'takehome-runner'))
+      || (itemId === 'defense-doc' && currentPage === 'defense-doc')
+      || (itemId === 'instrumentation' && (currentPage === 'instrumentation' || currentPage === 'instrumentation-runner'));
   }
 
   const groupLabelStyle = {

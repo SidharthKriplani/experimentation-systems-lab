@@ -350,6 +350,7 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
   // "What did you miss?" state
   const [missedText, setMissedText] = useState(() => loadMissed()[missedKey] || '');
   const [missedSaved, setMissedSaved] = useState(false);
+  const [leadershipOpen, setLeadershipOpen] = useState(false);
 
   const diffCfg = DIFF_CFG[caseData.difficulty] || DIFF_CFG.analyst;
 
@@ -776,6 +777,52 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
               })}
             </div>
           </div>
+
+          {/* Leadership Lens toggle */}
+          {caseData.leadershipNote && (
+            <div style={{ marginBottom: '1rem' }}>
+              <button
+                onClick={() => setLeadershipOpen(o => !o)}
+                style={{
+                  width: '100%', textAlign: 'left',
+                  background: leadershipOpen ? 'var(--purple-bg)' : 'var(--surface)',
+                  border: leadershipOpen ? '1px solid var(--purple-border)' : '1px solid var(--border)',
+                  borderRadius: '8px',
+                  padding: '0.65rem 1rem',
+                  cursor: 'pointer',
+                  color: leadershipOpen ? 'var(--purple)' : 'var(--text-muted)',
+                  fontSize: '0.84rem', fontWeight: 600,
+                  display: 'flex', alignItems: 'center', gap: '0.4rem',
+                  transition: 'all 0.12s',
+                }}
+              >
+                <span>{leadershipOpen ? '▾' : '▸'}</span>
+                <span>💼 Leadership Lens</span>
+              </button>
+              {leadershipOpen && (
+                <div style={{
+                  borderLeft: '3px solid var(--purple)',
+                  background: 'var(--purple-bg)',
+                  borderRadius: '0 8px 8px 0',
+                  padding: '0.9rem 1.1rem',
+                  marginTop: '0.25rem',
+                }}>
+                  <div style={{
+                    fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase',
+                    letterSpacing: '0.08em', color: 'var(--purple)', marginBottom: '0.45rem',
+                  }}>
+                    💼 How a Staff DS thinks about this
+                  </div>
+                  <p style={{
+                    margin: 0, fontSize: '0.9rem', color: 'var(--text)',
+                    lineHeight: 1.7,
+                  }}>
+                    {caseData.leadershipNote}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* "What did you miss?" — only for partial or miss ratings */}
           {showMissedStep && (

@@ -68,6 +68,7 @@ The next investigative step: segment retention by cohort, feature usage, and pla
       'Pouring acquisition spend into a leaky retention bucket is one of the most common and costly mistakes in growth — you buy users at CAC only to lose them in days.',
     ],
     playbookLinks: [{ id: 'growth-accounting', label: 'Growth Accounting' }, { id: 'cohort-retention-curves', label: 'Cohort Retention' }],
+    leadershipNote: 'A Staff DS would not wait for a stakeholder to ask this question — they would have a recurring DAU decomposition report running weekly with automated alerts on any component moving more than 2pp. The leadership skill is building the measurement infrastructure before the crisis, not diagnosing it after.',
   },
 
   {
@@ -142,6 +143,7 @@ Recommendation: (1) Add segment-stratified DAU/MAU to the weekly dashboard so th
       'Power user stickiness is usually the right leading indicator for marketplace health — protect and monitor it separately.',
     ],
     playbookLinks: [{ id: 'growth-accounting', label: 'Growth Accounting' }, { id: 'notification-driven-dau', label: 'Notification-Driven DAU' }],
+    leadershipNote: 'An Analytics Director would immediately ask: "What is our stickiness target and why?" Before segmenting, they would establish whether the current DAU/MAU is above or below the product's natural cadence. The framing matters: a weekly-use product at 30% is healthy; a daily-use product at 30% is a crisis.',
   },
 
   {
@@ -222,6 +224,7 @@ Actions: (1) Stop investing in self-serve SMB acquisition at current unit econom
       'A GTM problem masquerading as a product problem is extremely common in early SaaS — always segment cohorts by acquisition channel and customer profile before diagnosing.',
     ],
     playbookLinks: [{ id: 'cohort-retention-curves', label: 'Cohort Retention Curves' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
+    leadershipNote: 'A Staff DS would build a retention model that automatically flags when a new cohort's Day-7 curve falls outside the historical confidence band — not just report the numbers. They would also have pre-written the "retention dropped" communication template so the response time from detection to stakeholder briefing is under 2 hours.',
   },
 
   {
@@ -314,6 +317,7 @@ Profile completion is worth iterating on (it's 72% vs 78–85% benchmark) but sh
       'An "easy win" upstream that converts 5% more users into a broken downstream step generates almost no outcome improvement — fix the leak, not the tap.',
     ],
     playbookLinks: [{ id: 'funnel-analysis-framework', label: 'Funnel Analysis' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
+    leadershipNote: 'Leadership-level funnel analysis includes the counterfactual: if we fix the biggest drop-off step, what is the business impact in revenue and DAU? A Staff DS translates every funnel gap into a dollar figure and a headcount justification, making it easy for PMs and engineers to prioritize the fix.',
   },
 
   {
@@ -404,6 +408,7 @@ Recommendation: Do not double paid social. Reallocate 60% paid social budget to 
       'Set payback period gates — not just LTV at a single point. A channel with 12M+ payback is a cash flow risk even if LTV is eventually positive.',
     ],
     playbookLinks: [{ id: 'ltv-payback-period', label: 'LTV & Payback Period' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
+    leadershipNote: 'A Director of Analytics would flag a CAC/LTV imbalance as a finance-level risk, not just a metrics observation. They would ensure the finding reaches the CFO and VP of Growth with a clear payback period calculation and a recommendation on whether to pause acquisition spend — not just surface it in a product review.',
   },
 
   {
@@ -494,6 +499,7 @@ Recommendation to leadership: (1) Do not issue a press release about "record eng
       'Hollow growth is worse than flat growth — it burns CAC-equivalent notification budget, risks churning users, and misleads leadership into celebration mode.',
     ],
     playbookLinks: [{ id: 'notification-driven-dau', label: 'Notification-Driven DAU' }, { id: 'growth-accounting', label: 'Growth Accounting' }],
+    leadershipNote: 'At the Staff level, this analysis becomes a policy recommendation: define a "notification health" guardrail metric (e.g., notification-driven DAU must not exceed X% of total DAU) and build it into the launch criteria for any notification-heavy feature. The leadership move is preventing the pattern from recurring, not just diagnosing the current instance.',
   },
 
   {
@@ -594,6 +600,7 @@ Actions: (1) Audit why organic referral collapsed — instrument K-factor by acq
       'A sustainable growth engine has a healthy organic base that amplifies paid. Paid-dependent growth at declining LTV:CAC is a treadmill, not a flywheel.',
     ],
     playbookLinks: [{ id: 'organic-growth-quality', label: 'Organic vs Paid Growth' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
+    leadershipNote: 'A Staff DS would track organic/paid DAU ratio as a leading indicator of brand health and product-market fit, separate from the growth team's attribution reporting. They would build a "growth quality index" — a single score combining organic share, Day-30 retention by channel, and CAC payback — and present it monthly to the leadership team.',
   },
 
   {
@@ -684,6 +691,7 @@ Recommendation: Fix-first. Pause growth spend above maintenance level. Allocate 
       'Scaling acquisition into a PMF gap doesn\'t build a flywheel — it burns CAC acquiring users who churn because the product isn\'t ready for them.',
     ],
     playbookLinks: [{ id: 'cohort-retention-curves', label: 'Cohort Retention Curves' }, { id: 'funnel-analysis-framework', label: 'Funnel Analysis' }],
+    leadershipNote: 'A Director of Analytics would use geo cohort analysis as the primary input to the market expansion scorecard — not a one-off analysis. They would build a standardized "market maturity" framework that automatically classifies each market as Early/Growth/Mature/Declining based on cohort curves, and use it to direct resource allocation across markets.',
   },
 ];
 

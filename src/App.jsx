@@ -16,6 +16,11 @@ import { estimationProblems } from './data/estimationProblems.js';
 import { statsFoundationsModules } from './data/statsFoundationsModules.js';
 import { growthAnalyticsCases } from './data/growthAnalyticsCases.js';
 import { challengesCases, challengesCasesById } from './data/challengesCases.js';
+import { biCases, biCasesById } from './data/biCases.js';
+import { spotTheFlawCases, spotTheFlawCasesById } from './data/spotTheFlawCases.js';
+import { takehomeCases, takehomeCasesById } from './data/takehomeCases.js';
+import { instrumentationCases, instrumentationCasesById } from './data/instrumentationCases.js';
+import { getAllInstrumentationProgress } from './utils/instrumentationProgress.js';
 // Layout (always needed — not lazy)
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -34,6 +39,9 @@ import { getEstimationProgress } from './utils/estimationProgress.js';
 import { getStatFoundationsProgress } from './utils/statsFoundationsProgress.js';
 import { getGrowthAnalyticsProgress } from './utils/growthAnalyticsProgress.js';
 import { getAllChallengesProgress } from './utils/challengesProgress.js';
+import { getAllBIProgress } from './utils/biProgress.js';
+import { getAllSTFProgress } from './utils/spotTheFlawProgress.js';
+import { getAllTakehomeProgress } from './utils/takehomeProgress.js';
 import { isUnlocked } from './utils/unlock.js';
 
 // Pages — lazy-loaded for code splitting
@@ -83,6 +91,15 @@ const Trainer           = lazy(() => import('./pages/Trainer.jsx').then(m => ({ 
 const CompanyTracks     = lazy(() => import('./pages/CompanyTracks.jsx').then(m => ({ default: m.CompanyTracks })));
 const ChallengesBrowser = lazy(() => import('./pages/ChallengesBrowser.jsx').then(m => ({ default: m.ChallengesBrowser })));
 const ChallengesRunner  = lazy(() => import('./components/challenges/ChallengesRunner.jsx').then(m => ({ default: m.ChallengesRunner })));
+const BIBrowser        = lazy(() => import('./pages/BIBrowser.jsx').then(m => ({ default: m.BIBrowser })));
+const BIRunner         = lazy(() => import('./components/bi/BIRunner.jsx').then(m => ({ default: m.BIRunner })));
+const SpotTheFlawBrowser = lazy(() => import('./pages/SpotTheFlawBrowser.jsx').then(m => ({ default: m.SpotTheFlawBrowser })));
+const SpotTheFlawRunner  = lazy(() => import('./components/spotTheFlaw/SpotTheFlawRunner.jsx').then(m => ({ default: m.SpotTheFlawRunner })));
+const TakehomeBrowser  = lazy(() => import('./pages/TakehomeBrowser.jsx').then(m => ({ default: m.TakehomeBrowser })));
+const TakehomeRunner   = lazy(() => import('./components/takehome/TakehomeRunner.jsx').then(m => ({ default: m.TakehomeRunner })));
+const DefenseDocGenerator = lazy(() => import('./pages/DefenseDocGenerator.jsx').then(m => ({ default: m.DefenseDocGenerator })));
+const InstrumentationBrowser = lazy(() => import('./pages/InstrumentationBrowser.jsx').then(m => ({ default: m.InstrumentationBrowser })));
+const InstrumentationRunner   = lazy(() => import('./components/instrumentation/InstrumentationRunner.jsx').then(m => ({ default: m.InstrumentationRunner })));
 
 function getInitialTheme() {
   try {
@@ -108,8 +125,12 @@ export default function App() {
   const [activeStatFoundationsId, setActiveStatFoundationsId] = useState(null);
   const [activeGrowthAnalyticsId, setActiveGrowthAnalyticsId] = useState(null);
   const [activeChallengeId, setActiveChallengeId] = useState(null);
+  const [activeBICaseId, setActiveBICaseId] = useState(null);
+  const [activeSTFCaseId, setActiveSTFCaseId] = useState(null);
+  const [activeTakehomeCaseId, setActiveTakehomeCaseId] = useState(null);
+  const [activeInstrumentationCaseId, setActiveInstrumentationCaseId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
-  const [progressSnapshot, setProgressSnapshot] = useState(() => ({ ...getAllProgress(), challengesProgress: getAllChallengesProgress() }));
+  const [progressSnapshot, setProgressSnapshot] = useState(() => ({ ...getAllProgress(), challengesProgress: getAllChallengesProgress(), biProgress: getAllBIProgress(), stfProgress: getAllSTFProgress(), takehomeProgress: getAllTakehomeProgress(), instrumentationProgress: getAllInstrumentationProgress() }));
   const [theme, setTheme] = useState(getInitialTheme);
 
   useEffect(() => {
@@ -144,6 +165,15 @@ export default function App() {
       'company-tracks': 'Company Tracks — Product Analytics Lab',
       'challenges': 'Challenges — Product Analytics Lab',
       'challenges-runner': 'Challenges — Product Analytics Lab',
+      'bi': 'BI & Reporting — Product Analytics Lab',
+      'bi-runner': 'BI & Reporting — Product Analytics Lab',
+      'spot-the-flaw': 'Spot the Flaw — Product Analytics Lab',
+      'stf-runner': 'Spot the Flaw — Product Analytics Lab',
+      'take-home': 'Take-Home Challenges — Product Analytics Lab',
+      'takehome-runner': 'Take-Home Challenges — Product Analytics Lab',
+      'defense-doc': 'Defense Doc — Product Analytics Lab',
+      'instrumentation': 'Analytics Instrumentation — Product Analytics Lab',
+      'instrumentation-runner': 'Case — Analytics Instrumentation — Product Analytics Lab',
     };
     document.title = titles[page] || 'Product Analytics Lab';
   }, [page]);
@@ -153,7 +183,7 @@ export default function App() {
   }
 
   function refreshProgress() {
-    setProgressSnapshot({ ...getAllProgress(), challengesProgress: getAllChallengesProgress() });
+    setProgressSnapshot({ ...getAllProgress(), challengesProgress: getAllChallengesProgress(), biProgress: getAllBIProgress(), stfProgress: getAllSTFProgress(), takehomeProgress: getAllTakehomeProgress(), instrumentationProgress: getAllInstrumentationProgress() });
   }
 
   function navigate(target) {
@@ -308,6 +338,50 @@ export default function App() {
     return idx >= 0 && idx < challengesCases.length - 1 ? challengesCases[idx + 1].id : null;
   }
 
+  function openBICase(id) {
+    const c = biCasesById[id];
+    if (!c) return;
+    if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'bi', id }); setPage('unlock'); return; }
+    setActiveBICaseId(id);
+    setPage('bi-runner');
+  }
+  function getNextBICaseId(currentId) {
+    const idx = biCases.findIndex(c => c.id === currentId);
+    return idx >= 0 && idx < biCases.length - 1 ? biCases[idx + 1].id : null;
+  }
+
+  function openSTFCase(id) {
+    const c = spotTheFlawCasesById[id];
+    if (!c) return;
+    if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'spot-the-flaw', id }); setPage('unlock'); return; }
+    setActiveSTFCaseId(id);
+    setPage('stf-runner');
+  }
+  function getNextSTFCaseId(currentId) {
+    const idx = spotTheFlawCases.findIndex(c => c.id === currentId);
+    return idx >= 0 && idx < spotTheFlawCases.length - 1 ? spotTheFlawCases[idx + 1].id : null;
+  }
+
+  function openTakehomeCase(id) {
+    const c = takehomeCasesById[id];
+    if (!c) return;
+    if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'take-home', id }); setPage('unlock'); return; }
+    setActiveTakehomeCaseId(id);
+    setPage('takehome-runner');
+  }
+  function getNextTakehomeCaseId(currentId) {
+    const idx = takehomeCases.findIndex(c => c.id === currentId);
+    return idx >= 0 && idx < takehomeCases.length - 1 ? takehomeCases[idx + 1].id : null;
+  }
+
+  function openInstrumentationCase(id) {
+    const c = instrumentationCasesById[id];
+    if (!c) return;
+    if (!unlocked && !c.isFree) { navigate('unlock'); return; }
+    setActiveInstrumentationCaseId(id);
+    navigate('instrumentation-runner');
+  }
+
   function openPDScenario(id) {
     const s = productDesignScenarios.find(s => s.id === id);
     if (!s) return;
@@ -333,6 +407,8 @@ export default function App() {
     { key: 't', action: () => setPage('trainer') },
     { key: 'c', action: () => setPage('consult') },
     { key: 'x', action: () => setPage('challenges') },
+    { key: 'b', action: () => setPage('bi') },
+    { key: 'd', action: () => setPage('defense-doc') },
   ]);
 
   function getNextScenarioId(currentId) {
@@ -451,6 +527,9 @@ export default function App() {
   const nextStatFoundationsId = activeStatFoundationsId ? getNextStatFoundationsId(activeStatFoundationsId) : null;
   const activeGrowthAnalyticsCase = growthAnalyticsCases.find(c => c.id === activeGrowthAnalyticsId);
   const nextGrowthAnalyticsId = activeGrowthAnalyticsId ? getNextGrowthAnalyticsId(activeGrowthAnalyticsId) : null;
+
+  const instrIdx = activeInstrumentationCaseId ? instrumentationCases.findIndex(c => c.id === activeInstrumentationCaseId) : -1;
+  const nextInstrumentationCaseId = instrIdx >= 0 && instrIdx < instrumentationCases.length - 1 ? instrumentationCases[instrIdx + 1].id : null;
 
   function getPairedDesignId(reviewScenarioId) {
     const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
@@ -712,6 +791,98 @@ export default function App() {
                 }
               }}
               allData={{ scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases }}
+            />
+          </Suspense>
+        )}
+
+        {/* ── BI Room ── */}
+        {page === 'bi' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <BIBrowser onSelectCase={openBICase} unlocked={unlocked} />
+          </Suspense>
+        )}
+        {page === 'bi-runner' && activeBICaseId && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <BIRunner
+              caseData={biCasesById[activeBICaseId]}
+              onBack={() => setPage('bi')}
+              onNext={() => { const n = getNextBICaseId(activeBICaseId); if (n) openBICase(n); else setPage('bi'); }}
+              unlocked={unlocked}
+            />
+          </Suspense>
+        )}
+
+        {/* ── Spot the Flaw Room ── */}
+        {page === 'spot-the-flaw' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <SpotTheFlawBrowser onSelectCase={openSTFCase} unlocked={unlocked} />
+          </Suspense>
+        )}
+        {page === 'stf-runner' && activeSTFCaseId && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <SpotTheFlawRunner
+              caseData={spotTheFlawCasesById[activeSTFCaseId]}
+              onBack={() => setPage('spot-the-flaw')}
+              onNext={() => { const n = getNextSTFCaseId(activeSTFCaseId); if (n) openSTFCase(n); else setPage('spot-the-flaw'); }}
+              unlocked={unlocked}
+            />
+          </Suspense>
+        )}
+
+        {/* ── Take-Home Room ── */}
+        {page === 'take-home' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <TakehomeBrowser onSelectCase={openTakehomeCase} unlocked={unlocked} />
+          </Suspense>
+        )}
+        {page === 'takehome-runner' && activeTakehomeCaseId && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <TakehomeRunner
+              caseData={takehomeCasesById[activeTakehomeCaseId]}
+              onBack={() => setPage('take-home')}
+              onNext={() => { const n = getNextTakehomeCaseId(activeTakehomeCaseId); if (n) openTakehomeCase(n); else setPage('take-home'); }}
+              unlocked={unlocked}
+            />
+          </Suspense>
+        )}
+
+        {/* ── Analytics Instrumentation Room ── */}
+        {page === 'instrumentation' && (
+          <Suspense fallback={<div style={{ padding: '2rem', color: 'var(--text-muted)' }}>Loading...</div>}>
+            <InstrumentationBrowser onSelectCase={openInstrumentationCase} unlocked={unlocked} />
+          </Suspense>
+        )}
+        {page === 'instrumentation-runner' && activeInstrumentationCaseId && (
+          <Suspense fallback={<div style={{ padding: '2rem', color: 'var(--text-muted)' }}>Loading...</div>}>
+            <InstrumentationRunner
+              caseData={instrumentationCasesById[activeInstrumentationCaseId]}
+              onBack={() => navigate('instrumentation')}
+              onNext={nextInstrumentationCaseId ? () => openInstrumentationCase(nextInstrumentationCaseId) : null}
+              unlocked={unlocked}
+            />
+          </Suspense>
+        )}
+
+        {/* ── Defense Doc Generator ── */}
+        {page === 'defense-doc' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <DefenseDocGenerator
+              onBack={() => setPage('home')}
+              onNavigate={(targetPage, itemId) => {
+                if (itemId) {
+                  switch (targetPage) {
+                    case 'stat-foundations': openStatFoundationsModule(itemId); break;
+                    case 'growth-analytics': openGrowthAnalyticsCase(itemId); break;
+                    case 'metrics': openMetricsCase(itemId); break;
+                    case 'rca': openRCACase(itemId); break;
+                    case 'code': openCodeModule(itemId); break;
+                    case 'behavioral': openBehavioralQuestion(itemId); break;
+                    default: setPage(targetPage);
+                  }
+                } else {
+                  setPage(targetPage);
+                }
+              }}
             />
           </Suspense>
         )}

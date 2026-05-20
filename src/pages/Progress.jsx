@@ -24,6 +24,16 @@ import { estimationProblems } from '../data/estimationProblems.js';
 import { statsFoundationsModules } from '../data/statsFoundationsModules.js';
 import { growthAnalyticsCases } from '../data/growthAnalyticsCases.js';
 import { getAllGrowthAnalyticsProgress } from '../utils/growthAnalyticsProgress.js';
+import { getAllChallengesProgress } from '../utils/challengesProgress.js';
+import { getAllBIProgress } from '../utils/biProgress.js';
+import { getAllSTFProgress } from '../utils/spotTheFlawProgress.js';
+import { getAllTakehomeProgress } from '../utils/takehomeProgress.js';
+import { challengesCases } from '../data/challengesCases.js';
+import { biCases } from '../data/biCases.js';
+import { spotTheFlawCases } from '../data/spotTheFlawCases.js';
+import { takehomeCases } from '../data/takehomeCases.js';
+import { getAllInstrumentationProgress } from '../utils/instrumentationProgress.js';
+import { instrumentationCases } from '../data/instrumentationCases.js';
 import { learningPaths } from '../data/learningPaths.js';
 import { GuidedPathCard } from '../components/paths/GuidedPathCard.jsx';
 
@@ -158,6 +168,11 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   const estimationProg = getAllEstimationProgress();
   const sfProgress = getAllStatFoundationsProgress();
   const gaProgress = getAllGrowthAnalyticsProgress();
+  const challengesProgress = getAllChallengesProgress();
+  const biProgress = getAllBIProgress();
+  const stfProgress = getAllSTFProgress();
+  const takehomeProgress = getAllTakehomeProgress();
+  const instrProgress = getAllInstrumentationProgress();
 
   const statsCompleted = statsModules.filter(m => statsProgress[m.id]?.attempts > 0);
   const metricsCompleted = metricCases.filter(c => metricsProgress[c.id]?.attempts > 0);
@@ -198,11 +213,26 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
       onReset: makeRoomResetter(['pal-cases-progress-v1']) },
     { label: 'Growth Analytics', completed: growthAnalyticsCases.filter(c => gaProgress[c.id]?.rating).length, total: growthAnalyticsCases.length, color: 'var(--teal)',
       onReset: makeRoomResetter(['pal-growth-analytics-progress-v1']) },
+    { label: 'Challenges', completed: challengesCases.filter(c => challengesProgress[c.id]?.completedAt).length, total: challengesCases.length, color: 'var(--yellow)',
+      onReset: makeRoomResetter(['pal-challenges-progress-v1']) },
+    { label: 'BI', completed: biCases.filter(c => biProgress[c.id]?.rating).length, total: biCases.length, color: 'var(--yellow)',
+      onReset: makeRoomResetter(['pal-bi-progress-v1']) },
+    { label: 'Spot the Flaw', completed: spotTheFlawCases.filter(c => stfProgress[c.id]?.completedAt).length, total: spotTheFlawCases.length, color: 'var(--red)',
+      onReset: makeRoomResetter(['pal-stf-progress-v1']) },
+    { label: 'Take-Home', completed: takehomeCases.filter(c => takehomeProgress[c.id]?.completedAt).length, total: takehomeCases.length, color: 'var(--green)',
+      onReset: makeRoomResetter(['pal-takehome-progress-v1']) },
+    { label: 'Instrumentation', completed: instrumentationCases.filter(c => instrProgress[c.id]?.completedAt).length, total: instrumentationCases.length, color: 'var(--teal)',
+      onReset: makeRoomResetter(['pal-instrumentation-progress-v1']) },
   ];
 
   const gaCompleted = growthAnalyticsCases.filter(c => gaProgress[c.id]?.rating).length;
-  const totalCompleted = statsCompleted.length + metricsCompleted.length + designCompleted.length + completed.length + rcaCompleted.length + casesCompleted.length + gaCompleted;
-  const grandTotal = statsModules.length + metricCases.length + designScenarios.length + scenarios.length + rcaCases.length + businessCases.length + growthAnalyticsCases.length;
+  const challengesCompleted = challengesCases.filter(c => challengesProgress[c.id]?.completedAt).length;
+  const biCompleted = biCases.filter(c => biProgress[c.id]?.rating).length;
+  const stfCompleted = spotTheFlawCases.filter(c => stfProgress[c.id]?.completedAt).length;
+  const takehomeCompleted = takehomeCases.filter(c => takehomeProgress[c.id]?.completedAt).length;
+  const instrCompleted = instrumentationCases.filter(c => instrProgress[c.id]?.completedAt).length;
+  const totalCompleted = statsCompleted.length + metricsCompleted.length + designCompleted.length + completed.length + rcaCompleted.length + casesCompleted.length + gaCompleted + challengesCompleted + biCompleted + stfCompleted + takehomeCompleted + instrCompleted;
+  const grandTotal = statsModules.length + metricCases.length + designScenarios.length + scenarios.length + rcaCases.length + businessCases.length + growthAnalyticsCases.length + challengesCases.length + biCases.length + spotTheFlawCases.length + takehomeCases.length + instrumentationCases.length;
 
   // Strongest/weakest room (by completion %)
   const roomsWithData = allRoomProgress.filter(r => r.completed > 0);
@@ -232,6 +262,22 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
       const next = businessCases.find(c => !caseProgress[c.id]?.attempts);
       if (next) return { room: 'Cases', label: next.title, nav: 'cases' };
     }
+    if (biCompleted < biCases.length) {
+      const next = biCases.find(c => !biProgress[c.id]?.rating);
+      if (next) return { room: 'BI', label: next.title, nav: 'bi' };
+    }
+    if (stfCompleted < spotTheFlawCases.length) {
+      const next = spotTheFlawCases.find(c => !stfProgress[c.id]?.completedAt);
+      if (next) return { room: 'Spot the Flaw', label: next.title, nav: 'spot-the-flaw' };
+    }
+    if (challengesCompleted < challengesCases.length) {
+      const next = challengesCases.find(c => !challengesProgress[c.id]?.completedAt);
+      if (next) return { room: 'Challenges', label: next.title, nav: 'challenges' };
+    }
+    if (instrCompleted < instrumentationCases.length) {
+      const next = instrumentationCases.find(c => !instrProgress[c.id]?.completedAt);
+      if (next) return { room: 'Instrumentation', label: next.title, nav: 'instrumentation' };
+    }
     return null;
   }
   const nextSuggested = getNextSuggested();
@@ -251,6 +297,11 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   estimationProblems.forEach(p => { if (estimationProg[p.id]?.rating) completionMap[`estimation:${p.id}`] = true; });
   statsFoundationsModules.forEach(m => { if (sfProgress[m.id]?.completedAt) completionMap[`stat-foundations:${m.id}`] = true; });
   growthAnalyticsCases.forEach(c => { if (gaProgress[c.id]?.rating) completionMap[`growth-analytics:${c.id}`] = true; });
+  challengesCases.forEach(c => { if (challengesProgress[c.id]?.completedAt) completionMap[`challenges:${c.id}`] = true; });
+  biCases.forEach(c => { if (biProgress[c.id]?.rating) completionMap[`bi:${c.id}`] = true; });
+  spotTheFlawCases.forEach(c => { if (stfProgress[c.id]?.completedAt) completionMap[`spot-the-flaw:${c.id}`] = true; });
+  takehomeCases.forEach(c => { if (takehomeProgress[c.id]?.completedAt) completionMap[`take-home:${c.id}`] = true; });
+  instrumentationCases.forEach(c => { if (instrProgress[c.id]?.completedAt) completionMap[`instrumentation:${c.id}`] = true; });
 
   // Practice heatmap: collect all practice dates from all progress stores
   function getPracticeDates() {
@@ -259,7 +310,9 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
       'pal-stats-progress-v1', 'pal-metrics-progress-v2', 'pal-rca-progress-v1',
       'pal-cases-progress-v1', 'pal-code-progress-v1', 'pal-behavioral-progress-v1',
       'pal-estimation-progress-v1', 'pal-stat-foundations-progress-v1',
-      'pal-growth-analytics-progress-v1'
+      'pal-growth-analytics-progress-v1',
+      'pal-challenges-progress-v1', 'pal-bi-progress-v1', 'pal-stf-progress-v1', 'pal-takehome-progress-v1',
+      'pal-instrumentation-progress-v1'
     ];
     stores.forEach(key => {
       try {

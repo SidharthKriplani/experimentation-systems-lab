@@ -242,7 +242,8 @@ Expected output: post_deploy / web / visa row will show significantly lower succ
         'Segmenting by acquisition channel when the failure is in the payment processing layer'
       ],
       interviewPhrase: 'When a metric drops the same day as a deployment, the deployment is guilty until proven innocent — I check error logs before I open the analytics dashboard.'
-    }
+    },
+    leadershipNote: 'A Staff DS treats a major metric drop as a test of the monitoring infrastructure, not just the product. Before presenting the RCA, they ask: why did it take us X hours to detect this, and what alert would have caught it within 30 minutes? The post-mortem output is always a monitoring improvement, not just a root cause document.',
   },
 
   {
@@ -495,7 +496,8 @@ Expected output: top rows will show new catalog terms with 'NO SYNONYM — MISSI
         'Failing to add a pre-ingestion synonym coverage check to prevent recurrence'
       ],
       interviewPhrase: 'Zero results is a coverage problem, not a ranking problem — before touching the algorithm, I check whether the index even has the items the query is looking for.'
-    }
+    },
+    leadershipNote: 'A Senior Analytics Manager would require a "launch readiness checklist" for any experiment that includes traffic normalization checks, guardrail metric pre-registration, and an on-call engineer for the first 48 hours. This RCA is a process failure as much as a technical failure.',
   },
 
   {
@@ -756,7 +758,8 @@ Expected output: new_cohort rows will show significantly higher cancellation_rat
         'Not using reason codes as primary diagnostic evidence — they directly name the mechanism'
       ],
       interviewPhrase: 'In marketplace cancellation analysis, reason codes are your fastest diagnostic tool — "not as described" tells you this is a supply quality problem, not a demand problem, before you pull a single additional query.'
-    }
+    },
+    leadershipNote: 'At the leadership level, an RCA on a data pipeline failure triggers a data reliability SLA review — not just a fix. A Staff DS would ask: what is our MTTD (mean time to detect) and MTTR (mean time to recover) for data incidents, and how do we improve both by 50%?',
   },
 
   {
@@ -1030,7 +1033,8 @@ Expected output: D7 retention_pct should decrease monotonically as frequency_buc
         'Attributing retention drop to acquisition quality or seasonality without ruling out the campaign cohort effect'
       ],
       interviewPhrase: 'Open rate is a proxy — when I see high open rates and declining retention, I immediately check opt-out rate and task completion per session, because the campaign might be training users to ignore the app, not return to it.'
-    }
+    },
+    leadershipNote: 'Leadership-level RCA considers the second-order effect: after the fix, what should change about how the team builds features to prevent recurrence? A Staff DS drives a retrospective that produces process changes, not just a ticket.',
   },
 
   {
@@ -1324,7 +1328,8 @@ gross_margin_pct → the headline metric. Expected output: enterprise / no_disco
         'Stopping at revenue-side analysis without building a cost-per-account breakdown by segment'
       ],
       interviewPhrase: 'Revenue growth with margin compression usually means you are selling to the wrong mix of customers or the right customers at the wrong price — I build a cohort P&L to see the unit economics by segment before I recommend any pricing or cost changes.'
-    }
+    },
+    leadershipNote: 'An Analytics Director would treat this as evidence of insufficient experiment review governance. The output is not just a rollback — it is a new rule in the experiment design checklist that prevents future launches with this failure mode.',
   },
 
   {
@@ -1601,7 +1606,8 @@ hallucination_rate_pct broken by intent_category + confidence_bucket → expecte
         'Reporting bot performance as "near target" based on deflection rate alone when three quality signals are flashing red'
       ],
       interviewPhrase: 'For any AI support system, I always ask: does our deflection metric measure non-escalation or actual resolution? Because if it\'s the former, we\'re probably celebrating the bot closing tickets the user didn\'t feel were worth escalating — not tickets that were actually resolved.'
-    }
+    },
+    leadershipNote: 'A Staff DS presenting this RCA to leadership emphasizes not just the root cause but the detection gap: how long was this broken before we noticed, and what is the customer impact of that detection latency? The recommendation includes a monitoring SLA.',
   },
 
   {
@@ -1875,6 +1881,7 @@ high_value_fraud_orders confirms the category concentration signal without requi
       ],
       interviewPhrase: 'When fraud spikes simultaneously with a new low-friction onboarding flow, I assume an organized ring found the gap before we did — my first question is whether seller and buyer accounts were created in the same infrastructure cluster, not whether individual orders look suspicious.',
     },
+    leadershipNote: 'Leadership-level RCA on a supply-side problem requires cross-functional ownership — operations, engineering, and product all need to align on the fix. A Staff DS brokers that alignment, not just writes the analysis.',
   },
 
   {
@@ -2153,6 +2160,7 @@ Expected output: the pre_launch rows should show D1 ~41% and D7 higher; post_lau
       ],
       interviewPhrase: 'On content platforms, I always track session depth and return frequency together — a feature that increases one while suppressing the other is a trade-off, not a win, and session length without D1 retention is a vanity metric.',
     },
+    leadershipNote: 'A Director of Analytics uses this case as evidence for investing in an automated anomaly detection system. The root cause is identified, but the meta-lesson is: manual detection of metric anomalies at scale is not sustainable. The leadership recommendation is a monitoring infrastructure investment.',
   },
 
   {
