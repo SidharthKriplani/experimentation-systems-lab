@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { metricCases } from '../data/metricCases.js';
 import { getMetricsProgress } from '../utils/metricsProgress.js';
 
@@ -15,8 +16,15 @@ const LEVEL_CFG = {
   junior:  { label: 'Junior miss',   color: 'var(--yellow)',    bg: 'var(--yellow-bg)',  border: 'var(--yellow-border)' },
 };
 
+const DIFF_ORDER = { analyst: 0, foundational: 0, intermediate: 1, senior: 1, advanced: 2, staff: 2 };
+
 export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
+  const [sortBy, setSortBy] = useState('default');
   const completedCount = metricCases.filter(c => getMetricsProgress(c.id)).length;
+
+  const displayCases = sortBy === 'difficulty'
+    ? [...metricCases].sort((a, b) => (DIFF_ORDER[a.difficulty] ?? 1) - (DIFF_ORDER[b.difficulty] ?? 1))
+    : metricCases;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
@@ -42,13 +50,25 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
         </div>
       </div>
 
+      {/* Sort controls */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 12, justifyContent: 'flex-end' }}>
+        {['default', 'difficulty'].map(opt => (
+          <button key={opt} onClick={() => setSortBy(opt)} style={{
+            fontSize: 12, padding: '4px 10px', borderRadius: 6, cursor: 'pointer', fontWeight: 600,
+            background: sortBy === opt ? 'var(--yellow)' : 'var(--surface)',
+            border: `1px solid ${sortBy === opt ? 'var(--yellow-border)' : 'var(--border)'}`,
+            color: sortBy === opt ? '#000' : 'var(--text-secondary)',
+          }}>{opt === 'default' ? 'Default' : 'By Difficulty'}</button>
+        ))}
+      </div>
+
       {/* Case cards grid */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
         gap: '0.85rem',
       }}>
-        {metricCases.map(mc => {
+        {displayCases.map(mc => {
           const progress = getMetricsProgress(mc.id);
           const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
           const diffCfg = DIFF_CFG[mc.difficulty] || DIFF_CFG.analyst;

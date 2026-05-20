@@ -40,7 +40,7 @@ export const metricCases = [
             label: 'Revenue per searcher — average GMV attributed to users who ran at least one search session',
             scoreValue: 2,
             rationale:
-              'Revenue per searcher captures the full purchase funnel impact of search quality, including order value. It is immune to the CTR circularity trap and ties search directly to business outcome, though it may be noisier than conversion rate in short experiments.',
+              'Revenue per searcher captures the full purchase funnel impact of search quality, including both conversion rate and order value effects. It is immune to the CTR circularity trap because it sits downstream of every click decision and ties search directly to the business goal. The noisiness in short experiments is a real tradeoff — revenue per user has higher variance than conversion rate — but it is the more defensible primary when the team wants to avoid the gaming risk entirely. For a model evaluation where the training signal and proposed primary could be the same metric, downstream revenue is the clean choice.',
           },
           {
             id: 'c',
@@ -54,7 +54,7 @@ export const metricCases = [
             label: 'Click-through rate — fraction of search results pages where any result is clicked',
             scoreValue: 0,
             rationale:
-              "CTR is the exact signal the ranking model was trained to optimize. Using it as the evaluation metric creates circular validation: a higher CTR proves only that the model learned to generate clickable results, not better ones. Teams that ship on CTR alone routinely move it while harming downstream conversion.",
+              "CTR is the exact signal the ranking model was trained to optimize. Using it as the evaluation metric creates circular validation: a higher CTR proves only that the model learned to generate clickable results, not better ones. This is the most dangerous trap in ML-driven ranking experiments — the model has already fit to CTR patterns in the training data, so any CTR lift during evaluation is evidence that the model memorized the training objective, not that it improved search quality. Teams that ship on CTR alone routinely move it while harming downstream conversion and long-term buyer trust.",
           },
         ],
       },
@@ -84,7 +84,7 @@ export const metricCases = [
             label: 'Raw click-through rate broken down by query type',
             scoreValue: 0,
             rationale:
-              'CTR segmented by query type still inherits the circularity problem of the primary CTR metric. It does not reveal whether the ranking change improved result relevance or merely made items more clickable.',
+              'CTR segmented by query type still inherits the circularity problem of the top-line CTR metric. It does not reveal whether the ranking change improved result relevance or merely surfaced more clickable-but-wrong results for each query category. Segmentation adds granularity without fixing the fundamental issue: you are still measuring the training signal rather than an independent quality indicator. A diagnostic metric needs to be informative about whether the primary metric moved for the right reasons — CTR by query type cannot do that.',
           },
           {
             id: 'd',
@@ -128,7 +128,7 @@ export const metricCases = [
             label: 'No guardrails — trust the primary metric',
             scoreValue: 0,
             rationale:
-              'Running without guardrails on a model trained on a proxy metric is exactly how teams ship ranking changes that lift CTR while harming buyer experience and long-term purchase behavior. Guardrails are not optional here.',
+              'Running without guardrails on a model trained on a proxy metric is exactly how teams ship ranking changes that lift CTR while harming buyer experience and long-term purchase behavior. A CTR-optimized model has a known and specific failure mode: it learns to surface results that generate clicks regardless of whether those clicks lead to satisfaction. Without reformulation and bounce guardrails, that failure mode is invisible until it shows up in lagging revenue metrics — by which time the model is in production and the damage compounds. Guardrails are not optional here; they are the mechanism by which you confirm the CTR improvement is genuine.',
           },
         ],
       },
@@ -158,7 +158,7 @@ export const metricCases = [
             label: 'Per page view — one page = one results page render',
             scoreValue: 0,
             rationale:
-              'Page-view grain conflates single-intent searches that paginate with multiple-query sessions, inflating denominator counts and distorting conversion rates in favor of users who refine queries frequently.',
+              'Page-view grain conflates single-intent searches that paginate with multiple-query sessions, inflating denominator counts and making conversion rates appear lower than they actually are for high-quality searchers. A user who finds exactly what they want on the first results page looks worse than a user who paginates through three pages of results before buying. This denominator choice systematically penalizes clean, fast search resolution and rewards noisy browsing behavior. Per-session grain correctly treats each distinct search intent as the unit of analysis.',
           },
           {
             id: 'd',
@@ -196,7 +196,7 @@ export const metricCases = [
             label: 'Any increase in overall click volume from search',
             scoreValue: 0,
             rationale:
-              'Total click volume is the raw CTR proxy at its most gameable. A model that demotes niche results and promotes popular-but-irrelevant ones can trivially increase click volume while degrading the experience for a large fraction of searchers.',
+              'Total click volume is the raw CTR proxy at its most gameable form — it rewards any model change that increases absolute engagement regardless of quality. A model that demotes niche results and promotes popular-but-irrelevant ones can trivially increase click volume while degrading the experience for a large fraction of searchers with specific intents. This decision rule has no connection to the business goal of driving purchases and would validate any ranking change that generates activity, including changes that actively harm buyer outcomes.',
           },
           {
             id: 'd',
@@ -264,9 +264,11 @@ export const metricCases = [
         },
       ],
       commonMistakes: [
-        'Using CTR as both training signal and evaluation metric — this produces circular validation that cannot distinguish real quality improvement from click-bait optimization.',
-        'Omitting guardrails because the primary metric improved — a lift in add-to-cart can coexist with a rising reformulation rate if the model is only improving for popular queries while degrading long-tail coverage.',
-        'Measuring at page-view grain instead of search-session grain — pagination inflates the denominator and makes conversion rates appear lower than they are, biasing against shipping real improvements.',
+        'Using CTR as both training signal and evaluation metric — this produces circular validation that cannot distinguish genuine quality improvement from click-bait optimization. The model has already been fit to CTR patterns, so a CTR lift in evaluation is evidence of memorization, not quality gain. A downstream metric independent of the training objective is required.',
+        'Omitting guardrails because the primary metric improved — a lift in add-to-cart can coexist with a rising reformulation rate if the model is only improving for popular head queries while degrading long-tail coverage. Guardrails on reformulation and bounce are the mechanism by which you confirm the primary metric moved for the right reasons.',
+        'Measuring at page-view grain instead of search-session grain — pagination inflates the denominator and makes conversion rates appear lower than they are for high-quality searchers. Session grain correctly treats each discrete search intent as the unit of analysis.',
+        'Declaring a win before checking whether the improvement is uniform across query types — a model that improves head queries while degrading tail queries can show a positive aggregate result while harming a significant fraction of searchers. Segmenting by query popularity and specificity is essential QA for ranking experiments.',
+        'Pre-committing CTR as the primary metric in the experiment plan without questioning whether it is independent of the training objective — metric choice should be made explicitly aware of the training pipeline to avoid embedding circularity into the experiment design.',
       ],
       interviewPhrase:
         "The key question I'd ask is: what was the model trained on, and are we using the same signal for evaluation? If the ranking model was trained on CTR, CTR cannot validate it — we need a downstream conversion metric like add-to-cart rate that is independent of the training objective. I'd also pre-commit guardrails on reformulation and bounce before the experiment runs, because that's exactly where a CTR-optimized model fails silently.",
@@ -306,7 +308,7 @@ export const metricCases = [
               'Meaningful activation rate — % of accounts completing all 3 value actions (create project + add task + invite teammate) within 7 days',
             scoreValue: 2,
             rationale:
-              'The three-action bundle mirrors the minimum viable usage pattern that predicts retention in B2B project tools: a project without tasks is a shell, and a project without a teammate is not a collaboration product. Requiring all three within 7 days ties activation to demonstrated value exchange, not checklist mechanics.',
+              'The three-action bundle mirrors the minimum viable usage pattern that empirically predicts retention in B2B project tools: a project without tasks is an empty shell, and a project without a teammate is not a collaboration product — it is solo note-taking. Requiring all three within 7 days ties activation to demonstrated value exchange rather than checklist mechanics. This definition is resistant to gaming because it requires real product usage behaviors that a redesigned UI flow cannot manufacture without the user actually engaging with the product. It also directly reflects the hypothesis of the onboarding change: that helping users reach the collaboration loop faster will improve retention.',
           },
           {
             id: 'b',
@@ -320,14 +322,14 @@ export const metricCases = [
             label: 'Checklist completion rate — % of new accounts that reach 100% on the onboarding checklist',
             scoreValue: 0,
             rationale:
-              'Checklist completion measures whether users clicked the UI, not whether they extracted value. A redesigned checklist that is easier to click through will lift this metric without improving retention — the exact gaming pattern this scenario is designed to catch.',
+              'Checklist completion measures whether users clicked the UI, not whether they extracted value from the product. A redesigned checklist that is easier to click through will lift this metric without improving retention — and that is the exact gaming pattern that makes this metric dangerous. The onboarding team has direct control over checklist completion rate by making steps simpler, adding defaults, or reducing friction in the flow, all of which improve the metric without changing what users actually learn to do. Any metric that can be lifted by UI simplification without product value change is a proxy that will mislead rather than guide decisions.',
           },
           {
             id: 'd',
             label: 'Day-1 login rate — % of new accounts that log in within the first 24 hours',
             scoreValue: 0,
             rationale:
-              'Day-1 login is a leading indicator of engagement but is too shallow to constitute activation. It captures onboarding email effectiveness more than product value realization, and any checklist change will mechanically influence it.',
+              'Day-1 login is a leading indicator of initial engagement but is far too shallow to constitute activation. It primarily measures onboarding email deliverability and subject line quality rather than product value realization — a user who logs in to dismiss a notification has the same Day-1 login score as a user who creates three tasks and invites a teammate. Any checklist change that reduces friction in the login flow will mechanically improve this metric without any change to downstream product engagement or retention.',
           },
         ],
       },
@@ -343,7 +345,7 @@ export const metricCases = [
             label: '14-day retained usage (week-2 feature depth) + week-1 support ticket volume',
             scoreValue: 2,
             rationale:
-              'Week-2 feature depth measures whether activated users actually continue using the product after onboarding ends — this is the acid test for whether activation was genuine. Support ticket volume in week 1 distinguishes between users who completed the checklist with understanding versus confusion.',
+              'Week-2 feature depth measures whether activated users actually continue using the product after the onboarding flow ends — this is the acid test for whether the activation definition captured genuine value realization. A checklist redesign that improves activation without improving week-2 depth tells you the onboarding change optimized the mechanic, not the outcome. Support ticket volume in week 1 provides the complementary diagnostic: high completion paired with high tickets signals confusion-driven completion, where users clicked through without understanding the product well enough to avoid getting stuck.',
           },
           {
             id: 'b',
@@ -357,7 +359,7 @@ export const metricCases = [
             label: 'Checklist steps completed per account + time to checklist completion',
             scoreValue: 0,
             rationale:
-              'These metrics live entirely within the gameable layer. A faster, easier checklist will reduce time-to-completion and increase steps completed without any change in downstream product value realization.',
+              'These metrics live entirely within the gameable layer of the onboarding UI. A faster, easier checklist will reduce time-to-completion and increase steps completed without any change in downstream product value realization. They measure the quality of the UI redesign, not the effectiveness of the activation strategy. Using these as diagnostics creates a feedback loop where the team optimizes for faster clicking, mistaking frictionless completion for genuine product adoption.',
           },
           {
             id: 'd',
@@ -380,7 +382,7 @@ export const metricCases = [
             label: '14-day retention rate + week-1 support ticket volume + bounce rate after onboarding completion',
             scoreValue: 2,
             rationale:
-              'These three guardrails cover the three main ways an onboarding change can look good while harming the product: a checklist-gaming redesign that lifts completion but not retention, one that confuses users into support queues, and one that leads to immediate churn after the onboarding flow ends.',
+              'These three guardrails cover the three main ways an onboarding change can look good on the primary metric while harming the product. A checklist-gaming redesign lifts activation rate but not 14-day retention — the retention guardrail catches this. A confusing design might reach completion through repeated attempts and help-seeking — the support ticket guardrail catches this. A design that rushes users through steps they do not understand produces post-onboarding churn — the bounce rate guardrail catches this. Together they form a triangulated quality check that cannot all be satisfied by UI simplification alone.',
           },
           {
             id: 'b',
@@ -401,7 +403,7 @@ export const metricCases = [
             label: 'No guardrails — activation rate improvement is sufficient',
             scoreValue: 0,
             rationale:
-              'Without guardrails, a checklist redesign that inflates activation rate while worsening retention and support load will ship undetected. The entire risk of this scenario is a false-positive activation signal — guardrails are essential.',
+              'Without guardrails, a checklist redesign that inflates activation rate while worsening retention and support load will ship undetected. The entire risk of this scenario is a false-positive activation signal where the primary metric improves while the product outcomes it is meant to predict deteriorate. Running a B2B onboarding experiment without a 14-day retention guardrail is equivalent to building without a floor — the structure looks complete until the next step is taken.',
           },
         ],
       },
@@ -417,7 +419,7 @@ export const metricCases = [
             label: 'Per account — one unit = one company/workspace',
             scoreValue: 2,
             rationale:
-              'Loopwise is B2B SaaS where the buying and churning decision is made at the account level. An account with 5 activated users is worth the same as an account with 1 if they renew — measuring per-account aligns the metric with the revenue and churn unit of analysis.',
+              'Loopwise is B2B SaaS where the buying, renewal, and churning decision is made at the account level. An account with 5 activated users is worth the same contract renewal decision as an account with 1 if they both renew — measuring per-account aligns the activation metric with the actual revenue unit of analysis. Per-user grain creates a misleading picture where one highly active user in an otherwise dormant account looks like partial success, while the account-level retention signal is negative. The onboarding experiment is ultimately about account retention, and the activation metric should reflect that.',
           },
           {
             id: 'b',
@@ -455,7 +457,7 @@ export const metricCases = [
               'Pre-committed: >=5% lift in meaningful activation rate (p<0.05) AND no degradation in 14-day retention guardrail',
             scoreValue: 2,
             rationale:
-              'Requiring both the activation lift and a stable retention guardrail before committing to ship prevents the checklist-gaming false positive. If activation improves but retention does not, the design changed clicking behavior without changing value realization.',
+              'Requiring both the activation lift and a stable retention guardrail before committing to ship prevents the checklist-gaming false positive. If activation improves but retention does not follow, the design changed clicking behavior without changing value realization — the most dangerous outcome of an onboarding experiment. Pre-committing both conditions before the experiment runs removes the temptation to rationalize a retention-flat result as acceptable when activation looks strong. The combined rule is the minimum evidentiary standard for claiming the onboarding change genuinely improved outcomes.',
           },
           {
             id: 'b',
@@ -469,7 +471,7 @@ export const metricCases = [
             label: 'Checklist completion rate exceeds 80% in the treatment group',
             scoreValue: 0,
             rationale:
-              'This rule embeds the gameable metric directly into the success definition. Hitting 80% checklist completion says nothing about product value realization and will trivially be achieved by making the checklist easier to complete.',
+              'This rule embeds the gameable metric directly into the success definition, making the experiment a self-fulfilling test of UI simplification rather than product adoption. Hitting 80% checklist completion says nothing about product value realization and will trivially be achieved by reducing the number of required steps, adding defaults, or removing confirmation dialogs. A team that ships on this rule has measured their ability to make clicking easy, not their ability to make onboarding effective.',
           },
           {
             id: 'd',
@@ -525,9 +527,11 @@ export const metricCases = [
         },
       ],
       commonMistakes: [
-        'Defining activation as checklist completion — this creates a direct incentive to make checklists easier to click through rather than more effective at conveying value.',
-        'Measuring at per-user rather than per-account grain in a B2B product — the renewal and churn decision is made at the account level, not the individual user level.',
-        'Declaring success before the 14-day retention signal is available — week-1 activation improvements that do not translate to week-2 retention are noise, not signal.',
+        'Defining activation as checklist completion — this creates a direct incentive to make checklists easier to click through rather than more effective at conveying value. The redesign team can always improve completion rate by removing friction, but removing friction is not the same as improving product adoption.',
+        'Measuring at per-user rather than per-account grain in a B2B product — the renewal and churn decision is made at the account level. A single power user in an otherwise inactive account is not an activation success story from a revenue perspective.',
+        'Declaring success before the 14-day retention signal is available — week-1 activation improvements that do not translate to week-2 usage are evidence of checklist gaming, not genuine product adoption. The retention signal requires patience, but it is the only signal that confirms the causal chain holds.',
+        'Using time-to-checklist-completion as a diagnostic without pairing it with support ticket volume — faster completion looks like success but may indicate users rushing through steps they do not understand, leading to post-onboarding confusion and churn.',
+        'Conflating the onboarding experiment with a UI simplification exercise — the goal of the experiment is to improve long-run retention by helping users reach the product\'s value more effectively, not to reduce the number of clicks required to finish a checklist. These are different objectives that require different success definitions.',
       ],
       interviewPhrase:
         "In B2B SaaS, activation has to be defined as the minimum action bundle that predicts retention — not the last step in a UI flow. I'd anchor Loopwise's activation definition on the collaboration loop: project created, task added, teammate invited, all within 7 days at the account grain. Then I'd require a 14-day retention guardrail before shipping, because any onboarding change that moves completion without moving retention is telling us we optimized the mechanic, not the outcome.",
@@ -566,21 +570,21 @@ export const metricCases = [
             label: '7-day active session rate — % of notified users with at least one quality session in the following 7 days',
             scoreValue: 2,
             rationale:
-              'Session activity over 7 days measures durable behavioral change driven by notifications, not just reflexive opens. It breaks the circularity of using open rate on a model that learned phone-pickup patterns, and ties notification effectiveness to the business goal of driving session quality.',
+              'Session activity over 7 days measures durable behavioral change driven by notifications, not just reflexive opens at the moment of delivery. It breaks the circularity of using open rate on a model that learned phone-pickup patterns — a model optimized for phone-pickup will score well on open rate regardless of whether users engage productively once the app opens. The 7-day window captures whether notification-driven opens translate into ongoing product usage, which is the actual business goal. A timing model that finds distracted phone-pickup moments regardless of user context will score well on open rate but poorly on 7-day session rate, which is precisely how the experiment exposes the failure mode.',
           },
           {
             id: 'b',
             label: 'Task completion per notified session — average tasks completed in sessions that follow a notification open',
             scoreValue: 2,
             rationale:
-              'Task completion per session measures whether notifications are driving productive engagement rather than idle app opens. It directly captures session quality — the stated business goal — and cannot be inflated by a timing model that finds phone-pickup moments without engagement readiness.',
+              'Task completion per session measures whether notifications are driving productive engagement rather than idle app opens or reflexive dismissals. It directly captures session quality — the stated business goal — and cannot be inflated by a timing model that finds phone-pickup moments without engagement readiness. A user who opens the app during a distracted commute moment and immediately closes it has the same open rate contribution as a user who opens during a focused work period and completes three tasks. Task completion resolves that ambiguity at the session level.',
           },
           {
             id: 'c',
             label: 'Notification open rate — % of delivered notifications that result in an app open',
             scoreValue: 0,
             rationale:
-              "Open rate is the training signal the timing model optimized. Using it for evaluation creates the same circularity as M01's CTR trap: the model has learned to predict phone pickup, so any open-rate improvement proves only that the prediction improved, not that engagement quality improved.",
+              "Open rate is the training signal the timing model optimized. Using it for evaluation creates the same circularity as the search CTR trap: the model has learned to predict phone-pickup moments, so any open-rate improvement proves only that the phone-pickup prediction got more accurate, not that engagement quality improved. A model that sends notifications during morning alarm check, commute phone-grab, and bathroom break phone-check will reliably outperform on open rate while producing hollow sessions — because those moments have high phone availability and low cognitive readiness. The metric rewards predicting behavior, not improving outcomes.",
           },
           {
             id: 'd',
@@ -604,7 +608,7 @@ export const metricCases = [
               'Session depth (tasks completed per active session) + day-over-day retention cohort (% users active on day N who return on day N+1)',
             scoreValue: 2,
             rationale:
-              'Session depth reveals whether notification-driven opens result in substantive usage rather than idle scrolling. The retention cohort tracks whether the engagement is building habit, not just capturing one-time opens. Together they diagnose whether the timing model is driving quality engagement or just phone-pickup.',
+              'Session depth reveals whether notification-driven opens result in substantive usage rather than idle scrolling or immediate dismissals. A timing model that finds distracted moments will show high open counts but low depth — the gap between open rate and session depth is the diagnostic signature of the phone-pickup problem. The day-over-day retention cohort tracks whether engagement is building habit or just capturing curiosity peaks. Together they answer the question the open rate cannot: is the timing model driving quality engagement or just better predicting when users will reflexively interact with their phone?',
           },
           {
             id: 'b',
@@ -625,7 +629,7 @@ export const metricCases = [
             label: 'Notification open rate by time-of-day bucket',
             scoreValue: 0,
             rationale:
-              'This is a segmented version of the gameable training signal. It tells you when users pick up their phones, which is exactly what the model already learned — not whether those opens resulted in quality engagement.',
+              'This is a segmented version of the gameable training signal and inherits all of its problems. It tells you when users pick up their phones during different parts of the day, which is exactly what the timing model already learned to predict. Breaking open rate down by time bucket adds granularity without resolving the core question: does a notification delivered during a high-pickup window result in quality engagement, or just a reflexive open followed by immediate disengagement? A diagnostic metric needs to measure quality, not pickup propensity.',
           },
         ],
       },
@@ -641,7 +645,7 @@ export const metricCases = [
             label: 'Push opt-out rate + app uninstall rate + notification mute rate',
             scoreValue: 2,
             rationale:
-              'These three guardrails cover the escalating user-rejection responses to over-aggressive notifications: muting (soft rejection), opting out of push entirely (hard rejection), and uninstalling (full rejection). A timing model that sends notifications at phone-pickup moments regardless of user context will degrade all three over time.',
+              'These three guardrails cover the escalating user-rejection responses to over-aggressive notification timing in order of severity: muting (soft rejection — user reduces exposure but stays), opting out of push entirely (hard rejection — user removes the channel), and uninstalling (full rejection — user leaves the product). A timing model that optimizes for phone-pickup moments regardless of user context will degrade all three metrics over time as users learn that Orion notifications are interruptive and unproductive. These guardrails are asymmetric harms: users who opt out or uninstall are difficult to recover and their loss compounds silently before aggregate engagement metrics detect the problem.',
           },
           {
             id: 'b',
@@ -662,7 +666,7 @@ export const metricCases = [
             label: 'No guardrails — session rate improvement is sufficient',
             scoreValue: 0,
             rationale:
-              'Notification strategies without guardrails on opt-out and uninstall have a well-documented failure mode: short-term session lifts followed by accelerating churn as users reject the channel. The guardrails are essential for catching this pattern before it compounds.',
+              'Notification strategies without guardrails on opt-out and uninstall have a well-documented failure mode: short-term session lifts followed by accelerating channel rejection as users learn that the timing model interrupts at inconvenient moments. The damage compounds because opt-outs are irreversible at the per-user level — a user who disables push notifications has permanently removed the product\'s ability to re-engage them through that channel. Session rate improvement without these guardrails is a lagging signal that will not detect the problem until the churn acceleration is already underway.',
           },
         ],
       },
@@ -678,7 +682,7 @@ export const metricCases = [
             label: 'Per active user per week — one unit = one user in a given 7-day window',
             scoreValue: 2,
             rationale:
-              'Weekly active user grain normalizes for engagement frequency, captures the durable behavioral effect of notification timing changes, and aligns with the 7-day session activity primary metric. It is also the grain at which retention cohort analysis is most interpretable.',
+              'Weekly active user grain normalizes for engagement frequency, captures the durable behavioral effect of notification timing changes, and aligns naturally with the 7-day session activity primary metric. Measuring at this grain avoids double-counting users who receive multiple notifications in a week while still being sensitive enough to detect timing model changes within a standard experiment window. It is also the grain at which retention cohort analysis is most interpretable — weekly cohorts allow you to see whether the notification-driven engagement is building over successive weeks or degrading as novelty fades.',
           },
           {
             id: 'b',
@@ -716,7 +720,7 @@ export const metricCases = [
               'Pre-committed: significant improvement in 7-day active session rate AND no significant increase in opt-out, uninstall, or mute rate',
             scoreValue: 2,
             rationale:
-              'This rule requires both a genuine engagement improvement and confirmation that the notification strategy is not eroding the user relationship. Pre-committing prevents post-hoc rationalization where a session lift is declared a win despite rising opt-out rates.',
+              'This rule requires both a genuine engagement improvement and confirmation that the notification strategy is not eroding the user relationship through channel fatigue. Pre-committing both conditions before the experiment runs prevents the post-hoc rationalization where a session lift is declared a win despite rising opt-out rates. The combined rule is the minimum evidence standard for confirming that the timing model improved engagement quality rather than simply increasing interruption frequency — a distinction that only the guardrail condition can establish.',
           },
           {
             id: 'b',
@@ -792,9 +796,11 @@ export const metricCases = [
         },
       ],
       commonMistakes: [
-        'Using notification open rate as the primary metric when the timing model was trained on open rate — this creates the same circular validation problem as using CTR on a CTR-trained ranking model.',
-        'Ignoring opt-out and uninstall guardrails because session metrics look positive — notification over-aggression causes asymmetric harm that is not visible in aggregate engagement data until it is already compounding.',
-        'Measuring per-notification-sent rather than per-active-user — this denominator rewards sending more notifications and obscures user-level engagement quality trends.',
+        'Using notification open rate as the primary metric when the timing model was trained on open rate — this creates circular validation identical to the search CTR trap. The model learned to predict phone-pickup; evaluating it on phone-pickup proves only that the prediction improved, not that user outcomes improved.',
+        'Ignoring opt-out and uninstall guardrails because session metrics look positive — notification over-aggression causes asymmetric harm that is not visible in aggregate engagement data until it is already compounding. Users who opt out are lost to the channel permanently; this loss is invisible in session metrics until a meaningful fraction of users has already rejected the channel.',
+        'Measuring per-notification-sent rather than per-active-user — this denominator rewards sending more notifications and obscures user-level engagement quality trends. A model that sends 2x as many notifications will look worse on per-notification metrics even if each notification drives better quality engagement.',
+        'Declaring a timing win without segmenting by user segment and time-of-day — a timing model that finds better moments for power users during morning work hours may simultaneously be sending low-quality notifications to casual users during commute windows. Aggregate session metrics can hide this segmentation story entirely.',
+        'Shipping on week-1 session improvement without checking the opt-out trajectory — notification timing changes that increase interruptions will show session improvement first and opt-out acceleration second, creating a window where the damage is underway before the guardrail triggers. The guardrail must be monitored continuously throughout the experiment, not only at the end.',
       ],
       interviewPhrase:
         "The first thing I'd ask about a notification timing model is what signal it was trained on and whether that same signal appears in our success metric. If the model learned open rate, we've trained it to find phone-pickup moments — not engagement readiness. The primary metric needs to be downstream: 7-day session activity or task completion per session. And I'd require opt-out and uninstall guardrails before shipping, because that's where notification over-aggression shows up first.",
@@ -833,7 +839,7 @@ export const metricCases = [
             label: "Buyer conversion rate per seller — % of buyer contacts that result in a completed purchase",
             scoreValue: 2,
             rationale:
-              "Buyer conversion rate captures end-to-end seller quality from the buyer's perspective — it integrates responsiveness, answer quality, and trust into a single outcome metric. It cannot be inflated by fast but unhelpful responses, and it ties seller health directly to the marketplace's revenue mechanism.",
+              "Buyer conversion rate captures end-to-end seller quality from the buyer's perspective — it integrates responsiveness, answer quality, price competitiveness, and trust into a single outcome metric that reflects the full seller-buyer interaction. It cannot be inflated by fast but unhelpful responses because a seller who replies instantly with a dismissive or incorrect answer still fails to convert the buyer. This metric ties seller health directly to the marketplace's revenue mechanism and is the only primary that can distinguish a genuinely better seller experience from a faster-but-shallower one.",
           },
           {
             id: 'b',
@@ -847,7 +853,7 @@ export const metricCases = [
             label: 'Message response rate — % of buyer messages that receive any seller reply within 24h',
             scoreValue: 0,
             rationale:
-              'Message response rate measures whether sellers reply, not whether those replies are useful. A seller can achieve 100% response rate with low-quality, non-converting replies — this metric provides no signal about buyer outcome quality.',
+              'Message response rate measures whether sellers reply, not whether those replies are useful or convert buyers. A seller can achieve 100% response rate by sending brief acknowledgments or automated "thanks for reaching out" messages that provide no useful information. This metric has the same gaming vulnerability as response time: it measures the presence of a behavior without measuring its quality. Teams that optimize seller response rate find that sellers learn to reply faster without improving the substance of their communications.',
           },
           {
             id: 'd',
@@ -870,7 +876,7 @@ export const metricCases = [
             label: 'Cancellation rate + dispute/refund rate + repeat buyer rate per seller',
             scoreValue: 2,
             rationale:
-              'Cancellations reveal post-commitment quality failures; disputes and refunds capture the most severe buyer dissatisfaction; repeat buyer rate measures whether buyers trusted a seller enough to return. Together they cover pre-purchase, at-purchase, and post-purchase quality signals that response speed cannot fake.',
+              'Cancellations reveal post-commitment quality failures — sellers who oversell their capabilities to close deals will produce cancellations after commitment. Disputes and refund rates capture the most severe buyer dissatisfaction signals, representing cases where the delivered product or service materially failed to match expectations. Repeat buyer rate measures whether buyers trusted a seller enough to return without prompting, which is the strongest quality signal in a marketplace: it means the seller delivered sufficient value that the buyer sought them out again. Together these cover pre-purchase, at-purchase, and post-purchase quality dimensions that a fast response speed metric cannot fake.',
           },
           {
             id: 'b',
@@ -884,7 +890,7 @@ export const metricCases = [
             label: 'Message volume per seller + response speed distribution',
             scoreValue: 0,
             rationale:
-              'These are seller-side activity metrics that measure engagement with the messaging system, not buyer outcome quality. High message volume with fast responses can coexist with low conversion and high dispute rates.',
+              'These are seller-side activity metrics that measure engagement with the messaging infrastructure, not buyer outcome quality. High message volume with fast responses can coexist with low conversion and high dispute rates — a seller who generates many messages by sending frequent follow-ups and replies quickly with poor-quality information will score well on both metrics while underperforming on every buyer outcome measure. These metrics tell you what sellers are doing, not whether what they are doing is working.',
           },
           {
             id: 'd',
@@ -908,7 +914,7 @@ export const metricCases = [
               'Marketplace-level buyer conversion rate + control seller conversion rate (displacement signal)',
             scoreValue: 2,
             rationale:
-              'If incentivized sellers improve but platform-level conversion stays flat and control seller conversion drops, the program has displaced sales rather than created new ones. Both guardrails are necessary: the platform metric catches net-zero effects; the control seller metric catches cannibalization.',
+              'If incentivized sellers improve but platform-level conversion stays flat and control seller conversion drops, the program has displaced demand rather than created new marketplace value — buyers were redirected toward incentivized sellers, not newly attracted to the platform. Both guardrails are necessary for different reasons: the platform-level metric catches net-zero effects where treated seller gains exactly offset non-treated seller losses; the control seller metric specifically catches the cannibalization signal where the incentive program actively harms sellers who were excluded. The displacement risk is completely invisible in treated-seller-only metrics — a program that purely reallocates demand looks identical to one that generates new demand unless you watch both levels simultaneously.',
           },
           {
             id: 'b',
@@ -929,7 +935,7 @@ export const metricCases = [
             label: 'No guardrails — treated seller improvement is the goal',
             scoreValue: 0,
             rationale:
-              'A marketplace incentive program without displacement guardrails can produce a statistical win on treated sellers while generating exactly zero net benefit to the platform. This is the canonical marketplace interference failure mode.',
+              'A marketplace incentive program without displacement guardrails can produce a statistically significant win on treated seller metrics while generating exactly zero net benefit to the platform. This is the canonical marketplace interference failure mode: the experiment correctly measures that treated sellers improved, but incorrectly interprets that improvement as platform value creation when it was actually demand reallocation. Without guardrails, the program scales nationally based on a false-positive result, spending real money to rearrange existing demand rather than grow it.',
           },
         ],
       },
@@ -945,7 +951,7 @@ export const metricCases = [
             label: 'Per unique buyer contact — one unit = one buyer initiating contact with a seller',
             scoreValue: 2,
             rationale:
-              "Per-contact grain measures conversion from the point a buyer reaches out, which is precisely the handoff the incentive program targets. It normalizes for contact volume differences between sellers and isolates the quality of the seller's response as the key variable.",
+              "Per-contact grain measures conversion from the point a buyer reaches out, which is precisely the handoff the incentive program targets. It normalizes for contact volume differences between sellers — a high-volume seller with 200 contacts per month and a specialist seller with 20 are evaluated on the same quality dimension when measured per contact. This grain isolates the quality of the seller's response and follow-through as the key variable, which is exactly what the incentive program is designed to improve.",
           },
           {
             id: 'b',
@@ -959,7 +965,7 @@ export const metricCases = [
             label: 'Per message — one unit = one message exchanged',
             scoreValue: 0,
             rationale:
-              'Message grain is dominated by conversation length differences between sellers and buyer inquiry complexity. Sellers who engage in longer conversations before converting will appear worse than sellers who close quickly, which inverts the quality signal.',
+              'Message grain is dominated by conversation length differences between sellers and buyer inquiry complexity rather than seller quality. A seller who spends 12 messages helping a buyer work through a complex custom order before closing will appear to have a worse per-message conversion rate than a seller who closes a simple standard order in 3 messages. This denominator inverts the quality signal — it systematically penalizes sellers who provide thorough guidance and rewards sellers who handle simple, easy-to-close transactions.',
           },
           {
             id: 'd',
@@ -983,7 +989,7 @@ export const metricCases = [
               'Buyer conversion improvement in treated sellers AND no displacement signal in platform-level or control-seller conversion rates',
             scoreValue: 2,
             rationale:
-              'This rule requires both a genuine buyer outcome improvement and confirmation that the gain is additive to the marketplace rather than cannibalized from other sellers. Pre-committing the displacement guardrail condition is essential because marketplace interference is invisible in seller-only metrics.',
+              'This rule requires both a genuine buyer outcome improvement in treated sellers and confirmation that the gain is additive to the marketplace rather than cannibalized from non-incentivized sellers. Pre-committing the displacement guardrail condition before the experiment runs is essential because marketplace interference is completely invisible in treated-seller-only metrics — a program that purely reallocates demand looks identical to one that generates new demand if you only look at treated seller performance. The combined rule is the only evidence standard that distinguishes value creation from demand redistribution.',
           },
           {
             id: 'b',
@@ -1059,9 +1065,11 @@ export const metricCases = [
         },
       ],
       commonMistakes: [
-        'Using seller response speed as the primary metric — it is gameable by fast acknowledgments that do not help buyers, and it ignores the buyer-side outcome that actually matters to marketplace GMV.',
-        'Measuring only treated sellers without a displacement guardrail — this is the canonical marketplace interference mistake that produces statistically significant wins that deliver zero net platform value.',
-        'Aggregating at per-seller grain instead of per-buyer-contact — this confounds seller volume with seller quality and makes it impossible to isolate the responsiveness effect.',
+        'Using seller response speed as the primary metric — it is gameable by fast acknowledgments that do not help buyers convert. Response speed is a leading indicator worth tracking as a diagnostic, but it cannot be the primary because optimizing it directly produces a behavior (fast low-quality replies) that harms buyer outcomes.',
+        'Measuring only treated sellers without a displacement guardrail — this is the canonical marketplace interference mistake. A program that incentivizes a subset of sellers will attract more buyer contacts to those sellers, producing a treated-seller win that may be entirely explained by demand reallocation rather than quality improvement.',
+        'Aggregating at per-seller grain instead of per-buyer-contact — this confounds seller volume with seller quality. A high-volume seller with 300 contacts who converts at 40% looks the same as a high-volume seller who converts at 40% through an entirely different quality mechanism. Per-contact grain isolates the responsiveness effect by normalizing for volume.',
+        'Declaring a seller quality win without checking the post-purchase signals — cancellation rate, dispute rate, and repeat buyer rate are the post-purchase quality signals that a fast-closing seller can fail on even when their conversion rate looks strong. A seller who closes deals by overpromising will show high conversion and high cancellations simultaneously.',
+        'Conflating the incentive program evaluation with a measurement of the program\'s operational targets — the program\'s goal is improved buyer conversion and marketplace growth, not improved response speed. Tracking response speed as the success metric rewards achieving the input behavior rather than confirming the output outcome.',
       ],
       interviewPhrase:
         "In a two-sided marketplace, a seller-only metric can show improvement even when the program creates no net value — you need to check for displacement. I'd make buyer conversion rate per seller the primary (it can't be gamed by fast bad answers) and then require the marketplace-level and control-seller conversion rates to hold stable before calling it a win. If treated sellers improve while control sellers decline and platform conversion is flat, we've just moved demand around, not grown it.",
@@ -1100,7 +1108,7 @@ export const metricCases = [
             label: 'Net revenue retention (NRR) — (starting ARR + expansion - contraction - churn) / starting ARR',
             scoreValue: 2,
             rationale:
-              'NRR captures the full revenue lifecycle of a discount cohort: whether discounted customers expand, contract, or churn. It is the only single metric that can simultaneously detect the positive case (discounts attract customers who grow) and the negative case (discounts attract low-quality customers who churn at renewal), making it the correct primary for a discount program evaluation.',
+              'NRR captures the full revenue lifecycle of a discount cohort: whether discounted customers expand, contract, or churn. It is the only single metric that can simultaneously detect the positive case (discounts attract customers who find product-market fit and grow) and the negative case (discounts attract price-sensitive customers who exit at renewal). For a discount program evaluation specifically, NRR is structurally superior to ARR growth because it is cohort-specific — you can compute NRR for the discounted cohort separately from the baseline book of business, isolating whether discount-acquired customers behave differently from non-discounted customers over the same period.',
           },
           {
             id: 'b',
@@ -1114,14 +1122,15 @@ export const metricCases = [
             label: 'Gross bookings — total contract value signed during the program period',
             scoreValue: 0,
             rationale:
-              'Gross bookings measure contract volume, not revenue quality. A discount program will mechanically increase bookings by making contracts cheaper to sign. This metric cannot distinguish between high-quality customers acquired at scale and low-quality customers attracted by price sensitivity who will churn at renewal.',
+              'Gross bookings measure contract volume, not revenue quality. A discount program will mechanically increase bookings by making contracts cheaper to sign — the intervention directly improves this metric regardless of whether the customers acquired have genuine product-market fit or will churn at renewal. This metric cannot distinguish between high-quality customers who were at the margin of signing and needed a price nudge, and price-sensitive customers who signed because of the discount and will exit when full pricing applies. Any decision made on gross bookings during a discount program is a decision made on the metric the discount is structurally guaranteed to inflate.',
           },
           {
             id: 'd',
             label: 'Gross merchandise value (GMV) — total transaction value processed through the platform',
             scoreValue: 0,
             rationale:
-              'GMV is an engagement/volume metric, not a revenue health metric for B2B SaaS. It is heavily influenced by platform usage patterns unrelated to the discount program and does not capture the retention trajectory that determines whether the program created lasting revenue value.',
+              'GMV is a usage and transaction volume metric, not a revenue health metric for B2B SaaS. In a B2B analytics platform context, GMV reflects how much data or processing flows through the product — it can increase because discounted customers onboard and use the platform heavily while still carrying latent churn risk. GMV cannot distinguish usage-intensive accounts that will renew from usage-intensive accounts that will exit when full pricing applies. It is also heavily influenced by platform usage patterns unrelated to the discount program itself.',
+
           },
         ],
       },
@@ -1137,7 +1146,7 @@ export const metricCases = [
             label: 'Contribution margin per customer + churn rate by discount cohort',
             scoreValue: 2,
             rationale:
-              'Contribution margin per customer reveals whether discounted accounts are profitable at the current pricing level. Churn rate by discount cohort isolates whether the price-sensitive customers attracted by discounts have different retention behavior than the baseline — which is the key question for long-term revenue health.',
+              'Contribution margin per customer reveals whether discounted accounts are profitable at the current pricing level — a discount program can improve NRR while simultaneously making each account less profitable if discounts cross below the unit economics threshold. Churn rate by discount cohort isolates whether price-sensitive customers attracted by discounts have meaningfully different retention behavior than baseline accounts. The cohort comparison is the diagnostic that answers the central question: are we acquiring customers with genuine product-market fit, or customers attracted by the price who exit when full pricing applies?',
           },
           {
             id: 'b',
@@ -1174,7 +1183,7 @@ export const metricCases = [
             label: 'Gross margin percentage + refund/credit rate + time-to-churn in discount cohort',
             scoreValue: 2,
             rationale:
-              'Gross margin percentage catches revenue volume improvements that come at the cost of profitability. Refund and credit rate reveals post-commitment dissatisfaction in discounted accounts. Time-to-churn in the discount cohort catches the scenario where cheaper customers sign annual contracts but exit early — the most dangerous financial outcome of a discount program.',
+              'Gross margin percentage catches revenue volume improvements that come at the cost of profitability — NRR can improve on growing revenue that is less profitable per dollar if discounts are deep. Refund and credit rate reveals post-commitment dissatisfaction in discounted accounts, which often surfaces before formal churn: a customer requesting credits is one step from exit. Time-to-churn in the discount cohort catches the most dangerous outcome: customers who sign annual commitments but exit before the natural renewal date, forfeiting annual contract economics and triggering early-exit credit obligations.',
           },
           {
             id: 'b',
@@ -1195,7 +1204,7 @@ export const metricCases = [
             label: 'No guardrails — NRR improvement is sufficient',
             scoreValue: 0,
             rationale:
-              'NRR is the right primary but is a lagging metric. Margin and cohort-level churn guardrails provide leading signals that allow course correction before the NRR deterioration fully materializes. Running without guardrails means waiting until the financial damage is already done.',
+              'NRR is the right primary but is a lagging metric with a natural delay equal to at least one contract period. Margin and cohort-level churn guardrails provide leading signals that allow course correction before the NRR deterioration fully materializes. Running a discount program without these guardrails means waiting until the first renewal cycle completes to discover that discounted cohorts are churning at a higher rate — by which time the program has already been scaled based on early ARR growth signals that looked positive.',
           },
         ],
       },
@@ -1211,7 +1220,7 @@ export const metricCases = [
             label: 'Per account/contract — one unit = one enterprise account',
             scoreValue: 2,
             rationale:
-              'The enterprise contract is the unit at which revenue is committed, renewed, and churned. Per-account grain aligns revenue metrics with the business decision unit, allows cohort analysis by discount level, and correctly surfaces the NRR signal at the level where it is most actionable.',
+              'The enterprise contract is the unit at which revenue is committed, renewed, expanded, and churned. Per-account grain aligns revenue metrics with the actual business decision unit — a contract renewal decision is made at the account level, not the seat level. This grain also enables the most actionable version of the NRR analysis: you can segment by discount depth (10% vs. 20% vs. 30% discount cohorts) and see whether churn and expansion behavior differs materially across discount tiers, informing both the program\'s continuation and its optimal discount structure.',
           },
           {
             id: 'b',
@@ -1249,7 +1258,7 @@ export const metricCases = [
               'Pre-committed: NRR improvement in discount cohort vs. control AND gross margin guardrail stable',
             scoreValue: 2,
             rationale:
-              'Requiring both NRR improvement and margin stability ensures the program is growing revenue in a financially sustainable way. Pre-committing prevents the temptation to declare success on ARR growth or bookings when the discount cohort shows early churn signals.',
+              'Requiring both NRR improvement in the discount cohort versus the control cohort and gross margin stability ensures the program is growing revenue in a financially sustainable way. Pre-committing both conditions before the program launches prevents the temptation to declare success on ARR growth or bookings when the discount cohort is already showing early churn signals. The combined rule is the minimum evidence standard for claiming the program is creating sustainable revenue value rather than pulling forward future revenue at a reduced margin.',
           },
           {
             id: 'b',
@@ -1263,7 +1272,7 @@ export const metricCases = [
             label: 'Total bookings growth above baseline during program period',
             scoreValue: 0,
             rationale:
-              'Bookings growth is mechanically guaranteed by any discount program that increases signing volume. Using it as a success threshold provides zero information about whether the program created sustainable revenue value.',
+              'Bookings growth is mechanically guaranteed by any discount program that increases signing volume — the discount directly lowers the barrier to signing, so this metric is structurally guaranteed to improve regardless of whether the acquired customers are high-quality or high-churn-risk. Using it as a success threshold provides exactly zero information about whether the program created sustainable revenue value. A team that ships on this rule has confirmed only that making contracts cheaper causes more contracts to be signed.',
           },
           {
             id: 'd',
@@ -1319,9 +1328,11 @@ export const metricCases = [
         },
       ],
       commonMistakes: [
-        'Using gross bookings or GMV as the success metric for a discount program — both are mechanically guaranteed to improve when discounts increase signing volume, providing zero signal about revenue quality.',
-        'Declaring ARR growth success before a renewal cycle has completed — discounted accounts can appear healthy through the initial contract period while carrying latent churn risk that only surfaces at renewal.',
-        "Omitting gross margin guardrails — a discount program can improve NRR while simultaneously degrading profitability if the expansion revenue comes from deeply discounted accounts expanding at the same low price.",
+        'Using gross bookings or GMV as the success metric for a discount program — both are mechanically guaranteed to improve when discounts increase signing volume. These metrics confirm only that cheaper contracts attract more signers; they provide zero signal about whether those signers represent sustainable revenue.',
+        'Declaring ARR growth success before a renewal cycle has completed — discounted accounts can appear healthy through the initial contract period while carrying latent churn risk that only surfaces when full pricing is applied at renewal. Early ARR growth from discount-driven signing is not evidence of sustainable revenue.',
+        "Omitting gross margin guardrails — a discount program can improve NRR while simultaneously degrading profitability if expansion revenue comes from deeply discounted accounts expanding at the same reduced pricing tier. NRR measures revenue retention and growth, not unit economics.",
+        'Failing to compare discount cohort churn rates against baseline cohort churn rates — the key question is not whether discounted accounts churn, but whether they churn at higher rates than accounts acquired at full price. The cohort comparison is the only analysis that reveals whether the discount is attracting customers with different retention behavior.',
+        'Setting the discount level without a pre-committed maximum depth — a discount program that is NRR-positive at 10% may be NRR-negative at 30%. The success decision rule must specify both the evaluation metric and the discount depth being tested; extrapolating from one discount level to another is not supported by the data.',
       ],
       interviewPhrase:
         "For a discount program, the key question is whether we're growing revenue or just pulling forward future churn at a lower price. I'd use NRR as the primary because it captures the full lifecycle of discounted accounts, and I'd require a gross margin guardrail because NRR can improve on revenue that isn't profitable. I'd also wait for at least one renewal cycle before calling it a win — early ARR growth from discount-driven signing is not evidence of sustainable revenue.",
@@ -1360,28 +1371,28 @@ export const metricCases = [
             label: 'Resolved contact rate — % of support contacts resolved without human escalation within 24 hours',
             scoreValue: 2,
             rationale:
-              "Resolved contact rate requires both non-escalation AND a 24-hour resolution window, which distinguishes genuine resolution from users who gave up trying. The time-bound component is critical: a contact that doesn't escalate within 24h is likely to show up as a repeat contact if unresolved, which the guardrail catches.",
+              "Resolved contact rate requires both non-escalation AND a 24-hour resolution window, which distinguishes genuine resolution from users who gave up trying after the bot failed to help them. The time-bound component is critical and non-negotiable: a contact that doesn't escalate within 24h is plausibly resolved, but the guardrail will catch unresolved cases that appear as repeat contacts within 7 days. This metric cannot be trivially gamed by hiding the escalation button because users who cannot resolve their issue will recontact, and the repeat contact guardrail will surface the failure even if the primary metric looks clean.",
           },
           {
             id: 'b',
             label: 'First-contact resolution rate — % of contacts where the issue is fully resolved on the first interaction',
             scoreValue: 2,
             rationale:
-              'First-contact resolution is a classic support quality metric that measures whether the bot solved the problem on the first attempt. It is harder to game than deflection rate because a user who recontacts within a short window undermines the first-contact claim.',
+              'First-contact resolution is a classic support quality metric that measures whether the bot solved the problem on the first attempt, requiring the issue to not resurface within a defined recontact window. It is harder to game than deflection rate because a user who recontacts about the same issue within the recontact window directly undermines the first-contact resolution claim — the system cannot retroactively count that contact as resolved. This metric is well-understood by support operations teams and enables clean benchmarking against the pre-bot human support baseline.',
           },
           {
             id: 'c',
             label: 'Deflection rate — % of support contacts that never result in a human agent escalation',
             scoreValue: 0,
             rationale:
-              'Deflection rate is the most dangerous primary metric for a support bot because it is directly optimizable by making escalation harder to access. A bot can achieve 95% deflection by burying escalation buttons, giving confident-sounding wrong answers, or closing tickets before users can respond. High deflection with low resolution is the core failure mode of AI support systems.',
+              'Deflection rate is the most dangerous primary metric for a support bot because it is directly optimizable by making escalation harder to access rather than by actually resolving issues. A bot can achieve 95% deflection by burying escalation buttons behind multi-step flows, giving confident-sounding wrong answers that close the conversation, or timing out tickets before users can respond. High deflection with low resolution is the core failure mode of AI support systems and the exact pattern this scenario is designed to catch. Optimizing on this metric creates organizational pressure to find the most efficient path to deflection, which is always obfuscation, not resolution.',
           },
           {
             id: 'd',
             label: 'Average handle time (AHT) per contact — average duration of bot interactions',
             scoreValue: 0,
             rationale:
-              'AHT optimization drives bots to close conversations quickly rather than resolve issues thoroughly. A bot that ends conversations fast with deflection achieves low AHT while leaving issues unresolved — it optimizes process efficiency at the expense of customer outcome.',
+              'AHT optimization drives bots to close conversations quickly rather than resolve issues thoroughly. A bot that ends conversations fast by deflecting, giving short non-answers, or timing out the interaction achieves low AHT while leaving issues unresolved — it optimizes process efficiency at the expense of customer outcome. For AI-powered support specifically, a low-AHT bot that generates high repeat contacts is more expensive than a slightly higher-AHT bot with genuine first-contact resolution, because each repeat contact incurs the full cost of another support interaction.',
           },
         ],
       },
@@ -1398,7 +1409,7 @@ export const metricCases = [
               'Repeat contact rate (same issue within 7 days) + CSAT score + escalation quality (% escalations resolved by human on first try)',
             scoreValue: 2,
             rationale:
-              'Repeat contact rate is the acid test: if the bot resolved the issue, the user should not recontact about the same topic within 7 days. CSAT provides the customer satisfaction dimension. Escalation quality measures whether human agents are receiving well-prepared escalations or cleaning up bot failures — a key signal of bot response quality.',
+              'Repeat contact rate is the acid test for resolution quality: if the bot genuinely resolved the issue, the user should not recontact about the same topic within 7 days. A rising repeat contact rate paired with high resolved-contact rate is the diagnostic signature of superficial closure — the bot is ending conversations without solving problems. CSAT provides the customer satisfaction dimension that distinguishes "was resolved" from "felt resolved" — users know when they got a useful answer. Escalation quality (what fraction of escalations humans resolve on the first try) measures whether the bot is passing well-formed problems or passing damaged customer relationships to human agents.',
           },
           {
             id: 'b',
@@ -1412,7 +1423,7 @@ export const metricCases = [
             label: 'Deflection rate by ticket category',
             scoreValue: 0,
             rationale:
-              'Segmented deflection rate inherits all the problems of the top-line deflection metric. Knowing which categories are deflected most does not tell you whether those deflections were genuine resolutions or user abandonments.',
+              'Segmented deflection rate inherits all the problems of the top-line deflection metric and adds false granularity without fixing the core issue. Knowing which ticket categories are deflected most does not tell you whether those deflections represent genuine resolutions or user abandonments. A bot that is particularly good at burying escalation paths for billing questions will show high billing-category deflection that looks like category-specific quality improvement while being the exact failure mode the metric is supposed to detect.',
           },
           {
             id: 'd',
@@ -1436,7 +1447,7 @@ export const metricCases = [
               'Repeat contact rate + hallucination/error flag rate + human escalation satisfaction score',
             scoreValue: 2,
             rationale:
-              'Repeat contact rate catches the resolution-without-resolution failure mode. Hallucination/error flag rate is specific to GenAI: a model that gives confidently wrong answers will deflect contacts while causing downstream harm — this guardrail is unique to AI support. Human escalation CSAT catches whether escalated users received a satisfying resolution, flagging cases where the bot damaged the customer relationship before escalation.',
+              'Repeat contact rate catches the resolution-without-resolution failure mode directly — a bot that closes tickets without solving problems will generate repeat contacts within 7 days, making this guardrail self-enforcing. Hallucination and error flag rate is a GenAI-specific guardrail with no analog in rule-based support systems: a model that generates confident-sounding wrong answers will deflect contacts while actively misleading customers, causing downstream harm that aggregate CSAT scores do not immediately capture. Human escalation CSAT catches the downstream damage pattern — if escalated users are receiving poor satisfaction scores, the bot is likely degrading the customer relationship before handoff, making human resolution harder.',
           },
           {
             id: 'b',
@@ -1457,7 +1468,7 @@ export const metricCases = [
             label: 'No guardrails — resolved contact rate covers the key risk',
             scoreValue: 0,
             rationale:
-              'Even a well-designed primary metric like resolved contact rate can be gamed if the bot learns to close tickets with superficially complete answers. The hallucination rate guardrail is especially critical for GenAI — it catches a failure mode that has no analog in rule-based support systems.',
+              'Even a well-designed primary metric like resolved contact rate can be gamed if the bot learns to close tickets with superficially complete answers that sound authoritative but contain errors. The hallucination and error rate guardrail is especially critical for GenAI — it catches a failure mode that has no analog in rule-based support systems, where the bot output is deterministic. A GenAI model that hallucinates product features, gives wrong policy information, or makes up resolution steps will produce delayed harm that does not appear in the primary metric until the repeat contact rate rises. By then, customers have already acted on wrong information.',
           },
         ],
       },
@@ -1473,7 +1484,7 @@ export const metricCases = [
             label: 'Per support contact/ticket — one unit = one customer-initiated support request',
             scoreValue: 2,
             rationale:
-              'The support contact is the natural unit of analysis for a support system: each contact represents one customer issue that should be resolved. Per-contact grain directly maps to the business goal (reduce contacts requiring human escalation) and enables cohort analysis by issue type, customer tier, and bot version.',
+              'The support contact is the natural unit of analysis for a support system: each contact represents one customer issue that either gets resolved or does not. Per-contact grain directly maps to the business goal (reduce contacts requiring human escalation) and enables cohort analysis by issue type, customer tier, bot version, and ticket category. It also enables the most important quality check: comparing repeat-contact rate by ticket category to identify which issue types the bot resolves reliably versus which it consistently fails to resolve despite appearing to close.',
           },
           {
             id: 'b',
@@ -1511,7 +1522,7 @@ export const metricCases = [
               'Pre-committed: significant improvement in resolved contact rate AND repeat contact guardrail stable AND hallucination flag rate below threshold',
             scoreValue: 2,
             rationale:
-              'Three conditions are necessary for a GenAI support bot: genuine resolution improvement, confirmation that resolutions are not just superficial closures (repeat contact guardrail), and safety against the hallucination failure mode that is unique to AI systems. All three must be pre-committed to prevent post-hoc rationalization.',
+              'Three conditions are necessary for a GenAI support bot to be declared a success: genuine resolution improvement on the primary metric, confirmation that resolutions are not just superficial closures by checking the repeat contact guardrail, and safety against the hallucination failure mode that is unique to AI systems. Pre-committing all three conditions before deployment prevents the post-hoc rationalization where a resolved-contact rate improvement is declared a win despite rising repeat contacts or hallucination flags. The combined rule reflects the three-way distinction between "closed the ticket," "resolved the issue," and "resolved the issue without causing new harm" — a GenAI support bot must pass all three.',
           },
           {
             id: 'b',
@@ -1525,7 +1536,7 @@ export const metricCases = [
             label: 'Deflection rate above X% target set by support VP',
             scoreValue: 0,
             rationale:
-              "This is the exact decision rule that generates the deflection trap. A target deflection rate creates organizational pressure to find the most efficient path to deflection — which is hiding escalation paths and providing confident-but-wrong answers, not genuinely resolving issues.",
+              "This is the exact decision rule that generates the deflection trap at scale. A target deflection rate creates organizational pressure to find the most efficient path to deflection — and the most efficient path is always hiding escalation paths and providing confident-but-wrong answers that close conversations, not genuinely resolving issues. A team that sets a deflection rate target will build the bot to hit it; a bot built to hit a deflection rate target is a bot optimized to obstruct rather than help. This is the failure mode that damages customer trust in AI support at scale.",
           },
           {
             id: 'd',
@@ -1593,9 +1604,11 @@ export const metricCases = [
         },
       ],
       commonMistakes: [
-        'Using deflection rate as the primary success metric — this creates a direct organizational incentive to hide escalation paths and provide superficially confident answers rather than genuinely resolve issues.',
-        'Omitting hallucination and error rate as a guardrail — this is the GenAI-specific failure mode that traditional support metrics were not designed to catch, and it can cause significant customer harm before CSAT signals deteriorate.',
-        'Declaring success before repeat contact data has accumulated — the repeat contact signal takes 7-14 days to fully develop, and bots that close tickets with wrong answers will look successful in the first few days of deployment.',
+        'Using deflection rate as the primary success metric — this creates a direct organizational incentive to find the most efficient path to non-escalation, which is always obstruction rather than resolution. Bots optimized on deflection rate learn to hide escalation paths and provide confident-sounding wrong answers that close the conversation without resolving the issue.',
+        'Omitting hallucination and error rate as a guardrail — this is the GenAI-specific failure mode that traditional support metrics were not designed to catch. A bot that gives authoritative wrong answers causes real downstream harm before aggregate CSAT or repeat contact rates reflect the damage.',
+        'Declaring success before repeat contact data has accumulated — the repeat contact signal requires a 7-14 day window to fully develop. A bot that closes tickets with superficially complete wrong answers will appear successful on resolved-contact rate for the first few days until repeat contacts accumulate.',
+        'Conflating cost reduction with resolution quality — a bot that reduces human escalation volume by obstructing escalation paths will show cost reduction metrics moving in the right direction while creating a growing backlog of unresolved customer issues that eventually surface as churn and support escalations through other channels.',
+        'Evaluating the bot on aggregate CSAT rather than bot-specific CSAT — aggregate CSAT mixes bot interactions with human interactions. A bot that degrades CSAT for its cohort of users while human support performance remains stable will show no change in aggregate scores until the bot\'s share of contacts grows large enough to affect the aggregate. Bot-specific CSAT and repeat contact rate must be tracked as separate cohorts from day one.',
       ],
       interviewPhrase:
         "For a GenAI support bot, deflection rate is the wrong primary metric because it rewards making escalation hard to find. I'd use resolved contact rate with a 24-hour window instead, and I'd require a repeat contact guardrail to confirm resolutions are genuine. The one thing I'd add that's specific to AI support is a hallucination flag rate guardrail — a model that sounds authoritative while being wrong will damage customer relationships before CSAT data shows the problem.",

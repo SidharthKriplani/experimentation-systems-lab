@@ -1,5 +1,23 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { statsFoundationsModules } from '../../data/statsFoundationsModules.js';
+
+class ModuleErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { hasError: false, error: null }; }
+  static getDerivedStateFromError(error) { return { hasError: true, error }; }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⚠️</div>
+          <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Module failed to load</div>
+          <div style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>{String(this.state.error)}</div>
+          <button onClick={() => this.setState({ hasError: false, error: null })} style={{ padding: '8px 20px', background: 'var(--yellow)', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}>Try Again</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import { saveStatFoundationsProgress, getStatFoundationsProgress } from '../../utils/statsFoundationsProgress.js';
 import { Module01_WhatIsData } from './modules/Module01_WhatIsData.jsx';
 import { Module02_CentralTendency } from './modules/Module02_CentralTendency.jsx';
@@ -216,7 +234,7 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
       {/* ── Unlocked: render module ── */}
       {!isLocked && (
         <>
-          <ModuleComponent module={module} onNext={handleNext} />
+          <ModuleErrorBoundary><ModuleComponent module={module} onNext={handleNext} /></ModuleErrorBoundary>
           {module.playbookLinks?.length > 0 && (
             <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 16px 32px', boxSizing: 'border-box' }}>
               <div style={{ padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>

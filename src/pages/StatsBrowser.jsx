@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { statsModules } from '../data/statsModules.js';
 import { getAllStatsProgress } from '../utils/statsProgress.js';
 
@@ -14,9 +15,16 @@ const LEVEL_CFG = {
   wrong:   { label: 'Needs Work',    color: 'var(--red)',    bg: 'var(--red-bg)',     border: 'var(--red-border)' },
 };
 
+const DIFF_ORDER = { analyst: 0, foundational: 0, intermediate: 1, senior: 1, advanced: 2, staff: 2 };
+
 export function StatsBrowser({ onSelectModule }) {
+  const [sortBy, setSortBy] = useState('default');
   const allProgress = getAllStatsProgress();
   const completedCount = Object.keys(allProgress).length;
+
+  const displayModules = sortBy === 'difficulty'
+    ? [...statsModules].sort((a, b) => (DIFF_ORDER[a.difficulty] ?? 1) - (DIFF_ORDER[b.difficulty] ?? 1))
+    : statsModules;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
@@ -42,9 +50,21 @@ export function StatsBrowser({ onSelectModule }) {
         </div>
       </div>
 
+      {/* Sort controls */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 12, justifyContent: 'flex-end' }}>
+        {['default', 'difficulty'].map(opt => (
+          <button key={opt} onClick={() => setSortBy(opt)} style={{
+            fontSize: 12, padding: '4px 10px', borderRadius: 6, cursor: 'pointer', fontWeight: 600,
+            background: sortBy === opt ? 'var(--yellow)' : 'var(--surface)',
+            border: `1px solid ${sortBy === opt ? 'var(--yellow-border)' : 'var(--border)'}`,
+            color: sortBy === opt ? '#000' : 'var(--text-secondary)',
+          }}>{opt === 'default' ? 'Default' : 'By Difficulty'}</button>
+        ))}
+      </div>
+
       {/* Module cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {statsModules.map((module, i) => {
+        {displayModules.map((module, i) => {
           const progress = allProgress[module.id];
           const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
           const diffCfg = DIFF_CFG[module.difficulty] || DIFF_CFG.foundational;

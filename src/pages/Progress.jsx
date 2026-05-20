@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { clearProgress } from '../utils/progress.js';
 import { getAllStatsProgress } from '../utils/statsProgress.js';
 import { getAllMetricsProgress } from '../utils/metricsProgress.js';
@@ -49,7 +50,8 @@ function LevelBadge({ level }) {
   );
 }
 
-function RoomReadinessBar({ label, color, bg, border, completed, total, bestLevel }) {
+function RoomReadinessBar({ label, color, bg, border, completed, total, bestLevel, onReset }) {
+  const [confirmingReset, setConfirmingReset] = useState(false);
   const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
   return (
     <div style={{ marginBottom: '0.85rem' }}>
@@ -58,6 +60,24 @@ function RoomReadinessBar({ label, color, bg, border, completed, total, bestLeve
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{completed}/{total}</span>
           {bestLevel && <LevelBadge level={bestLevel} />}
+          {completed > 0 && onReset && !confirmingReset && (
+            <button
+              onClick={() => setConfirmingReset(true)}
+              style={{ fontSize: '0.62rem', color: 'var(--text-dim)', background: 'none', border: '1px solid var(--border)', borderRadius: '4px', padding: '0.08rem 0.35rem', cursor: 'pointer' }}
+            >Reset</button>
+          )}
+          {confirmingReset && (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <button
+                onClick={() => { onReset(); setConfirmingReset(false); }}
+                style={{ fontSize: '0.62rem', color: 'var(--red)', background: 'none', border: '1px solid var(--red)', borderRadius: '4px', padding: '0.08rem 0.35rem', cursor: 'pointer', fontWeight: 700 }}
+              >Yes, reset</button>
+              <button
+                onClick={() => setConfirmingReset(false)}
+                style={{ fontSize: '0.62rem', color: 'var(--text-dim)', background: 'none', border: '1px solid var(--border)', borderRadius: '4px', padding: '0.08rem 0.35rem', cursor: 'pointer' }}
+              >Cancel</button>
+            </span>
+          )}
         </div>
       </div>
       <div style={{ height: '5px', background: 'var(--border)', borderRadius: '3px', overflow: 'hidden' }}>
@@ -109,13 +129,26 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   const reviewBest = getBestLevel(completed.map(s => allProgress[s.id]?.attempts?.slice(-1)[0]).filter(Boolean));
   const designBest = null; // Design uses different scoring
 
+  function makeRoomResetter(keys) {
+    return () => {
+      keys.forEach(k => { try { localStorage.removeItem(k); } catch {} });
+      window.location.reload();
+    };
+  }
+
   const allRoomProgress = [
-    { label: 'Stats', completed: statsCompleted.length, total: statsModules.length, best: statsBest },
-    { label: 'Metrics', completed: metricsCompleted.length, total: metricCases.length, best: metricsBest },
-    { label: 'Design', completed: designCompleted.length, total: designScenarios.length, best: designBest },
-    { label: 'Review', completed: completed.length, total: scenarios.length, best: reviewBest },
-    { label: 'RCA', completed: rcaCompleted.length, total: rcaCases.length, best: rcaBest },
-    { label: 'Cases', completed: casesCompleted.length, total: businessCases.length, best: casesBest },
+    { label: 'Stats', completed: statsCompleted.length, total: statsModules.length, best: statsBest,
+      onReset: makeRoomResetter(['pal-stats-progress-v1']) },
+    { label: 'Metrics', completed: metricsCompleted.length, total: metricCases.length, best: metricsBest,
+      onReset: makeRoomResetter(['pal-metrics-progress-v2']) },
+    { label: 'Design', completed: designCompleted.length, total: designScenarios.length, best: designBest,
+      onReset: makeRoomResetter(['pal-design-progress-v1']) },
+    { label: 'Review', completed: completed.length, total: scenarios.length, best: reviewBest,
+      onReset: makeRoomResetter(['exp-lab-progress-v1']) },
+    { label: 'RCA', completed: rcaCompleted.length, total: rcaCases.length, best: rcaBest,
+      onReset: makeRoomResetter(['pal-rca-progress-v1']) },
+    { label: 'Cases', completed: casesCompleted.length, total: businessCases.length, best: casesBest,
+      onReset: makeRoomResetter(['pal-cases-progress-v1']) },
   ];
 
   const totalCompleted = statsCompleted.length + metricsCompleted.length + designCompleted.length + completed.length + rcaCompleted.length + casesCompleted.length;
@@ -228,6 +261,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
               completed={r.completed}
               total={r.total}
               bestLevel={r.best}
+              onReset={r.onReset}
             />
           ))}
 
@@ -296,13 +330,24 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
 
       {/* Review Queue */}
       {(() => {
-        const reviewQueue = [];
+        const queueMap = new Map(); // key → item, for dedup
+
+        function addOrMerge(key, item) {
+          if (queueMap.has(key)) {
+            const existing = queueMap.get(key);
+            // Keep lower rating if both have ratings; keep more attempts signal
+            if (item.rating !== null && (existing.rating === null || item.rating < existing.rating)) existing.rating = item.rating;
+            if (item.attempts > (existing.attempts || 0)) existing.attempts = item.attempts;
+          } else {
+            queueMap.set(key, { ...item, attempts: item.attempts || 0 });
+          }
+        }
 
         // Low-rated behavioral
         behavioralQuestions.forEach(q => {
           const p = behavioralProgress[q.id];
           if (p?.rating && p.rating <= 2) {
-            reviewQueue.push({ room: 'behavioral', id: q.id, title: q.title, subtitle: q.subtitle, rating: p.rating, color: 'var(--purple)' });
+            addOrMerge(`behavioral-${q.id}`, { room: 'behavioral', id: q.id, title: q.title, subtitle: q.subtitle, rating: p.rating, color: 'var(--purple)' });
           }
         });
 
@@ -310,17 +355,67 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
         estimationProblems.forEach(ep => {
           const p = estimationProg[ep.id];
           if (p?.rating && p.rating <= 2) {
-            reviewQueue.push({ room: 'estimation', id: ep.id, title: ep.title, subtitle: ep.subtitle, rating: p.rating, color: 'var(--teal)' });
+            addOrMerge(`estimation-${ep.id}`, { room: 'estimation', id: ep.id, title: ep.title, subtitle: ep.subtitle, rating: p.rating, color: 'var(--teal)' });
           }
         });
 
-        // Multi-attempt stats (struggled)
+        // Multi-attempt stats (attempts > 2 signals difficulty)
         statsModules.forEach(m => {
           const p = statsProgress[m.id];
-          if (p?.attempts >= 2) {
-            reviewQueue.push({ room: 'stats', id: m.id, title: m.title, subtitle: m.subtitle || '', rating: null, color: 'var(--accent)' });
+          if (p?.attempts > 2) {
+            addOrMerge(`stats-${m.id}`, { room: 'stats', id: m.id, title: m.title, subtitle: m.subtitle || '', rating: null, attempts: p.attempts, color: 'var(--accent)' });
           }
         });
+
+        // Multi-attempt RCA (attempts > 1)
+        rcaCases.forEach(c => {
+          const p = rcaProgress[c.id];
+          if (p?.attempts > 1) {
+            addOrMerge(`rca-${c.id}`, { room: 'rca', id: c.id, title: c.title, subtitle: c.subtitle || '', rating: null, attempts: p.attempts, color: 'var(--yellow)' });
+          }
+        });
+
+        // Stats cases never scored above 'analyst' level (attempted but stuck at junior/analyst)
+        statsModules.forEach(m => {
+          const p = statsProgress[m.id];
+          if (p?.attempts > 0 && p?.level && (p.level === 'junior' || p.level === 'analyst' || p.level === 'wrong' || p.level === 'partial')) {
+            addOrMerge(`stats-${m.id}`, { room: 'stats', id: m.id, title: m.title, subtitle: m.subtitle || '', rating: null, attempts: p.attempts || 1, color: 'var(--accent)' });
+          }
+        });
+
+        // Metrics cases never scored above 'analyst'
+        metricCases.forEach(c => {
+          const p = metricsProgress[c.id];
+          if (p?.attempts > 0 && p?.level && (p.level === 'junior' || p.level === 'analyst' || p.level === 'wrong' || p.level === 'partial')) {
+            addOrMerge(`metrics-${c.id}`, { room: 'metrics', id: c.id, title: c.title, subtitle: c.subtitle || '', rating: null, attempts: p.attempts || 1, color: 'var(--green)' });
+          }
+        });
+
+        // RCA cases never scored above 'analyst'
+        rcaCases.forEach(c => {
+          const p = rcaProgress[c.id];
+          if (p?.attempts > 0 && p?.level && (p.level === 'junior' || p.level === 'analyst' || p.level === 'wrong' || p.level === 'partial')) {
+            addOrMerge(`rca-${c.id}`, { room: 'rca', id: c.id, title: c.title, subtitle: c.subtitle || '', rating: null, attempts: p.attempts || 1, color: 'var(--yellow)' });
+          }
+        });
+
+        // Cases room never scored above 'analyst'
+        businessCases.forEach(c => {
+          const p = caseProgress[c.id];
+          if (p?.attempts > 0 && p?.level && (p.level === 'junior' || p.level === 'analyst' || p.level === 'wrong' || p.level === 'partial')) {
+            addOrMerge(`cases-${c.id}`, { room: 'cases', id: c.id, title: c.title, subtitle: c.subtitle || '', rating: null, attempts: p.attempts || 1, color: 'var(--purple)' });
+          }
+        });
+
+        // Sort: low rating first (nulls last), then many attempts first. Cap at 10.
+        const reviewQueue = [...queueMap.values()]
+          .sort((a, b) => {
+            const aRating = a.rating ?? 99;
+            const bRating = b.rating ?? 99;
+            if (aRating !== bRating) return aRating - bRating;
+            return (b.attempts || 0) - (a.attempts || 0);
+          })
+          .slice(0, 10);
 
         if (reviewQueue.length === 0) return null;
 

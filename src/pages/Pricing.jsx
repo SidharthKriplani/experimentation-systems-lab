@@ -96,7 +96,7 @@ export function Pricing({ onShowUnlock, onBack }) {
           </div>
           <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', flex: 1 }}>
             {featureItem('All 100+ practice cases across 9 rooms')}
-            {featureItem('Stat Foundations (13 modules)')}
+            {featureItem('Stat Foundations (20 modules)')}
             {featureItem('All learning paths')}
             {featureItem('Lifetime access, no subscription')}
           </div>

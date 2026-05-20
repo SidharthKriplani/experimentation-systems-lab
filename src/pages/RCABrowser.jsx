@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { rcaCases } from '../data/rcaCases.js';
 import { getRCAProgress } from '../utils/rcaProgress.js';
 
@@ -49,8 +50,15 @@ function Tag({ label, color, bg, border }) {
   );
 }
 
+const DIFF_ORDER = { analyst: 0, foundational: 0, intermediate: 1, senior: 1, advanced: 2, staff: 2 };
+
 export function RCABrowser({ onSelectCase, unlocked, onUnlock }) {
+  const [sortBy, setSortBy] = useState('default');
   const completedCount = rcaCases.filter(c => getRCAProgress(c.id)).length;
+
+  const displayCases = sortBy === 'difficulty'
+    ? [...rcaCases].sort((a, b) => (DIFF_ORDER[a.difficulty] ?? 1) - (DIFF_ORDER[b.difficulty] ?? 1))
+    : rcaCases;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
@@ -84,9 +92,21 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock }) {
         </div>
       </div>
 
+      {/* Sort controls */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 12, justifyContent: 'flex-end' }}>
+        {['default', 'difficulty'].map(opt => (
+          <button key={opt} onClick={() => setSortBy(opt)} style={{
+            fontSize: 12, padding: '4px 10px', borderRadius: 6, cursor: 'pointer', fontWeight: 600,
+            background: sortBy === opt ? 'var(--yellow)' : 'var(--surface)',
+            border: `1px solid ${sortBy === opt ? 'var(--yellow-border)' : 'var(--border)'}`,
+            color: sortBy === opt ? '#000' : 'var(--text-secondary)',
+          }}>{opt === 'default' ? 'Default' : 'By Difficulty'}</button>
+        ))}
+      </div>
+
       {/* Case cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {rcaCases.map((c) => {
+        {displayCases.map((c) => {
           const progress = getRCAProgress(c.id);
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.analyst;
           const domainCfg = DOMAIN_CFG[c.domain] || DOMAIN_CFG.growth;

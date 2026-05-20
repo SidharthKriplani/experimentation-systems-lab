@@ -102,6 +102,14 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
         <h1 style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--text)', margin: 0, letterSpacing: '-0.015em' }}>
           {module.title}
         </h1>
+        {module.sfPrerequisites?.length > 0 && (
+          <div style={{ marginTop: 10, marginBottom: 2 }}>
+            <span style={{ fontSize: 11, color: 'var(--text-muted)', marginRight: 6 }}>📚 Review first:</span>
+            {module.sfPrerequisites.map(p => (
+              <span key={p.id} style={{ fontSize: 12, padding: '2px 8px', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 4, marginRight: 4, color: 'var(--accent)' }}>{p.title}</span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Question view */}

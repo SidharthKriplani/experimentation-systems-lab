@@ -144,11 +144,22 @@ export function Home({ onNavigate, onStartScenario }) {
           messy data, stakeholder pressure, no clean answer — then shows you how a senior analyst or PM read it.
         </p>
 
-        <p style={{ fontSize: '0.84rem', color: 'var(--text-dim)', marginBottom: '2.25rem' }}>
+        <p style={{ fontSize: '0.84rem', color: 'var(--text-dim)', marginBottom: '1rem' }}>
           For product analysts, data scientists, and PMs who already know the basics.
         </p>
 
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', margin: '1rem 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+          {[
+            { n: '10', label: 'practice rooms' },
+            { n: '150+', label: 'cases & modules' },
+            { n: '20', label: 'interactive stat labs' },
+            { n: 'Free', label: 'to start' },
+          ].map(s => (
+            <span key={s.label}><strong style={{ color: 'var(--text)', fontWeight: 800 }}>{s.n}</strong> {s.label}</span>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.25rem' }}>
           <button
             onClick={() => onNavigate(role === 'pm' ? 'product-design' : 'stats')}
             style={{
@@ -544,6 +555,13 @@ export function Home({ onNavigate, onStartScenario }) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── Email capture ───────────────────────────────────────────────── */}
+      <div style={{ marginTop: '3rem', padding: '1.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, textAlign: 'center', maxWidth: 480, margin: '3rem auto 0' }}>
+        <div style={{ fontWeight: 700, marginBottom: '0.4rem' }}>Stay in the loop</div>
+        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>New rooms and cases added regularly. Get notified.</div>
+        <a href="mailto:hello@productanalyticslab.com?subject=Notify me" style={{ display: 'inline-block', padding: '10px 24px', background: 'var(--yellow)', color: '#000', fontWeight: 700, borderRadius: 8, textDecoration: 'none', fontSize: '0.88rem' }}>Get Notified →</a>
       </div>
 
     </div>
