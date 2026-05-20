@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { saveBehavioralAttempt, getBehavioralProgress } from '../../utils/behavioralProgress.js';
 
 const RATINGS = [
@@ -33,6 +33,21 @@ export function BehavioralRunner({ question, onBack, onNext }) {
   const [revealed, setRevealed] = useState(!!existing?.rating);
   const [rating, setRating] = useState(existing?.rating || null);
   const [starOpen, setStarOpen] = useState(false);
+
+  const [elapsed, setElapsed] = useState(0);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    setElapsed(0);
+    timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
+    return () => clearInterval(timerRef.current);
+  }, [question.id]);
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  }
 
   const canReveal = response.trim().length >= 60;
 
@@ -73,6 +88,14 @@ export function BehavioralRunner({ question, onBack, onNext }) {
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'capitalize' }}>{question.category}</span>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>·</span>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{question.difficulty}</span>
+          <span style={{
+            fontSize: 13,
+            color: elapsed > 600 ? 'var(--red, #ef4444)' : 'var(--text-muted, #888)',
+            fontVariantNumeric: 'tabular-nums',
+            marginLeft: 'auto',
+          }}>
+            ⏱ {formatTime(elapsed)}
+          </span>
         </div>
         <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 0.3rem', letterSpacing: '-0.02em' }}>
           {question.title}

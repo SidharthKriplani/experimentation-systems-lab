@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { RCAStepPanel } from './RCAStepPanel.jsx';
 import { RCAScoreReveal } from './RCAScoreReveal.jsx';
 import { RCADebriefPanel } from './RCADebriefPanel.jsx';
@@ -61,6 +61,21 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
   const [sqlResponse, setSqlResponse] = useState('');
   const [sqlRevealed, setSqlRevealed] = useState(false);
   const [sqlRating, setSqlRating] = useState(null);
+
+  const [elapsed, setElapsed] = useState(0);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    setElapsed(0);
+    timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
+    return () => clearInterval(timerRef.current);
+  }, [rcaCase.id]);
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  }
 
   const steps = rcaCase.diagnosisSteps;
   const currentStep = steps[currentStepIndex];
@@ -128,8 +143,18 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
 
       {/* Case title */}
       <div style={{ marginBottom: '1.25rem' }}>
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)', marginBottom: '0.3rem' }}>
-          {rcaCase.subtitle}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.3rem' }}>
+          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)' }}>
+            {rcaCase.subtitle}
+          </div>
+          <span style={{
+            fontSize: 13,
+            color: elapsed > 600 ? 'var(--red, #ef4444)' : 'var(--text-muted, #888)',
+            fontVariantNumeric: 'tabular-nums',
+            marginLeft: 'auto',
+          }}>
+            ⏱ {formatTime(elapsed)}
+          </span>
         </div>
         <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>
           {rcaCase.title}

@@ -13,6 +13,7 @@ import { Module09_CLT } from './modules/Module09_CLT.jsx';
 import { Module10_CI } from './modules/Module10_CI.jsx';
 import { Module11_HypothesisTesting } from './modules/Module11_HypothesisTesting.jsx';
 import { Module12_Power } from './modules/Module12_Power.jsx';
+import { Module13_ExperimentDesigner } from './modules/Module13_ExperimentDesigner.jsx';
 
 const MODULE_COMPONENTS = {
   sf01: Module01_WhatIsData,
@@ -27,6 +28,7 @@ const MODULE_COMPONENTS = {
   sf10: Module10_CI,
   sf11: Module11_HypothesisTesting,
   sf12: Module12_Power,
+  sf13: Module13_ExperimentDesigner,
 };
 
 const TOTAL = statsFoundationsModules.length;
@@ -177,7 +179,7 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
             This module is locked
           </div>
           <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.5rem', maxWidth: '360px', margin: '0 auto 1.5rem' }}>
-            Unlock full access to all 12 Stat Foundations modules, plus every other room in Product Analytics Lab.
+            Unlock full access to all 13 Stat Foundations modules, plus every other room in Product Analytics Lab.
           </div>
           <button
             onClick={onBack}

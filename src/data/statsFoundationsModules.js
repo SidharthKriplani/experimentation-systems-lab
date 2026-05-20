@@ -1,5 +1,5 @@
 // Product Analytics Lab — Stat Foundations Room Module Data
-// 12 sequential modules building statistical intuition from ground up toward experimentation
+// 13 sequential modules building statistical intuition from ground up toward experimentation
 
 export const statsFoundationsModules = [
   {
@@ -145,6 +145,18 @@ export const statsFoundationsModules = [
     isFree: false,
     keyInsight: 'Power = probability of detecting a real effect. 80% power means a 20% chance of missing a true effect. Underpowered experiments are the #1 cause of false negatives in product analytics.',
     connection: 'MDE, power, α, and sample size are locked together. Fix three and the fourth is determined. Most companies target 80% power at α=0.05.',
+  },
+  {
+    id: 'sf13',
+    index: 13,
+    title: 'Experiment Design Lab',
+    subtitle: 'Sample size, MDE, power — the four-parameter lock',
+    difficulty: 'Advanced',
+    tags: ['sample size', 'MDE', 'power', 'significance', 'experiment design'],
+    estimatedMin: 10,
+    isFree: false,
+    keyInsight: 'Sample size, MDE, α, and power are locked together — fix three and the fourth is determined. Halving the MDE requires roughly 4× the sample size.',
+    connection: 'This is the practical capstone: before running any experiment, you need to calculate whether you can detect the effect you care about with the sample size you can collect.',
   },
 ];
 

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { StatsDecisionCard } from './StatsDecisionCard.jsx';
 import { StatsScoreReveal } from './StatsScoreReveal.jsx';
 import { StatsConceptPanel } from './StatsConceptPanel.jsx';
@@ -18,6 +18,20 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
   const [selectedId, setSelectedId] = useState(savedProgress?.selectedOptionId || null);
   const [submitted, setSubmitted] = useState(!!savedProgress?.selectedOptionId);
   const [openConceptId, setOpenConceptId] = useState(null);
+  const [elapsed, setElapsed] = useState(0);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    setElapsed(0);
+    timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
+    return () => clearInterval(timerRef.current);
+  }, [module.id]);
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  }
 
   const selectedOption = module.options.find(o => o.id === selectedId);
   const diffCfg = DIFFICULTY_CFG[module.difficulty] || DIFFICULTY_CFG.foundational;
@@ -76,6 +90,14 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
             color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>{module.concept}</span>
+          <span style={{
+            fontSize: 13,
+            color: elapsed > 600 ? 'var(--red, #ef4444)' : 'var(--text-muted, #888)',
+            fontVariantNumeric: 'tabular-nums',
+            marginLeft: 'auto',
+          }}>
+            ⏱ {formatTime(elapsed)}
+          </span>
         </div>
         <h1 style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--text)', margin: 0, letterSpacing: '-0.015em' }}>
           {module.title}

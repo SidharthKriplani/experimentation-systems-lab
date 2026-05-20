@@ -294,6 +294,107 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
         </div>
       </div>
 
+      {/* Review Queue */}
+      {(() => {
+        const reviewQueue = [];
+
+        // Low-rated behavioral
+        behavioralQuestions.forEach(q => {
+          const p = behavioralProgress[q.id];
+          if (p?.rating && p.rating <= 2) {
+            reviewQueue.push({ room: 'behavioral', id: q.id, title: q.title, subtitle: q.subtitle, rating: p.rating, color: 'var(--purple)' });
+          }
+        });
+
+        // Low-rated estimation
+        estimationProblems.forEach(ep => {
+          const p = estimationProg[ep.id];
+          if (p?.rating && p.rating <= 2) {
+            reviewQueue.push({ room: 'estimation', id: ep.id, title: ep.title, subtitle: ep.subtitle, rating: p.rating, color: 'var(--teal)' });
+          }
+        });
+
+        // Multi-attempt stats (struggled)
+        statsModules.forEach(m => {
+          const p = statsProgress[m.id];
+          if (p?.attempts >= 2) {
+            reviewQueue.push({ room: 'stats', id: m.id, title: m.title, subtitle: m.subtitle || '', rating: null, color: 'var(--accent)' });
+          }
+        });
+
+        if (reviewQueue.length === 0) return null;
+
+        return (
+          <div style={{ marginTop: '2.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
+              <div style={{
+                fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+                letterSpacing: '0.09em', color: 'var(--text-dim)',
+              }}>Review Queue</div>
+              <span style={{
+                fontSize: '0.65rem', fontWeight: 700,
+                background: 'var(--yellow-bg)', color: 'var(--yellow)',
+                border: '1px solid var(--yellow-border)',
+                borderRadius: '10px', padding: '0.1rem 0.45rem',
+              }}>{reviewQueue.length}</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {reviewQueue.map(item => (
+                <div
+                  key={`${item.room}-${item.id}`}
+                  style={{
+                    background: 'var(--surface)', border: '1px solid var(--border)',
+                    borderRadius: '8px', overflow: 'hidden',
+                    display: 'flex', alignItems: 'stretch',
+                    boxShadow: 'var(--shadow-sm)',
+                  }}
+                >
+                  {/* Left color bar */}
+                  <div style={{ width: '4px', flexShrink: 0, background: item.color }} />
+                  {/* Content */}
+                  <div style={{
+                    flex: 1, padding: '0.75rem 1rem',
+                    display: 'flex', alignItems: 'center',
+                    justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem',
+                  }}>
+                    <div>
+                      <div style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.87rem' }}>{item.title}</div>
+                      {item.subtitle && (
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '0.1rem' }}>{item.subtitle}</div>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+                      {/* Room label chip */}
+                      <span style={{
+                        fontSize: '0.62rem', fontWeight: 600,
+                        color: 'var(--text-dim)', background: 'var(--surface-2)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '4px', padding: '0.1rem 0.4rem',
+                        textTransform: 'capitalize',
+                      }}>{item.room}</span>
+                      {/* Rating or retried badge */}
+                      {item.rating !== null ? (
+                        <span style={{ fontSize: '0.85rem', letterSpacing: '0.05em' }}>
+                          <span style={{ color: 'var(--yellow)' }}>{'★'.repeat(item.rating)}</span>
+                          <span style={{ color: 'var(--border)' }}>{'☆'.repeat(5 - item.rating)}</span>
+                        </span>
+                      ) : (
+                        <span style={{
+                          fontSize: '0.62rem', fontWeight: 700,
+                          color: 'var(--yellow)', background: 'var(--yellow-bg)',
+                          border: '1px solid var(--yellow-border)',
+                          borderRadius: '4px', padding: '0.1rem 0.4rem',
+                        }}>Retried</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Review Room completed scenarios (existing detail) */}
       {completed.length > 0 && (
         <div style={{ marginTop: '2.5rem' }}>

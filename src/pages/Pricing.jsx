@@ -96,13 +96,16 @@ export function Pricing({ onShowUnlock, onBack }) {
           </div>
           <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', flex: 1 }}>
             {featureItem('All 100+ practice cases across 9 rooms')}
-            {featureItem('Stat Foundations (12 modules)')}
+            {featureItem('Stat Foundations (13 modules)')}
             {featureItem('All learning paths')}
             {featureItem('Lifetime access, no subscription')}
           </div>
           <div style={{ marginTop: 'auto', paddingTop: '1.25rem' }}>
             <button
-              onClick={() => window.open(stripeLink, '_blank')}
+              onClick={() => {
+                try { window.posthog?.capture('pricing_cta_click', { tier: 'full_access' }); } catch {}
+                window.open(stripeLink, '_blank');
+              }}
               style={{
                 width: '100%', padding: '0.75rem', borderRadius: 8,
                 background: 'var(--accent)', color: '#fff',
@@ -119,7 +122,10 @@ export function Pricing({ onShowUnlock, onBack }) {
       {/* Access code link */}
       <div style={{ textAlign: 'center' }}>
         <button
-          onClick={onShowUnlock}
+          onClick={() => {
+            try { window.posthog?.capture('pricing_unlock_code_click'); } catch {}
+            onShowUnlock?.();
+          }}
           style={{
             background: 'none', border: 'none', color: 'var(--text-muted)',
             fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'underline',
