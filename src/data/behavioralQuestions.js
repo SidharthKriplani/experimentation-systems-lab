@@ -363,7 +363,7 @@ export const behavioralQuestions = [
   // Q09 — Pushback from a More Senior Person
   // ─────────────────────────────────────────────
   {
-    id: 'Q09',
+    id: 'BEH09',
     title: 'A Senior Director Publicly Dismissed Your Analysis. What Did You Do?',
     subtitle: 'Conflict · Analytical Integrity Under Pressure',
     difficulty: 'senior',
@@ -403,7 +403,7 @@ export const behavioralQuestions = [
   // Q10 — Analysis That Changed a Major Decision
   // ─────────────────────────────────────────────
   {
-    id: 'Q10',
+    id: 'BEH10',
     title: 'Tell Me About Analysis That Changed a Major Product or Business Decision.',
     subtitle: 'Data Impact · Analysis-to-Action',
     difficulty: 'analyst',
@@ -443,7 +443,7 @@ export const behavioralQuestions = [
   // Q11 — Disagreeing With PM or Eng Direction
   // ─────────────────────────────────────────────
   {
-    id: 'Q11',
+    id: 'BEH11',
     title: 'Tell Me About a Time You Disagreed With the Product Roadmap Direction.',
     subtitle: 'Cross-Functional Influence · Product Judgment',
     difficulty: 'senior',
@@ -483,7 +483,7 @@ export const behavioralQuestions = [
   // Q12 — Handling Ambiguous or Incomplete Data
   // ─────────────────────────────────────────────
   {
-    id: 'Q12',
+    id: 'BEH12',
     title: 'Tell Me About a Time You Had to Make a Decision With Incomplete Data.',
     subtitle: 'Decision-Making · Uncertainty Management',
     difficulty: 'analyst',
@@ -523,7 +523,7 @@ export const behavioralQuestions = [
   // Q13 — Building a Metric From Scratch
   // ─────────────────────────────────────────────
   {
-    id: 'Q13',
+    id: 'BEH13',
     title: 'Tell Me About a Metric You Built From Scratch That the Team Adopted.',
     subtitle: 'Metric Design · Organizational Influence',
     difficulty: 'senior',
@@ -563,7 +563,7 @@ export const behavioralQuestions = [
   // Q14 — Working With Stakeholders Who Want Different Answers
   // ─────────────────────────────────────────────
   {
-    id: 'Q14',
+    id: 'BEH14',
     title: 'Tell Me About a Time Stakeholders Had Conflicting Views on What the Data Said.',
     subtitle: 'Stakeholder Management · Analytical Objectivity',
     difficulty: 'senior',
@@ -603,7 +603,7 @@ export const behavioralQuestions = [
   // Q15 — Fixing a Metric That Was Being Gamed
   // ─────────────────────────────────────────────
   {
-    id: 'Q15',
+    id: 'BEH15',
     title: 'Tell Me About a Time You Discovered a Metric Was Being Gamed.',
     subtitle: 'Data Integrity · Analytical Courage',
     difficulty: 'senior',
@@ -643,7 +643,7 @@ export const behavioralQuestions = [
   // Q16 — Handling a Failed Project or Experiment
   // ─────────────────────────────────────────────
   {
-    id: 'Q16',
+    id: 'BEH16',
     title: 'Tell Me About an Experiment or Project That Failed. What Did You Learn?',
     subtitle: 'Learning · Intellectual Honesty',
     difficulty: 'analyst',
@@ -683,7 +683,7 @@ export const behavioralQuestions = [
   // Q17 — Scaling Your Impact Beyond Your Team
   // ─────────────────────────────────────────────
   {
-    id: 'Q17',
+    id: 'BEH17',
     title: 'Tell Me About a Time You Made an Impact Beyond Your Direct Team.',
     subtitle: 'Leadership · Organizational Influence',
     difficulty: 'senior',
@@ -723,7 +723,7 @@ export const behavioralQuestions = [
   // Q18 — Balancing Speed and Rigor
   // ─────────────────────────────────────────────
   {
-    id: 'Q18',
+    id: 'BEH18',
     title: 'How Do You Decide When Analysis Is "Good Enough" to Act On?',
     subtitle: 'Judgment · Speed vs. Rigor Tradeoff',
     difficulty: 'analyst',
@@ -763,7 +763,7 @@ export const behavioralQuestions = [
   // Q19 — Navigating Ethical Tension in Data Work
   // ─────────────────────────────────────────────
   {
-    id: 'Q19',
+    id: 'BEH19',
     title: 'Have You Ever Been Asked to Do Analysis That Made You Uncomfortable? What Did You Do?',
     subtitle: 'Ethics · Analytical Integrity',
     difficulty: 'senior',
@@ -803,7 +803,7 @@ export const behavioralQuestions = [
   // Q20 — Most Important Analysis You Did Without Being Asked
   // ─────────────────────────────────────────────
   {
-    id: 'Q20',
+    id: 'BEH20',
     title: 'What Is the Most Important Analysis You Initiated Without Being Asked?',
     subtitle: 'Initiative · Proactive Insight',
     difficulty: 'senior',
@@ -836,6 +836,416 @@ export const behavioralQuestions = [
       'Describing proactive analysis that never got to a decision — a finding that generated appreciation but no action is a half-success at best',
       'Taking credit for analysis that was actually prompted by a manager or stakeholder comment',
       'The analysis being technically interesting but strategically irrelevant — analytical initiative that doesn\'t connect to business priorities isn\'t the right kind of initiative',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH21 — Disagree and Commit
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH21',
+    title: 'You Disagreed With the Decision but Had to Execute It Anyway.',
+    subtitle: 'Followership · Disagree and Commit',
+    difficulty: 'mid',
+    isFree: false,
+    prompt: 'Tell me about a time you disagreed with a decision but had to execute it anyway. How did you handle it?',
+    whatTheyreReallyAsking: 'Can you separate your personal opinion from your professional obligation to execute? Interviewers want to know if you have the maturity to advocate clearly once, accept a decision gracefully, and then execute it without passive resistance or visible resentment. They are also testing whether you can distinguish "I disagreed but I was wrong" from "I disagreed and I was right" — both outcomes teach different things.',
+    storyFramework: {
+      situation: 'A decision was made — by your manager, leadership, or cross-functional consensus — that you believed was analytically wrong, strategically misguided, or simply not the approach you would have chosen. The decision was final and you were expected to execute.',
+      behavior: 'You raised your concern once, clearly and with specificity, through the right channel (not in a passive-aggressive comment in a group Slack). You made sure you were heard. Then, once the decision stood, you executed it fully — not reluctantly, not while continuing to relitigate it, not while signaling your disagreement to teammates.',
+      outcome: 'The outcome either validated the decision (and you describe what you learned from being wrong), or confirmed your concern (and you describe how you used that as an input for future influence attempts — not as an "I told you so"). Either way, the relationship and team functioning remained intact.',
+    },
+    strongSignals: [
+      'Made the concern specific and analytical — not just "I had a bad feeling" but "here is the data point I thought was being underweighted"',
+      'Raised the concern through the right channel and at the right time — not in a public meeting as a gotcha, not by going around the decision-maker',
+      'Executed fully after the decision was made — no hedging, no passive resistance, no subtle signaling of disagreement to teammates',
+      'Can objectively assess the outcome — was the decision right or wrong in hindsight, and what does each scenario mean?',
+      'The story demonstrates the distinction between having a view and having a veto — these are different things',
+    ],
+    weakSignals: [
+      'Still clearly not over the decision — the story is an extended argument for why they were right and the decision-maker was wrong',
+      'Describes executing while "making sure everyone knew I disagreed" — this is passive resistance, not disagree-and-commit',
+      'Never accepted the decision as legitimate — treated disagreement as permanent rather than resolved',
+      'The disagreement was trivial (style preference, minor implementation detail) — not a meaningful test of this competency',
+    ],
+    keyPrinciples: [
+      '"Disagree and commit" is not about suppressing your view. It means: advocate clearly once, through the right channel, with the best argument you have. If the decision doesn\'t go your way, you own the execution as fully as if it were your own decision.',
+      'The moment you start executing reluctantly — visibly dragging your feet, building an alibi for when it goes wrong, or signaling your disagreement to your teammates — you are no longer doing your job.',
+      'The value of this competency is highest precisely when the decision later turns out to be wrong. If you were right, what you do next matters: do you use it to improve your influence model, or to prove a point? Only one of those makes you more effective.',
+    ],
+    antiPatterns: [
+      'Framing the story as "I was right and they were wrong" rather than "here is how I handled disagreement professionally" — the interviewer wants the process, not the verdict',
+      'Describing "disagree and commit" as something you did after only minimal advocacy — if you had a real concern and said nothing, that is not disagree and commit, that is compliance without voice',
+      'Using the story to surface a grievance about a former employer rather than to demonstrate a professional skill',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH22 — Delivering Bad News
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH22',
+    title: 'You Had to Deliver Genuinely Bad News to a Stakeholder or Leadership.',
+    subtitle: 'Communication · Courage',
+    difficulty: 'mid',
+    isFree: false,
+    prompt: 'Tell me about a time you had to deliver bad news to a stakeholder or leadership. How did you prepare and how did you handle it?',
+    whatTheyreReallyAsking: 'Do you have the courage to surface bad news proactively, or do you wait for others to discover problems and then react? Interviewers want to see whether you treat early bad-news delivery as a professional responsibility rather than a personal risk. They also want to see how you structure the message — are you coming with just the problem, or with a diagnosis and a path forward?',
+    storyFramework: {
+      situation: 'You had information — a metric miss, a failed experiment, a significant project setback, a data quality issue — that a stakeholder or leadership needed to know, but that was uncomfortable to surface. Critically: you surfaced it before you were asked, before it became obvious, before the scheduled review.',
+      behavior: 'You prepared the message in a structured way: here is what happened, here is what we know about why, here is what I recommend we do next. You chose the right channel and forum — private before public, direct before indirect. You were clear about what was known vs. uncertain.',
+      outcome: 'The stakeholder or leadership received the news in a way that gave them time to respond. Your proactive delivery built trust rather than eroded it. A specific outcome resulted from the early signal — a plan was changed, a risk was mitigated, a process was improved.',
+    },
+    strongSignals: [
+      'Surfaced the problem significantly ahead of the scheduled review or before anyone else noticed — proactive, not reactive',
+      'Came with a structured message: the what, the why (with confidence level), and the so what (recommendation)',
+      'Chose the right forum: delivered privately to the decision-maker before any public forum',
+      'Describes the trust-building effect of early bad-news delivery, not just the short-term discomfort',
+      'Can distinguish between "the news was bad" and "I handled the delivery badly" — these are separate evaluations',
+    ],
+    weakSignals: [
+      'Waited for the scheduled review and then reported the bad news as if this were proactive',
+      'Delivered the bad news without any analysis of why or any recommendation for next steps — just dumped the problem',
+      'Framed the story around how uncomfortable it was rather than around how they handled it effectively',
+      'The bad news was trivial or easily reversible — not a meaningful test of communication courage',
+    ],
+    keyPrinciples: [
+      'The cost of a surprise is higher than the cost of bad news. Leaders who are blindsided in a QBR remember it. Leaders who received a proactive heads-up remember that differently.',
+      'Structure the message in three parts: (1) here is what the data shows, (2) here is what we understand about why, (3) here is what I recommend. Bad news plus a plan is a problem to solve. Bad news alone is just bad news.',
+      'Delivering bad news early is not an act of transparency — it is a professional responsibility. The moment you know something decision-relevant, the decision-maker has a right to know it.',
+    ],
+    antiPatterns: [
+      'Treating the scheduled review as the appropriate venue for bad news that was visible for weeks — this reads as either oblivious or politically motivated',
+      'Softening the message so aggressively that the severity is obscured — "we\'re tracking slightly below plan" when you\'re 25% below target is not honest communication',
+      'Delivering the bad news without a recommendation, forcing the decision-maker to do all the problem-solving with no analytical input',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH23 — Recommendation from Incomplete Data
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH23',
+    title: 'You Had to Make a Recommendation with Very Incomplete Data.',
+    subtitle: 'Ambiguity · Decision-Making Under Uncertainty',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Describe a time you were working with very incomplete data and still had to make a recommendation. How did you proceed?',
+    whatTheyreReallyAsking: 'Can you operate productively under genuine uncertainty — not just incomplete data in a controlled sense, but situations where critical information is simply unavailable? Interviewers want to see whether you can bound the uncertainty, make assumptions explicit, and produce a recommendation with clearly stated conditions rather than retreating to "we need more data."',
+    storyFramework: {
+      situation: 'A decision had a hard deadline, and the data required to be fully confident was not available — and would not become available in time. This was not a case of waiting for a query to run; the data genuinely did not exist, was unreliable, or was too early to be mature.',
+      behavior: 'You identified what you knew vs. what you didn\'t know. You made your assumptions explicit. You built a bounded estimate — a range with stated confidence — rather than a false-precision point number. You named the specific conditions under which the recommendation would change, and you identified the leading indicators you would watch.',
+      outcome: 'The decision-maker had something actionable: a recommendation with stated uncertainty and a named update trigger. The decision was made. Either the stated assumptions held and the recommendation was validated, or a new signal arrived and you updated as committed.',
+    },
+    strongSignals: [
+      'Named the specific data that was missing and why it couldn\'t be obtained in time — not a generic "the data wasn\'t perfect"',
+      'Built a range estimate with scenarios rather than a single number — shows calibration rather than false confidence',
+      'Made assumptions explicit before making conclusions, and named the condition under which each assumption would break',
+      'Provided a specific update trigger: "I\'ll revise this if X shows Y by Z date"',
+      'Pushed back successfully on the expectation of precision when precision was analytically unjustifiable',
+    ],
+    weakSignals: [
+      'Defaulted to "we need more data" without offering any bounded estimate or provisional recommendation',
+      'Provided a recommendation with no confidence bounds or assumption statements — looks decisive but analytically irresponsible',
+      'The "incomplete data" was a minor data gap, not a situation of genuine uncertainty',
+      'Cannot articulate what made the available data sufficient to act on despite being incomplete',
+    ],
+    keyPrinciples: [
+      'The right response to incomplete data is not to refuse to answer. It is to be explicit about what you know, what you\'re assuming, and how confident you are. "Based on the three data points I have, with the assumption that X holds, my best estimate is Y with ±Z uncertainty" is an answer. "I don\'t have enough data" is not.',
+      'Senior analysts earn their keep precisely in high-uncertainty situations. The ability to make better-than-random decisions with imperfect data is the core skill that differentiates senior from junior.',
+      'Named uncertainty is more useful than hidden uncertainty. A stakeholder who knows your confidence level can decide how much to rely on the recommendation. A stakeholder given false precision will over-rely on it.',
+    ],
+    antiPatterns: [
+      'Framing "I asked for more time to gather data" as the correct resolution — sometimes it is, but in this question the assumption is that the decision couldn\'t wait',
+      'Providing a vague probabilistic statement ("probably around X") without the specific reasoning that justifies the estimate',
+      'Confusing "I felt uncertain" with "I communicated my uncertainty structure to the decision-maker" — the first is a feeling, the second is a skill',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH24 — Reversing a Prior Recommendation
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH24',
+    title: 'You Had to Reverse a Recommendation You Had Already Made.',
+    subtitle: 'Intellectual Honesty · Course Correction',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Tell me about a time you had to reverse a recommendation you had already made. What happened, and how did you handle it?',
+    whatTheyreReallyAsking: 'Do you have the intellectual honesty to update your position when new evidence contradicts it? This question tests whether you treat being wrong as a failure to hide or a data point to act on. Interviewers also want to see how you handle the social cost of reversal — do you own it cleanly or deflect onto external factors?',
+    storyFramework: {
+      situation: 'You had made a recommendation — publicly, to a stakeholder, in a document, or in a meeting — and subsequently received information that materially changed your analysis. The recommendation was already in motion or had already influenced a decision.',
+      behavior: 'You went back to the stakeholder proactively — before the error became visible or the decision went wrong. You owned the reversal cleanly: "I recommended X based on Y assumption. New data shows Y was wrong, so I\'m revising my recommendation to Z." You didn\'t bury the reversal or minimize it. You explained what changed and why the original recommendation was reasonable given the information available at the time.',
+      outcome: 'The stakeholder received a corrected recommendation with time to act on it. The reversal built trust rather than eroded it — precisely because of how you handled it. A specific decision was adjusted as a result.',
+    },
+    strongSignals: [
+      'Went back proactively — didn\'t wait for the error to become visible or for someone else to flag it',
+      'Owned the reversal cleanly without deflecting onto the quality of the original data, the timeline pressure, or anyone else',
+      'Explained what changed in the underlying facts — the reversal is grounded in new information, not a change of opinion',
+      'Framed the original recommendation as reasonable given what was known at the time, not as an unforgivable error',
+      'The relationship with the stakeholder was intact or stronger after the reversal because of how it was handled',
+    ],
+    weakSignals: [
+      'The reversal came only after someone else caught the error — not self-initiated',
+      'Extensive deflection: the data was bad, the timeline was too short, the stakeholder gave wrong requirements',
+      'The original recommendation was trivial — not a meaningful test of intellectual honesty',
+      'Frames the reversal as primarily a negative event rather than a demonstration of updating on evidence',
+    ],
+    keyPrinciples: [
+      'Being wrong is expected. Staying wrong after the evidence changes is the failure. Interviewers know you will sometimes make incorrect recommendations — they want to know that you will correct them promptly and cleanly when you do.',
+      'The fastest way to destroy credibility is to defend a recommendation past the point where the evidence supports it. The fastest way to build credibility is to go back to a stakeholder and say "I was wrong about X because Y has changed, and here is my updated view."',
+      'The original recommendation was not a mistake if it was reasonable given the available information at the time. A recommendation is only a mistake if it ignored available evidence. These are analytically different, and your framing should reflect that.',
+    ],
+    antiPatterns: [
+      'Minimizing the reversal: "it was a small tweak, not really a reversal" — if the direction of the recommendation changed, own it as a reversal',
+      'Framing the reversal as proof of agility rather than as an act of intellectual honesty — the two are different things',
+      'Describing the reversal but not describing how you communicated it — the communication of the reversal is the behavior being evaluated',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH25 — Two Stakeholders With Opposing Asks
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH25',
+    title: 'Two Stakeholders Had Directly Opposing Asks. How Did You Navigate It?',
+    subtitle: 'Stakeholder Management · Conflict Resolution',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Tell me about a time two stakeholders had directly opposing asks. How did you navigate it?',
+    whatTheyreReallyAsking: 'Can you navigate stakeholder conflict without becoming a political football between two competing interests? Interviewers want to see whether you can identify the source of the conflict (analytical, strategic, or personal), run the analysis that resolves what is resolvable, and escalate cleanly what is not. They also want to know whether you default to siding with whoever has more power, which is the most common failure mode.',
+    storyFramework: {
+      situation: 'Two stakeholders — with real authority or real stakes in the outcome — wanted directly contradictory things from you or your analysis. This was not a soft preference difference; acting on one ask would directly conflict with the other.',
+      behavior: 'You identified the nature of the conflict: was it analytical (one interpretation of the data was right and the other was wrong), strategic (a genuine values or priority trade-off), or relational (a power struggle with the analysis as the proxy)? For analytical conflicts, you ran the analysis and reported the result to both stakeholders before the public forum. For strategic conflicts, you named the trade-off explicitly and escalated the choice to the right decision-maker.',
+      outcome: 'The conflict was resolved or escalated cleanly. You did not produce a "balanced" analysis that resolved nothing. Both stakeholders understood what decision was made and why, even if one was disappointed.',
+    },
+    strongSignals: [
+      'Identified the type of conflict before attempting to resolve it — analytical, strategic, or political conflicts require fundamentally different responses',
+      'For analytical conflicts: ran the analysis, reported to both stakeholders privately before the public forum, let the evidence resolve the dispute',
+      'For strategic conflicts: named the trade-off explicitly and escalated the decision rather than pretending analysis could resolve a values question',
+      'Did not default to the more senior stakeholder\'s position without analytical justification',
+      'Both stakeholders came out of the process with a clear understanding of how the decision was made',
+    ],
+    weakSignals: [
+      'Produced a "balanced" report that presented both views without a conclusion — that is conflict avoidance, not conflict resolution',
+      'Sided with the more powerful stakeholder without examining whether their position was analytically correct',
+      'Escalated immediately without attempting to resolve what was analytically resolvable',
+      'Still visibly bitter about one stakeholder\'s behavior — unresolved anger about the conflict',
+    ],
+    keyPrinciples: [
+      'Analytical conflicts have a correct answer. "Which interpretation of this data is right?" is a question you can resolve with methodology. Strategic conflicts do not have a correct answer — they require a decision-maker who can weigh the competing values. Confusing these two types leads to bad outcomes for both.',
+      'The most dangerous move is to produce an analysis that gives both sides what they want by being sufficiently vague. This creates the illusion of resolution while ensuring the underlying conflict resurfaces at the next decision point.',
+      'Your job is not to take a side in a power struggle. Your job is to make the decision-making process cleaner: resolve what is analytically resolvable, escalate what requires a strategic judgment, and be explicit about which is which.',
+    ],
+    antiPatterns: [
+      'Treating every stakeholder conflict as resolvable with more analysis — some conflicts are strategic disagreements that require a decision from above, not more data',
+      'Framing the story as "I navigated between two difficult people" rather than "I identified the right resolution process for the type of conflict this was"',
+      'Never having a view of your own — describing a fully neutral analyst who just presented both sides without any analytical contribution',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH26 — Driving Change Without Direct Authority
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH26',
+    title: 'You Drove a Significant Change Without Having Authority Over the People Involved.',
+    subtitle: 'Influence · Leadership Without Title',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Describe a situation where you drove a significant change without direct authority over the people involved. How did you make it happen?',
+    whatTheyreReallyAsking: 'Can you lead through influence rather than hierarchy? This question tests whether you understand that organizational change happens through persuasion, coalition-building, and making the right things easy — not through mandate. Interviewers want to see the mechanics of how you built support, not just the outcome.',
+    storyFramework: {
+      situation: 'A significant change was needed — a process, a measurement framework, a team behavior, a cross-functional workflow — and you had no direct authority to mandate it. The people who needed to change were peers, other teams, or people senior to you.',
+      behavior: 'You diagnosed why the change hadn\'t happened yet — was it lack of awareness, lack of a compelling argument, friction in adoption, or active resistance? You built a specific case for the change in terms that mattered to the people who needed to adopt it. You made adoption easy rather than demanding it. You found early adopters who gave you proof points. You worked through champions in other teams rather than going over heads.',
+      outcome: 'The change happened. You can name specific teams that adopted it, specific decisions that changed as a result, or a specific process that no longer exists in its old form. The change persisted without your ongoing involvement.',
+    },
+    strongSignals: [
+      'Diagnosed the specific barrier to change before designing the influence strategy — awareness, motivation, friction, or active resistance require different approaches',
+      'Built the case in the other team\'s terms — what does this change do for them, not just for you or the organization',
+      'Found early adopters and used their experience as social proof rather than relying solely on the argument',
+      'Made adoption easy: reduced friction, provided templates, ran the first instance with them rather than asking them to do it alone',
+      'The change persisted and scaled without requiring your ongoing enforcement',
+    ],
+    weakSignals: [
+      'The change happened because a senior leader mandated it after the candidate escalated — that\'s escalation, not influence',
+      'The change only affected the candidate\'s own team or work — not a true cross-functional influence story',
+      'Cannot explain why the change happened — "I just kept pushing" is not a replicable influence model',
+      'The change was minor and required no real influence work',
+    ],
+    keyPrinciples: [
+      'The most durable organizational changes happen when the people who need to change understand why it benefits them, not just why it benefits the person asking. Frame every change ask in terms of the adopter\'s problem, not your problem.',
+      'Early adopters are your most valuable asset in a no-authority influence campaign. Find one team willing to pilot, make their experience a success, and then use their story as evidence for the next conversation. Social proof scales in ways that argument alone does not.',
+      'Making the change easy is more powerful than making the argument compelling. A great process with a 2-hour setup burden will be adopted less than a decent process that works in 15 minutes. Remove friction before you try to increase motivation.',
+    ],
+    antiPatterns: [
+      'Leading the story with the outcome and working backward — without explaining the specific mechanics of how you built support',
+      'Describing influence as "presenting at a meeting and getting buy-in" — that is one step, not an influence campaign',
+      'Relying on authority proxies (getting your skip-level to endorse the change, dropping a VP\'s name in conversations) rather than genuine peer influence',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH27 — Meaningful Impact on Someone's Growth
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH27',
+    title: 'You Had a Meaningful Impact on Someone Else\'s Career or Development.',
+    subtitle: 'Mentoring · Developing Others',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Tell me about a time you had a meaningful impact on someone else\'s career or growth. What did you do, and what was the outcome?',
+    whatTheyreReallyAsking: 'Do you invest in people around you, not just in your own work? This question tests whether you see developing others as part of your job — not a nice-to-have that happens when you have spare time. Interviewers also want to see whether your mentoring was substantive (you changed how someone works or thinks) or superficial (you were nice to them).',
+    storyFramework: {
+      situation: 'Someone on your team, a peer, or a more junior person was stuck — on a career trajectory, a skill gap, a confidence problem, or a recurring pattern of behavior that was limiting them. You noticed it, and you decided to engage.',
+      behavior: 'You named what you observed specifically, rather than offering generic encouragement. You gave them a concrete framework or approach for the problem. You followed up — you didn\'t just have one conversation and consider it done. You gave them feedback that was specific enough to act on, not so vague as to be useless.',
+      outcome: 'The person changed something specific — a skill, a behavior, a way of approaching a problem, a career decision — and you can describe what changed. Ideally, you stayed connected enough to see the downstream effect.',
+    },
+    strongSignals: [
+      'Named a specific observation about the person before giving advice — the help was tailored, not generic',
+      'The feedback or coaching changed a specific behavior or decision — not just "they appreciated my input"',
+      'Followed up over time rather than having one conversation and considering the job done',
+      'Can describe what specifically the person does differently now — the change is observable and concrete',
+      'Did this without being asked, as part of their natural way of working — not as a formal mentoring assignment',
+    ],
+    weakSignals: [
+      'The "meaningful impact" is vague: "I encouraged them" or "I was supportive during a hard time" — kind but not developmental',
+      'The story is primarily about how much the other person appreciated the interaction, not about what changed for them',
+      'The mentoring was a one-time conversation rather than a sustained investment',
+      'Describes the other person\'s situation in detail but is vague about what specific input they provided',
+    ],
+    keyPrinciples: [
+      'Meaningful mentoring starts with a specific observation, not a generic offer. "I noticed that your presentations tend to bury the recommendation in slide 8 — here\'s a framework I use for leading with the so-what" is actionable. "I\'m happy to give you feedback anytime" is not.',
+      'The best mentors give feedback that is uncomfortable to hear but specific enough to act on. Feedback that is only positive is encouragement, not development. The developmental value is in the specific, actionable critique — delivered with enough care that the person can receive it.',
+      'Development requires repetition, not a single conversation. A behavior change requires being named, practiced, and reinforced over time. If you\'re only having one conversation and considering your mentoring obligation fulfilled, you\'re coaching someone for a single at-bat rather than improving their swing.',
+    ],
+    antiPatterns: [
+      'Describing mentoring as being available and supportive — availability is a prerequisite, not the mentoring itself',
+      'Framing the story around how much you enjoyed mentoring rather than around what the other person changed',
+      'The person you mentored had no particular challenge — "I mentored someone who was already very capable" is not this question',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH28 — Saying No to a Reasonable-Seeming Request
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH28',
+    title: 'You Said No to a Reasonable-Seeming Request. How Did You Handle It?',
+    subtitle: 'Prioritization · Backbone',
+    difficulty: 'mid',
+    isFree: false,
+    prompt: 'Describe a time you said no to a reasonable-seeming request. What was the request, why did you decline it, and how did you handle the conversation?',
+    whatTheyreReallyAsking: 'Can you prioritize effectively even when it requires disappointing someone? Interviewers want to see whether you have a principled basis for saying no (not enough capacity, not the highest-value use of your time, the request doesn\'t actually serve the stated goal) versus avoidance or conflict-aversion. They also want to see how you decline in a way that preserves the relationship and sometimes finds an alternative.',
+    storyFramework: {
+      situation: 'A stakeholder, colleague, or manager made a request that was not inherently unreasonable — they had a legitimate need — but that you concluded you should not fulfill in its requested form. This required saying no to someone who expected a yes.',
+      behavior: 'You gave the person a clear, honest reason for declining that was grounded in priorities, capacity, or analytical judgment — not vague deflection. You offered a specific alternative where possible: a smaller-scope version, a later date, a different approach that met the underlying need. You delivered the no in a way that kept the relationship functional.',
+      outcome: 'The request was declined (or significantly rescoped) and the relationship remained intact. In the best cases, the alternative you proposed was actually more useful than the original request.',
+    },
+    strongSignals: [
+      'The reason for saying no was principled — clearly grounded in competing priorities, capacity, analytical concern, or a better alternative',
+      'Gave the person a clear reason, not a vague "I\'m too busy"',
+      'Offered a specific alternative where one existed — the no was paired with something constructive',
+      'Delivered the no directly and promptly rather than stringing the person along',
+      'The relationship was intact after the no — they understand how to decline without damaging working relationships',
+    ],
+    weakSignals: [
+      'The story is really about a passive no — they deprioritized the request and never had the conversation',
+      'Said yes and then delivered something inadequate — that is not saying no, that is poor delivery',
+      'The reason for saying no was primarily about personal workload comfort rather than principled prioritization',
+      'Cannot describe a specific reason they said no — "I had a lot going on" is not a principled no',
+    ],
+    keyPrinciples: [
+      'Saying no is a prioritization decision, not a relationship decision. The question is not "will this person be upset if I say no?" — the question is "is this the highest-value use of my time, and does this request serve the stated goal?" Those are analytical questions, not social ones.',
+      'A good no comes with a reason and often an alternative. "I can\'t do the full analysis by Friday, but I can give you a directional answer based on the data I have — would that be useful?" is a no that keeps the relationship and still delivers value.',
+      'The cost of saying yes to everything is doing many things poorly. The cost of saying yes to the wrong things is doing nothing important well. Selective no-saying is how high-performers protect the time to do their most important work.',
+    ],
+    antiPatterns: [
+      'Treating the ability to say no as primarily a self-care practice rather than a strategic prioritization skill',
+      'Describing a story where you said no and then regretted it because you were wrong about the importance of the request — this is a bad prioritization story, not a backbone story',
+      'Saying no and then continuing to feel guilty about it — shows the discomfort with declining hasn\'t been resolved',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH29 — Pushing Back on a Manager or Senior Leader
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH29',
+    title: 'You Pushed Back on Your Manager or a Senior Leader. What Happened?',
+    subtitle: 'Managing Up · Intellectual Courage',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Tell me about a time you pushed back on your manager or a senior leader. What was the situation, how did you raise it, and what happened?',
+    whatTheyreReallyAsking: 'Do you have the intellectual courage to advocate up when you have a genuine analytical concern — and the judgment to do it in a way that is productive rather than damaging? This is one of the most important senior-individual-contributor competencies. Interviewers want to see whether you distinguish between "I had a concern" and "I surfaced it effectively," and whether you understand the difference between respectful dissent and insubordination.',
+    storyFramework: {
+      situation: 'Your manager or a senior leader made a call — a project direction, a metric definition, a launch decision, a resource allocation — that you had a specific, analytical reason to believe was wrong. You had data or reasoning that they did not appear to have considered.',
+      behavior: 'You chose the right moment and format: private conversation, not a public meeting; direct and specific, not vague and hedging. You framed the pushback around the data and the risk, not around your preference. You gave them the full picture of what you were seeing and why you thought it mattered. You made a specific recommendation, not just an objection. And after the conversation, you accepted the outcome — whether or not they changed course.',
+      outcome: 'Either they updated their position (and you describe what changed and what the outcome was), or they maintained it (and you describe how you accepted that outcome and what you learned from the interaction). In both cases, the relationship was intact.',
+    },
+    strongSignals: [
+      'The pushback was grounded in a specific analytical concern — a data point, a risk, a logical inconsistency — not a personal preference or strategic disagreement',
+      'Chose the right format: private, direct, specific — not an ambush in a public meeting',
+      'Came with a recommendation, not just an objection: "I think there\'s a risk here — here\'s what I\'d suggest instead"',
+      'Accepted the outcome gracefully after being heard, whether or not the direction changed',
+      'The relationship with the leader was not damaged — they trust someone who can push back well more, not less',
+    ],
+    weakSignals: [
+      'The pushback was actually capitulation framed as pushback — "I raised a concern and then fully deferred when they responded"',
+      'Raised the concern in a way that was embarrassing or confrontational for the leader in a public setting',
+      'The story is primarily about how unreasonable the leader was rather than about how effectively they managed up',
+      'The pushback was trivial — a minor preference disagreement, not a meaningful analytical concern',
+    ],
+    keyPrinciples: [
+      'Good pushback sounds like: "I want to flag something I\'m seeing in the data before we finalize this. I might be missing context — can I walk you through it?" That framing invites dialogue rather than triggering defensiveness.',
+      'The most common failure mode in pushing back up is conflating "I said something" with "I advocated effectively." Saying "I expressed some concerns" in a meeting is not the same as making a specific, well-structured case for a different direction in the right forum.',
+      'A senior leader who can be pushed back on productively will trust the person doing it more over time, not less. The leaders who become liabilities are the ones who never push back — they don\'t know whether they\'re being told the truth.',
+    ],
+    antiPatterns: [
+      'Describing pushback as an act of bravery rather than a professional skill — reframing it emotionally is a sign that it hasn\'t been processed as a normal part of the job',
+      'The story ends with "and they agreed with me" as the measure of success — the measure of success is whether the concern was heard and fairly evaluated, not whether you won',
+      'Conflating pushing back with relitigating after the decision is made — these are different behaviors with different implications',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // BEH30 — Pattern of Mistakes You've Actively Fixed
+  // ─────────────────────────────────────────────
+  {
+    id: 'BEH30',
+    title: 'What\'s a Pattern of Mistakes in Your Analytical Work That You\'ve Actively Tried to Fix?',
+    subtitle: 'Self-Awareness · Growth Mindset',
+    difficulty: 'senior',
+    isFree: false,
+    prompt: 'Looking back at your analytical work, what\'s a pattern of mistakes or gaps you\'ve actively tried to fix? What did you do about it?',
+    whatTheyreReallyAsking: 'Do you have genuine, specific self-awareness about your analytical blind spots — not performed humility about something minor? This question also tests your growth model: do you treat skill development as deliberate practice with a feedback loop, or as passive accumulation of experience? The best answers name a real pattern, describe the specific mechanism that caused it, and describe a specific change in behavior rather than a vague commitment to improvement.',
+    storyFramework: {
+      situation: 'Over time — through specific failures, feedback from colleagues, or your own reflection — you identified a pattern in how you approach analysis, communicate findings, or work with stakeholders that was systematically producing suboptimal outcomes.',
+      behavior: 'You named the pattern specifically, diagnosed why it was happening (not just "I need to be more careful" but the underlying cause), designed a specific behavior change to address it, and implemented that change in your daily work. You created some form of feedback loop to check whether the change was working.',
+      outcome: 'The pattern changed, and you can describe a specific situation where you caught yourself doing the old behavior and chose the new one — or where the new behavior produced a noticeably better outcome than the old one would have.',
+    },
+    strongSignals: [
+      'Names a real, significant pattern — not a small execution habit dressed up as a meaningful flaw',
+      'Can describe the mechanism: why did this pattern exist? What was the underlying cause that produced it repeatedly?',
+      'Describes a specific behavior change, not a vague intention: "I now do X before Y in every analysis" rather than "I try to be more careful about X"',
+      'Has a concrete example of catching the old pattern and executing the new behavior instead',
+      'The pattern is one that a thoughtful interviewer would recognize as a genuine analytical or professional risk — not a transparent humble-brag',
+    ],
+    weakSignals: [
+      'The "mistake" is clearly a strength reframed as a weakness: "I care too much about getting the analysis right" is not a real pattern',
+      'The fix is vague: "I\'ve been working on being more aware of X" without a specific behavioral change',
+      'The pattern is trivial: minor formatting habits, small execution preferences, not something with analytical or business significance',
+      'Cannot describe a specific instance where the new behavior was applied — suggests the change hasn\'t actually been implemented',
+    ],
+    keyPrinciples: [
+      'The most credible answers name patterns that interviewers recognize as real risks — overconfidence in early-stage data, underinvesting in communication relative to analysis, anchoring on the first hypothesis before testing alternatives, letting urgency erode rigor. Generic humility ("I\'m still learning") is unconvincing; specific self-diagnosis is compelling.',
+      'A real behavior change has a mechanism: it changes a step in your process, adds a check you didn\'t do before, or removes a shortcut you used to take. "I try harder" is not a behavior change — it is an intention. Describe the new process, not the new attitude.',
+      'The growth mindset signal interviewers are actually looking for is not "I failed and felt bad about it." It is: "I have a systematic way of identifying my own blind spots and updating my process as a result of them." That requires reflection, a diagnostic process, and deliberate practice — not just the accumulation of experience.',
+    ],
+    antiPatterns: [
+      'Giving a humble-brag answer that is transparently positive: "My weakness is that I hold myself to very high standards" — experienced interviewers will mark this as evasive',
+      'Describing a past failure without connecting it to an ongoing pattern and a specific behavior change',
+      'The behavior change is in the future: "I\'m planning to work on X" — the question asks what you\'ve actively done, not what you intend to do',
     ],
   },
 ];
