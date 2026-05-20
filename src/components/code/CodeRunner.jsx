@@ -259,6 +259,65 @@ function PartialCodePanel({ code, trackColor }) {
 
 // ─── Model Answer Panel ───────────────────────────────────────────────────────
 function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry, onNext }) {
+  const [pyOutput, setPyOutput]     = useState('');
+  const [pyError, setPyError]       = useState('');
+  const [pyLoading, setPyLoading]   = useState('idle');
+  const [pyodideRef, setPyodideRef] = useState(null);
+
+  async function loadPyodideInstance() {
+    if (pyodideRef) return pyodideRef;
+    setPyLoading('loading-pyodide');
+    if (!window.loadPyodide) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+    const py = await window.loadPyodide({
+      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/',
+    });
+    await py.loadPackagesFromImports('import numpy as np\nimport pandas as pd');
+    setPyodideRef(py);
+    return py;
+  }
+
+  async function handleRunCode() {
+    setPyOutput('');
+    setPyError('');
+    const codeToRun = module.solution || module.modelAnswer || '';
+    if (!codeToRun) {
+      setPyError('No executable code found in this module.');
+      return;
+    }
+    try {
+      const py = await loadPyodideInstance();
+      setPyLoading('running');
+      py.runPython(`
+import sys
+import io
+_stdout_capture = io.StringIO()
+sys.stdout = _stdout_capture
+`);
+      try {
+        py.runPython(codeToRun);
+      } catch (err) {
+        setPyError(String(err));
+        setPyLoading('done');
+        return;
+      }
+      const output = py.runPython('_stdout_capture.getvalue()');
+      py.runPython('sys.stdout = sys.__stdout__');
+      setPyOutput(output || '(no output)');
+      setPyLoading('done');
+    } catch (err) {
+      setPyError(String(err));
+      setPyLoading('done');
+    }
+  }
+
   return (
     <div style={{
       background: 'var(--surface-2)',
@@ -289,6 +348,58 @@ function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry, onNext 
       }}>
         {module.modelAnswer}
       </pre>
+
+      {/* Run Code (Python only) */}
+      {module.track === 'python' && (
+        <div style={{ marginTop: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+            <button
+              onClick={handleRunCode}
+              disabled={pyLoading === 'loading-pyodide' || pyLoading === 'running'}
+              style={{
+                padding: '0.45rem 1rem',
+                borderRadius: '8px',
+                border: 'none',
+                background: 'var(--purple)',
+                color: '#fff',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                cursor: pyLoading === 'loading-pyodide' || pyLoading === 'running' ? 'not-allowed' : 'pointer',
+                opacity: pyLoading === 'loading-pyodide' || pyLoading === 'running' ? 0.7 : 1,
+              }}
+            >
+              {pyLoading === 'loading-pyodide' ? '⏳ Loading Python…'
+               : pyLoading === 'running' ? '⏳ Running…'
+               : '▶ Run Code'}
+            </button>
+            {pyLoading === 'loading-pyodide' && (
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                First run loads Python runtime (~10s)
+              </span>
+            )}
+          </div>
+
+          {(pyOutput || pyError) && (
+            <div style={{
+              background: '#0d1117',
+              borderRadius: '8px',
+              border: '1px solid var(--border)',
+              padding: '0.875rem 1rem',
+              fontFamily: 'monospace',
+              fontSize: '0.8rem',
+              lineHeight: 1.5,
+              maxHeight: '300px',
+              overflowY: 'auto',
+            }}>
+              {pyError ? (
+                <span style={{ color: '#ff6b6b' }}>{pyError}</span>
+              ) : (
+                <span style={{ color: '#e6edf3', whiteSpace: 'pre-wrap' }}>{pyOutput}</span>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Key insights */}
       {module.keyInsights && module.keyInsights.length > 0 && (

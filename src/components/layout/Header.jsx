@@ -1,27 +1,94 @@
 export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme }) {
-  const navItems = [
-    { id: 'search', label: '🔍 Search' },
-    { id: 'stat-foundations', label: 'Foundations' },
-    { id: 'stats', label: 'Stats' },
-    { id: 'metrics', label: 'Metrics' },
-    { id: 'design', label: 'Design' },
-    { id: 'browser', label: 'Review' },
-    { id: 'rca', label: 'RCA' },
-    { id: 'cases', label: 'Cases' },
-    { id: 'code', label: 'Code' },
-    { id: 'product-design', label: 'PM Design' },
-    { id: 'prioritization', label: 'Prioritize' },
-    { id: 'behavioral', label: 'Behavioral' },
-    { id: 'estimation', label: 'Estimation' },
-    { id: 'growth-analytics', label: 'Growth' },
-    { id: 'blog', label: 'Learn' },
-    { id: 'playbook', label: 'Playbook' },
-    { id: 'simulator', label: 'Simulate' },
-    { id: 'ab-interpreter', label: 'A/B Tool' },
-    { id: 'pricing', label: 'Pricing' },
-    { id: 'bookmarks', label: '🔖 Saved' },
-    { id: 'progress', label: 'Progress' },
+  const navGroups = [
+    {
+      label: 'ROOMS',
+      items: [
+        { id: 'stat-foundations', label: 'Foundations' },
+        { id: 'stats', label: 'Stats' },
+        { id: 'metrics', label: 'Metrics' },
+        { id: 'design', label: 'Design' },
+        { id: 'browser', label: 'Review' },
+        { id: 'rca', label: 'RCA' },
+        { id: 'cases', label: 'Cases' },
+        { id: 'code', label: 'Code' },
+        { id: 'product-design', label: 'PM Design' },
+        { id: 'prioritization', label: 'Prioritize' },
+        { id: 'behavioral', label: 'Behavioral' },
+        { id: 'estimation', label: 'Estimation' },
+        { id: 'growth-analytics', label: 'Growth' },
+        { id: 'challenges', label: '⚡ Challenges' },
+      ],
+    },
+    {
+      label: 'TOOLS',
+      items: [
+        { id: 'search', label: '🔍 Search' },
+        { id: 'simulator', label: 'Simulate' },
+        { id: 'ab-interpreter', label: 'A/B Tool' },
+        { id: 'bookmarks', label: '🔖 Saved' },
+        { id: 'consult', label: '💬 Consult' },
+        { id: 'trainer', label: '🎯 Trainer' },
+      ],
+    },
+    {
+      label: 'LEARN',
+      items: [
+        { id: 'blog', label: 'Learn' },
+        { id: 'playbook', label: 'Playbook' },
+        { id: 'company-tracks', label: 'Companies' },
+      ],
+    },
+    {
+      label: 'TRACK',
+      items: [
+        { id: 'pricing', label: 'Pricing' },
+        { id: 'progress', label: 'Progress' },
+      ],
+    },
   ];
+
+  function getIsActive(itemId) {
+    return currentPage === itemId
+      || (itemId === 'stats' && currentPage === 'stats-runner')
+      || (itemId === 'metrics' && currentPage === 'metrics-runner')
+      || (itemId === 'design' && currentPage === 'design-runner')
+      || (itemId === 'browser' && currentPage === 'runner')
+      || (itemId === 'rca' && currentPage === 'rca-runner')
+      || (itemId === 'cases' && currentPage === 'cases-runner')
+      || (itemId === 'code' && currentPage === 'code-runner')
+      || (itemId === 'product-design' && currentPage === 'product-design-runner')
+      || (itemId === 'prioritization' && currentPage === 'prioritization-runner')
+      || (itemId === 'behavioral' && currentPage === 'behavioral-runner')
+      || (itemId === 'estimation' && currentPage === 'estimation-runner')
+      || (itemId === 'stat-foundations' && currentPage === 'stat-foundations-runner')
+      || (itemId === 'growth-analytics' && currentPage === 'growth-analytics-runner')
+      || (itemId === 'simulator' && currentPage === 'simulator')
+      || (itemId === 'ab-interpreter' && currentPage === 'ab-interpreter')
+      || (itemId === 'search' && currentPage === 'search')
+      || (itemId === 'bookmarks' && currentPage === 'bookmarks')
+      || (itemId === 'consult' && currentPage === 'consult')
+      || (itemId === 'trainer' && currentPage === 'trainer')
+      || (itemId === 'company-tracks' && currentPage === 'company-tracks')
+      || (itemId === 'challenges' && (currentPage === 'challenges' || currentPage === 'challenges-runner'));
+  }
+
+  const groupLabelStyle = {
+    fontSize: '0.55rem',
+    letterSpacing: '0.08em',
+    color: 'var(--text-muted)',
+    opacity: 0.7,
+    fontWeight: 600,
+    marginBottom: '1px',
+    userSelect: 'none',
+  };
+
+  const dividerStyle = {
+    width: '1px',
+    alignSelf: 'stretch',
+    background: 'var(--border)',
+    margin: '0 8px',
+    flexShrink: 0,
+  };
 
   return (
     <header style={{
@@ -34,6 +101,11 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
       borderBottom: '1px solid var(--border-subtle)',
       padding: '0 1.5rem',
     }}>
+      <style>{`
+        @media (max-width: 600px) {
+          .nav-group-label { display: none !important; }
+        }
+      `}</style>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
@@ -68,55 +140,58 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
 
         {/* Nav */}
         <nav style={{
-          display: 'flex', alignItems: 'center', gap: '0.05rem',
+          display: 'flex', alignItems: 'stretch', gap: '0',
           overflowX: 'auto', flexShrink: 1, minWidth: 0,
           scrollbarWidth: 'none', msOverflowStyle: 'none',
           marginLeft: '1.5rem',
         }}>
-          {navItems.map(item => {
-            const isActive = currentPage === item.id
-              || (item.id === 'stats' && currentPage === 'stats-runner')
-              || (item.id === 'metrics' && currentPage === 'metrics-runner')
-              || (item.id === 'design' && currentPage === 'design-runner')
-              || (item.id === 'browser' && currentPage === 'runner')
-              || (item.id === 'rca' && currentPage === 'rca-runner')
-              || (item.id === 'cases' && currentPage === 'cases-runner')
-              || (item.id === 'code' && currentPage === 'code-runner')
-              || (item.id === 'product-design' && currentPage === 'product-design-runner')
-              || (item.id === 'prioritization' && currentPage === 'prioritization-runner')
-              || (item.id === 'behavioral' && currentPage === 'behavioral-runner')
-              || (item.id === 'estimation' && currentPage === 'estimation-runner')
-              || (item.id === 'stat-foundations' && currentPage === 'stat-foundations-runner')
-              || (item.id === 'growth-analytics' && currentPage === 'growth-analytics-runner')
-              || (item.id === 'search' && currentPage === 'search')
-              || (item.id === 'bookmarks' && currentPage === 'bookmarks');
-            return (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                style={{
-                  background: isActive ? 'var(--surface-2)' : 'none',
-                  border: 'none',
-                  borderRadius: '5px',
-                  padding: '0.3rem 0.55rem',
-                  color: isActive ? 'var(--text)' : 'var(--text-muted)',
-                  fontWeight: isActive ? 600 : 400,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer',
-                  transition: 'color 0.12s, background 0.12s',
-                  whiteSpace: 'nowrap',
-                  minHeight: '44px',
-                  flexShrink: 0,
-                }}
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-muted)'; }}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+          {navGroups.map((group, groupIndex) => (
+            <div key={group.label} style={{ display: 'flex', alignItems: 'stretch', flexShrink: 0 }}>
+              {/* Divider before each group except the first */}
+              {groupIndex > 0 && <div style={dividerStyle} />}
 
-          <div style={{ width: '1px', height: '16px', background: 'var(--border)', margin: '0 0.4rem', flexShrink: 0 }} />
+              {/* Group column: label + items row */}
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div
+                  className="nav-group-label"
+                  style={groupLabelStyle}
+                >
+                  {group.label}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.05rem' }}>
+                  {group.items.map(item => {
+                    const isActive = getIsActive(item.id);
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => onNavigate(item.id)}
+                        style={{
+                          background: isActive ? 'var(--surface-2)' : 'none',
+                          border: 'none',
+                          borderRadius: '5px',
+                          padding: '0.3rem 0.55rem',
+                          color: isActive ? 'var(--text)' : 'var(--text-muted)',
+                          fontWeight: isActive ? 600 : 400,
+                          fontSize: '0.8rem',
+                          cursor: 'pointer',
+                          transition: 'color 0.12s, background 0.12s',
+                          whiteSpace: 'nowrap',
+                          minHeight: '28px',
+                          flexShrink: 0,
+                        }}
+                        onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                        onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-muted)'; }}
+                      >
+                        {item.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <div style={{ width: '1px', alignSelf: 'stretch', background: 'var(--border)', margin: '0 8px', flexShrink: 0 }} />
 
           {/* Theme toggle */}
           <button
@@ -132,6 +207,8 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               cursor: 'pointer',
               display: 'flex', alignItems: 'center',
               lineHeight: 1,
+              flexShrink: 0,
+              alignSelf: 'center',
             }}
           >
             {theme === 'dark' ? '☀' : '🌙'}
@@ -151,6 +228,8 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
                 cursor: 'pointer',
                 display: 'flex', alignItems: 'center', gap: '0.3rem',
                 marginLeft: '0.15rem',
+                flexShrink: 0,
+                alignSelf: 'center',
               }}
             >
               🔒 Beta
@@ -165,6 +244,8 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               border: '1px solid var(--green-border)',
               borderRadius: '5px',
               marginLeft: '0.15rem',
+              alignSelf: 'center',
+              flexShrink: 0,
             }}>✓ Beta</span>
           )}
         </nav>

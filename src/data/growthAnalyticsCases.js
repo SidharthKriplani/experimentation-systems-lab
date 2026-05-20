@@ -8,6 +8,7 @@ export const growthAnalyticsCases = [
     domain: 'growth-accounting',
     company: 'Prism',
     tags: ['dau', 'growth-accounting', 'retention', 'diagnosis'],
+    companies: ['Meta', 'Snapchat', 'Twitter'],
     situation: `Prism is a short-form video app with 2.4M daily active users. Over the past four weeks, DAU has declined steadily to 2.2M — a drop of roughly 8.3%. Leadership is alarmed.
 
 Here is what the data shows for the past four weeks:
@@ -78,6 +79,7 @@ The next investigative step: segment retention by cohort, feature usage, and pla
     domain: 'engagement',
     company: 'Crafted Marketplace',
     tags: ['dau-mau', 'stickiness', 'mix-shift', 'segmentation', 'paid-acquisition'],
+    companies: ['Slack', 'Discord', 'WhatsApp'],
     situation: `Crafted Marketplace is a B2C e-commerce platform for handmade goods. Over the past six weeks, the product team has been tracking a key engagement metric: DAU/MAU ratio (stickiness). It has declined from 22% to 18%.
 
 Here is the underlying data:
@@ -151,6 +153,7 @@ Recommendation: (1) Add segment-stratified DAU/MAU to the weekly dashboard so th
     domain: 'retention',
     company: 'Threadline',
     tags: ['cohort-retention', 'b2b-saas', 'gtm', 'segment-fit', 'churn'],
+    companies: ['Airbnb', 'Netflix', 'Spotify'],
     situation: `Threadline is a B2B SaaS team communication tool (think Slack-adjacent). The company grew quickly in Q1 by adding both enterprise and SMB customers.
 
 Here are the retention curves for two acquisition cohorts:
@@ -230,6 +233,7 @@ Actions: (1) Stop investing in self-serve SMB acquisition at current unit econom
     domain: 'funnel',
     company: 'Vela',
     tags: ['funnel', 'conversion', 'browse-to-purchase', 'ux', 'trust'],
+    companies: ['Stripe', 'Shopify', 'Amazon'],
     situation: `Vela is a two-sided B2C marketplace for curated lifestyle products. The product team is trying to improve the user journey from signup to first purchase.
 
 Here is the weekly funnel data (new user cohort, weekly snapshot):
@@ -321,6 +325,7 @@ Profile completion is worth iterating on (it's 72% vs 78–85% benchmark) but sh
     domain: 'acquisition',
     company: 'Crafted Marketplace',
     tags: ['ltv-cac', 'acquisition-channels', 'paid-social', 'seo', 'referral', 'unit-economics'],
+    companies: ['Uber', 'DoorDash', 'Lyft'],
     situation: `Crafted Marketplace is evaluating its three main acquisition channels at the 6-month mark post-acquisition. The marketing team wants to decide where to invest the next $500,000 of acquisition budget.
 
 Here is the performance data for each channel, measured on cohorts acquired in the same quarter:
@@ -410,6 +415,7 @@ Recommendation: Do not double paid social. Reallocate 60% paid social budget to 
     domain: 'engagement',
     company: 'Prism',
     tags: ['dau-quality', 'push-notifications', 'engagement', 'hollow-metrics', 'retention'],
+    companies: ['Instagram', 'TikTok', 'Snapchat'],
     situation: `Prism's growth team launched an aggressive push notification campaign on Monday. The campaign sends two types of notifications:
 1. Daily digest: "Your top videos from people you follow — don't miss out"
 2. Re-engagement: "You might have missed: [3 videos from followed creators]"
@@ -499,6 +505,7 @@ Recommendation to leadership: (1) Do not issue a press release about "record eng
     domain: 'acquisition',
     company: 'Nova',
     tags: ['growth-quality', 'organic-share', 'k-factor', 'paid-dependency', 'unit-economics'],
+    companies: ['Google', 'Pinterest', 'Reddit'],
     situation: `Nova is a subscription fitness app. It has been growing new users at a steady 8% month-over-month for the past 6 months. The growth team is celebrating consistent execution.
 
 However, a closer look at the acquisition data reveals a structural shift:
@@ -598,6 +605,7 @@ Actions: (1) Audit why organic referral collapsed — instrument K-factor by acq
     domain: 'retention',
     company: 'Crafted Marketplace',
     tags: ['international-expansion', 'pmf', 'activation', 'payment-friction', 'supply-quality'],
+    companies: ['Airbnb', 'Booking.com', 'Expedia'],
     situation: `Crafted Marketplace launched in three LatAm countries (Brazil, Mexico, Colombia) six months ago. The expansion was framed as a top strategic priority, with $3M allocated to regional marketing and seller acquisition.
 
 Current data at the 6-month mark:

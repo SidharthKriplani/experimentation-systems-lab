@@ -268,7 +268,7 @@ export function Home({ onNavigate, onStartScenario }) {
   const [showOnboarding, setShowOnboarding] = useState(() => {
     try { return !localStorage.getItem('pal-onboarded-v1'); } catch { return false; }
   });
-  const [briefExpanded, setBriefExpanded] = useState(false);
+  const [briefExpanded, setBriefExpanded] = useState(false); // collapsed by default
 
   function switchRole(r) {
     setRole(r);
@@ -359,10 +359,10 @@ export function Home({ onNavigate, onStartScenario }) {
   ];
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '4rem 1rem 5rem', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1rem 5rem', width: '100%', boxSizing: 'border-box' }}>
 
       {/* ── Hero ────────────────────────────────────────────────────────── */}
-      <div style={{ maxWidth: '680px', marginBottom: '4.5rem' }}>
+      <div style={{ maxWidth: '680px', paddingTop: '2rem', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
           background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
@@ -400,17 +400,6 @@ export function Home({ onNavigate, onStartScenario }) {
           For product analysts, data scientists, and PMs who already know the basics.
         </p>
 
-        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', margin: '1rem 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-          {[
-            { n: '10', label: 'practice rooms' },
-            { n: '150+', label: 'cases & modules' },
-            { n: '20', label: 'interactive stat labs' },
-            { n: 'Free', label: 'to start' },
-          ].map(s => (
-            <span key={s.label}><strong style={{ color: 'var(--text)', fontWeight: 800 }}>{s.n}</strong> {s.label}</span>
-          ))}
-        </div>
-
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.25rem' }}>
           <button
             onClick={() => onNavigate(role === 'pm' ? 'product-design' : 'stats')}
@@ -438,32 +427,45 @@ export function Home({ onNavigate, onStartScenario }) {
         </div>
       </div>
 
-      {/* ── Today's Case ───────────────────────────────────────────────── */}
-      {(() => {
-        const todaysCase = getTodaysCase();
-        return (
-          <div
-            style={{ marginBottom: '2rem', padding: '1rem 1.25rem', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 10, cursor: 'pointer' }}
-            onClick={() => onNavigate(todaysCase.room, todaysCase.id)}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginBottom: 4 }}>
-              ⚡ Today's Case
-            </div>
-            <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>{todaysCase.title}</div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>{todaysCase.subtitle} Room</div>
-          </div>
-        );
-      })()}
+      {/* ── Today section ──────────────────────────────────────────────── */}
+      <div style={{ marginBottom: '2rem' }}>
+        {/* Section header */}
+        <div style={{ marginBottom: '0.5rem' }}>
+          <span style={{
+            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.1em', color: 'var(--text-muted)',
+          }}>Today</span>
+        </div>
 
-      {/* ── The Brief ──────────────────────────────────────────────────── */}
-      <div style={{
-        marginBottom: '2rem',
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderLeft: '4px solid var(--accent)',
-        borderRadius: 10,
-        padding: '1.1rem 1.25rem',
-      }}>
+        {/* Drill + Brief side-by-side */}
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'stretch', flexWrap: 'wrap' }}>
+
+          {/* ── Today's Case (drill) ── */}
+          {(() => {
+            const todaysCase = getTodaysCase();
+            return (
+              <div
+                style={{ flex: '0 0 38%', minWidth: '200px', padding: '1rem 1.25rem', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 10, cursor: 'pointer' }}
+                onClick={() => onNavigate(todaysCase.room, todaysCase.id)}
+              >
+                <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginBottom: 4 }}>
+                  ⚡ Today's Case
+                </div>
+                <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>{todaysCase.title}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>{todaysCase.subtitle} Room</div>
+              </div>
+            );
+          })()}
+
+          {/* ── The Brief ── */}
+          <div style={{
+            flex: '1 1 55%', minWidth: '260px',
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderLeft: '4px solid var(--accent)',
+            borderRadius: 10,
+            padding: '1.1rem 1.25rem',
+          }}>
         <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent)', marginBottom: 6 }}>
           📰 The Brief · Daily Concept
         </div>
@@ -542,10 +544,19 @@ export function Home({ onNavigate, onStartScenario }) {
             Learn more →
           </button>
         </div>
-      </div>
+          </div>{/* end Brief card */}
+        </div>{/* end drill+brief flex row */}
+      </div>{/* end Today section */}
 
       {/* ── Nine rooms ─────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '4.5rem' }}>
+        {/* Practice Rooms section header */}
+        <div style={{ marginBottom: '0.5rem' }}>
+          <span style={{
+            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.1em', color: 'var(--text-muted)',
+          }}>Practice Rooms</span>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.85rem' }}>
           <div className="label-caps">Nine rooms. Nine judgment muscles.</div>
           {/* Role toggle */}
@@ -927,11 +938,45 @@ export function Home({ onNavigate, onStartScenario }) {
         </div>
       </div>
 
-      {/* ── Email capture ───────────────────────────────────────────────── */}
-      <div style={{ marginTop: '3rem', padding: '1.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, textAlign: 'center', maxWidth: 480, margin: '3rem auto 0' }}>
-        <div style={{ fontWeight: 700, marginBottom: '0.4rem' }}>Stay in the loop</div>
-        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>New rooms and cases added regularly. Get notified.</div>
-        <a href="mailto:hello@productanalyticslab.com?subject=Notify me" style={{ display: 'inline-block', padding: '10px 24px', background: 'var(--yellow)', color: '#000', fontWeight: 700, borderRadius: 8, textDecoration: 'none', fontSize: '0.88rem' }}>Get Notified →</a>
+      {/* ── Footer bar: social proof + email capture ───────────────────── */}
+      <div style={{
+        marginTop: '2.5rem',
+        padding: '0.85rem 1.25rem',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 10,
+        maxWidth: 900,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '0.75rem',
+      }}>
+        {/* Social proof numbers */}
+        <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+          {[
+            { n: '10', label: 'practice rooms' },
+            { n: '150+', label: 'cases & modules' },
+            { n: '20', label: 'interactive stat labs' },
+            { n: 'Free', label: 'to start' },
+          ].map(s => (
+            <span key={s.label}><strong style={{ color: 'var(--text)', fontWeight: 800 }}>{s.n}</strong> {s.label}</span>
+          ))}
+        </div>
+
+        {/* Compact email capture */}
+        <a
+          href="mailto:hello@productanalyticslab.com?subject=Notify me"
+          style={{
+            display: 'inline-block', padding: '0.45rem 1.1rem',
+            background: 'var(--yellow)', color: '#000',
+            fontWeight: 700, borderRadius: 'var(--radius)',
+            textDecoration: 'none', fontSize: '0.82rem',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Get notified of new rooms →
+        </a>
       </div>
 
       {/* ── Onboarding modal ───────────────────────────────────────────── */}

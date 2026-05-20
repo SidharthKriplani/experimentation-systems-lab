@@ -15,6 +15,7 @@ import { behavioralQuestions } from './data/behavioralQuestions.js';
 import { estimationProblems } from './data/estimationProblems.js';
 import { statsFoundationsModules } from './data/statsFoundationsModules.js';
 import { growthAnalyticsCases } from './data/growthAnalyticsCases.js';
+import { challengesCases, challengesCasesById } from './data/challengesCases.js';
 // Layout (always needed — not lazy)
 import { Header } from './components/layout/Header.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -32,6 +33,7 @@ import { getBehavioralProgress } from './utils/behavioralProgress.js';
 import { getEstimationProgress } from './utils/estimationProgress.js';
 import { getStatFoundationsProgress } from './utils/statsFoundationsProgress.js';
 import { getGrowthAnalyticsProgress } from './utils/growthAnalyticsProgress.js';
+import { getAllChallengesProgress } from './utils/challengesProgress.js';
 import { isUnlocked } from './utils/unlock.js';
 
 // Pages — lazy-loaded for code splitting
@@ -76,6 +78,11 @@ const InterviewSimulator      = lazy(() => import('./pages/InterviewSimulator.js
 const ABTestInterpreter       = lazy(() => import('./pages/ABTestInterpreter.jsx').then(m => ({ default: m.ABTestInterpreter })));
 const SearchPage              = lazy(() => import('./pages/SearchPage.jsx').then(m => ({ default: m.SearchPage })));
 const BookmarksBrowser        = lazy(() => import('./pages/BookmarksBrowser.jsx').then(m => ({ default: m.BookmarksBrowser })));
+const ConsultationSpace = lazy(() => import('./pages/ConsultationSpace.jsx').then(m => ({ default: m.ConsultationSpace })));
+const Trainer           = lazy(() => import('./pages/Trainer.jsx').then(m => ({ default: m.Trainer })));
+const CompanyTracks     = lazy(() => import('./pages/CompanyTracks.jsx').then(m => ({ default: m.CompanyTracks })));
+const ChallengesBrowser = lazy(() => import('./pages/ChallengesBrowser.jsx').then(m => ({ default: m.ChallengesBrowser })));
+const ChallengesRunner  = lazy(() => import('./components/challenges/ChallengesRunner.jsx').then(m => ({ default: m.ChallengesRunner })));
 
 function getInitialTheme() {
   try {
@@ -100,8 +107,9 @@ export default function App() {
   const [activeEstimationId, setActiveEstimationId] = useState(null);
   const [activeStatFoundationsId, setActiveStatFoundationsId] = useState(null);
   const [activeGrowthAnalyticsId, setActiveGrowthAnalyticsId] = useState(null);
+  const [activeChallengeId, setActiveChallengeId] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
-  const [progressSnapshot, setProgressSnapshot] = useState(() => getAllProgress());
+  const [progressSnapshot, setProgressSnapshot] = useState(() => ({ ...getAllProgress(), challengesProgress: getAllChallengesProgress() }));
   const [theme, setTheme] = useState(getInitialTheme);
 
   useEffect(() => {
@@ -131,6 +139,11 @@ export default function App() {
       'ab-interpreter': 'A/B Test Interpreter — Product Analytics Lab',
       'search':    'Search — Analytics Lab',
       'bookmarks': 'Bookmarks — Product Analytics Lab',
+      'consult':        'Consultation Space — Product Analytics Lab',
+      'trainer':        'Trainer — Product Analytics Lab',
+      'company-tracks': 'Company Tracks — Product Analytics Lab',
+      'challenges': 'Challenges — Product Analytics Lab',
+      'challenges-runner': 'Challenges — Product Analytics Lab',
     };
     document.title = titles[page] || 'Product Analytics Lab';
   }, [page]);
@@ -140,7 +153,7 @@ export default function App() {
   }
 
   function refreshProgress() {
-    setProgressSnapshot(getAllProgress());
+    setProgressSnapshot({ ...getAllProgress(), challengesProgress: getAllChallengesProgress() });
   }
 
   function navigate(target) {
@@ -281,6 +294,20 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function openChallenge(id) {
+    const c = challengesCasesById[id];
+    if (!c) return;
+    if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'challenges', id }); setPage('unlock'); return; }
+    setActiveChallengeId(id);
+    track('open_challenge', { id, title: c.title });
+    setPage('challenges-runner');
+  }
+
+  function getNextChallengeId(currentId) {
+    const idx = challengesCases.findIndex(c => c.id === currentId);
+    return idx >= 0 && idx < challengesCases.length - 1 ? challengesCases[idx + 1].id : null;
+  }
+
   function openPDScenario(id) {
     const s = productDesignScenarios.find(s => s.id === id);
     if (!s) return;
@@ -303,6 +330,9 @@ export default function App() {
     { key: 'Escape', action: () => { if (page !== 'home') setPage('home'); } },
     { key: 'p', action: () => setPage('progress') },
     { key: 'h', action: () => setPage('home') },
+    { key: 't', action: () => setPage('trainer') },
+    { key: 'c', action: () => setPage('consult') },
+    { key: 'x', action: () => setPage('challenges') },
   ]);
 
   function getNextScenarioId(currentId) {
@@ -720,6 +750,83 @@ export default function App() {
         )}
         {page === 'simulator' && <InterviewSimulator onBack={() => setPage('home')} onNavigate={navigate} />}
         {page === 'ab-interpreter' && <ABTestInterpreter onBack={() => setPage('home')} />}
+        {page === 'consult' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <ConsultationSpace
+              onBack={() => setPage('home')}
+              onNavigate={(targetPage, itemId) => {
+                if (itemId) {
+                  switch (targetPage) {
+                    case 'playbook': setPage('playbook'); break; // playbook handles article ID via its own state
+                    case 'stat-foundations': openStatFoundationsModule(itemId); break;
+                    case 'growth-analytics': openGrowthAnalyticsCase(itemId); break;
+                    case 'trainer': setPage('trainer'); break;
+                    default: setPage(targetPage);
+                  }
+                } else {
+                  setPage(targetPage);
+                }
+              }}
+            />
+          </Suspense>
+        )}
+        {page === 'trainer' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <Trainer onBack={() => setPage('home')} />
+          </Suspense>
+        )}
+        {page === 'company-tracks' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <CompanyTracks
+              onBack={() => setPage('home')}
+              onNavigate={(targetPage, itemId) => {
+                if (itemId) {
+                  switch (targetPage) {
+                    case 'stat-foundations': openStatFoundationsModule(itemId); break;
+                    case 'growth-analytics': openGrowthAnalyticsCase(itemId); break;
+                    case 'stats':            openStatsModule(itemId); break;
+                    case 'metrics':          openMetricsCase(itemId); break;
+                    case 'rca':              openRCACase(itemId); break;
+                    case 'cases':            openBusinessCase(itemId); break;
+                    case 'behavioral':       openBehavioralQuestion(itemId); break;
+                    case 'estimation':       openEstimationProblem(itemId); break;
+                    case 'product-design':   openPDScenario(itemId); break;
+                    case 'prioritization':   openPrioritizationScenario(itemId); break;
+                    case 'code':             openCodeModule(itemId); break;
+                    case 'browser':          openScenario(itemId); break;
+                    case 'playbook':         setPage('playbook'); break;
+                    default:                 setPage(targetPage);
+                  }
+                } else {
+                  setPage(targetPage);
+                }
+              }}
+            />
+          </Suspense>
+        )}
+        {page === 'challenges' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <ChallengesBrowser
+              onSelectChallenge={openChallenge}
+              unlocked={unlocked}
+            />
+          </Suspense>
+        )}
+        {page === 'challenges-runner' && activeChallengeId && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <ChallengesRunner
+              caseData={challengesCasesById[activeChallengeId]}
+              onBack={() => setPage('challenges')}
+              onNext={() => {
+                const nextId = getNextChallengeId(activeChallengeId);
+                if (nextId) openChallenge(nextId);
+                else setPage('challenges');
+              }}
+              unlocked={unlocked}
+            />
+          </Suspense>
+        )}
+
         {page === 'bookmarks' && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
             <BookmarksBrowser

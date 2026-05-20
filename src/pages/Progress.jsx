@@ -98,6 +98,50 @@ function getBestLevel(levelsArray) {
   return best;
 }
 
+// Reusable collapsible section card
+function SectionCard({ icon, title, open, onToggle, badge, children }) {
+  return (
+    <div style={{
+      background: 'var(--surface)',
+      border: '1px solid var(--border)',
+      borderRadius: '12px',
+      marginBottom: '1rem',
+      overflow: 'hidden',
+    }}>
+      <div
+        onClick={onToggle}
+        style={{
+          padding: '0.875rem 1.25rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          cursor: 'pointer',
+          userSelect: 'none',
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
+        onMouseLeave={e => e.currentTarget.style.background = ''}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ fontSize: '1rem' }}>{icon}</span>
+          <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)' }}>{title}</span>
+          {badge != null && (
+            <span style={{
+              fontSize: '0.62rem', fontWeight: 700,
+              background: 'var(--yellow-bg)', color: 'var(--yellow)',
+              border: '1px solid var(--yellow-border)',
+              borderRadius: '10px', padding: '0.1rem 0.45rem',
+            }}>{badge}</span>
+          )}
+        </div>
+        <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', transition: 'transform 0.15s', display: 'inline-block', transform: open ? 'rotate(0deg)' : 'rotate(-90deg)' }}>▼</span>
+      </div>
+      <div style={{ display: open ? 'block' : 'none', padding: '0 1.25rem 1.25rem' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate, unlocked }) {
   const completed = scenarios.filter(s => allProgress[s.id]?.attempts?.length > 0);
   const notStarted = scenarios.filter(s => !allProgress[s.id]?.attempts?.length);
@@ -271,6 +315,13 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
     readinessColor = 'var(--text-muted)';
   }
 
+  // Section open/closed state
+  const [overviewOpen, setOverviewOpen] = useState(true);
+  const [reviewQueueOpen, setReviewQueueOpen] = useState(true);
+  const [roomProgressOpen, setRoomProgressOpen] = useState(true);
+  const [studyPlanOpen, setStudyPlanOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   function handleClear() {
     if (window.confirm('Clear all progress across all rooms? This cannot be undone.')) {
       ['exp-lab-progress-v1', 'pal-design-progress-v1', 'pal-stats-progress-v1',
@@ -285,188 +336,209 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
 
       {/* Header */}
-      <div style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.025em', marginBottom: '0.4rem' }}>
-            Progress
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: 0 }}>
-            {totalCompleted} of {grandTotal} items completed across all rooms
-          </p>
-        </div>
-        {totalAttempts > 0 && (
-          <button onClick={handleClear} style={{
-            background: 'transparent', border: '1px solid var(--border)',
-            borderRadius: '5px', padding: '0.35rem 0.75rem',
-            color: 'var(--text-dim)', fontSize: '0.8rem', cursor: 'pointer',
-          }}>Clear All Progress</button>
-        )}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.025em', marginBottom: '0.4rem' }}>
+          Progress
+        </h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: 0 }}>
+          {totalCompleted} of {grandTotal} items completed across all rooms
+        </p>
       </div>
 
-      {/* Readiness Level Card */}
+      {/* Sticky summary bar */}
       <div style={{
-        background: 'var(--surface)', border: `1px solid var(--border)`,
-        borderRadius: 'var(--radius-lg)', padding: '1rem 1.5rem',
-        boxShadow: 'var(--shadow-sm)', marginBottom: '1.25rem',
-        display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap',
+        background: 'var(--accent)',
+        borderRadius: '10px',
+        padding: '0.75rem 1.25rem',
+        display: 'flex',
+        gap: '2rem',
+        marginBottom: '1.5rem',
+        flexWrap: 'wrap',
+        alignItems: 'center',
       }}>
-        <div style={{
-          fontSize: '1.35rem', fontWeight: 800, color: readinessColor,
-          letterSpacing: '-0.02em', lineHeight: 1,
-        }}>{readinessLevel}</div>
-        <div style={{ height: '28px', width: '1px', background: 'var(--border)', flexShrink: 0 }} />
-        <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', flex: 1, minWidth: '180px' }}>
-          {readinessDesc}
-        </div>
-        <div style={{
-          fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-dim)',
-          background: 'var(--surface-2)', border: '1px solid var(--border)',
-          borderRadius: '20px', padding: '0.2rem 0.6rem', whiteSpace: 'nowrap',
-        }}>{totalCompleted} completed</div>
+        <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.85rem' }}>{totalCompleted} completed</span>
+        <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.85rem' }}>Role: {readinessLevel}</span>
+        <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.85rem' }}>{streak > 0 ? `${streak} day streak` : 'No streak yet'}</span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
-
-        {/* Readiness Summary */}
+      {/* Overview Section */}
+      <SectionCard
+        icon="📊"
+        title="Overview"
+        open={overviewOpen}
+        onToggle={() => setOverviewOpen(o => !o)}
+      >
+        {/* Readiness Level Card */}
         <div style={{
-          background: 'var(--surface)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-lg)', padding: '1.5rem',
-          boxShadow: 'var(--shadow-sm)',
-          order: totalCompleted === 0 ? 2 : 1,
+          border: `1px solid var(--border)`,
+          borderRadius: 'var(--radius-lg)', padding: '1rem 1.25rem',
+          marginBottom: '1.25rem',
+          display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap',
         }}>
           <div style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
-            letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '1.1rem',
-          }}>Readiness by room</div>
+            fontSize: '1.35rem', fontWeight: 800, color: readinessColor,
+            letterSpacing: '-0.02em', lineHeight: 1,
+          }}>{readinessLevel}</div>
+          <div style={{ height: '28px', width: '1px', background: 'var(--border)', flexShrink: 0 }} />
+          <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', flex: 1, minWidth: '180px' }}>
+            {readinessDesc}
+          </div>
+          <div style={{
+            fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-dim)',
+            background: 'var(--surface-2)', border: '1px solid var(--border)',
+            borderRadius: '20px', padding: '0.2rem 0.6rem', whiteSpace: 'nowrap',
+          }}>{totalCompleted} completed</div>
+        </div>
 
-          {allRoomProgress.map(r => (
-            <RoomReadinessBar
-              key={r.label}
-              label={r.label}
-              color={r.label === 'Stats' ? 'var(--blue-text)' :
-                     r.label === 'Metrics' ? 'var(--green)' :
-                     r.label === 'Design' ? 'var(--teal)' :
-                     r.label === 'Review' ? 'var(--accent)' :
-                     r.label === 'RCA' ? 'var(--yellow)' : 'var(--purple)'}
-              bg={r.label === 'Stats' ? 'var(--blue-bg)' : 'var(--surface-2)'}
-              border={r.label === 'Stats' ? 'var(--blue-border)' : 'var(--border)'}
-              completed={r.completed}
-              total={r.total}
-              bestLevel={r.best}
-              onReset={r.onReset}
-            />
-          ))}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
 
-          {totalCompleted > 0 && (
+          {/* Readiness Summary */}
+          <div style={{
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)', padding: '1.5rem',
+            order: totalCompleted === 0 ? 2 : 1,
+          }}>
             <div style={{
-              marginTop: '1rem', paddingTop: '1rem',
-              borderTop: '1px solid var(--border-subtle)',
-              display: 'flex', flexDirection: 'column', gap: '0.4rem',
-            }}>
-              {strongest && (
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  <span style={{ color: 'var(--green)', fontWeight: 700 }}>▲ </span>
-                  Strongest area: <strong>{strongest.label}</strong>
-                </div>
-              )}
-              {weakest && weakest.completed === 0 && (
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  <span style={{ color: 'var(--text-dim)', fontWeight: 700 }}>◯ </span>
-                  Not started: <strong>{weakest.label}</strong>
-                </div>
-              )}
-              {nextSuggested && (
-                <div style={{ marginTop: '0.5rem' }}>
-                  <button
-                    onClick={() => onNavigate && onNavigate(nextSuggested.nav)}
-                    style={{
-                      width: '100%',
-                      background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
-                      borderRadius: 'var(--radius)', padding: '0.5rem 0.75rem',
-                      color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 600,
-                      cursor: 'pointer', textAlign: 'left',
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    }}
-                  >
-                    <span>Next: {nextSuggested.room} — {nextSuggested.label}</span>
-                    <span>→</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '1.1rem',
+            }}>Readiness by room</div>
 
-          {totalCompleted === 0 && (
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', textAlign: 'center', paddingTop: '0.5rem' }}>
-              Complete items in any room to see readiness here.
-            </div>
-          )}
+            {allRoomProgress.map(r => (
+              <RoomReadinessBar
+                key={r.label}
+                label={r.label}
+                color={r.label === 'Stats' ? 'var(--blue-text)' :
+                       r.label === 'Metrics' ? 'var(--green)' :
+                       r.label === 'Design' ? 'var(--teal)' :
+                       r.label === 'Review' ? 'var(--accent)' :
+                       r.label === 'RCA' ? 'var(--yellow)' : 'var(--purple)'}
+                bg={r.label === 'Stats' ? 'var(--blue-bg)' : 'var(--surface-2)'}
+                border={r.label === 'Stats' ? 'var(--blue-border)' : 'var(--border)'}
+                completed={r.completed}
+                total={r.total}
+                bestLevel={r.best}
+                onReset={r.onReset}
+              />
+            ))}
+
+            {totalCompleted > 0 && (
+              <div style={{
+                marginTop: '1rem', paddingTop: '1rem',
+                borderTop: '1px solid var(--border-subtle)',
+                display: 'flex', flexDirection: 'column', gap: '0.4rem',
+              }}>
+                {strongest && (
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                    <span style={{ color: 'var(--green)', fontWeight: 700 }}>▲ </span>
+                    Strongest area: <strong>{strongest.label}</strong>
+                  </div>
+                )}
+                {weakest && weakest.completed === 0 && (
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                    <span style={{ color: 'var(--text-dim)', fontWeight: 700 }}>◯ </span>
+                    Not started: <strong>{weakest.label}</strong>
+                  </div>
+                )}
+                {nextSuggested && (
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <button
+                      onClick={() => onNavigate && onNavigate(nextSuggested.nav)}
+                      style={{
+                        width: '100%',
+                        background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+                        borderRadius: 'var(--radius)', padding: '0.5rem 0.75rem',
+                        color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 600,
+                        cursor: 'pointer', textAlign: 'left',
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      }}
+                    >
+                      <span>Next: {nextSuggested.room} — {nextSuggested.label}</span>
+                      <span>→</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {totalCompleted === 0 && (
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', textAlign: 'center', paddingTop: '0.5rem' }}>
+                Complete items in any room to see readiness here.
+              </div>
+            )}
+          </div>
+
+          {/* Guided Paths */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', order: totalCompleted === 0 ? 1 : 2 }}>
+            <div style={{
+              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.25rem',
+            }}>Guided paths</div>
+            {learningPaths.map(path => (
+              <GuidedPathCard
+                key={path.id}
+                path={path}
+                completionMap={completionMap}
+                onNavigate={onNavigate}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Guided Paths */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', order: totalCompleted === 0 ? 1 : 2 }}>
-          <div style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
-            letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.25rem',
-          }}>Guided paths</div>
-          {learningPaths.map(path => (
-            <GuidedPathCard
-              key={path.id}
-              path={path}
-              completionMap={completionMap}
-              onNavigate={onNavigate}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Practice Streak Heatmap */}
-      <div style={{
-        background: 'var(--surface)', border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.5rem',
-        boxShadow: 'var(--shadow-sm)', marginTop: '1.25rem',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.9rem' }}>
-          <div style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
-            letterSpacing: '0.09em', color: 'var(--text-dim)',
-          }}>Practice Streak</div>
-          {streak > 0 && (
-            <span style={{
-              fontSize: '0.65rem', fontWeight: 700,
-              background: 'var(--yellow-bg)', color: 'var(--yellow)',
-              border: '1px solid var(--yellow-border)',
-              borderRadius: '10px', padding: '0.1rem 0.5rem',
-            }}>{streak} day{streak !== 1 ? 's' : ''}</span>
-          )}
-          {streak === 0 && (
-            <span style={{
-              fontSize: '0.65rem', color: 'var(--text-dim)',
-            }}>Practice today to start a streak</span>
-          )}
-        </div>
+        {/* Practice Streak Heatmap */}
         <div style={{
-          display: 'flex', flexWrap: 'wrap', gap: '2px',
-          width: 'fit-content',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.5rem',
+          marginTop: '1.25rem',
         }}>
-          {heatmapDays.map(day => (
-            <div
-              key={day}
-              title={day}
-              style={{
-                width: '7px', height: '7px', borderRadius: '1px',
-                background: practiceDates.has(day) ? 'var(--yellow)' : 'var(--surface)',
-                border: practiceDates.has(day) ? 'none' : '1px solid var(--border)',
-                flexShrink: 0,
-              }}
-            />
-          ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.9rem' }}>
+            <div style={{
+              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              letterSpacing: '0.09em', color: 'var(--text-dim)',
+            }}>Practice Streak</div>
+            {streak > 0 && (
+              <span style={{
+                fontSize: '0.65rem', fontWeight: 700,
+                background: 'var(--yellow-bg)', color: 'var(--yellow)',
+                border: '1px solid var(--yellow-border)',
+                borderRadius: '10px', padding: '0.1rem 0.5rem',
+              }}>{streak} day{streak !== 1 ? 's' : ''}</span>
+            )}
+            {streak === 0 && (
+              <span style={{
+                fontSize: '0.65rem', color: 'var(--text-dim)',
+              }}>Practice today to start a streak</span>
+            )}
+          </div>
+          <div style={{
+            display: 'flex', flexWrap: 'wrap', gap: '2px',
+            width: 'fit-content',
+          }}>
+            {heatmapDays.map(day => (
+              <div
+                key={day}
+                title={day}
+                style={{
+                  width: '7px', height: '7px', borderRadius: '1px',
+                  background: practiceDates.has(day) ? 'var(--yellow)' : 'var(--surface)',
+                  border: practiceDates.has(day) ? 'none' : '1px solid var(--border)',
+                  flexShrink: 0,
+                }}
+              />
+            ))}
+          </div>
+          <div style={{ marginTop: '0.5rem', fontSize: '0.65rem', color: 'var(--text-dim)' }}>
+            Last 13 weeks
+          </div>
         </div>
-        <div style={{ marginTop: '0.5rem', fontSize: '0.65rem', color: 'var(--text-dim)' }}>
-          Last 13 weeks
-        </div>
-      </div>
+      </SectionCard>
 
+      {/* Study Plan Section */}
+      <SectionCard
+        icon="📚"
+        title="Study Plan"
+        open={studyPlanOpen}
+        onToggle={() => setStudyPlanOpen(o => !o)}
+      >
       {/* Study Plan — "What to Study Next" */}
       {(() => {
         // ── Collect per-room summaries ──────────────────────────────────────
@@ -764,8 +836,9 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
           </div>
         );
       })()}
+      </SectionCard>
 
-      {/* Review Queue */}
+      {/* Review Queue Section */}
       {(() => {
         const queueMap = new Map(); // key → item, for dedup
 
@@ -857,25 +930,19 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
         if (reviewQueue.length === 0) return null;
 
         return (
-          <div style={{ marginTop: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
-              <div style={{
-                fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
-                letterSpacing: '0.09em', color: 'var(--text-dim)',
-              }}>Review Queue</div>
-              <span style={{
-                fontSize: '0.65rem', fontWeight: 700,
-                background: 'var(--yellow-bg)', color: 'var(--yellow)',
-                border: '1px solid var(--yellow-border)',
-                borderRadius: '10px', padding: '0.1rem 0.45rem',
-              }}>{reviewQueue.length}</span>
-            </div>
+          <SectionCard
+            icon="🔁"
+            title="Review Queue"
+            open={reviewQueueOpen}
+            onToggle={() => setReviewQueueOpen(o => !o)}
+            badge={reviewQueue.length}
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {reviewQueue.map(item => (
                 <div
                   key={`${item.room}-${item.id}`}
                   style={{
-                    background: 'var(--surface)', border: '1px solid var(--border)',
+                    background: 'var(--bg)', border: '1px solid var(--border)',
                     borderRadius: '8px', overflow: 'hidden',
                     display: 'flex', alignItems: 'stretch',
                     boxShadow: 'var(--shadow-sm)',
@@ -923,18 +990,24 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
                 </div>
               ))}
             </div>
-          </div>
+          </SectionCard>
         );
       })()}
 
-      {/* Review Room completed scenarios (existing detail) */}
-      {completed.length > 0 && (
-        <div style={{ marginTop: '2.5rem' }}>
-          <div style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
-            letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.75rem',
-          }}>Review Room — completed scenarios</div>
+      {/* Room Progress Section */}
+      <SectionCard
+        icon="🏠"
+        title="Room Progress"
+        open={roomProgressOpen}
+        onToggle={() => setRoomProgressOpen(o => !o)}
+        badge={completed.length > 0 ? completed.length : undefined}
+      >
+        {completed.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{
+              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.5rem',
+            }}>Review Room — completed scenarios</div>
             {completed.map(scenario => {
               const progress = allProgress[scenario.id];
               const lastLevel = progress.attempts?.slice(-1)[0];
@@ -944,7 +1017,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
                   key={scenario.id}
                   onClick={() => onSelect(scenario.id)}
                   style={{
-                    background: 'var(--surface)', border: '1px solid var(--border)',
+                    background: 'var(--bg)', border: '1px solid var(--border)',
                     borderRadius: '8px', padding: '0.75rem 1rem',
                     cursor: 'pointer', display: 'flex',
                     alignItems: 'center', justifyContent: 'space-between',
@@ -970,8 +1043,37 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
               );
             })}
           </div>
+        ) : (
+          <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', textAlign: 'center', padding: '0.5rem 0' }}>
+            No Review Room scenarios completed yet.
+          </div>
+        )}
+      </SectionCard>
+
+      {/* Settings Section */}
+      <SectionCard
+        icon="⚙️"
+        title="Settings"
+        open={settingsOpen}
+        onToggle={() => setSettingsOpen(o => !o)}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+            Reset progress for individual rooms from the Overview section, or clear everything below.
+          </div>
+          {totalAttempts > 0 ? (
+            <button onClick={handleClear} style={{
+              background: 'transparent', border: '1px solid var(--red)',
+              borderRadius: '6px', padding: '0.45rem 1rem',
+              color: 'var(--red)', fontSize: '0.82rem', cursor: 'pointer',
+              fontWeight: 600, alignSelf: 'flex-start',
+            }}>Clear All Progress</button>
+          ) : (
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>No progress to clear yet.</div>
+          )}
         </div>
-      )}
+      </SectionCard>
+
     </div>
   );
 }

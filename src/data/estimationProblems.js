@@ -1746,4 +1746,877 @@ Spotify's own commentary: On earnings calls through 2022-2023, Spotify has indic
       'Forgetting that Premium subscribers still hear ads on some podcast content — not all podcast ad revenue is "free tier only"',
     ],
   },
+
+  {
+    id: 'EST21',
+    title: 'Uber Eats Orders on New Year\'s Eve in the US',
+    subtitle: 'Demand Estimation · Food Delivery',
+    difficulty: 'Senior',
+    isFree: false,
+    tags: ['Uber Eats', 'food delivery', 'demand', 'seasonality'],
+    category: 'volume',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate the number of Uber Eats orders placed in the US on New Year\'s Eve.',
+
+    frameworkSteps: [
+      'Step 1 — Estimate the US Uber Eats user base: Start from US internet users, apply food-delivery app penetration, then Uber Eats\' market share.',
+      'Step 2 — Estimate baseline daily orders: On a typical day, what fraction of monthly active users places an order?',
+      'Step 3 — Apply a New Year\'s Eve multiplier: NYE is one of the highest-demand nights for food delivery — quantify the lift.',
+      'Step 4 — Cross-check with Uber\'s disclosed order volume and seasonal data.',
+    ],
+
+    hints: [
+      'Uber Eats has ~80M+ monthly active users in the US as of 2023. DoorDash leads with ~37% share; Uber Eats has ~29%.',
+      'On a typical day, roughly 10-15% of food-delivery MAU places an order. Order frequency for active users is roughly 3-4 times per month.',
+      'New Year\'s Eve food delivery demand is typically 2.5-3x a typical Tuesday/Wednesday due to parties, gatherings, and celebrations.',
+      'Uber\'s global gross bookings for delivery were ~$12B/quarter in 2023. Average US order value is ~$35-40.',
+      'Seasonality: The top 5 food-delivery days in the US are typically Super Bowl Sunday, NYE, New Year\'s Day, July 4th, and the night before Thanksgiving.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: US Uber Eats user base.
+US internet users: ~285M. Food delivery app penetration: ~35% use any food delivery app at least monthly → 100M food delivery MAU across all platforms.
+Uber Eats US market share: ~29% of food delivery orders → 29M Uber Eats MAU in the US.
+
+Step 2: Baseline daily orders.
+Order frequency for active users: ~3.5 orders/month = 3.5/30 ≈ 0.117 orders/day.
+Daily orders on a typical day: 29M × 0.117 = ~3.4M orders/day.
+
+Step 3: NYE multiplier.
+New Year's Eve is a major gathering event. Drivers of increased demand:
+(a) Parties and group meals replacing restaurant dining ($150 group order vs. 2 individual orders)
+(b) Office closed, more people at home
+(c) "Don't want to cook" + special occasion uplift
+Estimated NYE multiplier: 2.8x typical day.
+
+NYE orders: 3.4M × 2.8 = ~9.5M Uber Eats orders on New Year's Eve.
+
+But this counts order events. Some group orders may be single orders for 6-8 people, so the "number of orders" could be slightly lower if ordering behavior consolidates. Adjusting down ~10% for consolidation: ~8.5M.
+
+Range: 7M–11M Uber Eats orders on New Year's Eve in the US.
+
+Cross-check via revenue:
+Uber delivery gross bookings ~$12B/quarter globally = $4B/month globally. US is ~55% of Uber delivery bookings → ~$2.2B/month US = $73M/typical day.
+At $37 average order value: 73M/37 = ~2M orders/day typical, weighted to include quieter days.
+NYE at 2.8x: ~5.5M. (This is slightly lower than our bottom-up because Uber's disclosed bookings include some very low-volume days. Using a weekday baseline brings the range to 5M–10M. Consistent with our 7-11M range.)`,
+      keyAssumptions: [
+        '29M Uber Eats US MAU — consistent with DoorDash\'s ~67M MAU and Uber Eats\' ~29% market share',
+        '3.5 orders/month per active user — based on industry surveys; active users place orders about once per week on average',
+        '2.8x NYE multiplier — NYE is historically the highest single night for food delivery; 2.5-3x is a reasonable range',
+        '$37 average order value in the US — consistent with published Uber Eats data (order values have risen post-pandemic)',
+      ],
+      finalEstimate: 'Range: 7M–11M Uber Eats orders on New Year\'s Eve in the US; ~9M central estimate',
+      sanityChecks: [
+        'Revenue check: 9M orders × $37 avg order = $333M GMV on NYE. Uber takes ~15-18% cut = $50-60M revenue on a single night. At ~10x annualized, that\'s one of the top 5 revenue days of the year — consistent with NYE being a landmark event.',
+        'Driver supply check: Uber has ~600k Uber Eats couriers active in the US. At peak NYE, if 50% are active and each completes 3 deliveries in 2 hours of peak demand: 300k × 3 = 900k deliveries in the 2-hour window. Over the full evening (6pm-1am = 7 hours), total capacity ≈ 3.15M delivery slots at peak staffing. With surge pricing drawing in more drivers, 9M orders across the full 24-hour day is feasible.',
+        'Market share check: DoorDash has ~37% share vs. Uber Eats\' ~29%. If Uber Eats has 9M orders, DoorDash would have ~11.5M and Grubhub ~4M → total US food delivery on NYE ~25M orders. US has 130M households, so 1-in-5 households ordering food delivery on NYE is plausible given it\'s a celebration night.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Builds from MAU and order frequency rather than just applying a national penetration rate',
+      'Explicitly quantifies the NYE seasonality multiplier and provides behavioral rationale for it',
+      'Cross-checks via Uber\'s disclosed delivery gross bookings converted to order count',
+      'Notes the consolidation effect — NYE group orders may mean fewer but larger individual orders',
+      'Accounts for Uber Eats\' market share within the food delivery category',
+    ],
+
+    commonMistakes: [
+      'Treating all 285M US internet users as potential Uber Eats orderers on NYE — food delivery penetration is ~35%, not 100%',
+      'Using a flat daily order rate without applying a NYE multiplier — ignoring seasonality leads to a 3x underestimate',
+      'Confusing Uber\'s global delivery bookings with US-only bookings — US is ~55% of Uber\'s delivery business',
+      'Not considering the group-order consolidation effect — a party of 10 may place one $200 Uber Eats order, not 10 individual orders',
+    ],
+  },
+
+  {
+    id: 'EST22',
+    title: 'YouTube Storage Cost for One Day of Uploads',
+    subtitle: 'Cost Estimation · Cloud Infrastructure',
+    difficulty: 'Staff',
+    isFree: false,
+    tags: ['YouTube', 'storage', 'infrastructure', 'cloud cost', 'transcoding'],
+    category: 'cost-estimation',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate the storage cost YouTube incurs for all videos uploaded in a single day (new uploads only).',
+
+    frameworkSteps: [
+      'Step 1 — Estimate upload volume: How many hours of video are uploaded in 24 hours?',
+      'Step 2 — Convert to raw bytes: What is the average file size per hour of uploaded video?',
+      'Step 3 — Account for transcoding overhead: YouTube stores multiple quality tiers and formats.',
+      'Step 4 — Apply storage cost per TB: Use public cloud pricing as a proxy for Google\'s internal cost.',
+      'Step 5 — Sanity check: Cross-reference with Google infrastructure cost benchmarks.',
+    ],
+
+    hints: [
+      'YouTube\'s publicly stated stat: ~500 hours of video are uploaded every minute. Over 24 hours: 500 × 60 × 24 = 720,000 hours/day.',
+      'Raw file sizes: 1080p video runs ~2-4 GB/hour; 720p ~1-2 GB/hour; 480p and below ~0.3-0.5 GB/hour. Most uploaded videos are not 4K. A blended average across all uploads is roughly 1.5-2 GB/hour raw.',
+      'YouTube transcodes each upload into multiple quality tiers: 144p, 240p, 360p, 480p, 720p, 1080p — sometimes 1440p and 4K. The transcoded storage footprint is ~3-5x the raw upload size. Use 4x as a blended multiplier.',
+      'Cloud storage costs: AWS S3 standard is ~$0.023/GB/month. Google Cloud Storage is similar. Google has some infrastructure cost advantage but not dramatically different at a per-GB level.',
+      'Remember: this is the monthly recurring storage cost for one day\'s uploads (you pay to store them every month going forward, not just once).',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: Daily upload volume.
+500 hours uploaded/minute × 60 min × 24 hours = 720,000 hours of video uploaded per day.
+
+Step 2: Raw file size estimate.
+Blended average across all uploads: a mix of phone-shot 1080p (2 GB/hr), YouTube Creator 4K (8 GB/hr), old standard-def content (0.5 GB/hr). Weighted blended: ~1.8 GB/hour raw.
+Total raw data uploaded in 1 day: 720,000 hours × 1.8 GB/hour = 1,296,000 GB = ~1.3 PB of raw upload data per day.
+
+Step 3: Transcoding multiplier.
+YouTube stores: original + 144p + 240p + 360p + 480p + 720p + 1080p. Each quality tier is smaller but the set accumulates. Typical multiplier: ~4x the original (the lower-quality versions are much smaller; 144p is ~0.05 GB/hr, but there are 6+ versions).
+Total stored data per day of uploads: 1.3 PB × 4 = 5.2 PB stored per day's batch.
+
+Step 4: Storage cost.
+Google's internal storage cost is estimated at ~$0.012-0.016/GB/month (below public cloud due to Google's infrastructure scale and custom hardware). Use $0.013/GB/month.
+Monthly cost to store one day's uploads: 5.2 PB × 1,024 × 1,024 GB/PB × ... wait, let's convert cleanly.
+5.2 PB = 5,200 TB = 5,200,000 GB.
+Monthly cost: 5,200,000 GB × $0.013/GB/month = $67,600/month to store one day's uploads.
+Annual cost: $67,600 × 12 = ~$811,000/year.
+
+But this is just for one day's worth of uploads, stored for a year. Over a full year, YouTube accumulates 365 days of uploads, each requiring perpetual storage.
+Year 1 cumulative annual storage cost for all uploads in Year 1: approximately $811k × (1 + 2/3) adjustment for the average cohort being uploaded mid-year = ~$400k average monthly × 12 = ~$5M/year for one year's worth of new uploads (ongoing monthly cost building up to $67,600 × 365 = $24.7M/month by year-end).
+
+Single-day upload cost framing (what does one day cost, stored for one month):
+5.2 PB × $0.013/GB = ~$68k for one month's storage of one day's content.
+
+Range: $60,000–$80,000 per month in storage costs for one day's YouTube uploads.`,
+      keyAssumptions: [
+        '500 hours/minute upload rate — stated by YouTube at Google I/O; this figure has been stable since 2022',
+        '1.8 GB/hour blended raw upload size — weighted average across 4K creator content (heavy) and mobile/legacy uploads (light)',
+        '4x transcoding multiplier — YouTube stores 6+ quality tiers; lower-quality copies are small but the total set is roughly 4x the raw upload',
+        '$0.013/GB/month Google internal storage cost — estimated at 40-50% below public cloud list price due to Google\'s custom Colossus/GCS infrastructure',
+      ],
+      finalEstimate: '~$60,000–$80,000 per month to store one day\'s worth of new YouTube uploads; ~$68k/month central estimate',
+      sanityChecks: [
+        'Scale check: At $68k/month per day of uploads, 365 days × $68k = $24.8M/month by end of Year 1 for that year\'s total new-upload storage cost. YouTube\'s parent Alphabet spends ~$12-15B/year on capex (data centers, servers). Storage is a fraction of that — $300M/year on YouTube storage alone is plausible (~2% of capex).',
+        'GB price sanity: 5.2 PB per day × $0.013/GB/month = $67.6k/month. AWS S3 pricing for 5.2 PB = $0.023/GB × 5,200,000 GB = $119.6k/month. Google\'s internal cost is plausibly 40-50% below this. Consistent.',
+        'Total YouTube library check: YouTube reportedly stores ~1 billion hours of video total. At 1.8 GB/hr × 4x transcoding = 7.2 GB/hr average stored: 1B × 7.2 = 7.2 billion GB = 7,200 PB = ~7 Exabytes. At $0.013/GB: ~$94M/month total storage for the entire library. That\'s ~$1.1B/year — a large but not implausible fraction of Google\'s storage infrastructure spend.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Uses the 500 hours/minute anchor (publicly stated) as the starting point',
+      'Applies a transcoding multiplier and explains the quality-tier logic (not just raw upload size)',
+      'Estimates Google\'s internal storage cost below public cloud list price with a rationale',
+      'Clearly distinguishes between "one month\'s storage of one day\'s uploads" vs. "annual accumulation of all uploads" — and specifies which framing they\'re answering',
+      'Cross-checks against Google\'s total capex and the implied YouTube library size',
+    ],
+
+    commonMistakes: [
+      'Forgetting the transcoding multiplier — using only the raw upload size understates actual storage by 4x',
+      'Using public cloud list price ($0.023/GB) without discounting for Google\'s infrastructure advantage',
+      'Confusing one-time storage cost with monthly recurring cost — storage is a perpetual monthly expense',
+      'Not converting units correctly — PB to TB to GB arithmetic errors are common under pressure',
+      'Ignoring the distinction between "one day\'s uploads" and "all of YouTube\'s library" — the question asks specifically about new uploads in one day',
+    ],
+  },
+
+  {
+    id: 'EST23',
+    title: 'Active WhatsApp Groups Globally',
+    subtitle: 'User Behavior · Messaging',
+    difficulty: 'Analyst',
+    isFree: false,
+    tags: ['WhatsApp', 'messaging', 'groups', 'social', 'global'],
+    category: 'users',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate the number of active WhatsApp groups globally.',
+
+    frameworkSteps: [
+      'Step 1 — Anchor with WhatsApp\'s total user base: How many people use WhatsApp monthly?',
+      'Step 2 — Estimate group participation rate: What fraction of WhatsApp users are in at least one active group?',
+      'Step 3 — Estimate groups per active group user: On average, how many groups is a typical user in?',
+      'Step 4 — Estimate average group size: How many members per group on average?',
+      'Step 5 — Calculate total groups, then apply an activity filter.',
+    ],
+
+    hints: [
+      'WhatsApp has ~2.78 billion monthly active users globally (Meta 2023 disclosure).',
+      'WhatsApp groups are widely used across the world for family, work, school, neighborhood, and social coordination — especially in emerging markets. Penetration in group usage is very high.',
+      'A typical WhatsApp user might be in 5-10 groups of varying activity levels.',
+      'WhatsApp allows up to 1,024 members per group (raised from 512 in 2022), but the vast majority of groups are small: family groups (5-15 people), friend groups (5-20), work groups (10-50).',
+      'Define "active" as a group that had at least one message in the past 30 days.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: WhatsApp MAU.
+WhatsApp MAU: ~2.78B (Meta disclosed 2B+ as of early 2024; industry estimates are 2.7-2.9B).
+
+Step 2: Group participation rate.
+WhatsApp groups are ubiquitous. Usage patterns:
+- In India (largest market, ~500M users): almost every user is in multiple family and neighborhood groups.
+- In Brazil, Mexico, Indonesia: similar high-group-usage patterns.
+- In the US/EU: lower group usage; people use iMessage or SMS groups.
+Estimate: ~75% of MAU are in at least one active group = 2.78B × 0.75 = ~2.1B group-participating users.
+
+Step 3: Groups per user.
+Typical active group user:
+- 1-2 family groups (immediate family, extended family)
+- 1-2 friend circles
+- 1-2 work/professional groups
+- 1 school/class group (especially in EM markets)
+Average: ~6 groups per user, but many are low-activity.
+
+Total group memberships: 2.1B users × 6 groups = 12.6B group memberships.
+
+Step 4: Average group size.
+Most groups are small: the median WhatsApp group probably has 10-15 members. Large groups (100+) are rare and skew the average up. Blended average: ~20 members per group.
+
+Total unique groups: 12.6B memberships / 20 members per group = 630M total groups.
+
+Step 5: Apply activity filter.
+Not all groups are active. Many groups are created and go quiet. Define active = ≥1 message in past 30 days.
+Estimate: ~60% of all groups are active in any given month → 630M × 0.60 = ~378M active groups.
+
+Range: 300M–450M active WhatsApp groups globally.`,
+      keyAssumptions: [
+        '2.78B WhatsApp MAU — Meta\'s disclosed figure; consistent with public reports',
+        '75% of users are in at least one active group — based on WhatsApp\'s group-centric usage in India, Brazil, Indonesia (the 3 largest markets)',
+        '6 groups per active group user — median user is in family, friends, work, and neighborhood groups; power users in 15-20',
+        '20 members per group average — median group is a small family/friend circle; larger groups skew the average up from ~10',
+        '60% activity rate — large fraction of groups fade after initial creation; many seasonal or event-based groups go dormant',
+      ],
+      finalEstimate: 'Range: 300M–450M active WhatsApp groups globally; ~375M central estimate',
+      sanityChecks: [
+        '100M groups per billion users: At 375M groups / 2.78B users = ~1 active group per 7.4 users. That feels low — suggests roughly 1 active group per extended family unit, which is consistent with WhatsApp\'s role as a family communication tool.',
+        'Messages per group check: WhatsApp reportedly delivers ~100B messages per day. If 375M active groups each send ~150-200 messages/day on average (some very active, many quiet): 375M × 175 = ~66B messages from groups. Plus individual DMs accounting for the remainder. Plausible.',
+        'Comparison: Telegram has ~900M users and reports ~700M monthly users; Telegram\'s group/channel structure is heavier. WhatsApp\'s more personal nature suggests fewer but more intimate groups per user. Our estimate is consistent with this positioning.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Distinguishes group participation rate from the total user base (not all 2.78B users are in active groups)',
+      'Notes the geographic skew — WhatsApp group usage in India, Brazil, Indonesia is fundamentally higher than in US/EU',
+      'Converts group memberships to unique groups by dividing by average group size — a critical step',
+      'Applies a dormancy/activity filter rather than treating all groups as active',
+      'Arrives at a range with a reasoned central estimate',
+    ],
+
+    commonMistakes: [
+      'Using the total WhatsApp user count as the number of groups — confusing users with groups',
+      'Forgetting to divide by average group size when converting memberships to unique groups (gets 12.6B instead of 375M)',
+      'Assuming all created groups are active — many WhatsApp groups are created for events and then go dormant',
+      'Not accounting for geographic variation — applying US/EU group behavior to the global user base significantly underestimates group usage in India and Latin America',
+    ],
+  },
+
+  {
+    id: 'EST24',
+    title: 'Google Maps\' Server Infrastructure Cost Per User Per Year',
+    subtitle: 'Cost Estimation · Infrastructure · Maps',
+    difficulty: 'Staff',
+    isFree: false,
+    tags: ['Google Maps', 'infrastructure', 'cost-per-user', 'APIs', 'cloud'],
+    category: 'cost-estimation',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate Google Maps\' server infrastructure cost per user per year.',
+
+    frameworkSteps: [
+      'Step 1 — Identify cost components: Maps involves tile serving, geocoding, routing, real-time traffic, Places API, and Street View.',
+      'Step 2 — Estimate usage per user per year: Sessions per day, queries per session, data transferred per query.',
+      'Step 3 — Estimate compute and storage cost per unit of usage.',
+      'Step 4 — Sum up the cost per user and cross-check against Google Maps Platform API pricing as a proxy.',
+    ],
+
+    hints: [
+      'Google Maps has ~1 billion monthly active users. For this problem, focus on the consumer app (not the API/developer business).',
+      'Cost components: (1) Map tile serving — serving raster/vector tiles to render the map, (2) Routing/directions — compute-intensive graph search, (3) Search/Places — geocoding and POI lookup, (4) Real-time traffic — sensor data processing, (5) Street View — high-bandwidth image serving.',
+      'Google Maps Platform API pricing (public): Static Maps = $2/1,000 requests; Directions API = $5/1,000; Places API = $17/1,000. These are revenue-priced at ~3-5x Google\'s internal cost. Use this to back into cost.',
+      'A typical Maps user: opens the app ~3x/week, averages 4 tile loads per session, 1 route per session. A heavy user opens it 2x/day.',
+      'Google\'s internal compute costs are dramatically lower than cloud list price — similar to the storage discount (40-60% below public cloud rates).',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Approach: Break down cost by usage component.
+
+User profile — average consumer Maps user:
+Sessions per week: ~4 sessions (commute + weekend errands + occasional trips).
+Sessions per year: 4 × 52 = ~208 sessions/year.
+Per session:
+- ~10-15 map tile loads (panning, zooming)
+- ~0.5 route requests (not every session uses navigation)
+- ~0.5 place searches (restaurant lookups, etc.)
+
+Component 1: Map tile serving.
+208 sessions × 12 tiles/session = 2,496 tile requests/year.
+Each tile is a small data packet (~20-50 KB for vector tiles). Data transfer: 2,496 × 35 KB = ~87 MB/year.
+Cloud data egress: ~$0.05-0.08/GB. Google's internal cost: ~$0.03/GB.
+Tile serving data cost: 0.087 GB × $0.03 = ~$0.003/year.
+Tile serving compute (rendering, CDN): estimate ~$0.50/1,000 tiles → 2,496/1,000 × $0.50 = $1.25. But at Google scale with massive CDN caching, effective cost is 10-20x lower: ~$0.10/user/year for tiles.
+
+Component 2: Routing (Directions).
+208 sessions × 0.5 routes = 104 route requests/year.
+Google Maps Platform Directions API: $5/1,000 requests (retail). Internal cost at 20% of retail: $0.001/request.
+Routing cost per user: 104 × $0.001 = $0.10/year.
+
+Component 3: Places/Search.
+208 × 0.5 = 104 place searches/year.
+Places API retail: ~$17/1,000 = $0.017/request. Internal cost at 20%: ~$0.0034/request.
+Places cost: 104 × $0.0034 = ~$0.35/year.
+
+Component 4: Real-time traffic data processing.
+Maps continuously processes GPS signals, road sensor data, and incident reports. This is a fixed infrastructure cost spread across 1B users.
+Google's annual traffic data infrastructure (estimated): $300-500M/year globally.
+Per user: $400M / 1B users = $0.40/user/year.
+
+Component 5: Street View image serving.
+Most users occasionally view Street View (maybe 10 sessions/year at 30-second views).
+Each Street View load: ~2-5 MB of panoramic images. 10 sessions × 3 MB = 30 MB/year.
+Storage + egress: ~$0.005/user/year.
+
+Total cost per user per year: $0.10 + $0.10 + $0.35 + $0.40 + $0.005 = ~$0.96/user/year.
+
+Range: $0.50–$1.50/user/year for Google Maps infrastructure cost.`,
+      keyAssumptions: [
+        'Google Maps 1B MAU consumer app — this is the user base for infrastructure amortization',
+        'Internal cost is ~20% of Google Maps Platform API retail price — Google\'s internal cost advantage and the API price includes significant margin',
+        '4 sessions/week average — blended across heavy navigators (daily) and casual users (occasional)',
+        '$400M/year traffic data infrastructure — rough estimate based on Google\'s disclosed capex and Maps\' share of infrastructure',
+      ],
+      finalEstimate: 'Range: $0.50–$1.50 per user per year; ~$1.00 central estimate',
+      sanityChecks: [
+        'Google Maps Platform revenue: Google earns ~$2-3B/year from Maps API/Platform (developer revenue). At $1/user/year internal cost × 1B users = $1B total infrastructure cost. Gross margin on Platform would be ~50-66%. Plausible for a developer API business.',
+        'Comparison to YouTube: YouTube costs Google ~$3-4/user/year in infrastructure (video is vastly more bandwidth-intensive). Maps at ~$1/user is in the right order of magnitude for a mostly text-and-tile product.',
+        'Per-request check: ~400 total API-equivalent requests/user/year × $0.0025 blended internal cost/request = $1.00/user/year. Consistent.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Decomposes the problem into distinct cost components (tiles, routing, places, traffic, Street View) rather than treating Maps as a monolith',
+      'Uses Google Maps Platform API pricing as a public proxy, then discounts it to estimate internal cost',
+      'Quantifies data transfer separately from compute cost',
+      'Amortizes fixed infrastructure (real-time traffic processing) across the user base',
+      'Cross-checks against Google Maps Platform revenue and YouTube cost benchmarks',
+    ],
+
+    commonMistakes: [
+      'Using public cloud API pricing directly as Google\'s internal cost — Google\'s internal cost is 10-20% of retail API prices',
+      'Ignoring the fixed infrastructure cost of real-time traffic data processing — this is a significant and often-overlooked component',
+      'Treating all 1B users as heavy navigators — the vast majority of casual users generate far less tile/routing traffic',
+      'Forgetting to separate data transfer costs from compute costs — both are real and additive',
+    ],
+  },
+
+  {
+    id: 'EST25',
+    title: 'Airbnb Listings in New York City',
+    subtitle: 'Market Sizing · Accommodation',
+    difficulty: 'Analyst',
+    isFree: false,
+    tags: ['Airbnb', 'listings', 'NYC', 'market-sizing', 'accommodation'],
+    category: 'market-sizing',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate the number of Airbnb listings in New York City.',
+
+    frameworkSteps: [
+      'Step 1 — Estimate NYC\'s total housing stock: How many residential units exist in NYC?',
+      'Step 2 — Estimate the share of units listed on Airbnb: What fraction of homeowners and renters put their home on Airbnb?',
+      'Step 3 — Account for NYC\'s short-term rental regulations: Local Law 18 (2023) significantly restricts legal STRs.',
+      'Step 4 — Cross-check with public data: Inside Airbnb and NYC Open Data publish listing counts.',
+    ],
+
+    hints: [
+      'NYC has approximately 3.5 million housing units total (apartments, condos, co-ops, townhouses).',
+      'NYC enacted Local Law 18 in September 2023, requiring hosts to be present during guest stays and limiting listings to 2 guests at a time — this dramatically reduced legal listings from ~40,000 to ~4,000-6,000 active legal listings.',
+      'Pre-regulation (pre-2023): Airbnb had ~40,000-50,000 listings in NYC. Post-regulation: listings dropped ~90% in the legal category.',
+      'The question asks for listings "in New York City" — consider whether to estimate current legal listings or total including non-compliant ones.',
+      'Inside Airbnb (a public dataset) tracked NYC listings: ~22,000 as of mid-2023 before LL18 enforcement, dropping to ~3,700 by early 2024.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: NYC housing stock.
+NYC has ~3.5M residential units. Ownership breakdown:
+- ~30% owner-occupied (condos, co-ops, townhouses): ~1.05M units
+- ~70% renter-occupied: ~2.45M units
+
+Step 2: Pre-regulation estimate (to understand baseline).
+Airbnb hosting requires willingness to host strangers, regulatory compliance, and a unit type suitable for guests.
+Pre-LL18 (before Sept 2023) estimate:
+Among owner-occupied units, ~3% might list on Airbnb = 1.05M × 0.03 = 31,500 listings.
+Among rental units, tenants subletting illegally or legally: ~0.5% = 2.45M × 0.005 = 12,250 listings.
+Total pre-regulation: ~43,750 listings. Consistent with the ~40,000-50,000 reported before 2023.
+
+Step 3: Post-regulation (current, post-Sept 2023).
+NYC Local Law 18 requires:
+(a) Host must be present during guest stays (no "whole unit" rentals)
+(b) Max 2 guests
+(c) Registration with NYC government
+
+This eliminated most whole-unit vacation rentals. The practical effect:
+- Owner-occupied hosts who can remain present while renting a spare room: ~0.3% of owner units = 1.05M × 0.003 = 3,150
+- Renters with a spare room and lease allowing subletting: very rare, ~0.1% = 2.45M × 0.001 = 2,450
+Total compliant listings post-LL18: ~5,600.
+
+Some non-compliant listings still exist (enforcement is imperfect). Add ~30% non-compliant: 5,600 × 1.30 = ~7,300 total active listings (including those operating illegally).
+
+Range: 4,000–8,000 active Airbnb listings in NYC today.
+Pre-regulation range: 35,000–50,000 (for historical context).`,
+      keyAssumptions: [
+        'NYC has 3.5M housing units — NYC Housing and Vacancy Survey data; this is a well-documented figure',
+        '30% owner-occupied vs. 70% renter — NYC is one of the highest renter-proportion cities in the US',
+        'Local Law 18 (Sept 2023) reduced compliant listings by ~90% — this is confirmed by Inside Airbnb data and news reporting',
+        '~30% of current listings are non-compliant but still active — enforcement lags registration requirements',
+      ],
+      finalEstimate: 'Post-LL18: 4,000–8,000 active listings; ~6,000 central estimate. Pre-LL18 historical: ~40,000–50,000.',
+      sanityChecks: [
+        'Inside Airbnb public data: NYC had ~22,000 listings in mid-2023 before LL18 enforcement, dropping to ~3,700-4,000 by Jan 2024. Our estimate of 4,000-8,000 (including some non-compliant) is consistent.',
+        'Revenue check: At ~6,000 listings × 50% occupancy × 365 nights × $200/night × 15% service fee: 6,000 × 182.5 × $200 × 0.15 = ~$32.8M annual revenue for Airbnb from NYC. Pre-LL18: 40,000 × 45% × 365 × $180 × 0.15 = ~$177M. The LL18 impact is significant — NYC went from being Airbnb\'s largest US market to a sharply reduced one.',
+        'Hotel room count check: NYC has ~120,000 hotel rooms. At 6,000 Airbnb listings, Airbnb represents about 5% of the short-term accommodation inventory — far below the ~30% share it had pre-regulation. Consistent with the regulatory reset.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Knows about NYC\'s Local Law 18 (2023) and quantifies its dramatic impact on listing count',
+      'Builds from housing stock using owner-occupied vs. renter breakdown',
+      'Provides both historical (pre-regulation) and current (post-regulation) estimates',
+      'Cross-checks against Inside Airbnb public data',
+      'Notes that non-compliant listings still exist (enforcement is imperfect)',
+    ],
+
+    commonMistakes: [
+      'Not knowing about Local Law 18 and giving a ~40,000 estimate as if regulations don\'t exist — this is the most important contextual fact for this question',
+      'Starting with US Airbnb total listings (~7M) and estimating NYC\'s share without bottom-up housing stock analysis',
+      'Forgetting that most NYC residents are renters, not owners — NYC\'s 70% renter rate is far above the US average',
+      'Ignoring that whole-unit vacation rentals are now essentially banned in NYC (host must be present)',
+    ],
+  },
+
+  {
+    id: 'EST26',
+    title: 'Daily Instagram Stories Users Globally',
+    subtitle: 'Product Metrics · Social Media',
+    difficulty: 'Analyst',
+    isFree: false,
+    tags: ['Instagram', 'Stories', 'DAU', 'social media', 'Meta'],
+    category: 'users',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate how many people use Instagram Stories daily.',
+
+    frameworkSteps: [
+      'Step 1 — Anchor with Instagram\'s total user base: Monthly and daily active users.',
+      'Step 2 — Define "use Instagram Stories": This means viewing or posting a Story, not just opening the app.',
+      'Step 3 — Estimate the Stories engagement rate among daily active users.',
+      'Step 4 — Cross-check against Meta\'s disclosed Stories metrics.',
+    ],
+
+    hints: [
+      'Instagram has ~2B MAU and ~500M DAU globally (Meta 2023 disclosures).',
+      'Meta has disclosed in past earnings calls and blog posts that Stories is used by 500 million accounts daily across Facebook and Instagram. Instagram-specific figure: ~400M+ accounts view or post Stories daily.',
+      'Stories is the primary consumption format on Instagram — the horizontal scrolling grid is secondary for younger users.',
+      'Distinguish between "viewing" a Story (much higher frequency) and "posting" a Story (maybe 5-10% of DAU post daily; nearly all DAU view).',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: Instagram user base.
+Instagram MAU: ~2 billion (Meta reported in 2023).
+Instagram DAU: roughly 500M, assuming a 25% DAU/MAU ratio (Instagram is a daily-use app for many but not all MAU check in daily; 25% is a reasonable blended rate for a social media platform with high frequency but also passive/monthly users).
+
+Step 2: Stories engagement among DAU.
+Stories is the default entry point on Instagram — when you open the app, Stories appear at the top of the feed. Nearly every DAU is exposed to Stories.
+
+Stories viewers: ~90% of DAU view at least one Story per day = 500M × 0.90 = 450M viewers/day.
+
+Stories posters: Typically 5-10% of DAU post a Story daily. 500M × 0.075 = ~37.5M posters/day.
+
+"Using" Stories (viewers + posters; most overlap, so this is basically the viewer count since all posters are also viewers): ~450M daily Stories users.
+
+Step 3: Cross-check.
+Meta disclosed in 2018 that "500 million accounts use Stories on Instagram every day." This was the figure at a point when Instagram MAU was ~1B. With MAU now at 2B, extrapolating: 500M × (2B/1B) × modest decay for saturation ≈ 600-700M? But Stories engagement rates may have declined as Reels became dominant.
+
+Conservative estimate anchored on more recent signals: ~400M–500M daily Stories users.
+
+Range: 350M–500M people use Instagram Stories daily.`,
+      keyAssumptions: [
+        'Instagram MAU: 2B (Meta 2023)',
+        'Instagram DAU/MAU ratio: 25% → ~500M DAU',
+        '90% of DAU view at least one Story daily — Stories is the topmost UI element and nearly unavoidable',
+        'Meta\'s 2018 disclosure of 500M daily Stories users on Instagram as an anchor, adjusted for MAU growth and Reels competition',
+      ],
+      finalEstimate: 'Range: 350M–500M people use Instagram Stories daily; ~400M–450M central estimate',
+      sanityChecks: [
+        'Meta\'s stated figure: Meta disclosed 500M daily Instagram Stories users in 2018 when Instagram had ~1B MAU. With MAU doubled to 2B but Reels now dominant, ~400M-500M today is directionally consistent.',
+        'Penetration check: 400M Stories users / 2B MAU = 20% of all Instagram accounts interact with Stories daily. This is a high but plausible engagement rate for the app\'s primary consumption feature.',
+        'Creator check: If 5-10% of 500M DAU post Stories daily: 25M-50M posts/day. With each Story post containing 1-3 frames on average: 50-150M Story frames uploaded per day. At ~200KB per frame: 10-30 TB of Stories content uploaded per day — consistent with Instagram\'s infrastructure scale.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Distinguishes between MAU (2B) and DAU (500M) and applies the DAU/MAU ratio correctly',
+      'Separates Story viewers from Story posters — a much larger fraction of DAU views than posts',
+      'Recalls Meta\'s own disclosed figure (~500M daily Stories users) as a primary anchor',
+      'Notes the competitive tension with Reels, which may have reduced Stories engagement',
+      'Provides a range rather than a single number',
+    ],
+
+    commonMistakes: [
+      'Using MAU (2B) as the base for daily Stories users — confusing monthly and daily engagement',
+      'Assuming only "posters" use Stories — the vast majority of Stories usage is passive viewing',
+      'Not knowing Meta\'s 500M daily Stories users disclosure — this is a widely-cited publicly available figure',
+      'Ignoring the Reels factor — Reels has taken significant share of session time from Stories since 2020',
+    ],
+  },
+
+  {
+    id: 'EST27',
+    title: 'Netflix Bandwidth During US Peak Hours',
+    subtitle: 'Infrastructure · Streaming · Bandwidth',
+    difficulty: 'Senior',
+    isFree: false,
+    tags: ['Netflix', 'bandwidth', 'streaming', 'infrastructure', 'peak traffic'],
+    category: 'infrastructure',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate the bandwidth Netflix uses during peak hours in the US.',
+
+    frameworkSteps: [
+      'Step 1 — Estimate concurrent US Netflix viewers during peak hours: When does peak occur and how many streams are active?',
+      'Step 2 — Estimate average bitrate per stream: Quality varies by device and plan.',
+      'Step 3 — Calculate total bandwidth as concurrent streams × average bitrate.',
+      'Step 4 — Cross-check against public data (Sandvine Internet Phenomena Report, Netflix Open Connect disclosures).',
+    ],
+
+    hints: [
+      'Netflix has ~80M US subscribers. Peak viewing is 8-11pm Eastern on weekdays and weekends.',
+      'Netflix\'s average bitrate varies: SD = ~3 Mbps, HD = ~5 Mbps, 4K = ~15-25 Mbps. Most US viewers watch in HD. Blended average: ~7-8 Mbps.',
+      'Sandvine\'s 2023 Internet Phenomena Report: Netflix accounts for ~15% of all internet downstream traffic globally. In North America, Netflix has historically been ~35-37% of peak downstream traffic.',
+      'US broadband peak traffic: ~40-50 Tbps of total downstream during peak hours (estimated from ISP capacity data).',
+      'Concurrent stream count: At peak, roughly 20-25% of US subscribers are watching simultaneously.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: Concurrent US Netflix streams at peak.
+Netflix US subscribers: ~80M.
+Peak concurrent viewer rate: 20-25% of subscribers. This accounts for:
+- Not all subscribers are in the US timezone simultaneously at peak (8-11pm ET)
+- Households share a subscription (avg ~2.3 people per household, but the concurrent stream count is per household, not per person)
+- Not everyone watches every night
+
+US concurrent streams at peak: 80M × 0.22 = ~17.6M concurrent streams.
+
+Note: Netflix allows 2-4 simultaneous streams per account depending on plan. Many households have multiple concurrent streams. Adjusting: 80M accounts × 25% active accounts × 1.3 average streams per active account = 26M concurrent streams.
+
+Use 20M concurrent streams as a midpoint estimate.
+
+Step 2: Average bitrate per stream.
+Netflix plan distribution (US, 2024):
+- Standard with ads: ~25% → mostly HD (1080p) = 5 Mbps
+- Standard: ~30% → HD = 5 Mbps
+- Premium: ~35% → 4K UHD = 15 Mbps average (not all 4K-capable TVs or content)
+- Basic/legacy: ~10% → SD = 3 Mbps
+
+Blended average bitrate: (25%×5) + (30%×5) + (35%×12) + (10%×3) = 1.25 + 1.50 + 4.20 + 0.30 = 7.25 Mbps per stream.
+
+Also: Netflix uses adaptive bitrate (ABR) — quality adjusts to network conditions. During peak when networks are congested, actual delivered bitrate may drop to 4-5 Mbps. Use 6 Mbps as a congestion-adjusted blended average.
+
+Step 3: Total peak bandwidth.
+20M concurrent streams × 6 Mbps = 120 million Mbps = 120,000 Gbps = 120 Tbps.
+
+Range: 80–150 Tbps.`,
+      keyAssumptions: [
+        'Netflix US subscribers: 80M (Netflix Q4 2023 earnings; Netflix reported ~260M global; US is ~31%)',
+        '25% peak concurrent rate — industry benchmark; Netflix\'s Open Connect CDN documentation references similar figures',
+        '1.3 streams per active account at peak — multi-room viewing is common in households with Premium plans',
+        '6 Mbps blended effective bitrate — lower than theoretical max due to ABR throttling during congestion',
+      ],
+      finalEstimate: 'Range: 80–150 Tbps of bandwidth during US peak hours; ~120 Tbps central estimate',
+      sanityChecks: [
+        'Sandvine check: Sandvine 2023 reports Netflix as ~15% of global downstream traffic. Global internet traffic ~1,000 Tbps. Netflix global = ~150 Tbps. US peak is a subset of global peak. North America is ~40% of global internet traffic → ~400 Tbps North American total → Netflix at 35% of peak = ~140 Tbps. Consistent with our 120 Tbps estimate.',
+        'Netflix Open Connect: Netflix has publicly disclosed that its Open Connect CDN (which delivers Netflix content directly from ISP networks) handles "petabytes per day" of traffic. 1 PB/day = 8 × 10^15 bits / 86,400 seconds = ~92 Tbps average; peaks higher. Consistent.',
+        'Per-user check: 120 Tbps / 20M concurrent streams = 6,000 kbps = 6 Mbps per stream. This matches our assumed average bitrate — internally consistent.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Estimates concurrent streams (not subscribers) as the key driver — recognizing that peak concurrent << total subscribers',
+      'Accounts for multi-stream households (1.3 streams per active account)',
+      'Uses plan distribution and quality tier to compute a weighted average bitrate',
+      'Adjusts for ABR throttling during congestion — the delivered bitrate is lower than the nominal maximum',
+      'Cross-checks using Sandvine Internet Phenomena Report data and Netflix Open Connect disclosures',
+    ],
+
+    commonMistakes: [
+      'Using total subscribers (80M) instead of peak concurrent streams (~20M) — this overstates bandwidth by 4x',
+      'Using the peak 4K bitrate (25 Mbps) for all streams — the blended average is far lower (6-8 Mbps)',
+      'Ignoring ABR — Netflix adaptively reduces quality when networks are congested; theoretical max bitrate ≠ actual delivered',
+      'Confusing global Netflix bandwidth with US peak bandwidth',
+    ],
+  },
+
+  {
+    id: 'EST28',
+    title: 'Stripe\'s Daily Customer Support Tickets',
+    subtitle: 'Operations · FinTech · Support Volume',
+    difficulty: 'Senior',
+    isFree: false,
+    tags: ['Stripe', 'customer support', 'fintech', 'tickets', 'operations'],
+    category: 'volume',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate the number of customer support tickets Stripe handles per day.',
+
+    frameworkSteps: [
+      'Step 1 — Estimate Stripe\'s active merchant base: How many businesses use Stripe?',
+      'Step 2 — Estimate ticket rate per merchant: What fraction of active merchants submit a support ticket on a given day?',
+      'Step 3 — Estimate the developer/API consumer segment: Stripe has a large developer user base that generates technical support tickets.',
+      'Step 4 — Account for volume spikes: Ticket volume correlates with payment failures, fraud events, and platform incidents.',
+    ],
+
+    hints: [
+      'Stripe processes payments for millions of businesses. Stripe has stated it works with "millions of businesses" globally; estimates put active users at 4-5M businesses.',
+      'Support ticket rates for payment processors are typically low per-merchant per-day — most merchants don\'t contact support daily. A typical SaaS product sees ~0.5-2% of users submit a ticket per month.',
+      'Stripe\'s user base is heavily developer-skewed. Documentation questions, API integration issues, and sandbox testing problems generate technical tickets.',
+      'Stripe also handles issuer/acquirer disputes, fraud alerts, and compliance queries — these are often higher-severity and more time-consuming than basic onboarding tickets.',
+      'Compare with a known benchmark: Zendesk reports B2B SaaS companies typically handle 100-500 support tickets per 1,000 monthly active users per month.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: Stripe's active merchant base.
+Stripe has disclosed "millions of companies" use Stripe. Industry estimates: ~4-5M active businesses.
+Segment breakdown:
+- Startups and developers (integrating/testing): ~2M accounts (many low-volume, often technical support)
+- SMBs and mid-market (regular payment processing): ~1.5M businesses
+- Enterprise/large companies: ~50,000 (Stripe's "Stripe Corporate" segment)
+
+Step 2: Daily ticket rate by segment.
+
+Startups/developers:
+These users hit integration issues, API errors, sandbox questions. Monthly ticket rate: ~2% of this segment submits a ticket per month.
+Daily tickets: 2M × 0.02 / 30 = ~1,333 tickets/day.
+
+SMBs/mid-market:
+Issues: payment disputes, fraud, failed transactions, payout questions. Monthly ticket rate: ~1% per month.
+Daily tickets: 1.5M × 0.01 / 30 = 500 tickets/day.
+
+Enterprise:
+Dedicated support channels, often via Slack/email with designated account managers. Monthly ticket rate: ~5% of enterprise accounts have a touch per month (many through non-ticket channels).
+Daily tickets through formal ticketing: 50,000 × 0.05 / 30 = ~83 tickets/day.
+
+Step 3: Cardholder/payment-end tickets.
+Stripe also handles inquiries from consumers who see "Stripe" on their bank statement. These are typically redirected to the merchant, but some arrive at Stripe.
+Estimate: ~200 such tickets/day (Stripe tries to minimize this channel).
+
+Step 4: Total.
+Total daily tickets: 1,333 + 500 + 83 + 200 = ~2,116 tickets/day.
+
+Add a spike/incident multiplier: On normal days, this is the baseline. On days with payment network outages or fraud spikes, volume may 2-3x. Average daily including incident days: ~2,500 tickets/day.
+
+Range: 1,500–4,000 tickets/day.`,
+      keyAssumptions: [
+        'Stripe has 4-5M active businesses — based on Stripe\'s disclosed "millions of companies" and analyst estimates',
+        'Developer/startup segment (2M accounts) has a higher ticket rate (2%/month) due to integration complexity',
+        'SMB segment (1.5M businesses) generates ~1%/month ticket rate — lower per-account but large in number',
+        'Enterprise segment uses dedicated success managers for most issues, reducing formal ticket volume',
+      ],
+      finalEstimate: 'Range: 1,500–4,000 tickets/day; ~2,500 central estimate',
+      sanityChecks: [
+        'Support team size check: Stripe employs ~8,000 people (per their own hiring disclosures). If 15% are in support/operations: ~1,200 support staff. At 10 tickets/agent/day: 12,000 tickets/day capacity. Our 2,500 estimate implies ~25% support staff utilization — plausible if many support staff handle complex/long-form issues rather than high-volume simple tickets.',
+        'Comparison with similar companies: Twilio (API/developer-focused like Stripe) serves ~300k active accounts and reportedly handles ~5,000-10,000 tickets/month = ~170-330/day. Stripe at 10-15x the merchant scale: 1,700-5,000/day. Consistent.',
+        'Transaction volume check: Stripe processed ~$817B in payment volume in 2023. If 0.01% of transactions generate a support touch: $817B / $50 avg transaction = ~16.3B transactions. 0.01% × 16.3B / 365 = 4,466 per day. Our estimate is in the right order of magnitude.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Segments Stripe\'s user base (developers, SMBs, enterprise) with differentiated ticket rates',
+      'Accounts for the developer/API segment which generates technical support disproportionately',
+      'Notes that enterprise customers often use dedicated account management rather than ticketing systems',
+      'Provides a baseline and accounts for incident-driven spikes',
+      'Cross-checks against Stripe\'s headcount and transaction volume proxies',
+    ],
+
+    commonMistakes: [
+      'Using the total number of Stripe API calls (millions per day) as a proxy for tickets — the vast majority of API calls generate no support contact',
+      'Applying a consumer-app ticket rate to a developer-focused B2B product — Stripe\'s support needs are different from a consumer app',
+      'Forgetting the spike factor — payment processor support volumes are highly correlated with outages and fraud events',
+      'Not segmenting by merchant type — a 10-person startup and a Fortune 500 company have very different support interaction patterns',
+    ],
+  },
+
+  {
+    id: 'EST29',
+    title: 'Amazon Fulfillment Floor Space for Prime Day',
+    subtitle: 'Operations · E-Commerce · Logistics',
+    difficulty: 'Staff',
+    isFree: false,
+    tags: ['Amazon', 'Prime Day', 'fulfillment', 'logistics', 'warehousing'],
+    category: 'operations',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate the additional Amazon fulfillment center floor space needed to support Prime Day inventory surge.',
+
+    frameworkSteps: [
+      'Step 1 — Estimate Prime Day order volume uplift: How many more orders does Amazon fulfill on Prime Day vs. a typical day?',
+      'Step 2 — Estimate inventory pre-staging: Prime Day inventory is built up days/weeks before the event.',
+      'Step 3 — Calculate the incremental physical space requirement: How much floor space does each incremental unit of inventory require?',
+      'Step 4 — Cross-check against Amazon\'s known fulfillment network capacity.',
+    ],
+
+    hints: [
+      'Amazon reported ~$12.9B in Prime Day 2023 sales over 2 days (~$6.45B/day). A typical non-Prime-Day day for Amazon in 2023 averaged ~$1.2B/day in product sales.',
+      'Prime Day peak order rate is ~5-6x a typical day. Fulfillment centers pre-stage inventory 2-4 weeks in advance.',
+      'Amazon has ~400+ fulfillment centers in the US totaling ~400M sq ft. An average fulfillment center is ~1M sq ft.',
+      'Inventory density in Amazon fulfillment centers: ~350-400 units per square foot of storage (using vertical racking and robotic systems). Each unit averages ~0.5 lb and fits in a tote or bin.',
+      'Think about SKU variety: Prime Day deals span millions of SKUs. Each SKU requires dedicated storage slots regardless of volume.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: Prime Day order volume vs. typical day.
+Prime Day 2023: ~$12.9B over 2 days = ~$6.45B/day.
+Typical Amazon day: ~$1.2B in third-party + first-party product sales.
+Uplift ratio: 6.45 / 1.2 = ~5.4x typical day volume.
+
+Daily order count baseline: At ~$40 average order value, 1.2B/40 = 30M orders/day typical.
+Prime Day daily orders: 30M × 5.4 = ~162M orders on each Prime Day.
+
+Step 2: Inventory pre-staging.
+To fulfill Prime Day orders without stockouts, Amazon pre-positions inventory 3-4 weeks ahead.
+Pre-staged inventory = anticipated Prime Day demand × safety stock factor.
+
+Incremental inventory to support Prime Day (above normal inventory levels):
+Normal daily throughput: 30M units.
+Normal inventory on hand: ~2-3 weeks of normal demand = 30M × 18 days = 540M units in transit/storage.
+Prime Day pre-stage: Need to support 162M/day for 2 days = 324M units, plus safety stock = ~500M extra units.
+Net incremental inventory: 500M - 540M normal = actually, inventory is being built up gradually, so total FCs need to hold ~(normal + 500M incremental) during the pre-stage period.
+
+Focus on incremental physical space for the 500M additional units:
+500M units × average unit size. Amazon average item: a book, small electronics item, apparel piece — roughly 0.5 lb, dimensions ~6×4×3 inches = 72 cubic inches.
+
+Storage density in Amazon RobotStow/Kiva FCs: ~8-12 units per cubic foot of storage (shelves + aisles + robots).
+At 10 units/cubic foot: 500M / 10 = 50M cubic feet of storage volume needed.
+Converting to floor space (storage height ~20 feet usable): 50M / 20 = 2.5M square feet of floor space.
+
+Step 3: Translate to fulfillment centers.
+A typical Amazon FC is ~1M sq ft floor space, with ~40% used for storage = 400,000 sq ft of active storage.
+Incremental floor space needed: 2.5M sq ft → approximately 6 additional standard fulfillment centers' worth of storage.
+
+In practice, Amazon handles this through:
+(a) Clearing existing FCs by shipping out slow-moving inventory beforehand
+(b) Using overflow storage in partner 3PL warehouses
+(c) Distributing across 400+ US FCs (each absorbing ~12,500 sq ft / 400 = ~6,250 additional sq ft per FC)
+
+Range: 2M–4M sq ft of additional storage space activated for Prime Day pre-staging.`,
+      keyAssumptions: [
+        'Prime Day daily order volume: ~5.4x typical day, based on $12.9B/2 days vs. $1.2B/day typical',
+        '$40 average Amazon order value — consistent with published estimates; lower than pure electronics, higher than pure daily deals',
+        '10 units/cubic foot storage density — assumes Amazon\'s robotic fulfillment with 20-foot rack heights',
+        '500M incremental units in pre-stage — rough estimate based on 2-day event × 5x daily unit volume above normal',
+      ],
+      finalEstimate: '~2.5M sq ft of incremental storage floor space needed (equivalent to ~6 standard fulfillment centers)',
+      sanityChecks: [
+        'Capacity check: Amazon\'s US network of 400+ FCs covers ~400M sq ft total. The incremental 2.5M sq ft represents ~0.6% of total network capacity — a very small increment. Amazon handles this by optimizing across its existing network, which is built to absorb exactly this kind of surge.',
+        'Revenue per sq ft check: $12.9B Prime Day revenue / 2.5M incremental sq ft = $5,160 revenue per sq ft of incremental storage. At Amazon\'s ~5% operating margin on product sales: $258 operating profit per incremental sq ft. At ~$15/sq ft/month for warehouse space, the 1-month staging period costs ~$15 per sq ft. Return = 17x. This high ROI explains why Amazon aggressively pre-stages inventory.',
+        'Amazon Prime Day headcount check: Amazon hires ~100,000 temporary workers for Prime Day. At ~1 worker per 500 sq ft of active pick-and-pack area: implies 50M sq ft active. Amazon\'s total US FC footprint of 400M sq ft supports this scale.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Uses Prime Day disclosed revenue ($12.9B) to calculate the order volume uplift ratio vs. a typical day',
+      'Identifies the pre-staging window (3-4 weeks) as the key driver of incremental space, not just the event itself',
+      'Converts units to volumetric storage space using realistic storage density (units/cubic foot)',
+      'Translates floor space to number of equivalent fulfillment centers for intuitive framing',
+      'Notes that Amazon absorbs the surge across its existing 400+ FC network rather than building new ones',
+    ],
+
+    commonMistakes: [
+      'Estimating "total Amazon warehouse space" instead of "incremental space for Prime Day" — the question is about the delta',
+      'Ignoring the pre-staging dynamic — Prime Day inventory is built up weeks before, requiring extended incremental space',
+      'Using floor area directly without accounting for vertical storage (20-foot racking doubles usable storage per floor area)',
+      'Not knowing Amazon\'s Prime Day disclosed revenue — this is the essential anchor for the order volume calculation',
+    ],
+  },
+
+  {
+    id: 'EST30',
+    title: 'Active Chrome Browser Tabs Open Globally Right Now',
+    subtitle: 'Fun / Challenging · Infrastructure Thinking',
+    difficulty: 'Staff',
+    isFree: false,
+    tags: ['Chrome', 'browsers', 'tabs', 'estimation', 'global', 'fun'],
+    category: 'market-sizing',
+    approach: 'bottom-up',
+
+    prompt: 'Estimate the number of active Chrome browser tabs open globally right now.',
+
+    frameworkSteps: [
+      'Step 1 — Estimate the number of active Chrome users globally at any given moment.',
+      'Step 2 — Estimate the average number of tabs a Chrome user has open at one time.',
+      'Step 3 — Account for different user segments (casual vs. power users) and time zones.',
+      'Step 4 — Cross-check against Chrome\'s memory footprint and total PC memory estimates.',
+    ],
+
+    hints: [
+      'Chrome has ~3.3B active users globally and ~65% global desktop browser market share.',
+      'The global internet user base is ~5.4B; around 60% use Chrome on some device (desktop, Android, iOS).',
+      'Mobile Chrome behavior: mobile users typically have 1-3 tabs open at a time (many use tab groups or have auto-close). Desktop Chrome users are notorious for leaving many tabs open.',
+      'A 2019 Mozilla study found the median number of open tabs per Firefox session was ~5. Chrome users are commonly reported to have 10-30+ tabs, especially developers and researchers.',
+      '"Active right now" — assume a typical mid-day moment on a weekday. Not all Chrome users are using their computer simultaneously.',
+    ],
+
+    modelAnswer: {
+      walkthrough: `Step 1: Chrome users active right now.
+Chrome total global users: ~3.3B accounts/installs.
+Active at any moment: Not everyone is using Chrome right now.
+Desktop Chrome users: ~1.5B. At a typical mid-day moment on a weekday, ~25% of desktop users have Chrome open: 1.5B × 0.25 = 375M desktop Chrome sessions active.
+Mobile Chrome users: ~1.8B. At any moment ~20% are actively browsing: 1.8B × 0.20 = 360M mobile Chrome sessions active.
+
+Step 2: Tabs per session.
+
+Desktop users:
+Light users (students, casual browsing): ~5 tabs → 30% of desktop sessions
+Medium users (office workers, news readers): ~12 tabs → 40% of desktop sessions
+Heavy/power users (developers, researchers): ~35 tabs → 30% of desktop sessions
+Weighted average desktop tabs: (0.30×5) + (0.40×12) + (0.30×35) = 1.5 + 4.8 + 10.5 = 16.8 tabs/session.
+
+Mobile users:
+Mobile browsers have fewer tabs; Android Chrome often encourages tab closure.
+Light: ~2 tabs (60% of mobile sessions)
+Medium: ~5 tabs (30%)
+Heavy: ~15 tabs (10%)
+Weighted average mobile tabs: (0.60×2) + (0.30×5) + (0.10×15) = 1.2 + 1.5 + 1.5 = 4.2 tabs/session.
+
+Step 3: Total tabs.
+Desktop: 375M sessions × 16.8 tabs = 6.3B tabs.
+Mobile: 360M sessions × 4.2 tabs = 1.51B tabs.
+Total: 6.3B + 1.51B = ~7.8B active Chrome tabs globally.
+
+Round to nearest order of magnitude: approximately 5–10 billion active Chrome tabs.
+
+The "right now" qualifier means this is for a mid-day weekday moment when internet usage is near but not at its global peak (which would be higher due to overlapping time zones in the afternoon).`,
+      keyAssumptions: [
+        'Chrome has ~3.3B active users globally — consistent with StatCounter data (~65% of ~5.2B internet-using devices)',
+        '25% of desktop Chrome users have Chrome open at any given weekday mid-day moment — desktop activity rates are lower than mobile (mobile is always-on)',
+        '20% of mobile Chrome users are actively browsing — most smartphone users aren\'t in a browser at any given second',
+        '16.8 average desktop tabs — driven by the heavy-user tail (developers, researchers with 20-50+ tabs) pulling the average well above the median',
+      ],
+      finalEstimate: 'Range: 5B–10B active Chrome tabs globally at a typical mid-day moment; ~8B central estimate',
+      sanityChecks: [
+        'Memory check: Each Chrome tab uses ~50-100 MB of RAM on average. 8B tabs × 75 MB = 600 petabytes of RAM — clearly impossible. This is the key sanity check failure: 8B concurrent open tabs would require RAM that doesn\'t exist. Resolution: most "open" tabs are inactive/suspended. Chrome\'s tab discarding feature suspends background tabs. The number of OPEN tabs (including suspended) could be 8B; the number requiring active RAM at any instant is ~10-100x smaller.',
+        'Revised framing: If ~1% of all open tabs are "actively loaded in RAM" at any moment: 8B × 0.01 = 80M actively loaded tab-equivalents globally. At 75 MB each: 6 TB of total RAM in use for Chrome — plausible (there are ~2B PCs in the world; average 4 GB RAM; even if 0.1% goes to one Chrome tab = 800M GB × 0.001 = 800 TB, which is in range).',
+        'Chrome team data: Google internally tracks tab usage. A 2020 Chromium blog post noted "most users have fewer than 10 tabs open"; however, users who have many tabs open have a disproportionate number. This confirms our heavy-user segment is key.',
+      ],
+    },
+
+    strongAnswerMarkers: [
+      'Builds from active sessions at a moment in time (not total user installs) — recognizing that not all 3.3B users are online simultaneously',
+      'Segments desktop vs. mobile users because tab behavior is fundamentally different on each platform',
+      'Uses a distribution approach (light/medium/heavy) for tabs per session rather than a single average — the heavy-user tail matters',
+      'Runs the memory sanity check and identifies that "open tabs" includes suspended tabs, which resolves the apparent impossibility',
+      'Arrives at a range (5B-10B) and acknowledges the inherent uncertainty in estimating user-device state',
+    ],
+
+    commonMistakes: [
+      'Using total Chrome installs (3.3B) as the number of currently-active sessions — billions of users are asleep, offline, or using other apps',
+      'Applying the same tab count to mobile and desktop users — mobile Chrome users have dramatically fewer tabs than desktop power users',
+      'Not running a memory sanity check — the result of billions of open tabs should be tested against how much RAM actually exists on the world\'s computers',
+      'Treating "open tab" and "actively loaded tab" as synonymous — Chrome aggressively suspends background tabs to reduce RAM usage',
+      'Anchoring too conservatively on the median (5 tabs) without accounting for the heavy-user tail that pulls the average up',
+    ],
+  },
 ];

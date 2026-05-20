@@ -7,6 +7,7 @@ export const rcaCases = [
     subtitle: 'Crestline Home · E-Commerce · Payment Flow',
     difficulty: 'analyst',
     isFree: true,
+    companies: ['Stripe', 'PayPal', 'Shopify'],
     domain: 'growth',
     linkedConceptIds: ['funnel-decomposition', 'segmentation', 'data-quality-check'],
     context: {
@@ -250,6 +251,7 @@ Expected output: post_deploy / web / visa row will show significantly lower succ
     subtitle: 'Vela · B2C Marketplace · Search Quality',
     difficulty: 'analyst',
     isFree: true,
+    companies: ['Amazon', 'Airbnb', 'Etsy'],
     domain: 'search',
     linkedConceptIds: ['data-quality-check', 'segmentation', 'funnel-decomposition'],
     context: {
@@ -502,6 +504,7 @@ Expected output: top rows will show new catalog terms with 'NO SYNONYM — MISSI
     subtitle: 'Crafted · Two-Sided Marketplace · Fulfillment',
     difficulty: 'analyst',
     isFree: false,
+    companies: ['Airbnb', 'DoorDash', 'Uber Eats'],
     domain: 'marketplace',
     linkedConceptIds: ['segmentation', 'marketplace-interference', 'funnel-decomposition'],
     context: {
@@ -762,6 +765,7 @@ Expected output: new_cohort rows will show significantly higher cancellation_rat
     subtitle: 'Orion · Consumer Mobile · Re-engagement',
     difficulty: 'senior',
     isFree: false,
+    companies: ['Spotify', 'Netflix', 'TikTok'],
     domain: 'retention',
     linkedConceptIds: ['proxy-metric', 'metric-gaming', 'cohort-analysis'],
     context: {
@@ -1035,6 +1039,7 @@ Expected output: D7 retention_pct should decrease monotonically as frequency_buc
     subtitle: 'Vantage Analytics · B2B SaaS · Commercial Health',
     difficulty: 'senior',
     isFree: false,
+    companies: ['Salesforce', 'HubSpot', 'Databricks'],
     domain: 'revenue',
     linkedConceptIds: ['funnel-decomposition', 'segmentation'],
     context: {
@@ -1328,6 +1333,7 @@ gross_margin_pct → the headline metric. Expected output: enterprise / no_disco
     subtitle: 'Threadline · B2B SaaS · AI Support Quality',
     difficulty: 'senior',
     isFree: false,
+    companies: ['Intercom', 'Zendesk', 'Slack'],
     domain: 'genai',
     linkedConceptIds: ['proxy-metric', 'metric-gaming', 'data-quality-check'],
     context: {
@@ -1604,6 +1610,7 @@ hallucination_rate_pct broken by intent_category + confidence_bucket → expecte
     subtitle: 'Crafted · Marketplace · Trust & Safety',
     difficulty: 'senior',
     isFree: false,
+    companies: ['Meta', 'Twitter', 'eBay'],
     domain: 'marketplace',
     linkedConceptIds: ['segmentation', 'data-quality-check', 'funnel-decomposition'],
     context: {
@@ -1876,6 +1883,7 @@ high_value_fraud_orders confirms the category concentration signal without requi
     subtitle: 'Prism · Short-Form Video · Engagement',
     difficulty: 'senior',
     isFree: false,
+    companies: ['Netflix', 'YouTube', 'TikTok'],
     domain: 'growth',
     linkedConceptIds: ['proxy-metric', 'funnel-decomposition', 'segmentation'],
     context: {
@@ -2153,6 +2161,7 @@ Expected output: the pre_launch rows should show D1 ~41% and D7 higher; post_lau
     subtitle: 'Threadline · B2B SaaS · Revenue Health',
     difficulty: 'senior',
     isFree: false,
+    companies: ['Slack', 'Notion', 'Linear'],
     domain: 'saas',
     linkedConceptIds: ['funnel-decomposition', 'segmentation', 'proxy-metric'],
     context: {
@@ -2435,6 +2444,7 @@ Expected output: the SMB / contraction rows will show large negative mrr_contrib
     subtitle: 'Threadline · B2B SaaS · Retention',
     difficulty: 'analyst',
     isFree: false,
+    companies: ['Slack', 'Asana', 'Monday.com'],
     domain: 'saas',
     linkedConceptIds: ['segmentation', 'data-quality-check', 'funnel-decomposition'],
     context: {

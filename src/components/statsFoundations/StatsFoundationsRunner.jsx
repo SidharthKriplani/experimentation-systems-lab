@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { statsFoundationsModules } from '../../data/statsFoundationsModules.js';
 
 class ModuleErrorBoundary extends React.Component {
@@ -19,7 +19,7 @@ class ModuleErrorBoundary extends React.Component {
   }
 }
 import { saveStatFoundationsProgress, getStatFoundationsProgress } from '../../utils/statsFoundationsProgress.js';
-import { isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
+import { addBookmark, removeBookmark, isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
 import { Module01_WhatIsData } from './modules/Module01_WhatIsData.jsx';
 import { Module02_CentralTendency } from './modules/Module02_CentralTendency.jsx';
 import { Module03_Spread } from './modules/Module03_Spread.jsx';
@@ -79,6 +79,7 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
   const [bookmarked, setBookmarked] = useState(() => {
     try { return isBookmarked('stat-foundations', moduleId); } catch { return false; }
   });
+  useEffect(() => { setBookmarked(isBookmarked('stat-foundations', moduleId)); }, [moduleId]);
   const [toastVisible, setToastVisible] = useState(false);
 
   if (!module || !ModuleComponent) {
@@ -346,6 +347,30 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
               </div>
             </div>
           )}
+          {/* Debrief bookmark button */}
+          <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 16px 32px', boxSizing: 'border-box' }}>
+            <button
+              onClick={() => {
+                if (bookmarked) {
+                  removeBookmark('stat-foundations', module.id);
+                  setBookmarked(false);
+                } else {
+                  addBookmark('stat-foundations', module.id, module.title, module.difficulty, module.tags || []);
+                  setBookmarked(true);
+                }
+              }}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                border: bookmarked ? '1px solid var(--yellow-border)' : '1px solid var(--border)',
+                background: bookmarked ? 'var(--yellow-bg)' : 'var(--surface)',
+                color: bookmarked ? 'var(--yellow)' : 'var(--text-muted)',
+                cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500,
+              }}
+            >
+              {bookmarked ? '🔖 Saved' : '🔖 Save'}
+            </button>
+          </div>
         </>
       )}
     </div>

@@ -2315,6 +2315,639 @@ ORDER BY user_id, event_date;
       'Session_id is user-scoped, not globally unique. If downstream queries need to join sessions across users, you must compose a globally unique key: CONCAT(user_id, \'-\', session_id) or assign a row number over the entire sessionized table partitioned by (user_id, session_id).',
     ],
   },
+
+  // ─────────────────────────────────────────────
+  // CODE19 — Bayesian A/B Test Analysis (Python · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code19-bayesian-ab-python',
+    title: 'Bayesian A/B Test Analysis',
+    subtitle: 'Python · Beta Distribution · Posterior Sampling · Credible Intervals',
+    track: 'python',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['Bayesian', 'A/B testing', 'beta distribution', 'scipy', 'posterior', 'credible interval'],
+
+    scenario: {
+      company: 'Helix Health · Onboarding Experiment',
+      context: `Helix ran a 3-week A/B test on a new onboarding checklist feature. You have the conversion counts for both arms. The stats team wants a Bayesian analysis instead of a frequentist p-value — specifically: (1) the posterior distribution of the true conversion rate for each arm, (2) a 95% credible interval for the difference, and (3) the probability that treatment is better than control (P(θ_T > θ_C)).`,
+      schema: [
+        { table: 'Python variables already defined:', description: '', columns: [] },
+        { table: '—', description: 'n_control = 12400, conv_control = 1860  (15.0% conversion)', columns: [] },
+        { table: '—', description: 'n_treatment = 12600, conv_treatment = 2079  (16.5% conversion)', columns: [] },
+      ],
+      task: 'Using a Beta-Binomial model with a uniform Beta(1,1) prior, compute the posterior Beta distributions for each arm, draw 100,000 samples to estimate P(treatment > control), and report the 95% credible interval on the lift.',
+    },
+
+    hints: [
+      'With a Beta(1,1) prior and n observations with k conversions, the posterior is Beta(1 + k, 1 + n - k)',
+      'scipy.stats.beta.rvs(a, b, size=N) draws N samples from a Beta(a,b) distribution',
+      'P(treatment > control) = mean(samples_treatment > samples_control) over 100,000 draws',
+      'Credible interval on the lift: take the 2.5th and 97.5th percentiles of (samples_treatment - samples_control)',
+    ],
+
+    partialCode: `import numpy as np
+from scipy import stats
+
+np.random.seed(42)
+
+# Given data
+n_control        = 12_400
+conv_control     = 1_860
+n_treatment      = 12_600
+conv_treatment   = 2_079
+
+# 1. Posterior parameters using Beta(1,1) prior
+# Posterior: Beta(1 + conversions, 1 + non-conversions)
+alpha_c = ___   # 1 + conv_control
+beta_c  = ___   # 1 + (n_control - conv_control)
+alpha_t = ___
+beta_t  = ___
+
+print(f"Posterior Beta params — Control:   Beta({alpha_c}, {beta_c})")
+print(f"Posterior Beta params — Treatment: Beta({alpha_t}, {beta_t})")
+
+# 2. Posterior means (the Bayesian point estimates)
+post_mean_c = ___   # alpha / (alpha + beta)
+post_mean_t = ___
+print(f"\\nPosterior mean — Control:   {post_mean_c:.4f}")
+print(f"Posterior mean — Treatment: {post_mean_t:.4f}")
+
+# 3. Sample from posteriors
+n_samples = 100_000
+samples_c = ___   # draw n_samples from Beta(alpha_c, beta_c)
+samples_t = ___   # draw n_samples from Beta(alpha_t, beta_t)
+
+# 4. P(treatment > control)
+p_treatment_better = ___
+print(f"\\nP(Treatment > Control): {p_treatment_better:.4f}")
+
+# 5. 95% Credible interval on the lift (treatment - control)
+lift_samples = samples_t - samples_c
+ci_lower, ci_upper = ___
+print(f"95% Credible Interval on lift: [{ci_lower:+.4f}, {ci_upper:+.4f}]")
+print(f"Expected lift: {lift_samples.mean():+.4f}  ({lift_samples.mean()*100:+.2f}pp)")`,
+
+    modelAnswer: `import numpy as np
+from scipy import stats
+
+np.random.seed(42)
+
+# Given data
+n_control        = 12_400
+conv_control     = 1_860
+n_treatment      = 12_600
+conv_treatment   = 2_079
+
+# 1. Posterior parameters: Beta(1,1) prior + binomial likelihood → Beta posterior
+# Posterior: Beta(1 + conversions, 1 + non-conversions)
+alpha_c = 1 + conv_control
+beta_c  = 1 + (n_control - conv_control)
+alpha_t = 1 + conv_treatment
+beta_t  = 1 + (n_treatment - conv_treatment)
+
+print(f"Posterior Beta params — Control:   Beta({alpha_c}, {beta_c})")
+print(f"Posterior Beta params — Treatment: Beta({alpha_t}, {beta_t})")
+
+# 2. Posterior means (the MAP point estimates)
+post_mean_c = alpha_c / (alpha_c + beta_c)
+post_mean_t = alpha_t / (alpha_t + beta_t)
+print(f"\\nPosterior mean — Control:   {post_mean_c:.4f}  ({post_mean_c:.2%})")
+print(f"Posterior mean — Treatment: {post_mean_t:.4f}  ({post_mean_t:.2%})")
+print(f"Expected lift (posterior means): {(post_mean_t - post_mean_c)*100:+.2f}pp")
+
+# 3. Draw 100,000 samples from each posterior
+n_samples = 100_000
+samples_c = stats.beta.rvs(alpha_c, beta_c, size=n_samples)
+samples_t = stats.beta.rvs(alpha_t, beta_t, size=n_samples)
+
+# 4. P(treatment > control) — fraction of samples where treatment rate > control rate
+p_treatment_better = np.mean(samples_t > samples_c)
+print(f"\\nP(Treatment > Control): {p_treatment_better:.4f}  ({p_treatment_better:.2%})")
+
+# 5. Credible interval on the lift
+lift_samples = samples_t - samples_c
+ci_lower, ci_upper = np.percentile(lift_samples, [2.5, 97.5])
+
+print(f"\\n95% Credible Interval on lift: [{ci_lower*100:+.2f}pp, {ci_upper*100:+.2f}pp]")
+print(f"Expected lift: {lift_samples.mean()*100:+.2f}pp")
+
+# 6. Summary interpretation
+print("\\n--- Interpretation ---")
+print(f"There is a {p_treatment_better:.1%} probability that the treatment has a higher")
+print(f"conversion rate than control. The 95% credible interval on the lift is")
+print(f"[{ci_lower*100:+.2f}pp, {ci_upper*100:+.2f}pp] — we are 95% confident the")
+print(f"true lift lies in this range given our prior and the observed data.")
+
+# 7. Sanity check: compare to frequentist result
+from scipy.stats import proportions_ztest
+_, p_freq = proportions_ztest(
+    count=[conv_treatment, conv_control],
+    nobs=[n_treatment, n_control],
+    alternative='two-sided'
+)
+print(f"\\nFrequentist p-value (two-sided z-test): {p_freq:.6f}")
+print(f"(Bayesian P(T>C) ≈ 1 - frequentist one-sided p/2 when sample is large — consistent)")`,
+
+    keyInsights: [
+      'The Beta-Binomial conjugate model is the simplest Bayesian A/B test. With a Beta(α,β) prior and n trials with k successes, the posterior is Beta(α+k, β+n-k) — closed form, no MCMC needed.',
+      'P(treatment > control) via sampling is straightforward: draw N samples from each posterior and compute mean(samples_T > samples_C). With 100,000 samples, this estimate is stable to ±0.1% or better.',
+      'A 95% Bayesian credible interval has a more intuitive interpretation than a frequentist CI: "there is a 95% probability the true lift is in this range (given the prior and data)" vs. the frequentist "95% of intervals constructed this way would contain the true parameter."',
+      'With n ≈ 12,000 per arm and a Beta(1,1) uninformative prior, the prior has negligible impact — the posterior is dominated by the data. The Bayesian and frequentist conclusions will be nearly identical at this sample size.',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE20 — Cohort LTV Projection (Python · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code20-cohort-ltv-python',
+    title: 'Cohort LTV Projection',
+    subtitle: 'Python · Retention Curve · Exponential Decay · Discounted LTV',
+    track: 'python',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['LTV', 'cohort analysis', 'retention', 'exponential decay', 'pandas', 'numpy'],
+
+    scenario: {
+      company: 'Meridian SaaS · Growth Team',
+      context: `Meridian has 6 months of retention data for its January 2024 signup cohort. The growth team wants to project 12-month LTV. You'll fit an exponential decay curve to months 1-6 and extrapolate to month 12, then compute discounted LTV using a monthly discount rate (reflecting cost of capital) and ARPU.`,
+      schema: [
+        { table: 'Python variables already defined:', description: '', columns: [] },
+        { table: '—', description: 'retention = [1.0, 0.72, 0.58, 0.49, 0.43, 0.38, 0.35]  (M0 through M6)', columns: [] },
+        { table: '—', description: 'arpu = 45.0  (average revenue per user per month, $)', columns: [] },
+        { table: '—', description: 'monthly_discount_rate = 0.01  (1% per month ≈ 12.7% annually)', columns: [] },
+      ],
+      task: 'Fit an exponential decay model (R(t) = a * exp(-b*t)) to the observed retention data, project retention for months 7-12, and compute 12-month discounted LTV as sum of (ARPU × R(t) / (1 + discount_rate)^t) for t=0 to 12.',
+    },
+
+    hints: [
+      'Use scipy.optimize.curve_fit to fit an exponential model. Define a function: def exp_decay(t, a, b): return a * np.exp(-b * t)',
+      'Initial guess for parameters: a=1.0 (M0 retention starts at 100%), b=0.1 (a decay constant around 10%/month)',
+      'Once you have fitted a, b: project months 7-12 as exp_decay(t, a, b) for t in range(7, 13)',
+      'LTV = sum over all months of ARPU × retention(t) / (1 + monthly_discount_rate)^t',
+    ],
+
+    partialCode: `import numpy as np
+from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
+
+# Observed data: M0 through M6
+months_observed = np.array([0, 1, 2, 3, 4, 5, 6])
+retention       = np.array([1.0, 0.72, 0.58, 0.49, 0.43, 0.38, 0.35])
+
+arpu                  = 45.0   # $ per user per month
+monthly_discount_rate = 0.01   # 1% per month
+
+# 1. Define the exponential decay model
+def exp_decay(t, a, b):
+    return ___
+
+# 2. Fit the model to observed data
+popt, pcov = curve_fit(___, months_observed, retention, p0=[1.0, 0.1])
+a_fit, b_fit = popt
+print(f"Fitted model: R(t) = {a_fit:.4f} * exp(-{b_fit:.4f} * t)")
+
+# 3. Project months 7-12
+months_projected = np.array([7, 8, 9, 10, 11, 12])
+retention_projected = ___
+
+# Combine observed + projected retention
+months_all    = np.concatenate([months_observed, months_projected])
+retention_all = np.concatenate([retention, retention_projected])
+
+print("\\nRetention projection:")
+for t, r in zip(months_all, retention_all):
+    label = "(observed)" if t <= 6 else "(projected)"
+    print(f"  Month {t:2d}: {r:.3f}  {label}")
+
+# 4. Compute 12-month discounted LTV
+# LTV = sum of ARPU * retention(t) / (1 + r)^t for t = 0 to 12
+ltv_12m = ___
+print(f"\\n12-Month Discounted LTV: \${ltv_12m:.2f}")
+
+# 5. Compare with undiscounted LTV
+ltv_undiscounted = ___
+print(f"12-Month Undiscounted LTV: \${ltv_undiscounted:.2f}")`,
+
+    modelAnswer: `import numpy as np
+from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
+
+# Observed data: M0 through M6
+months_observed = np.array([0, 1, 2, 3, 4, 5, 6])
+retention       = np.array([1.0, 0.72, 0.58, 0.49, 0.43, 0.38, 0.35])
+
+arpu                  = 45.0   # $ per user per month
+monthly_discount_rate = 0.01   # 1% per month
+
+# 1. Exponential decay model
+def exp_decay(t, a, b):
+    return a * np.exp(-b * t)
+
+# 2. Fit to observed data (months 0-6)
+popt, pcov = curve_fit(exp_decay, months_observed, retention, p0=[1.0, 0.1])
+a_fit, b_fit = popt
+print(f"Fitted model: R(t) = {a_fit:.4f} * exp(-{b_fit:.4f} * t)")
+print(f"Implied monthly churn rate ≈ {1 - np.exp(-b_fit):.2%}")
+
+# 3. Project months 7-12
+months_projected    = np.array([7, 8, 9, 10, 11, 12])
+retention_projected = exp_decay(months_projected, a_fit, b_fit)
+
+# Full 13-month timeline (M0 through M12)
+months_all    = np.concatenate([months_observed, months_projected])
+retention_all = np.concatenate([retention, retention_projected])
+
+print("\\nRetention projection:")
+for t, r in zip(months_all, retention_all):
+    label = "(observed)" if t <= 6 else "(projected)"
+    print(f"  Month {t:2d}: {r:.3f}  {label}")
+
+# 4. 12-Month Discounted LTV
+# LTV = sum_{t=0}^{12} ARPU * R(t) / (1 + r)^t
+discount_factors = np.array([(1 + monthly_discount_rate)**(-t) for t in months_all])
+ltv_12m = np.sum(arpu * retention_all * discount_factors)
+
+print(f"\\n12-Month Discounted LTV:   \${ltv_12m:.2f}")
+
+# 5. Undiscounted LTV (no time value of money)
+ltv_undiscounted = np.sum(arpu * retention_all)
+print(f"12-Month Undiscounted LTV: \${ltv_undiscounted:.2f}")
+print(f"Discount impact: \${ltv_undiscounted - ltv_12m:.2f} ({(ltv_undiscounted - ltv_12m)/ltv_undiscounted:.1%} reduction)")
+
+# 6. LTV at each month (cumulative) — useful for CAC payback analysis
+print("\\nCumulative LTV by month:")
+cumulative_ltv = 0
+for t, r, df in zip(months_all, retention_all, discount_factors):
+    cumulative_ltv += arpu * r * df
+    print(f"  Month {t:2d}: cumulative LTV = \${cumulative_ltv:.2f}")
+
+# 7. Optional: visualize retention observed vs fitted
+fig, ax = plt.subplots(figsize=(9, 4))
+t_smooth = np.linspace(0, 12, 100)
+ax.plot(months_observed, retention * 100, 'o', label='Observed', markersize=8, color='#4C72B0')
+ax.plot(t_smooth, exp_decay(t_smooth, a_fit, b_fit) * 100, '-', label='Fitted (exp decay)', color='#4C72B0', alpha=0.6)
+ax.axvline(6.5, color='grey', linestyle='--', linewidth=0.8, label='Projection boundary')
+ax.set_xlabel('Month')
+ax.set_ylabel('Retention (%)')
+ax.set_title('Cohort Retention: Observed + Projected (Exponential Decay Fit)')
+ax.legend()
+ax.spines[['top', 'right']].set_visible(False)
+plt.tight_layout()
+plt.show()`,
+
+    keyInsights: [
+      'The exponential decay model R(t) = a·exp(-b·t) is the simplest parametric retention model. The constant b is the instantaneous churn rate; the implied monthly churn is 1 - exp(-b). With only 6 observed months, more complex models (power law, shifted-Beta-Geometric) are under-constrained — exponential is defensible.',
+      'Discounting matters for LTV calculations at longer time horizons. A 1%/month discount rate (≈12.7% annual) reduces 12-month LTV by ~6-8% relative to undiscounted. At higher discount rates or longer horizons, the effect is substantial.',
+      'The cumulative LTV curve is more useful than the 12-month point estimate for CAC payback analysis — it tells you at what month cumulative revenue recouped the acquisition cost.',
+      'Projection confidence narrows rapidly beyond observed data. Report a range (optimistic/base/pessimistic) using ±1 standard deviation of the fitted parameters (pcov from curve_fit gives parameter uncertainty).',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE21 — Metric Anomaly Detection (Python · Senior)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code21-anomaly-detection-python',
+    title: 'Metric Anomaly Detection with Rolling Z-Score',
+    subtitle: 'Python · Pandas · Rolling Statistics · Z-Score · Alerting',
+    track: 'python',
+    difficulty: 'senior',
+    isFree: false,
+    tags: ['anomaly detection', 'rolling z-score', 'pandas', 'time series', 'alerting', 'DAU'],
+
+    scenario: {
+      company: 'Stratos · Data Science Team',
+      context: `Stratos tracks Daily Active Users (DAU) as its north star metric. The on-call analyst needs an automated anomaly detection script to flag days where DAU deviated significantly from recent trends. You'll implement a rolling z-score approach: for each day, compute how many standard deviations it falls from the trailing 7-day mean, and flag days where the absolute z-score exceeds 2.5.`,
+      schema: [
+        { table: 'DataFrame: df', description: 'One row per day', columns: ['date', 'dau'] },
+        { table: '—', description: 'date: datetime, sorted ascending. dau: integer, 90 days of data.', columns: [] },
+        { table: '—', description: 'Example: dates from 2024-01-01 to 2024-03-30, DAU ranging 180k–240k', columns: [] },
+      ],
+      task: 'Compute a 7-day rolling mean and standard deviation for DAU. Calculate the z-score for each day as (dau - rolling_mean) / rolling_std. Flag all days where abs(z_score) > 2.5 as anomalies. Print the anomaly dates with their z-scores and DAU values.',
+    },
+
+    hints: [
+      'Use df["dau"].rolling(window=7, min_periods=3).mean() for the rolling mean. min_periods=3 avoids NaN for the first few rows.',
+      'Rolling std: df["dau"].rolling(window=7, min_periods=3).std() — note this is a sample std (ddof=1) by default.',
+      'z_score = (dau - rolling_mean) / rolling_std. Be careful with division by zero if rolling_std is 0.',
+      'Flag anomalies: df["is_anomaly"] = df["z_score"].abs() > 2.5. Then filter to only anomaly rows.',
+    ],
+
+    partialCode: `import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Simulate 90 days of DAU data (replace with real df in production)
+np.random.seed(42)
+dates = pd.date_range('2024-01-01', periods=90, freq='D')
+base_dau = 200_000
+# Inject 3 anomalies: a spike on day 30, a drop on day 55, spike on day 75
+dau_values = (base_dau + np.random.normal(0, 8_000, 90)).astype(int)
+dau_values[30] += 45_000   # anomaly: marketing campaign spike
+dau_values[55] -= 35_000   # anomaly: infrastructure outage
+dau_values[75] += 30_000   # anomaly: viral moment
+
+df = pd.DataFrame({'date': dates, 'dau': dau_values})
+
+# 1. Rolling mean and std (7-day trailing window)
+df['rolling_mean'] = ___
+df['rolling_std']  = ___
+
+# 2. Z-score: how many std devs is today's DAU from the 7-day average?
+# Guard against zero std (use np.where or fillna)
+df['z_score'] = ___
+
+# 3. Flag anomalies
+THRESHOLD = 2.5
+df['is_anomaly'] = ___
+
+# 4. Print anomaly report
+anomalies = df[df['is_anomaly']].copy()
+print(f"Anomaly Detection Report (threshold: ±{THRESHOLD}σ)")
+print(f"Total anomaly days: {len(anomalies)} out of {len(df)} days\\n")
+print(f"{'Date':<14} {'DAU':>10} {'Rolling Mean':>14} {'Z-Score':>10}")
+print("-" * 52)
+for _, row in anomalies.iterrows():
+    direction = "SPIKE" if row['z_score'] > 0 else "DROP "
+    print(f"{str(row['date'].date()):<14} {row['dau']:>10,} {row['rolling_mean']:>14,.0f} {row['z_score']:>+9.2f}  [{direction}]")`,
+
+    modelAnswer: `import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Simulate 90 days of DAU data
+np.random.seed(42)
+dates = pd.date_range('2024-01-01', periods=90, freq='D')
+base_dau = 200_000
+dau_values = (base_dau + np.random.normal(0, 8_000, 90)).astype(int)
+dau_values[30] += 45_000   # anomaly: marketing campaign spike
+dau_values[55] -= 35_000   # anomaly: infrastructure outage
+dau_values[75] += 30_000   # anomaly: viral moment
+
+df = pd.DataFrame({'date': dates, 'dau': dau_values})
+
+# 1. Rolling 7-day mean and std (trailing, min 3 observations to avoid early NaNs)
+df['rolling_mean'] = df['dau'].rolling(window=7, min_periods=3).mean()
+df['rolling_std']  = df['dau'].rolling(window=7, min_periods=3).std()
+
+# 2. Z-score — guard against zero std with np.where
+df['z_score'] = np.where(
+    df['rolling_std'] > 0,
+    (df['dau'] - df['rolling_mean']) / df['rolling_std'],
+    0.0
+)
+
+# 3. Flag anomalies
+THRESHOLD = 2.5
+df['is_anomaly'] = df['z_score'].abs() > THRESHOLD
+
+# 4. Print anomaly report
+anomalies = df[df['is_anomaly']].copy()
+print(f"Anomaly Detection Report  (threshold: ±{THRESHOLD}σ, 7-day rolling window)")
+print(f"Detected {len(anomalies)} anomaly day(s) out of {len(df)} days\\n")
+print(f"{'Date':<14} {'DAU':>10} {'Rolling Mean':>14} {'Z-Score':>10}  {'Type':<8}")
+print("-" * 60)
+for _, row in anomalies.iterrows():
+    direction = "SPIKE" if row['z_score'] > 0 else "DROP"
+    print(
+        f"{str(row['date'].date()):<14} "
+        f"{row['dau']:>10,} "
+        f"{row['rolling_mean']:>14,.0f} "
+        f"{row['z_score']:>+9.2f}  "
+        f"[{direction}]"
+    )
+
+# 5. Summary statistics
+print(f"\\nZ-score distribution (non-anomaly days):")
+normal_z = df.loc[~df['is_anomaly'], 'z_score'].dropna()
+print(f"  Mean:   {normal_z.mean():.3f}")
+print(f"  Std:    {normal_z.std():.3f}")
+print(f"  Min/Max: {normal_z.min():.2f} / {normal_z.max():.2f}")
+
+# 6. Visualize
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 7), sharex=True)
+
+# Top panel: DAU with anomaly markers
+ax1.plot(df['date'], df['dau'], linewidth=1.5, color='#4C72B0', label='DAU')
+ax1.plot(df['date'], df['rolling_mean'], '--', color='orange', linewidth=1.2, label='7-day rolling mean')
+ax1.scatter(anomalies['date'], anomalies['dau'], color='red', zorder=5, s=60, label='Anomaly')
+ax1.set_ylabel('DAU')
+ax1.set_title('DAU with Anomaly Detection (Rolling Z-Score)')
+ax1.legend(fontsize=9)
+ax1.spines[['top', 'right']].set_visible(False)
+
+# Bottom panel: Z-scores
+ax2.bar(df['date'], df['z_score'], color=np.where(df['is_anomaly'], '#d62728', '#aec7e8'), width=0.8)
+ax2.axhline(THRESHOLD,  color='red', linestyle='--', linewidth=0.9, label=f'+{THRESHOLD}σ')
+ax2.axhline(-THRESHOLD, color='red', linestyle='--', linewidth=0.9, label=f'-{THRESHOLD}σ')
+ax2.axhline(0, color='grey', linewidth=0.5)
+ax2.set_ylabel('Z-Score')
+ax2.set_xlabel('Date')
+ax2.legend(fontsize=9)
+ax2.spines[['top', 'right']].set_visible(False)
+
+plt.tight_layout()
+plt.show()`,
+
+    keyInsights: [
+      'Rolling z-score is a simple but effective baseline anomaly detector for slowly-varying metrics like DAU. It detects deviations from recent local trends rather than from a global mean, making it robust to gradual growth or seasonality.',
+      'The 7-day rolling window captures a full week of history, smoothing weekly seasonality (e.g., lower DAU on Mondays). For metrics with strong weekly cycles, using a 7-day window is important to avoid flagging every weekend as an anomaly.',
+      'Guard against division by zero: if DAU is perfectly constant for 7 days, rolling_std = 0, and the z-score is undefined. np.where or pd.Series.where handles this cleanly by setting z_score = 0 in that case.',
+      'A 2.5σ threshold corresponds to ~1.2% false positive rate under a normal distribution. In practice, metric distributions are heavier-tailed, so you will see somewhat more anomalies than expected. Tune the threshold based on your tolerance for false alarms vs. missed detections.',
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // CODE22 — Funnel Conversion SQL + Python Chi-Square (Python+SQL · Staff)
+  // ─────────────────────────────────────────────
+  {
+    id: 'code22-funnel-segment-chisq',
+    title: 'Funnel Conversion by Segment with Significance Testing',
+    subtitle: 'Python + SQL · Funnel Analysis · Chi-Square Test · Segment Comparison',
+    track: 'python',
+    difficulty: 'staff',
+    isFree: false,
+    tags: ['funnel', 'segment analysis', 'chi-square', 'scipy', 'SQL', 'statistical significance', 'staff'],
+
+    scenario: {
+      company: 'Orbis Commerce · Checkout Team',
+      context: `Orbis wants to know if checkout conversion differs significantly between mobile and desktop users, and at which funnel step the gap is largest. You'll write SQL to extract step-level funnel counts by segment, then use Python to compute per-step conversion rates and run a chi-square test at each step to determine if the segment differences are statistically significant.`,
+      schema: [
+        { table: 'events', description: 'One row per user per funnel event', columns: ['user_id', 'event_name', 'platform', 'event_ts'] },
+        { table: '—', description: 'event_name: "checkout_start", "payment_page", "payment_submit", "order_complete"', columns: [] },
+        { table: '—', description: 'platform: "mobile" | "desktop"', columns: [] },
+      ],
+      task: 'Part 1 (SQL): Write a query to count distinct users at each funnel step by platform. Part 2 (Python): Load the results into a DataFrame, compute conversion rates, and run a chi-square test at each step comparing mobile vs. desktop.',
+    },
+
+    hints: [
+      'SQL: Use COUNT(DISTINCT CASE WHEN event_name = \'...\' THEN user_id END) per platform to get users at each funnel step',
+      'Python: For each step, the contingency table is [[mobile_reached, mobile_not_reached], [desktop_reached, desktop_not_reached]] where "reached" means completed this step',
+      'scipy.stats.chi2_contingency([[a,b],[c,d]]) returns (chi2, p_value, dof, expected)',
+      'The chi-square test at each step is conditional: it tests whether the proportion who reached this step (out of those who reached the previous step) differs by platform',
+    ],
+
+    partialCode: `# ─── PART 1: SQL ──────────────────────────────────────────
+# Write a SQL query that returns:
+# platform | users_checkout_start | users_payment_page | users_payment_submit | users_order_complete
+# One row per platform (mobile, desktop)
+
+sql_query = """
+SELECT
+    platform,
+    COUNT(DISTINCT CASE WHEN event_name = 'checkout_start'   THEN user_id END) AS users_checkout_start,
+    -- TODO: add users_payment_page, users_payment_submit, users_order_complete
+    ___
+FROM events
+WHERE event_ts >= '2024-01-01'
+GROUP BY platform
+ORDER BY platform;
+"""
+
+# ─── PART 2: Python ──────────────────────────────────────────
+import pandas as pd
+import numpy as np
+from scipy.stats import chi2_contingency
+
+# Simulated result from the SQL query above
+data = {
+    'platform': ['desktop', 'mobile'],
+    'users_checkout_start':   [45_200, 61_800],
+    'users_payment_page':     [38_420, 44_500],
+    'users_payment_submit':   [32_180, 33_400],
+    'users_order_complete':   [28_950, 26_720],
+}
+df = pd.DataFrame(data)
+df = df.set_index('platform')
+
+steps = ['users_payment_page', 'users_payment_submit', 'users_order_complete']
+prev  = ['users_checkout_start', 'users_payment_page',  'users_payment_submit']
+
+print(f"{'Step':<26} {'Desktop Rate':>14} {'Mobile Rate':>13} {'Chi2 p-value':>14}  {'Significant?':>14}")
+print("-" * 90)
+
+for step, prior in zip(steps, prev):
+    # Compute conversion rate at this step (reached step / reached previous step)
+    desktop_rate = ___
+    mobile_rate  = ___
+
+    # Build 2x2 contingency table
+    # [[desktop_reached_step, desktop_not_reached], [mobile_reached_step, mobile_not_reached]]
+    desktop_reached = df.loc['desktop', step]
+    desktop_prior   = df.loc['desktop', prior]
+    mobile_reached  = df.loc['mobile',  step]
+    mobile_prior    = df.loc['mobile',  prior]
+
+    contingency = ___   # 2x2 table
+    chi2, p, dof, expected = chi2_contingency(contingency)
+
+    sig = "YES ***" if p < 0.05 else "no"
+    step_label = step.replace('users_', '').replace('_', ' ').title()
+    print(f"{step_label:<26} {desktop_rate:>13.1%} {mobile_rate:>13.1%} {p:>14.4f}  {sig:>14}")`,
+
+    modelAnswer: `# ─── PART 1: SQL ─────────────────────────────────────────────────────────────
+# Returns one row per platform with user counts at each funnel step.
+
+sql_query = """
+SELECT
+    platform,
+    COUNT(DISTINCT CASE WHEN event_name = 'checkout_start'   THEN user_id END) AS users_checkout_start,
+    COUNT(DISTINCT CASE WHEN event_name = 'payment_page'     THEN user_id END) AS users_payment_page,
+    COUNT(DISTINCT CASE WHEN event_name = 'payment_submit'   THEN user_id END) AS users_payment_submit,
+    COUNT(DISTINCT CASE WHEN event_name = 'order_complete'   THEN user_id END) AS users_order_complete
+FROM events
+WHERE event_ts >= '2024-01-01'
+GROUP BY platform
+ORDER BY platform;
+-- Note: COUNT DISTINCT per step naturally handles users who skip steps (if that's possible in your schema).
+-- If users must reach step N before step N+1, this is equivalent to a strict funnel filter.
+"""
+
+# ─── PART 2: Python ───────────────────────────────────────────────────────────
+import pandas as pd
+import numpy as np
+from scipy.stats import chi2_contingency
+
+# Simulated SQL result
+data = {
+    'platform': ['desktop', 'mobile'],
+    'users_checkout_start':   [45_200, 61_800],
+    'users_payment_page':     [38_420, 44_500],
+    'users_payment_submit':   [32_180, 33_400],
+    'users_order_complete':   [28_950, 26_720],
+}
+df = pd.DataFrame(data).set_index('platform')
+
+# Define the step-to-prior mapping for step-over-step conversion rates
+steps_labels = ['Payment Page', 'Payment Submit', 'Order Complete']
+steps = ['users_payment_page', 'users_payment_submit', 'users_order_complete']
+prev  = ['users_checkout_start', 'users_payment_page',  'users_payment_submit']
+
+print("Funnel Conversion Rate by Platform — Orbis Commerce")
+print(f"{'Step':<22} {'Desktop Rate':>14} {'Mobile Rate':>13} {'p-value':>10}  {'Significant':>12}")
+print("=" * 76)
+
+results = []
+for label, step, prior in zip(steps_labels, steps, prev):
+    desktop_prior   = df.loc['desktop', prior]
+    desktop_reached = df.loc['desktop', step]
+    mobile_prior    = df.loc['mobile',  prior]
+    mobile_reached  = df.loc['mobile',  step]
+
+    # Step-over-step conversion rates
+    desktop_rate = desktop_reached / desktop_prior
+    mobile_rate  = mobile_reached  / mobile_prior
+
+    # 2x2 contingency table for chi-square test
+    # Row 1: desktop — [reached_this_step, did_not_reach]
+    # Row 2: mobile  — [reached_this_step, did_not_reach]
+    contingency = [
+        [desktop_reached, desktop_prior - desktop_reached],
+        [mobile_reached,  mobile_prior  - mobile_reached ],
+    ]
+    chi2, p, dof, expected = chi2_contingency(contingency)
+
+    sig    = "YES ***" if p < 0.001 else ("YES *" if p < 0.05 else "no")
+    lift   = mobile_rate - desktop_rate
+    results.append({
+        'step': label, 'desktop_rate': desktop_rate,
+        'mobile_rate': mobile_rate, 'lift_mobile_vs_desktop': lift,
+        'chi2': chi2, 'p_value': p,
+    })
+    print(f"{label:<22} {desktop_rate:>13.1%} {mobile_rate:>13.1%} {p:>10.4f}  {sig:>12}")
+
+# Summary
+print()
+results_df = pd.DataFrame(results)
+worst_step = results_df.loc[results_df['lift_mobile_vs_desktop'].idxmin(), 'step']
+print(f"Largest mobile deficit vs desktop: '{worst_step}'")
+print(f"  Mobile rate at that step: {results_df[results_df['step']==worst_step]['mobile_rate'].values[0]:.1%}")
+print(f"  Desktop rate at that step: {results_df[results_df['step']==worst_step]['desktop_rate'].values[0]:.1%}")
+
+# Overall (end-to-end) funnel conversion
+overall_desktop = df.loc['desktop', 'users_order_complete'] / df.loc['desktop', 'users_checkout_start']
+overall_mobile  = df.loc['mobile',  'users_order_complete'] / df.loc['mobile',  'users_checkout_start']
+print(f"\\nEnd-to-end funnel conversion:")
+print(f"  Desktop: {overall_desktop:.1%}  |  Mobile: {overall_mobile:.1%}")
+print(f"  Mobile lags desktop by {(overall_desktop - overall_mobile)*100:.1f}pp overall")
+
+# Overall chi-square test on end-to-end conversion
+contingency_overall = [
+    [df.loc['desktop','users_order_complete'], df.loc['desktop','users_checkout_start'] - df.loc['desktop','users_order_complete']],
+    [df.loc['mobile', 'users_order_complete'], df.loc['mobile', 'users_checkout_start'] - df.loc['mobile', 'users_order_complete']],
+]
+chi2_overall, p_overall, _, _ = chi2_contingency(contingency_overall)
+print(f"  Overall chi-square p-value: {p_overall:.2e}  ({'significant' if p_overall < 0.05 else 'not significant'})")`,
+
+    keyInsights: [
+      'The chi-square test for funnel segments uses a 2×2 contingency table: [users_who_reached_step, users_who_did_not_reach_step] for each segment. This correctly tests whether the step-over-step conversion proportion is different between segments.',
+      'Always run step-over-step conversion rates (step N / step N-1), not step N / top-of-funnel, when testing at each individual step. The question is: "of users who reached the previous step, did fewer mobile users proceed to the next step?" — not "what fraction of all checkout-starters reached payment_submit?"',
+      'With sample sizes of 30k-60k per segment, almost any real effect will be statistically significant. The p-value tells you if an effect exists; the magnitude (desktop 84.9% vs. mobile 75.1% payment_page rate) tells you if it matters. Always report both.',
+      'This pattern — SQL to extract counts → Python to compute rates and run tests — is the standard workflow in product analytics. The SQL does the data aggregation; Python does the statistical inference. Keep these concerns separated for clarity and reproducibility.',
+    ],
+  },
 ];
 
 export const codeModulesById = Object.fromEntries(codeModules.map(m => [m.id, m]));

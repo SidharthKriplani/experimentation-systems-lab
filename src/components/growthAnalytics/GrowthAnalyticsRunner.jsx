@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { saveGrowthAnalyticsProgress, getGrowthAnalyticsProgress } from '../../utils/growthAnalyticsProgress.js';
-import { isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
+import { addBookmark, removeBookmark, isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
 import {
   ResponsiveContainer,
   BarChart, Bar,
@@ -342,6 +342,7 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
 
   // Bookmark state
   const [bookmarked, setBookmarked] = useState(() => isBookmarked('growth-analytics', caseData.id));
+  useEffect(() => { setBookmarked(isBookmarked('growth-analytics', caseData.id)); }, [caseData.id]);
 
   // Markdown export toast
   const [copiedToast, setCopiedToast] = useState(false);
@@ -847,6 +848,27 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
               }}
             >
               ← Back to Room
+            </button>
+            <button
+              onClick={() => {
+                if (bookmarked) {
+                  removeBookmark('growth-analytics', caseData.id);
+                  setBookmarked(false);
+                } else {
+                  addBookmark('growth-analytics', caseData.id, caseData.title, caseData.difficulty, caseData.tags || []);
+                  setBookmarked(true);
+                }
+              }}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                border: bookmarked ? '1px solid var(--yellow-border)' : '1px solid var(--border)',
+                background: bookmarked ? 'var(--yellow-bg)' : 'var(--surface)',
+                color: bookmarked ? 'var(--yellow)' : 'var(--text-muted)',
+                cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500,
+              }}
+            >
+              {bookmarked ? '🔖 Saved' : '🔖 Save'}
             </button>
             {onNext && rating && (
               <button
