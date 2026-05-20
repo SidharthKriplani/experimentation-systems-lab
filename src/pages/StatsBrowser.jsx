@@ -19,7 +19,7 @@ export function StatsBrowser({ onSelectModule }) {
   const completedCount = Object.keys(allProgress).length;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>

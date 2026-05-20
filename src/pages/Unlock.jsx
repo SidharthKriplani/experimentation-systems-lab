@@ -23,7 +23,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
         <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✓</div>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--green)', marginBottom: '0.75rem' }}>Beta Access Active</h1>
         <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-          All 44 practice items are unlocked across Stats, Metrics, Design, Review, RCA, and Cases.
+          All 100+ practice cases across 9 rooms are unlocked.
         </p>
         <button
           onClick={() => onNavigate('progress')}
@@ -54,7 +54,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
             Private Beta Access
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-            Access all 44 practice items across Stats, Metrics, Design, Review, RCA, and Cases.
+            Access all 100+ practice cases across 9 rooms.
             Progress is saved locally in your browser. No account required.
           </p>
           <p style={{ color: 'var(--text-dim)', fontSize: '0.8rem', marginTop: '0.5rem' }}>
@@ -72,6 +72,24 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
+            <button
+              type="button"
+              onClick={() => window.open(import.meta.env.VITE_STRIPE_PAYMENT_LINK || '#', '_blank')}
+              style={{
+                background: 'var(--accent)',
+                color: '#fff',
+                padding: '12px 24px',
+                borderRadius: 8,
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: 16,
+                fontWeight: 700,
+                width: '100%',
+                marginBottom: 16,
+              }}
+            >
+              Buy Full Access →
+            </button>
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
                 Access Code

@@ -125,7 +125,7 @@ export function Module01_WhatIsData({ module, onNext }) {
       )}
 
       {/* Drop zones */}
-      <div style={{ display: 'flex', gap: '1rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         <div style={zoneStyle('numerical')}>
           <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Numerical

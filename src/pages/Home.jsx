@@ -107,7 +107,7 @@ export function Home({ onNavigate, onStartScenario }) {
   ];
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '4rem 1.5rem 5rem' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '4rem 1rem 5rem', width: '100%', boxSizing: 'border-box' }}>
 
       {/* ── Hero ────────────────────────────────────────────────────────── */}
       <div style={{ maxWidth: '680px', marginBottom: '4.5rem' }}>

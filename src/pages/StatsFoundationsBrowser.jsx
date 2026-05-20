@@ -66,7 +66,7 @@ export function StatsFoundationsBrowser({ onStart, unlocked }) {
   const progressPercent = Math.round((completedCount / statsFoundationsModules.length) * 100);
 
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>

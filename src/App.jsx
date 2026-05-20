@@ -49,6 +49,7 @@ const Unlock                = lazy(() => import('./pages/Unlock.jsx').then(m => 
 const About                 = lazy(() => import('./pages/About.jsx').then(m => ({ default: m.About })));
 const JudgmentBank          = lazy(() => import('./pages/JudgmentBank.jsx').then(m => ({ default: m.JudgmentBank })));
 const QADashboard           = lazy(() => import('./pages/QADashboard.jsx').then(m => ({ default: m.QADashboard })));
+const Pricing               = lazy(() => import('./pages/Pricing.jsx').then(m => ({ default: m.Pricing })));
 
 // Runners — lazy-loaded
 const ScenarioRunner        = lazy(() => import('./components/scenario/ScenarioRunner.jsx').then(m => ({ default: m.ScenarioRunner })));
@@ -97,6 +98,27 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : '');
     try { localStorage.setItem('exp-lab-theme', theme); } catch (e) {}
   }, [theme]);
+
+  useEffect(() => {
+    const titles = {
+      home: 'Product Analytics Lab — Practice the Calls',
+      stats: 'Stats Room — Product Analytics Lab',
+      experimentation: 'Experimentation Room — Product Analytics Lab',
+      rca: 'RCA Room — Product Analytics Lab',
+      code: 'Code Room — Product Analytics Lab',
+      'product-design': 'Product Design Room — Product Analytics Lab',
+      prioritization: 'Prioritization Room — Product Analytics Lab',
+      behavioral: 'Behavioral Room — Product Analytics Lab',
+      estimation: 'Estimation Room — Product Analytics Lab',
+      'stat-foundations': 'Stat Foundations — Product Analytics Lab',
+      blog: 'Learn — Product Analytics Lab',
+      playbook: 'Playbook — Product Analytics Lab',
+      pricing: 'Pricing — Product Analytics Lab',
+      progress: 'My Progress — Product Analytics Lab',
+      unlock: 'Unlock Access — Product Analytics Lab',
+    };
+    document.title = titles[page] || 'Product Analytics Lab';
+  }, [page]);
 
   function toggleTheme() {
     setTheme(t => t === 'dark' ? 'light' : 'dark');
@@ -574,6 +596,7 @@ export default function App() {
         )}
 
         {/* ── Support pages ── */}
+        {page === 'pricing' && <Pricing onShowUnlock={() => setPage('unlock')} onBack={() => setPage('home')} />}
         {page === 'progress' && (
           <Progress
             scenarios={scenarios}

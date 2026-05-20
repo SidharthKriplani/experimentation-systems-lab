@@ -2,6 +2,7 @@ const UNLOCK_KEY = 'exp-lab-unlocked-v1';
 const VALID_CODE = 'EXP-LAB-DEV-2026';
 
 export function isUnlocked() {
+  // TODO: set to false when Stripe goes live
   return true; // Free during beta — all content unlocked
 }
 

@@ -43,7 +43,7 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
 
   if (!module || !ModuleComponent) {
     return (
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1.5rem', color: 'var(--text-muted)' }}>
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box', color: 'var(--text-muted)' }}>
         Module not found.
       </div>
     );
@@ -58,7 +58,7 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
   }
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
 
       {/* ── Top navigation bar ── */}
       <div style={{

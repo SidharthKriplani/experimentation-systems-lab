@@ -14,6 +14,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     { id: 'estimation', label: 'Estimation' },
     { id: 'blog', label: 'Learn' },
     { id: 'playbook', label: 'Playbook' },
+    { id: 'pricing', label: 'Pricing' },
     { id: 'progress', label: 'Progress' },
   ];
 
@@ -96,6 +97,8 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
                   cursor: 'pointer',
                   transition: 'color 0.12s, background 0.12s',
                   whiteSpace: 'nowrap',
+                  minHeight: '44px',
+                  flexShrink: 0,
                 }}
                 onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
                 onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-muted)'; }}
