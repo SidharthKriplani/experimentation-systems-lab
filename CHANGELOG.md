@@ -4,6 +4,13 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.5.1] — 2026-05
+
+### Fixed
+- `src/data/growthAnalyticsCases.js` — three unescaped apostrophes in `leadershipNote` fields (`product's`, `cohort's`, `team's`) caused Vite/Rolldown parse error at line 146:206, breaking the Vercel build. Escaped all three as `\'`.
+
+---
+
 ## [4.5.0] — 2026-05
 
 ### Added
