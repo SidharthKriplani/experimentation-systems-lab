@@ -4,6 +4,72 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.5.0] — 2026-05
+
+### Added
+- **Analytics Instrumentation Room** (NEW room) — 8 cases: measurement plans (inst01 Shopify, inst07 Pinterest), event taxonomy (inst02 Notion), data quality incidents (inst03 Duolingo, inst08 HubSpot instrumentation debt), A/B test SRM audits (inst04 Airbnb), GDPR/CCPA privacy design (inst05 Spotify), data contracts (inst06 Uber). Browser + runner + progress util wired into App.jsx and Header nav (📡 Instrum.)
+- **BI Room expanded** — BI09–BI12 added: Host Performance Dashboard (Airbnb, dashboard-design), Checkout Funnel Drop-off (DoorDash, funnel-analysis), Subscriber Cohort Retention (Netflix, cohort-analysis), Surge Pricing Anomaly (Uber, anomaly-detection). Now 12 total cases.
+- **Spot the Flaw expanded** — STF09–STF12 added: Confounding Variable (LinkedIn Premium engagement), Regression to the Mean (Google Ads optimization), P-Hacking / Multiple Testing (Booking.com), Network Effects SUTVA violation (Twitter/X follower algorithm). Now 12 total flaw types.
+- **Progress.jsx** — Challenges, BI, Spot the Flaw, Take-Home, and Instrumentation rooms now fully tracked: completion bars, heatmap dates, completionMap entries, getNextSuggested() suggestions
+
+### Files changed
+`src/data/biCases.js` (+4 cases), `src/data/spotTheFlawCases.js` (+4 cases), `src/data/instrumentationCases.js` (NEW), `src/utils/instrumentationProgress.js` (NEW), `src/pages/InstrumentationBrowser.jsx` (NEW), `src/components/instrumentation/InstrumentationRunner.jsx` (NEW), `src/pages/Progress.jsx` (+imports, +room tracking), `src/App.jsx` (+Instrumentation room wiring), `src/components/layout/Header.jsx` (+📡 Instrum. nav item)
+
+---
+
+## [4.4.0] — 2026-05
+
+### Added
+- **BI Room** (NEW room) — 8 cases covering data storytelling, dashboard design, metric definition, attribution, A/B analysis, anomaly detection, cohort analysis, funnel analysis. Companies: Shopify, Airbnb, Meta, Spotify, Netflix, Google, Twitter, Stripe. Free case: BI01. Browser + runner + progress util.
+- **Spot the Flaw Room** (NEW room) — 8 adversarial cases where user identifies the statistical flaw in a plausible-looking analysis. Flaw types: SRM (Meta), peeking (Amazon), Simpson's Paradox (LinkedIn), novelty effect (Spotify), multiple testing (Google), bad metric (Uber), selection bias (Airbnb), SUTVA (Lyft). Red accent, 🐛 icon.
+- **Take-Home Challenges** (NEW room) — 5 timed challenges (45–90 min): Meta/Stories (DS, free), Airbnb/Host Supply (PM), Spotify/Podcast (Both), Stripe/Fraud (DS), DoorDash/Driver (Both). Timer turns red at <5 min. Rubric scoring with weighted checkboxes.
+- **Defense Doc Generator** (NEW tool) — Input a job description → keyword-match against all 11 rooms → generate 7-day personalized study plan with Primary / Secondary / Light tiers. Printable via window.print().
+- **Leadership Lens** — leadershipNote field added to all 8 GA cases and RCA01–RCA08. Collapsible purple toggle in GrowthAnalyticsRunner and RCADebriefPanel showing Staff/Director-level perspective.
+
+### Files changed
+`src/data/biCases.js` (NEW), `src/data/spotTheFlawCases.js` (NEW), `src/data/takehomeCases.js` (NEW), `src/data/growthAnalyticsCases.js` (+leadershipNote), `src/data/rcaCases.js` (+leadershipNote for RCA01–08), `src/utils/biProgress.js` (NEW), `src/utils/spotTheFlawProgress.js` (NEW), `src/utils/takehomeProgress.js` (NEW), `src/pages/BIBrowser.jsx` (NEW), `src/pages/SpotTheFlawBrowser.jsx` (NEW), `src/pages/TakehomeBrowser.jsx` (NEW), `src/pages/DefenseDocGenerator.jsx` (NEW), `src/components/bi/BIRunner.jsx` (NEW), `src/components/spotTheFlaw/SpotTheFlawRunner.jsx` (NEW), `src/components/takehome/TakehomeRunner.jsx` (NEW), `src/components/growthAnalytics/GrowthAnalyticsRunner.jsx` (+leadership lens), `src/components/rca/RCADebriefPanel.jsx` (+leadership lens), `src/App.jsx` (new lazy imports + routing), `src/components/layout/Header.jsx` (new PRACTICE/TOOLS group items)
+
+---
+
+## [4.3.0] — 2026-05
+
+### Added
+- **Cross-Room Challenges** (NEW room) — 6 multi-step challenges combining 3+ rooms in one problem: CHL01 (Meta, DAU + SRM + notifications, free), CHL02 (Stripe, conflicting metrics), CHL03 (Airbnb, growth up engagement down), CHL04 (Lyft, ML segment regression + SQL), CHL05 (DoorDash, market expansion), CHL06 (Uber, SUTVA in viral feature)
+- **Interview Combinator extension** — duration selector, MCQ round mode, speech practice mode added to InterviewSimulator
+- **Pyodide Python runner** — CodeRunner now loads Pyodide on demand for live in-browser Python execution; Python code modules run without any server
+- **Grouped Header nav** — 5 groups: ROOMS (14 items), PRACTICE (5 items), TOOLS (6 items), LEARN (2 items), TRACK (2 items). Group labels hidden on mobile.
+- **MCQ Trainer data** — trainerMCQ.js: 40 questions across Statistics (mcq01–10), Experimentation (mcq11–20), Metrics & Growth (mcq21–30), Product & Prioritization (mcq31–40)
+- **EST21–EST30** — 10 new Estimation problems: tech-market Fermi estimates
+- **code19–code22** — Bayesian A/B Python, cohort LTV Python, anomaly detection Python, funnel chi-square Python (all Pyodide-runnable)
+- **Progress visual hierarchy** — section headers, completion % per group, visual separation between room types
+- **Home density reduction** — cleaner hero, tighter room grid, less visual noise
+
+### Files changed
+`src/data/challengesCases.js` (NEW), `src/data/trainerMCQ.js` (NEW), `src/data/companyTracks.js` (NEW), `src/data/estimationProblems.js` (+EST21–30), `src/data/codeModules.js` (+code19–22), `src/utils/challengesProgress.js` (NEW), `src/pages/ChallengesBrowser.jsx` (NEW), `src/components/challenges/ChallengesRunner.jsx` (NEW), `src/pages/InterviewSimulator.jsx` (MCQ + speech), `src/components/code/CodeRunner.jsx` (+Pyodide), `src/components/layout/Header.jsx` (grouped nav), `src/pages/Progress.jsx` (visual hierarchy), `src/pages/Home.jsx` (density)
+
+---
+
+## [4.2.0] — 2026-05
+
+### Added
+- **Global Search** — SearchPage.jsx: full-text search across all 13 rooms, grouped results by type, arrow-key navigation, keyboard shortcut `/` or `Ctrl+K`
+- **Keyboard shortcuts** — useKeyboardShortcuts hook: `/` search, `Ctrl+K` search, `Escape` home, `p` progress, `h` home, `t` trainer, `c` consult, `x` challenges, `b` bi, `d` defense-doc. Skips when input/textarea/select has focus.
+- **Bookmarks** — bookmarks.js utility + BookmarksBrowser.jsx: save/unsave any case across all rooms, persistent in localStorage (`pal-bookmarks-v1`)
+- **Consultation Space** — ConsultationSpace.jsx: keyword-based lookup returning linked cases + playbook articles + MCQs by relevance score; recent query history
+- **MCQ Trainer** — Trainer.jsx: 40-question MCQ with immediate feedback, category filter, session scoring
+- **Company Tracks** — CompanyTracks.jsx + companyTracks.js: curated prep tracks per company
+- **GA Browser tag filter** — tag chips on GrowthAnalyticsBrowser for filtering by case type
+- **Bookmark buttons** — added to GA, STF, and other runner debrief panels
+- **Home "The Brief"** — daily rotating summary card showing practice tip + featured room
+
+### Fixed
+- BookmarksBrowser was created but not wired into App.jsx + Header — fixed
+
+### Files changed
+`src/pages/SearchPage.jsx` (NEW), `src/pages/BookmarksBrowser.jsx` (NEW), `src/pages/ConsultationSpace.jsx` (NEW), `src/pages/Trainer.jsx` (NEW), `src/pages/CompanyTracks.jsx` (NEW), `src/utils/bookmarks.js` (NEW), `src/hooks/useKeyboardShortcuts.js` (NEW), `src/pages/Home.jsx` (+The Brief), `src/App.jsx` (new routes + keyboard shortcuts), `src/components/layout/Header.jsx` (+TOOLS group items)
+
+---
+
 ## [4.1.0] — 2025-01-XX
 
 ### Added

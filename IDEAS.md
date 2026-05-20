@@ -1,241 +1,89 @@
 # Product Analytics Lab — Ideas Backlog
 
-Running list of product, content, and feature ideas. Not prioritized — just captured so nothing gets lost.
+Running list of product, content, and feature ideas. Items marked ✅ are shipped. Items below the "Future" section are not yet prioritized.
 
 ---
 
-## ✅ Analytics + Performance + Onboarding Clarity — Shipped V3.2.4
+## ✅ Shipped through V4.5 (complete list)
 
-### PostHog Analytics
-- `src/utils/analytics.js` — CDN wrapper, env-var gated, no PII, no autocapture
-- Events: `page_viewed`, `case_opened` (room + id + title), `paywall_hit`, `unlocked`
-- `.env.example` documents setup for contributors
-- `.gitignore` patched to exclude `.env` and `.env.*`
+### Rooms
+- Stats Foundations (sf01–sf20): 20 interactive modules with CLT, power, Bayesian, causal inference
+- Stats Room (STAT01–16): claim-evaluation mechanic
+- Metrics Room (M01–M08)
+- Design Room (D01–D16)
+- Review Room (S01–S16)
+- RCA Room (RCA01–12) with SQL validation step
+- Cases Room (C01–C12)
+- Code Room (code01–22): SQL + Python + Pyodide live runner
+- Product Design Room (pd01–pd16)
+- Prioritization Room (pri01–pri12)
+- Behavioral Room (BEH01–30)
+- Estimation Room (EST01–30)
+- Growth Analytics Room (GA01–08) with Recharts visualizations
+- BI Room (BI01–12): dashboard, funnel, cohort, anomaly, attribution
+- Analytics Instrumentation Room (inst01–08): measurement plans, event taxonomy, data quality, data contracts
 
-### Lazy Loading
-- All 19 page/runner components wrapped in `React.lazy()` with named-export pattern
-- `<Suspense>` wraps `<main>` — each room loads its JS chunk on first visit
-- Static imports (data, layout, utils) kept at top; lazy `const` declarations below
+### Practice
+- Cross-Room Challenges (CHL01–06)
+- Spot the Flaw (STF01–12): 12 flaw types
+- Take-Home Challenges (TH01–05)
+- Interview Simulator + MCQ mode + speech practice
+- A/B Test Interpreter (z-test, CI, SRM, multiple testing)
 
-### Learning Path Outcome Statements
-- `outcome` field added to all 4 paths in `learningPaths.js`
-- Home.jsx path cards render it in italic below subtitle, colored with path accent
+### Tools
+- Global Search (all rooms, keyboard shortcut /)
+- MCQ Trainer (40 questions, 4 categories)
+- Consultation Space (keyword → cases + articles + MCQs)
+- Defense Doc Generator (JD → 7-day study plan, printable)
+- Bookmarks (save any case, cross-room)
+- Company Tracks (FAANG prep packs)
 
----
+### Infrastructure
+- Grouped header nav (ROOMS / PRACTICE / TOOLS / LEARN / TRACK)
+- Keyboard shortcuts hook
+- React.lazy + Suspense code splitting (30+ chunks)
+- Pyodide in-browser Python execution
+- PostHog analytics (env-var gated)
+- Practice heatmap (91-day grid)
+- Role readiness score (Junior/Analyst/Senior/Staff)
+- Spaced repetition review queue
+- Leadership Lens toggle on GA + RCA runners
+- 91-day Practice Heatmap
+- Per-room progress reset
+- Bookmark buttons across debrief panels
 
-## ✅ V3.3 + V3.3.1 — Shipped
-
-**Next-case nav — all rooms** — Review, Metrics, RCA, Cases (V3.2.3) + Design, Prioritization (V3.3) + ProductDesign, Code (V3.3.1). Every room now has continuous navigation on debrief panels.
-
-**Progress page learning path status** — GuidedPathCard already rendered X/Y badge + progress bar + per-item checkmarks. Already shipped.
-
-**Code Room C07–C10** — CUPED SQL (4-CTE covariance pattern), Bootstrap CI Python (10k samples, skewed revenue), Funnel viz matplotlib (side-by-side barh + delta annotations), Retention heatmap Python (cohort pivot + seaborn NaN masking). 10 total modules.
-
-**Metrics M07–M08** — Feed ranking north-star (Spark, likes vs time-spent vs saves/shares), RTB marketplace liquidity (Clearstream, two-sided metric design). 8 total cases.
-
-**Stats STAT09–12** — CUPED post-hoc vs pre-specified, novelty decay (week-4 non-significance), Bayesian stopping pre-specification, CTR vs 30-day retention divergence. 12 total modules.
-
----
-
-## ✅ V3.4 — Shipped
-
-**RCA Room expanded to 12 cases** — RCA07-RCA12: seller fraud spike, DAU drop post-rollout, MRR growth slowdown, B2B churn spike, ad revenue floor drop, creator retention regression.
-
-**Business Cases expanded to 12** — C07-C12: pricing decision (tiered elasticity), build vs. buy AI, international expansion (SEA unit economics), cost-cutting analysis, competitive response, product sunset.
-
-**Causal inference Stats modules (STAT17-20)** — DiD, regression discontinuity, synthetic control, instrumental variables. Senior DS interview staples, all in product context.
-
-**Interview-format SQL in Code Room (C15-C18)** — Anti-join, rolling 7-day DAU, top-N per group, sessionization. Classic interview SQL, not pattern-teaching.
-
-**Behavioral / Leadership Room (NEW)** — 8 questions, STAR framework, model answers in prose, self-rating. Covers influence, conflict, data-impact, communication, leadership.
-
-**Estimation / Fermi Room (NEW)** — 8 problems with real arithmetic walkthroughs, approach badges (bottom-up/top-down/hybrid), sanity checks.
-
----
-
-## ✅ V3.5 Candidates — Shipped V3.5
-
-**Stats Room next-case nav** — StatsRunner now receives `onNext` prop; "Next module →" button appears after debrief. `getNextStatsId()` added to App.jsx. ✅ Shipped
-
-**Progress page: completionMap for newer rooms** — Added 6 missing rooms: Code, ProductDesign, Prioritization, Behavioral, Estimation, StatFoundations. ✅ Shipped
-
-**New learning path: "Code Track"** — Funnel SQL → Mix Shift SQL → CUPED SQL → Bootstrap Python. ✅ Shipped
-
-**New learning path: "Full-Stack DS Interview"** — Stats → RCA → Cases → Behavioral → Estimation. ✅ Shipped
+### Content
+- 69 long-form Playbook/Blog articles
+- 40 MCQ questions with explanations
+- leadershipNote on all GA and RCA01–08 cases
 
 ---
 
-## ✅ Blog / Learn Layer — Shipped V3.5
+## Future Ideas — Not Yet Scheduled
 
-**Status:** Fully shipped. All ~80 articles have full narrative content. Inline post reader built inside BlogBrowser. CTAs at end of each article link to corresponding practice room. "Learn" nav item separated from "Playbook".
+### Content
+- More BI cases (BI13+): real-time dashboards, Looker/Tableau case studies
+- More Instrumentation cases: dbt data models, data lineage, schema migration
+- More Take-Home prompts (TH06+): marketplace, fintech, health
+- STAT17–20: more causal inference (IV estimation, synthetic control, geo holdout)
+- Cases Room: pricing, international expansion, build vs buy AI (already partial)
+- Playbook articles for Instrumentation, BI, Take-Home rooms
 
-### The Idea
-Add a blog/articles section that teaches the frameworks and concepts behind each room — before people try to practice them. The loop becomes:
+### Features
+- Interview debrief export (PDF of your session answers + model answers)
+- Per-case notes that persist (currently only one global notes area)
+- Company track completion badges
+- Search within a single room (room-level filter in global search)
+- Dark/light mode persistence fix (ensure it survives hard refresh)
 
-**Read the concept → understand the framework → practice it immediately on the platform**
+### Platform
+- `isUnlocked()` → false when Stripe is live; current beta gate is `true`
+- Stripe payment flow (Stripe Payment Link in env var, already scaffolded)
+- Cross-device sync (requires backend — deferred)
+- Team accounts / org dashboards (V5 territory)
 
-This is the core gap in most prep resources: they either teach passively (courses, articles) or test actively (LeetCode-style) but never connect the two. A blog layer built on top of the practice layer creates the full loop and makes both stickier.
-
-### Source material
-The following prep packets (Sidharth's interview prep materials) are rich source material for blog posts:
-- `DS_Product_Scientist_Master_Handbook.pdf` — 5-mode operating system: Metric Design, Problem Investigation, RCA, Experimentation, AI/ML
-- `Metric_Universe_Atlas.pdf` + `Metric_Universe_Atlas_Reference.pdf` + `Metric_Universe_Atlas_Pure.pdf` — 69 metrics across 9 families, decomposition, segmentation, denominator discipline
-- `KPI_Metrics_Study_Packet.pdf` — KPI framing, metric trees, guardrails, walkthroughs
-- `RCA_Interview_Prep_Packet.pdf` — CDSHV framework, walkthroughs, practice questions
-- `Experimentation_Interview_Prep.pdf` — SRM, power/MDE, CUPED, trust checks, tradeoff/cannibalization
-- `Ambiguous_Problem_Breakdown_Packet.pdf` — 10-step framework, proxy design, ambiguous problem bank
-- `product_sense_ds_packet.pdf` — Product sense for DS/analytics roles
-- `product_business_case_study_packet.pdf` — Business case framing, dollar impact translation
-
-### Blog topics planned (see BlogBrowser.jsx for full list)
-Grouped by room: Metrics, RCA, Experimentation, Stats, Ambiguous Problems, GenAI/ML, Business Cases
-
-### Implementation notes
-- Start with 5-6 posts that directly map to a room — not 20 posts upfront
-- Each post should end with a "Practice this now →" CTA that deep-links into the relevant room
-- Format: framework first, walkthrough example, common mistakes, CTA
-- Static MDX or hardcoded JSX to start — no CMS needed yet
-- No separate blog infrastructure needed until traffic justifies it
-
----
-
-## SQL Validation Step in RCA Room ✅ Shipped V3.1
-
-**The idea:** After a user forms a diagnosis hypothesis in the RCA Room, present a "validate it" step: "What SQL query would you write to confirm this?" The user writes freeform SQL, then sees the model query with annotations.
-
-**Why it's high ROI:**
-- No new room needed — it extends the existing RCA flow as a 6th step: Context → Decompose → Segment → Hypothesize → Validate → **Write the Query**
-- Completely unique in the interview prep space — nothing else bridges diagnosis to code this way
-- Directly reflects the real workflow: a senior analyst forms a hypothesis *then* goes to SQL
-- Low build cost: freeform textarea + model answer reveal, same pattern as the Product Design Room
-
-**Implementation sketch:**
-- Add a `sqlStep: { prompt, hints, modelQuery, annotations }` field to each RCA case
-- RCA Runner shows the SQL step after the debrief — optional, but available
-- Model query shown with line-by-line annotation: `-- This WHERE clause isolates the Android regression we hypothesized`
-- Self-rated (same Strong/Partial/Miss pattern as Product Design Room)
-
-**Example for rca01 (Checkout Conversion Drop):**
-Hypothesis confirmed: drop is at the payment step for iOS users on v4.2.1.
-Prompt: "Write a query to validate that the payment success rate dropped specifically for iOS users on app version 4.2.1, not other platforms or versions."
-Model query: window function over `payments` table, segmented by `platform` and `app_version`, comparing D7 success rate to prior 30-day baseline.
-
----
-
-## Code Room — Python + SQL in Product Context ✅ Shipped V3.1 (MVP: 6 modules)
-
-**The idea:** A "Code Room" that teaches analytics SQL patterns and Python/Pandas workflows in a *product* context — not generic coding, but the specific patterns senior analysts actually use.
-
-**Why it belongs inside the current product (not a separate one):**
-- Same audience: product analysts, data scientists prepping for DS/PM roles
-- Same mental model: judgment under product pressure, not raw syntax
-- Extends the existing loop: learn the concept → practice the judgment → write the code
-
-**SQL track:**
-- Funnel analysis (conversion rates by step, by cohort, by platform)
-- Retention cohorts (Day 1/7/30 retention in a single query, window functions)
-- CUPED adjustment in SQL (variance reduction using pre-experiment covariate)
-- Mix shift decomposition (shift-share analysis in SQL)
-- SRM detection (chi-squared check in SQL)
-
-**Python/Pandas track:**
-- Cohort analysis with groupby + pivot_table
-- A/B test significance calculator (scipy.stats, bootstrap CI)
-- CUPED implementation in Pandas (regressing out pre-experiment covariate)
-- Funnel visualization with matplotlib
-- Retention heatmap
-
-**Format:** Each module presents a product scenario, gives a dataset schema, shows partial code, asks the user to complete the key step. Model answer reveals the full implementation with annotations. Same judgment-first philosophy — the code serves the analysis, not the other way around.
-
----
-
-## GenAI Analytics Threading ✅ Playbook articles shipped V3.1 (Ongoing — Not a Separate Room)
-
-**The idea:** GenAI belongs as a *lens* through existing rooms, not a standalone room. Every product room should have GenAI-flavored variants of existing scenarios.
-
-**Where it threads naturally:**
-- **Metrics Room:** How do you measure LLM response quality? Precision/recall tradeoffs for AI retrieval, hallucination rate as a guardrail, task completion rate as north star
-- **RCA Room:** Escalation spike in AI support bot (already built in rca06), LLM response latency regression, content safety filter over-triggering
-- **Cases Room:** "Should we replace Tier-1 Support with AI?" (already built in c03), "Should we build in-house vs. buy a foundation model?"
-- **Review Room:** Experiment where AI-generated content beat human content on engagement but hurt trust metrics — the guardrail conflict
-
-**What belongs in the GenAI Analytics Playbook category (already exists):**
-- LLM evaluation metrics (BLEU/ROUGE for reference-based, LLM-as-judge for reference-free)
-- Designing experiments for AI features (longer stabilization windows, user trust lag)
-- Hallucination as a metric (how to define, measure, and guardrail it)
-- The "evaluation paradox" — if your model judges your model, who judges the judge?
-
----
-
-## Separate Product: DS/ML Engineering Lab (Future — Different Audience)
-
-**The idea:** A standalone product for the ML engineer / senior data scientist track. Different audience, different interview process, different depth.
-
-**Why it must be separate (not inside Product Analytics Lab):**
-- Audience is MLEs and data engineers, not DAs and PMs — different interview prep needs
-- ML system design is a different skill set: model selection, feature stores, serving infrastructure, monitoring for drift
-- PySpark / distributed computing is about scale, not product judgment
-- Would dilute Product Analytics Lab's identity if bundled in
-
-**What it covers (rough syllabus):**
-- Model evaluation: AUC-ROC, precision/recall curves, calibration, PR vs ROC when classes are imbalanced
-- Feature engineering: target encoding, feature importance, leakage detection
-- ML system design: feature store design, training pipelines, online vs offline scoring
-- PySpark: distributed aggregations, window functions at scale, broadcast joins
-- Production ML: data drift detection, model monitoring, retraining triggers, shadow mode testing
-
-**Build trigger:** Build this after Product Analytics Lab has stable traffic and a validated monetization model. Don't start until V4.0 is stable.
-
----
-
-## PM Layer — V3.0 + V3.2 Complete
-
-### Completed (V3.0)
-- Product Design Room: 8 scenarios, 5-phase open-ended runner, self-scored with model answers
-- PostDetail.jsx: Reading progress bar, KeyTakeaways, References components
-- Content audit: 10 articles rewritten with emotional tone + keyTakeaways + references
-
-### ✅ Prioritization Room — Shipped V3.2
-- `PrioritizationBrowser.jsx` + `PrioritizationRunner.jsx` + `prioritizationScenarios.js` + `prioritizationProgress.js`
-- 6 scenarios: PRI01 (Spotify RICE), PRI02 (Airbnb 2×2), PRI03 (Notion tech debt), PRI04 (Meta stakeholder conflict), PRI05 (Duolingo OKR), PRI06 (Stripe platform vs. feature)
-- Multi-schema model answer renderer: RICE table, 2×2 matrix, velocity tax calc, alignment memo, OKR scoring, platform analysis
-- Tag filter, difficulty badges, completion tracking
-
-### ✅ PM Playbook Articles (15) — Shipped V3.2
-- 4 new categories: Product Design, Prioritization, PM Strategy, PM Career
-- 15 articles: JTBD, CIRCLES+HEART, PRD, User Research, RICE, Effort-Impact, North Star vs. OKR, Stakeholder Conflict, Tech Debt, Influence Without Authority, PM Archetypes, Making Bets, DS-to-PM, First 90 Days, Analytics PM vs. Growth PM
-- CATEGORY_CONFIG extended with 4 color-coded entries
-
-### ✅ Home Role Toggle — Shipped V3.2
-- `Product DS` / `Product PM` / `DS + PM` toggle in Home.jsx
-- Saved to localStorage (`pal-role-toggle`)
-- DS mode: analytics-first room ordering; PM mode: Product Design/Prioritization/Cases first
-- Renders inline next to the section header
-
----
-
----
-
-## Code Room — V3.x Expansions (Post V3.1)
-
-**Status:** MVP shipped (6 modules). Planned additions:
-
-- **SQL Track additions:** CUPED in SQL (not just Python), retention heatmap query, mix shift with interaction term
-- **Python Track additions:** Funnel visualization with matplotlib, retention heatmap, bootstrap CI for small samples
-- **Pandas Track:** Cohort analysis with groupby + pivot_table, A/B test result summarization pipeline
-
----
-
----
-
-## Horizon: V4.0+ / Future
-
-**DS/ML Engineering Lab** — Separate product, different audience (MLEs, data engineers). Covers model evaluation, feature stores, PySpark, production ML monitoring, ML system design. Build trigger: PAL has stable traffic + validated monetization. Do not start until PAL V4.0 is stable.
-
-**Monetization / pricing experiment on PAL itself** — Introduce a paid tier once usage data, retention signal, and testimonials exist. Run as a structured experiment: holdout group, conversion funnel instrumented via PostHog, pre-committed decision rule on conversion rate.
-
-**SEO optimization of Blog layer** — Organic discovery via the Learn layer is the highest-leverage growth channel at zero marginal cost. Priorities: title/meta tags, canonical URLs, structured data markup for articles, sitemap generation, internal linking from blog posts to practice rooms.
-
-**Mobile-responsive audit** — Full audit of all rooms on narrow viewports (375px). Known issue: horizontal nav scroll works but room runner layouts (multi-column debrief panels, wide SQL code blocks) are not optimized for mobile. Track as a V4.x quality item once traffic warrants it.
-
-*Last updated: May 2026 (V3.5)*
+### Nice-to-have
+- `Escape` key closes hint accordions (currently only navigates home)
+- Mobile: bottom nav rail for the most-used rooms
+- "Shuffle" button in Trainer to randomize across all 40 questions
+- Difficulty progression lock (must complete junior before senior unlocks) — opt-in mode

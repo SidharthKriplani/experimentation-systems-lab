@@ -1,142 +1,118 @@
-# Experimentation Systems Lab — Roadmap
+# Product Analytics Lab — Roadmap
 
-**Current version:** V1.1  
-**Last updated:** 2026-05
-
----
-
-## V1 — Shipped ✓
-
-**8 playable scenarios · Free + private beta tiers**
-
-| Tier | Scenario | Difficulty | Theme |
-|------|----------|------------|-------|
-| Free | The Checkout Trap | Analyst | Metric Conflict |
-| Free | The Ghost Assignment | Analyst | Sample Ratio Mismatch |
-| Free | The Slow Tax | Analyst | Guardrail Breach |
-| Free | The Week-Two Drop | Analyst | Novelty Effect / Peeking |
-| Beta | The Mobile Winners | Senior | Heterogeneous Treatment Effects |
-| Beta | The Five Metrics Problem | Senior | Multiple Testing |
-| Beta | The Two-Sided Spill | Staff | Marketplace Interference / SUTVA |
-| Beta | False Rigor | Senior | When Not to Experiment |
-
-Core product loop: read the readout → flag the warnings → make the call → see the senior debrief.
+**Current version:** V4.5  
+**Last updated:** 2026-05  
+**Status:** Active development — beta access open
 
 ---
 
-## V1.1 — Current (in progress)
+## What shipped (V1 → V4.5)
 
-**Visual polish · 50-scenario architecture · No new playable scenarios**
+PAL started as an 8-scenario experiment review tool and grew into a full DS/PM interview prep platform.
 
-- Light/dark theme toggle with flash-prevention
-- Full CSS variable design system (teal secondary accent, radius scale, shadow scale)
-- Judgment Bank page — 50-scenario architecture across 15 families
-- 42 planned scenario cards with metadata defined (title, family, industry, difficulty, core trap, teaser)
-- Homepage redesign with "Why this is different" grid
-- ScenarioRunner step progression, improved debrief framing
-- Documentation: PRD, roadmap, content quality bar, scenario taxonomy
-
-**What V1.1 is not:** New playable scenarios. The 42 roadmap cards are metadata only.
-
----
-
-## V1.5 — Planned
-
-**20 playable scenarios · 12 new + 8 existing = 20 total**
-
-New scenario families covered:
-- CUPED / variance reduction
-- Geo-holdout design
-- Switchback experiments
-- Cannibalization framing
-- Right-censored metrics (LTV, churn timing)
-- B2B constraints (small N, account-level randomization)
-
-New difficulty distribution target: 8 Analyst, 8 Senior, 4 Staff
-
-Unlock model update: introduce proper payment flow (Stripe or Gumroad) replacing developer unlock code.
+| Version | Major additions |
+|---------|----------------|
+| V1 | 8 A/B test review scenarios — Ship/Rollback/Investigate |
+| V1.2 | Design Room, platform rebrand to Product Analytics Lab |
+| V1.5–1.6 | Stats Room (claim-evaluation mechanic), paired Design↔Review |
+| V2.0 | Metrics, RCA, Cases rooms; readiness summary on Progress |
+| V3.0–3.2 | Product Design, Code, Prioritization, Behavioral, Estimation rooms |
+| V3.3–3.4 | Code Room SQL+Python expansion; causal inference STAT17–20; rooms to 9 |
+| V3.5 | Stat Foundations (20 interactive modules), learning paths |
+| V3.6 | 69 blog articles, Pricing page, SEO, mobile responsive fixes |
+| V4.0–4.1 | Growth Analytics Room (charts), Interview Simulator, A/B Interpreter, Practice Heatmap, Daily Drill |
+| V4.2 | Global Search, Bookmarks, MCQ Trainer, Consultation Space, Company Tracks, keyboard shortcuts |
+| V4.3 | Cross-Room Challenges, Pyodide Python runner, Interview MCQ+speech, grouped nav, 40 MCQs |
+| V4.4 | BI Room (12 cases), Spot the Flaw (12 cases), Take-Home Challenges, Defense Doc Generator, Leadership Lens |
+| V4.5 | Analytics Instrumentation Room (8 cases), Progress full coverage, BI/STF expansions |
 
 ---
 
-## V2 — Planned
+## Current platform scope (V4.5)
 
-**Experiment Design Room · 50-scenario Judgment Bank complete**
+**16 practice rooms** — 200+ cases/modules total  
+**5 practice tools** — Challenges, Spot the Flaw, Take-Home, Simulator, A/B Tool  
+**6 utility tools** — Search, Trainer, Consult, Companies, Defense Doc, Bookmarks  
+**69 articles** — Blog/Playbook  
+**40 MCQs** — Trainer question bank  
 
-### Experiment Design Room
-Given a product goal and constraints, design the experiment:
-- Choose randomization unit (user, session, account, geo)
-- Define primary metric and guardrails with justification
-- Set runtime and power analysis
-- Flag SUTVA risks and design mitigations
-
-Expert evaluation reveals what you got right, what you missed, and what a senior analyst would push back on.
-
-### Judgment Bank completion
-All 50 scenarios playable. 15 scenario families fully covered.
-
-### Other V2 features
-- Scenario tagging and difficulty progression paths
-- Interview prep mode (timed, scored, exportable)
-- Improved progress tracking with family-level mastery
+See README.md for the full content map.
 
 ---
 
-## V3 — Stats & Inference Lab (planned)
+## Near-term (V4.6 candidates)
 
-**Focused statistical inference exercises under non-ideal conditions**
+These are identified gaps — not yet scheduled:
 
-- Sequential testing and early stopping
-- CUPED / MLRATE implementation exercises
-- Variance estimation under heavy tails
-- Confidence intervals for rare events (low base rate metrics)
-- Resampling, bootstrapping, Bayesian credible intervals
-- When does the CLT break? Practical boundary exercises
+**Content depth**
+- BI Room: BI13+ covering real-time dashboards, Looker/Tableau case studies
+- Instrumentation: more cases — dbt data models, data lineage, schema migration design
+- Take-Home: TH06+ with marketplace, fintech, health prompts
+- Playbook articles: Instrumentation room and BI room currently have no linked articles
 
-Format: structured problems with worked solutions, not scenario-based.
-
----
-
-## V4 — RCA Room (planned)
-
-**Root cause analysis scenarios**
-
-Given a metric anomaly, work through the diagnostic tree:
-- Instrumentation issue vs. real effect
-- External event vs. product change
-- Experiment contamination vs. actual regression
-- Novelty decay vs. feature failure
-
-Builds the complementary skill to experiment analysis: diagnosing what's wrong without a controlled test.
+**UX polish**
+- Interview debrief export — PDF of session answers + model answers side-by-side
+- Per-case persistent notes (currently one global notes field)
+- Search within a single room (room-level filter in global search)
+- Mobile bottom nav rail for top rooms
 
 ---
 
-## V5 — Full Platform (planned)
+## Monetization (deferred)
 
-**Integrated learning path · Team accounts · Custom scenarios**
-
-- Team/org accounts with dashboards
-- Custom scenario uploads (for training and onboarding)
-- Interview prep certification
-- Analytics on team calibration gaps
-- API for embedding scenarios in other tools
+The paywall is scaffolded but inactive:
+- `src/utils/unlock.js`: `isUnlocked()` returns `true` for beta
+- `src/pages/Pricing.jsx`: two-tier pricing page exists
+- Stripe integration: `VITE_STRIPE_PAYMENT_LINK` env var, wired into Pricing CTA
+- **To activate**: set `isUnlocked()` to return `false` in unlock.js, set `VITE_STRIPE_PAYMENT_LINK` in Vercel env vars
 
 ---
 
-## What Will Not Be Built
+## V5 — Platform features (planned, no timeline)
 
-- **Statistics tutorial content.** This platform assumes users know the basics. Courses, glossaries, and formula modules are explicitly out of scope.
-- **AI-evaluated reasoning.** All scoring is pre-computed. No LLM evaluation of user responses. This keeps the product consistent, offline-capable, and cheap.
-- **Social / gamification features.** Leaderboards, streaks, badges. These distort the goal (better judgment) toward proxy metrics (usage).
+These require backend infrastructure — explicitly deferred:
+
+- **Cross-device sync** — requires auth + database; currently localStorage-only
+- **Team accounts + org dashboards** — for training/onboarding use cases
+- **Custom scenario upload** — let orgs add their own cases
+- **Interview prep certification** — scored, timed, exportable sessions
+- **Calibration gap analytics** — team-level aggregated weak area detection
 
 ---
 
-## Decision Log
+## What will not be built
 
-**Why static-only through V2?**  
-Zero operating cost. Vercel free tier handles any traffic level. Server-side logic is not required for the core product loop through V2. The tradeoff (no cross-device sync, no team accounts) is acceptable until V3.
+- **Statistics tutorial content** — PAL assumes users know the basics. Formula modules and glossaries are out of scope.
+- **AI-evaluated open answers** — All scoring is pre-computed. No LLM evaluation of user reasoning. This keeps scoring consistent and offline-capable.
+- **Social / gamification features** — Leaderboards, streaks, badges distort the goal (better judgment) toward proxy metrics (usage).
+- **ML systems content** — PAL covers product analytics and PM. Feature stores, model monitoring, production ML deployment are explicitly out of scope (separate project).
 
-**Why pre-computed scoring vs. AI evaluation?**  
-Consistency and trust. Users need to be able to audit why a decision scored as it did. Pre-computed scoring with explicit feedback text is more trustworthy than LLM evaluation at this stage.
+---
 
-**Why a content quality bar document?**  
-Because the credibility of the platform is entirely dependent on scenario quality. A bad scenario that teaches the wrong lesson is worse than no scenario. The quality bar exists to prevent shipping anything that doesn't meet the standard.
+## Architecture constants
+
+| Property | Value |
+|----------|-------|
+| Stack | React 18 + Vite 8 |
+| Hosting | Vercel (static, free tier) |
+| Backend | None |
+| Data storage | localStorage (15+ keys) |
+| Code splitting | React.lazy + Suspense on all 30+ room components |
+| Python runtime | Pyodide (in-browser, loaded on demand in Code Room) |
+| Analytics | PostHog (CDN, env-var gated, no PII) |
+| Build command | `npm_config_cache=/tmp/npm-cache ./node_modules/.bin/vite build --outDir /tmp/dist-*` |
+| Repo | github.com/SidharthKriplani/experimentation-systems-lab |
+
+## Decision log
+
+**Why no backend through V4.5?**
+Zero operating cost. Vercel free tier handles any traffic level. The tradeoff (no cross-device sync, no team accounts) is acceptable until monetization justifies infrastructure spend.
+
+**Why pre-computed scoring?**
+Consistency and auditability. Users need to trace why a decision scored as it did. Pre-computed scoring with explicit feedback text is more trustworthy than LLM evaluation at this scale.
+
+**Why static content quality bar?**
+The platform's credibility depends entirely on case quality. One bad case that teaches wrong judgment is worse than no case. See `docs/CONTENT_QUALITY_BAR.md`.
+
+**Why keep ML systems out of PAL?**
+There is a separate ML Systems Lab project for that scope. PAL stays focused on product analytics and PM. Cross-contaminating the scope would dilute both products.
