@@ -5,14 +5,15 @@
 import { useState, useEffect, useRef } from 'react';
 
 const ROOM_CONFIG = {
-  stats:             { label: 'Stats Room',             color: 'var(--accent)'    },
-  metrics:           { label: 'Metrics Room',            color: 'var(--green)'     },
-  design:            { label: 'Design Room',             color: 'var(--teal)'      },
-  review:            { label: 'Review Room',             color: 'var(--accent)'    },
-  rca:               { label: 'RCA Room',                color: 'var(--yellow)'    },
-  cases:             { label: 'Cases Room',              color: 'var(--purple)'    },
-  'product-design':  { label: 'Product Design Room',     color: 'var(--purple)'    },
-  'prioritization':  { label: 'Prioritization Room',     color: 'var(--teal)'      },
+  stats:                { label: 'Stats Room',             color: 'var(--accent)'    },
+  metrics:              { label: 'Metrics Room',            color: 'var(--green)'     },
+  design:               { label: 'Design Room',             color: 'var(--teal)'      },
+  review:               { label: 'Review Room',             color: 'var(--accent)'    },
+  rca:                  { label: 'RCA Room',                color: 'var(--yellow)'    },
+  cases:                { label: 'Cases Room',              color: 'var(--purple)'    },
+  'product-design':     { label: 'Product Design Room',     color: 'var(--purple)'    },
+  'prioritization':     { label: 'Prioritization Room',     color: 'var(--teal)'      },
+  'growth-analytics':   { label: 'Growth Analytics Room',   color: 'var(--green)'     },
 };
 
 const CATEGORY_CONFIG = {
@@ -143,6 +144,26 @@ function Section({ section }) {
           </p>
         </div>
       );
+
+    case 'cta': {
+      const rc = ROOM_CONFIG[section.room];
+      return (
+        <div style={{
+          background: 'var(--surface-2)', border: `1.5px solid ${rc?.color || 'var(--accent)'}`,
+          borderRadius: 'var(--radius)', padding: '1rem 1.2rem', margin: '2rem 0',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.6rem',
+        }}>
+          <span style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+            Ready to apply this framework?
+          </span>
+          <span style={{
+            fontSize: '0.83rem', fontWeight: 700, color: rc?.color || 'var(--accent)',
+          }}>
+            {section.label || `Practice in ${rc?.label || 'the room'} →`}
+          </span>
+        </div>
+      );
+    }
 
     default:
       return null;

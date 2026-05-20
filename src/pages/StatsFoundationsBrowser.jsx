@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { statsFoundationsModules } from '../data/statsFoundationsModules.js';
 import { getAllStatFoundationsProgress } from '../utils/statsFoundationsProgress.js';
+import { isBookmarked } from '../utils/bookmarks.js';
 
 const DIFFICULTY_CONFIG = {
   Beginner:     { color: 'var(--green)',  bg: 'var(--green-bg)',  border: 'var(--green-border)' },
@@ -51,8 +52,47 @@ function StepCircle({ index, completed, isCurrent }) {
   );
 }
 
+// Collect all unique tags from the modules, sorted alphabetically, max 12
+const ALL_TAGS = (() => {
+  const tagSet = new Set();
+  statsFoundationsModules.forEach(m => (m.tags || []).forEach(t => tagSet.add(t)));
+  return Array.from(tagSet).sort((a, b) => a.localeCompare(b)).slice(0, 12);
+})();
+
+const DIFFICULTIES = ['All', 'Beginner', 'Intermediate', 'Advanced'];
+
+function FilterChip({ label, active, onClick, activeStyle }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: '0.28rem 0.7rem',
+        borderRadius: '20px',
+        border: active
+          ? `1px solid ${activeStyle?.border || 'var(--purple-border)'}`
+          : '1px solid var(--border)',
+        background: active
+          ? (activeStyle?.bg || 'var(--purple-bg)')
+          : 'var(--surface)',
+        color: active
+          ? (activeStyle?.color || 'var(--purple)')
+          : 'var(--text-muted)',
+        fontSize: '0.78rem',
+        fontWeight: active ? 600 : 400,
+        cursor: 'pointer',
+        whiteSpace: 'nowrap',
+        transition: 'all 0.12s',
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function StatsFoundationsBrowser({ onStart, unlocked }) {
   const [allProgress] = useState(() => getAllStatFoundationsProgress());
+  const [activeTag, setActiveTag] = useState('All');
+  const [activeDifficulty, setActiveDifficulty] = useState('All');
 
   const completedIds = new Set(Object.keys(allProgress));
   const completedCount = completedIds.size;
@@ -64,6 +104,13 @@ export function StatsFoundationsBrowser({ onStart, unlocked }) {
     : statsFoundationsModules[currentModuleIndex].id;
 
   const progressPercent = Math.round((completedCount / statsFoundationsModules.length) * 100);
+
+  // Apply both filters simultaneously (AND logic)
+  const filteredModules = statsFoundationsModules.filter(m => {
+    const tagMatch = activeTag === 'All' || (m.tags || []).includes(activeTag);
+    const diffMatch = activeDifficulty === 'All' || m.difficulty === activeDifficulty;
+    return tagMatch && diffMatch;
+  });
 
   return (
     <div style={{ maxWidth: '720px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
@@ -111,23 +158,78 @@ export function StatsFoundationsBrowser({ onStart, unlocked }) {
         </div>
       </div>
 
+      {/* ── Difficulty filter ── */}
+      <div style={{ marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>
+          Difficulty
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+          {DIFFICULTIES.map(d => {
+            const cfg = d === 'All' ? null : DIFFICULTY_CONFIG[d];
+            return (
+              <FilterChip
+                key={d}
+                label={d}
+                active={activeDifficulty === d}
+                onClick={() => setActiveDifficulty(d)}
+                activeStyle={cfg ? { bg: cfg.bg, border: cfg.border, color: cfg.color } : {
+                  bg: 'var(--purple-bg)', border: 'var(--purple-border)', color: 'var(--purple)',
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Tag filter ── */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>
+          Topic
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+          <FilterChip
+            label="All"
+            active={activeTag === 'All'}
+            onClick={() => setActiveTag('All')}
+            activeStyle={{ bg: 'var(--purple-bg)', border: 'var(--purple-border)', color: 'var(--purple)' }}
+          />
+          {ALL_TAGS.map(tag => (
+            <FilterChip
+              key={tag}
+              label={tag}
+              active={activeTag === tag}
+              onClick={() => setActiveTag(tag)}
+              activeStyle={{ bg: 'var(--purple-bg)', border: 'var(--purple-border)', color: 'var(--purple)' }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Result count when filtered */}
+      {(activeTag !== 'All' || activeDifficulty !== 'All') && (
+        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+          {filteredModules.length} module{filteredModules.length !== 1 ? 's' : ''} match
+          {activeTag !== 'All' && <> · <span style={{ color: 'var(--purple)' }}>{activeTag}</span></>}
+          {activeDifficulty !== 'All' && <> · <span style={{ color: 'var(--purple)' }}>{activeDifficulty}</span></>}
+        </div>
+      )}
+
       {/* Module list */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {statsFoundationsModules.map((module, idx) => {
+        {filteredModules.map((module, idx) => {
           const isCompleted = completedIds.has(module.id);
           const isCurrent = module.id === currentModuleId;
           const isLocked = !module.isFree && !unlocked;
           const isFirst = idx === 0;
-          const isLast = idx === statsFoundationsModules.length - 1;
+          const isLast = idx === filteredModules.length - 1;
+          const bookmarked = isBookmarked('stat-foundations', module.id);
 
           const cardBorder = isCurrent
             ? '2px solid var(--yellow-border)'
             : '1.5px solid var(--border)';
           const cardBg = isCurrent
             ? 'var(--yellow-bg)'
-            : isCompleted
-              ? 'var(--surface)'
-              : 'var(--surface)';
+            : 'var(--surface)';
 
           return (
             <div key={module.id} style={{ display: 'flex', alignItems: 'stretch', gap: '0' }}>
@@ -188,6 +290,9 @@ export function StatsFoundationsBrowser({ onStart, unlocked }) {
                       Free
                     </span>
                   )}
+                  {bookmarked && (
+                    <span style={{ fontSize: '0.72rem', title: 'Bookmarked' }}>🔖</span>
+                  )}
                   {isLocked && (
                     <span style={{
                       fontSize: '0.65rem', color: 'var(--text-muted)', marginLeft: 'auto',
@@ -242,7 +347,7 @@ export function StatsFoundationsBrowser({ onStart, unlocked }) {
                         onStart?.(module.id);
                       }}
                       style={{
-                        background: isCurrent ? 'var(--yellow)' : isCompleted ? 'var(--surface-2)' : 'var(--surface-2)',
+                        background: isCurrent ? 'var(--yellow)' : 'var(--surface-2)',
                         border: `1px solid ${isCurrent ? 'var(--yellow)' : 'var(--border)'}`,
                         borderRadius: 'var(--radius-sm)',
                         color: isCurrent ? '#fff' : 'var(--text-muted)',
@@ -260,6 +365,24 @@ export function StatsFoundationsBrowser({ onStart, unlocked }) {
             </div>
           );
         })}
+
+        {filteredModules.length === 0 && (
+          <div style={{
+            textAlign: 'center', padding: '2.5rem 1rem',
+            color: 'var(--text-muted)', fontSize: '0.875rem',
+          }}>
+            No modules match those filters.{' '}
+            <button
+              onClick={() => { setActiveTag('All'); setActiveDifficulty('All'); }}
+              style={{
+                background: 'none', border: 'none', color: 'var(--purple)',
+                cursor: 'pointer', fontSize: '0.875rem', textDecoration: 'underline',
+              }}
+            >
+              Clear filters
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Footer note */}

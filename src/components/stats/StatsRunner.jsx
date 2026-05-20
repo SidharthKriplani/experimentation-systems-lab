@@ -7,6 +7,22 @@ import { saveStatsAttempt, clearStatsProgress } from '../../utils/statsProgress.
 
 // views: 'question' | 'reveal' | 'debrief'
 
+const ROOM_KEY = 'stats';
+
+function loadNote(room, id) {
+  try {
+    const notes = JSON.parse(localStorage.getItem('pal-notes-v1') || '{}');
+    return notes[`${room}:${id}`] || '';
+  } catch { return ''; }
+}
+function saveNote(room, id, text) {
+  try {
+    const notes = JSON.parse(localStorage.getItem('pal-notes-v1') || '{}');
+    notes[`${room}:${id}`] = text;
+    localStorage.setItem('pal-notes-v1', JSON.stringify(notes));
+  } catch {}
+}
+
 const DIFFICULTY_CFG = {
   foundational: { label: 'Foundational', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
   analyst:      { label: 'Analyst',      color: 'var(--accent)',    bg: 'var(--accent-bg)', border: 'var(--accent-border)' },
@@ -20,6 +36,13 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
   const [openConceptId, setOpenConceptId] = useState(null);
   const [elapsed, setElapsed] = useState(0);
   const timerRef = useRef(null);
+  const [userNote, setUserNote] = useState('');
+  const [noteSaved, setNoteSaved] = useState(false);
+
+  useEffect(() => {
+    setUserNote(loadNote(ROOM_KEY, module.id));
+    setNoteSaved(false);
+  }, [module.id]);
 
   useEffect(() => {
     setElapsed(0);
@@ -130,24 +153,52 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
             padding: '1rem 1.5rem',
             borderTop: '1px solid var(--border-subtle)',
             background: 'var(--surface-2)',
-            display: 'flex', justifyContent: 'flex-end',
           }}>
-            <button
-              onClick={handleSubmit}
-              disabled={!selectedId}
-              style={{
-                padding: '0.6rem 1.25rem',
-                background: selectedId ? 'var(--accent)' : 'var(--surface-2)',
-                border: `1.5px solid ${selectedId ? 'var(--accent)' : 'var(--border)'}`,
-                borderRadius: 'var(--radius-sm)',
-                color: selectedId ? '#fff' : 'var(--text-dim)',
-                fontSize: '0.88rem', fontWeight: 700,
-                cursor: selectedId ? 'pointer' : 'default',
-                transition: 'all 0.12s',
-              }}
-            >
-              Submit answer →
-            </button>
+            <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
+                ✏️ Write your thinking first <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span>
+              </div>
+              <textarea
+                value={userNote}
+                onChange={e => { setUserNote(e.target.value); setNoteSaved(false); }}
+                placeholder="What's your read? Jot down your diagnosis before revealing the answer..."
+                style={{
+                  width: '100%', minHeight: 80, padding: '10px 12px', background: 'var(--bg)',
+                  border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
+                  fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                  boxSizing: 'border-box',
+                }}
+              />
+              <button
+                onClick={() => { saveNote(ROOM_KEY, module.id, userNote); setNoteSaved(true); }}
+                style={{
+                  marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
+                  border: `1px solid ${noteSaved ? 'var(--green-border)' : 'var(--border)'}`,
+                  borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                  color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
+                }}
+              >
+                {noteSaved ? '✓ Saved' : 'Save note'}
+              </button>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                onClick={handleSubmit}
+                disabled={!selectedId}
+                style={{
+                  padding: '0.6rem 1.25rem',
+                  background: selectedId ? 'var(--accent)' : 'var(--surface-2)',
+                  border: `1.5px solid ${selectedId ? 'var(--accent)' : 'var(--border)'}`,
+                  borderRadius: 'var(--radius-sm)',
+                  color: selectedId ? '#fff' : 'var(--text-dim)',
+                  fontSize: '0.88rem', fontWeight: 700,
+                  cursor: selectedId ? 'pointer' : 'default',
+                  transition: 'all 0.12s',
+                }}
+              >
+                Submit answer →
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -191,6 +242,12 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
             onGoToDesign={onGoToDesign}
             onRetry={handleRetry}
           />
+          {userNote && (
+            <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 6 }}>Your notes</div>
+              <div style={{ fontSize: 14, color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
+            </div>
+          )}
           {onNext && (
             <div style={{ marginTop: '1.25rem', display: 'flex', justifyContent: 'flex-end' }}>
               <button

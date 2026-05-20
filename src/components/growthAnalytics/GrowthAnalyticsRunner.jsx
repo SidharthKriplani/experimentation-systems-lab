@@ -1,5 +1,263 @@
 import { useState } from 'react';
 import { saveGrowthAnalyticsProgress, getGrowthAnalyticsProgress } from '../../utils/growthAnalyticsProgress.js';
+import { isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
+import {
+  ResponsiveContainer,
+  BarChart, Bar,
+  LineChart, Line,
+  AreaChart, Area,
+  XAxis, YAxis,
+  CartesianGrid, Tooltip,
+  Legend,
+  LabelList,
+} from 'recharts';
+
+// Chart color palette (recharts doesn't read CSS variables directly)
+const C = {
+  green:  '#4caf82',
+  teal:   '#2ec4b6',
+  yellow: '#f5c842',
+  red:    '#e05c5c',
+  blue:   '#4a90d9',
+  muted:  '#6b7280',
+};
+
+// ── Per-case chart data ──────────────────────────────────────────────────────
+
+const ga01Data = [
+  { week: 'W1', retained: 1630000, new: 45000, reactivated: 12000, churned: -750000 },
+  { week: 'W2', retained: 1580000, new: 45000, reactivated: 12000, churned: -800000 },
+  { week: 'W3', retained: 1490000, new: 45000, reactivated: 12000, churned: -910000 },
+  { week: 'W4', retained: 1390000, new: 45000, reactivated: 12000, churned: -1020000 },
+];
+
+const ga02Data = [
+  { segment: 'Power Users', before: 38, after: 37 },
+  { segment: 'Casual Users', before: 8, after: 7 },
+  { segment: 'Overall', before: 22, after: 18 },
+];
+
+const ga03Data = [
+  { month: 'M1', jan: 91, march: 88 },
+  { month: 'M2', jan: 82, march: 71 },
+  { month: 'M3', jan: 71, march: 41 },
+  { month: 'M4', jan: 61, march: 28 },
+  { month: 'M5', jan: 50, march: 21 },
+  { month: 'M6', jan: 42, march: 17 },
+];
+
+const ga04Data = [
+  { step: 'Signup', users: 100000, rate: 100 },
+  { step: 'Profile', users: 72000, rate: 72 },
+  { step: 'Browse', users: 61000, rate: 85 },
+  { step: 'Purchase', users: 8000, rate: 13 },
+];
+
+const ga05Data = [
+  { channel: 'Paid Social', cac: 45, ltv: 38 },
+  { channel: 'SEO', cac: 12, ltv: 67 },
+  { channel: 'Referral', cac: 8, ltv: 89 },
+];
+
+const ga06Data = [
+  { type: 'Notification', sessionLength: 1.2, d7Retention: 23 },
+  { type: 'Organic', sessionLength: 8.4, d7Retention: 61 },
+];
+
+const ga07Data = [
+  { month: 'M-6', paid: 58, organic: 42 },
+  { month: 'M-5', paid: 63, organic: 37 },
+  { month: 'M-4', paid: 68, organic: 32 },
+  { month: 'M-3', paid: 74, organic: 26 },
+  { month: 'M-2', paid: 79, organic: 21 },
+  { month: 'Now', paid: 84, organic: 16 },
+];
+
+const ga08Data = [
+  { metric: 'First Purchase', us: 31, latam: 8 },
+  { metric: 'M1 Retention', us: 72, latam: 41 },
+  { metric: 'M6 Retention', us: 44, latam: 17 },
+];
+
+// ── Shared chart wrapper ─────────────────────────────────────────────────────
+
+function ChartCard({ children, height = 200 }) {
+  return (
+    <div style={{
+      marginBottom: 20,
+      padding: '16px',
+      background: 'var(--surface)',
+      border: '1px solid var(--border)',
+      borderRadius: 8,
+    }}>
+      <div style={{
+        fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
+        letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 12,
+      }}>
+        Data Visualization
+      </div>
+      <ResponsiveContainer width="100%" height={height}>
+        {children}
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+// ── Per-case chart components ────────────────────────────────────────────────
+
+function GA01Chart() {
+  const fmt = v => v < 0 ? `-${(Math.abs(v) / 1000000).toFixed(1)}M` : `${(v / 1000000).toFixed(2)}M`;
+  return (
+    <ChartCard height={210}>
+      <BarChart data={ga01Data} stackOffset="sign" margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis tickFormatter={fmt} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} width={52} />
+        <Tooltip formatter={(v, name) => [fmt(v), name.charAt(0).toUpperCase() + name.slice(1)]} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Bar dataKey="retained"    name="Retained"    stackId="a" fill={C.green}  />
+        <Bar dataKey="new"         name="New"         stackId="a" fill={C.teal}   />
+        <Bar dataKey="reactivated" name="Reactivated" stackId="a" fill={C.yellow} />
+        <Bar dataKey="churned"     name="Churned"     stackId="a" fill={C.red}    />
+      </BarChart>
+    </ChartCard>
+  );
+}
+
+function GA02Chart() {
+  return (
+    <ChartCard height={200}>
+      <BarChart data={ga02Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="segment" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 50]} />
+        <Tooltip formatter={v => `${v}%`} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Bar dataKey="before" name="Before Campaign" fill={C.teal}   />
+        <Bar dataKey="after"  name="After Campaign"  fill={C.yellow} />
+      </BarChart>
+    </ChartCard>
+  );
+}
+
+function GA03Chart() {
+  return (
+    <ChartCard height={210}>
+      <LineChart data={ga03Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 100]} />
+        <Tooltip formatter={v => `${v}%`} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Line type="monotone" dataKey="jan"   name="Jan Cohort (Enterprise)" stroke={C.yellow} strokeWidth={2} dot={{ r: 4 }} />
+        <Line type="monotone" dataKey="march" name="Mar Cohort (SMB)"        stroke={C.red}    strokeWidth={2} dot={{ r: 4 }} />
+      </LineChart>
+    </ChartCard>
+  );
+}
+
+function GA04Chart() {
+  const fmtUsers = v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v;
+  return (
+    <ChartCard height={200}>
+      <BarChart
+        data={ga04Data}
+        layout="vertical"
+        margin={{ top: 8, right: 48, left: 8, bottom: 0 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+        <XAxis type="number" tickFormatter={fmtUsers} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+        <YAxis type="category" dataKey="step" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} width={60} />
+        <Tooltip formatter={(v, name) => [fmtUsers(v), name]} />
+        <Bar dataKey="users" name="Users" fill={C.teal} radius={[0, 4, 4, 0]}>
+          <LabelList dataKey="rate" position="right" formatter={v => `${v}%`} style={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+        </Bar>
+      </BarChart>
+    </ChartCard>
+  );
+}
+
+function GA05Chart() {
+  return (
+    <ChartCard height={200}>
+      <BarChart data={ga05Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="channel" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis tickFormatter={v => `$${v}`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+        <Tooltip formatter={v => `$${v}`} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Bar dataKey="cac" name="CAC" fill={C.red}   />
+        <Bar dataKey="ltv" name="LTV" fill={C.green} />
+      </BarChart>
+    </ChartCard>
+  );
+}
+
+function GA06Chart() {
+  return (
+    <ChartCard height={200}>
+      <BarChart data={ga06Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="type" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis yAxisId="left"  tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'Session (min)', angle: -90, position: 'insideLeft', fill: 'var(--text-muted)', fontSize: 10, dx: -2 }} />
+        <YAxis yAxisId="right" orientation="right" tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'D7 Retention', angle: 90, position: 'insideRight', fill: 'var(--text-muted)', fontSize: 10, dx: 2 }} />
+        <Tooltip />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Bar yAxisId="left"  dataKey="sessionLength" name="Avg Session (min)" fill={C.teal}   />
+        <Bar yAxisId="right" dataKey="d7Retention"   name="D7 Retention %"   fill={C.yellow} />
+      </BarChart>
+    </ChartCard>
+  );
+}
+
+function GA07Chart() {
+  return (
+    <ChartCard height={200}>
+      <AreaChart data={ga07Data} stackOffset="expand" margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis tickFormatter={v => `${(v * 100).toFixed(0)}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+        <Tooltip formatter={(v, name, props) => {
+          const total = props.payload.reduce((s, p) => s + p.value, 0);
+          return [`${((v / total) * 100).toFixed(0)}%`, name];
+        }} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Area type="monotone" dataKey="organic" name="Organic" stackId="1" stroke={C.green} fill={C.green} fillOpacity={0.6} />
+        <Area type="monotone" dataKey="paid"    name="Paid"    stackId="1" stroke={C.red}   fill={C.red}   fillOpacity={0.5} />
+      </AreaChart>
+    </ChartCard>
+  );
+}
+
+function GA08Chart() {
+  return (
+    <ChartCard height={200}>
+      <BarChart data={ga08Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="metric" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 80]} />
+        <Tooltip formatter={v => `${v}%`} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Bar dataKey="us"    name="US"    fill={C.teal}   />
+        <Bar dataKey="latam" name="LatAm" fill={C.yellow} />
+      </BarChart>
+    </ChartCard>
+  );
+}
+
+// ── Case chart dispatcher ────────────────────────────────────────────────────
+
+function CaseChart({ caseId }) {
+  if (caseId === 'GA01') return <GA01Chart />;
+  if (caseId === 'GA02') return <GA02Chart />;
+  if (caseId === 'GA03') return <GA03Chart />;
+  if (caseId === 'GA04') return <GA04Chart />;
+  if (caseId === 'GA05') return <GA05Chart />;
+  if (caseId === 'GA06') return <GA06Chart />;
+  if (caseId === 'GA07') return <GA07Chart />;
+  if (caseId === 'GA08') return <GA08Chart />;
+  return null;
+}
 
 const DIFF_CFG = {
   analyst: { label: 'Analyst', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
@@ -28,13 +286,69 @@ const RATING_STYLE = {
   miss:    { color: 'var(--red)',    bg: 'var(--red-bg)',    border: 'var(--red-border)' },
 };
 
+const MISSED_KEY = 'pal-missed-v1';
+
+function loadMissed() {
+  try { return JSON.parse(localStorage.getItem(MISSED_KEY) || '{}'); } catch { return {}; }
+}
+
+function saveMissed(roomId, text) {
+  try {
+    const d = loadMissed();
+    d[roomId] = text;
+    localStorage.setItem(MISSED_KEY, JSON.stringify(d));
+  } catch {
+    // silently fail
+  }
+}
+
+function buildMarkdown(caseData) {
+  const steps = caseData.frameworkSteps.map((s, i) => `${i + 1}. ${s}`).join('\n');
+  const takeaways = caseData.keyTakeaways.map(t => `- ${t}`).join('\n');
+
+  return `# ${caseData.title}
+*${caseData.subtitle}* | ${caseData.difficulty} | ${caseData.company}
+
+## Situation
+${caseData.situation}
+
+## Framework Steps
+${steps}
+
+## Model Answer
+
+### Walkthrough
+${caseData.modelAnswer.walkthrough}
+
+### Key Diagnosis
+${caseData.modelAnswer.keyDiagnosis}
+
+### Recommendation
+${caseData.modelAnswer.recommendation}
+
+## Key Takeaways
+${takeaways}
+`;
+}
+
 export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
   const existing = getGrowthAnalyticsProgress(caseData.id);
+  const missedKey = `growth-analytics:${caseData.id}`;
 
   const [frameworkOpen, setFrameworkOpen] = useState(false);
   const [hintsOpen, setHintsOpen] = useState(false);
   const [answerRevealed, setAnswerRevealed] = useState(!!existing?.rating);
   const [rating, setRating] = useState(existing?.rating || null);
+
+  // Bookmark state
+  const [bookmarked, setBookmarked] = useState(() => isBookmarked('growth-analytics', caseData.id));
+
+  // Markdown export toast
+  const [copiedToast, setCopiedToast] = useState(false);
+
+  // "What did you miss?" state
+  const [missedText, setMissedText] = useState(() => loadMissed()[missedKey] || '');
+  const [missedSaved, setMissedSaved] = useState(false);
 
   const diffCfg = DIFF_CFG[caseData.difficulty] || DIFF_CFG.analyst;
 
@@ -53,11 +367,40 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
     setRating(null);
     setFrameworkOpen(false);
     setHintsOpen(false);
+    setMissedSaved(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function handleBookmarkToggle() {
+    toggleBookmark('growth-analytics', caseData.id, caseData.title, caseData.difficulty, caseData.tags);
+    setBookmarked(b => !b);
+  }
+
+  function handleExportMarkdown() {
+    const md = buildMarkdown(caseData);
+    navigator.clipboard.writeText(md).then(() => {
+      setCopiedToast(true);
+      setTimeout(() => setCopiedToast(false), 2000);
+    }).catch(() => {
+      // fallback: silently ignore clipboard errors
+    });
+  }
+
+  function handleMissedChange(e) {
+    setMissedText(e.target.value);
+    setMissedSaved(false);
+  }
+
+  function handleMissedSave() {
+    saveMissed(missedKey, missedText);
+    setMissedSaved(true);
   }
 
   // Format situation text into paragraphs
   const situationParagraphs = caseData.situation.split('\n\n').filter(Boolean);
+
+  // Show "what did you miss?" for partial or miss ratings only
+  const showMissedStep = rating === 'partial' || rating === 'miss';
 
   return (
     <div style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
@@ -76,7 +419,10 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
 
       {/* Case header */}
       <div style={{ marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{
+          display: 'flex', gap: '0.5rem', marginBottom: '0.5rem',
+          flexWrap: 'wrap', alignItems: 'center',
+        }}>
           <span style={{
             fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-dim)',
             letterSpacing: '0.04em', textTransform: 'uppercase',
@@ -106,6 +452,29 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
           }}>
             {caseData.company}
           </span>
+
+          {/* Bookmark toggle button — right side */}
+          <button
+            onClick={handleBookmarkToggle}
+            style={{
+              background: bookmarked ? 'var(--purple-bg)' : 'none',
+              border: bookmarked ? '1px solid var(--purple-border)' : '1px solid var(--border)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              padding: '0.15rem 0.45rem',
+              marginLeft: 'auto',
+              display: 'flex', alignItems: 'center', gap: '0.3rem',
+              color: bookmarked ? 'var(--purple)' : 'var(--text-muted)',
+              transition: 'all 0.12s',
+            }}
+            title={bookmarked ? 'Remove bookmark' : 'Save for later'}
+          >
+            {bookmarked ? '🔖' : '♡'}
+            <span style={{ fontSize: '0.72rem', fontWeight: 600 }}>
+              {bookmarked ? 'Saved' : 'Save'}
+            </span>
+          </button>
         </div>
 
         <h1 style={{
@@ -142,6 +511,9 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
           ))}
         </div>
       </div>
+
+      {/* Case-specific data visualization */}
+      <CaseChart caseId={caseData.id} />
 
       {/* Framework accordion */}
       <button
@@ -321,7 +693,7 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
 
           {/* Playbook links */}
           {caseData.playbookLinks && caseData.playbookLinks.length > 0 && (
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', alignSelf: 'center' }}>
                 Related:
               </span>
@@ -341,10 +713,38 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
             </div>
           )}
 
+          {/* Markdown export button */}
+          <div style={{ marginBottom: '1.5rem', position: 'relative', display: 'inline-block' }}>
+            <button
+              onClick={handleExportMarkdown}
+              style={{
+                background: 'var(--surface)', border: '1px solid var(--border)',
+                borderRadius: '7px', padding: '0.45rem 0.9rem',
+                color: 'var(--text-muted)', fontSize: '0.82rem', fontWeight: 500,
+                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.35rem',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--teal-border)'; e.currentTarget.style.color = 'var(--teal)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+            >
+              📋 Export as Markdown
+            </button>
+            {copiedToast && (
+              <span style={{
+                position: 'absolute', left: '110%', top: '50%', transform: 'translateY(-50%)',
+                background: 'var(--green-bg)', border: '1px solid var(--green-border)',
+                color: 'var(--green)', borderRadius: '6px',
+                padding: '0.25rem 0.65rem', fontSize: '0.78rem', fontWeight: 600,
+                whiteSpace: 'nowrap',
+              }}>
+                Copied!
+              </span>
+            )}
+          </div>
+
           {/* Self-rating */}
           <div style={{
             background: 'var(--surface)', border: '1px solid var(--border)',
-            borderRadius: '10px', padding: '1.25rem', marginBottom: '1.5rem',
+            borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem',
           }}>
             <div style={{ fontWeight: 600, fontSize: '0.87rem', color: 'var(--text)', marginBottom: '0.75rem' }}>
               How did you do?
@@ -375,6 +775,57 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
               })}
             </div>
           </div>
+
+          {/* "What did you miss?" — only for partial or miss ratings */}
+          {showMissedStep && (
+            <div style={{
+              background: 'var(--surface)', border: '1px solid var(--border)',
+              borderRadius: '10px', padding: '1.1rem 1.25rem', marginBottom: '1.5rem',
+            }}>
+              <label
+                style={{
+                  display: 'block', fontSize: '0.82rem', fontWeight: 600,
+                  color: 'var(--text-muted)', marginBottom: '0.5rem',
+                }}
+              >
+                What concept or detail did you overlook?{' '}
+                <span style={{ fontWeight: 400, color: 'var(--text-dim)' }}>(optional — helps reinforce memory)</span>
+              </label>
+              <textarea
+                rows={3}
+                value={missedText}
+                onChange={handleMissedChange}
+                placeholder="e.g. I forgot to check for seasonality..."
+                style={{
+                  width: '100%', boxSizing: 'border-box',
+                  background: 'var(--surface-2)', border: '1px solid var(--border)',
+                  borderRadius: '6px', padding: '0.6rem 0.75rem',
+                  color: 'var(--text)', fontSize: '0.87rem', lineHeight: 1.6,
+                  resize: 'vertical', fontFamily: 'inherit',
+                  outline: 'none',
+                }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--teal-border)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+              />
+              <div style={{ display: 'flex', gap: '0.6rem', marginTop: '0.5rem', alignItems: 'center' }}>
+                <button
+                  onClick={handleMissedSave}
+                  style={{
+                    background: 'var(--surface-2)', border: '1px solid var(--border)',
+                    borderRadius: '6px', padding: '0.35rem 0.8rem',
+                    color: 'var(--text-muted)', fontSize: '0.8rem', cursor: 'pointer',
+                  }}
+                >
+                  Save note
+                </button>
+                {missedSaved && (
+                  <span style={{ fontSize: '0.78rem', color: 'var(--green)', fontWeight: 600 }}>
+                    Saved
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>

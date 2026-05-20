@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { growthAnalyticsCases } from '../data/growthAnalyticsCases.js';
 import { getAllGrowthAnalyticsProgress } from '../utils/growthAnalyticsProgress.js';
+import { isBookmarked } from '../utils/bookmarks.js';
 
 const DIFF_CFG = {
   analyst: { label: 'Analyst', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
@@ -22,9 +24,17 @@ const RATING_COLOR = {
   miss:    'var(--red)',
 };
 
+// Collect unique domains from cases in order of first appearance
+const ALL_DOMAINS = ['All', ...Array.from(new Set(growthAnalyticsCases.map(c => c.domain)))];
+
 export function GrowthAnalyticsBrowser({ onSelectCase, unlocked }) {
   const allProgress = getAllGrowthAnalyticsProgress();
   const completedCount = Object.keys(allProgress).length;
+  const [activeDomain, setActiveDomain] = useState('All');
+
+  const filteredCases = activeDomain === 'All'
+    ? growthAnalyticsCases
+    : growthAnalyticsCases.filter(c => c.domain === activeDomain);
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
@@ -78,12 +88,39 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked }) {
         </div>
       </div>
 
+      {/* Domain filter chips */}
+      <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+        {ALL_DOMAINS.map(domain => {
+          const isActive = activeDomain === domain;
+          return (
+            <button
+              key={domain}
+              onClick={() => setActiveDomain(domain)}
+              style={{
+                background: isActive ? 'var(--teal-bg)' : 'var(--surface)',
+                border: `1px solid ${isActive ? 'var(--teal-border)' : 'var(--border)'}`,
+                borderRadius: '20px',
+                padding: '0.3rem 0.75rem',
+                fontSize: '0.78rem',
+                fontWeight: isActive ? 700 : 500,
+                color: isActive ? 'var(--teal)' : 'var(--text-muted)',
+                cursor: 'pointer',
+                transition: 'all 0.12s',
+              }}
+            >
+              {domain === 'All' ? 'All' : (DOMAIN_LABEL[domain] || domain)}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Case cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {growthAnalyticsCases.map(c => {
+        {filteredCases.map(c => {
           const prog = allProgress[c.id];
           const isLocked = !c.isFree && !unlocked;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.analyst;
+          const bookmarked = isBookmarked('growth-analytics', c.id);
 
           return (
             <div
@@ -111,6 +148,20 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked }) {
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
+              {/* Bookmark indicator (top-right corner, non-interactive) */}
+              {bookmarked && (
+                <span
+                  title="Bookmarked"
+                  style={{
+                    position: 'absolute', top: '0.6rem', right: '0.75rem',
+                    fontSize: '0.85rem', pointerEvents: 'none',
+                    lineHeight: 1,
+                  }}
+                >
+                  🔖
+                </span>
+              )}
+
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
                 <div style={{ flex: 1 }}>
                   {/* Badge row */}
@@ -171,6 +222,7 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked }) {
                   {/* Title */}
                   <div style={{
                     fontWeight: 600, fontSize: '0.97rem', color: 'var(--text)', marginBottom: '0.2rem',
+                    paddingRight: bookmarked ? '1.5rem' : 0,
                   }}>
                     {c.title}
                   </div>

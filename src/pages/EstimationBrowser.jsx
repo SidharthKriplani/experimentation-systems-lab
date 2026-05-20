@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { estimationProblems } from '../data/estimationProblems.js';
 import { getAllEstimationProgress } from '../utils/estimationProgress.js';
 
-const TAGS = ['All', 'market-sizing', 'product-metrics', 'cost-estimation', 'capacity'];
-
 const DIFFICULTY_COLOR = {
   Analyst: { color: 'var(--accent)', bg: 'var(--accent-bg)', border: 'var(--accent-border)' },
   Senior:  { color: 'var(--purple)', bg: 'var(--purple-bg)', border: 'var(--purple-border)' },
@@ -28,13 +26,72 @@ const CATEGORY_LABEL = {
   'capacity':        'Capacity',
 };
 
+// Derive unique categories, difficulties, and tags from actual data
+const ALL_CATEGORIES = (() => {
+  const cats = new Set();
+  estimationProblems.forEach(p => { if (p.category) cats.add(p.category); });
+  return Array.from(cats).sort((a, b) => a.localeCompare(b));
+})();
+
+const ALL_DIFFICULTIES = (() => {
+  const diffs = new Set();
+  estimationProblems.forEach(p => { if (p.difficulty) diffs.add(p.difficulty); });
+  // Preserve a sensible order
+  const ORDER = ['Analyst', 'Senior'];
+  return Array.from(diffs).sort((a, b) => {
+    const ia = ORDER.indexOf(a), ib = ORDER.indexOf(b);
+    if (ia !== -1 && ib !== -1) return ia - ib;
+    return a.localeCompare(b);
+  });
+})();
+
+const ALL_TAGS = (() => {
+  const tagSet = new Set();
+  estimationProblems.forEach(p => (p.tags || []).forEach(t => tagSet.add(t)));
+  return Array.from(tagSet).sort((a, b) => a.localeCompare(b)).slice(0, 14);
+})();
+
+function FilterChip({ label, active, onClick, activeColor, activeBg, activeBorder }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: '0.28rem 0.72rem',
+        borderRadius: '20px',
+        border: active
+          ? `1px solid ${activeBorder || 'var(--yellow-border)'}`
+          : '1px solid var(--border)',
+        background: active
+          ? (activeBg || 'var(--yellow-bg)')
+          : 'var(--surface)',
+        color: active
+          ? (activeColor || 'var(--yellow)')
+          : 'var(--text-muted)',
+        fontSize: '0.78rem',
+        fontWeight: active ? 600 : 400,
+        cursor: 'pointer',
+        whiteSpace: 'nowrap',
+        transition: 'all 0.12s',
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function EstimationBrowser({ onStart, unlocked }) {
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeDifficulty, setActiveDifficulty] = useState('All');
   const [activeTag, setActiveTag] = useState('All');
   const progress = getAllEstimationProgress();
 
-  const filtered = activeTag === 'All'
-    ? estimationProblems
-    : estimationProblems.filter(p => p.category === activeTag || p.tags.includes(activeTag));
+  // AND logic: all active filters must match
+  const filtered = estimationProblems.filter(p => {
+    const catMatch = activeCategory === 'All' || p.category === activeCategory;
+    const diffMatch = activeDifficulty === 'All' || p.difficulty === activeDifficulty;
+    const tagMatch = activeTag === 'All' || (p.tags || []).includes(activeTag);
+    return catMatch && diffMatch && tagMatch;
+  });
 
   const completedCount = Object.keys(progress).length;
 
@@ -73,30 +130,134 @@ export function EstimationBrowser({ onStart, unlocked }) {
         </div>
       </div>
 
-      {/* Tag filter */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '1.5rem' }}>
-        {TAGS.map(tag => (
-          <button
-            key={tag}
-            onClick={() => setActiveTag(tag)}
-            style={{
-              padding: '0.3rem 0.75rem',
-              borderRadius: '20px',
-              border: activeTag === tag ? '1px solid var(--teal-border)' : '1px solid var(--border)',
-              background: activeTag === tag ? 'var(--teal-bg)' : 'var(--surface)',
-              color: activeTag === tag ? 'var(--teal)' : 'var(--text-muted)',
-              fontSize: '0.8rem',
-              fontWeight: activeTag === tag ? 600 : 400,
-              cursor: 'pointer',
-            }}
-          >
-            {CATEGORY_LABEL[tag] || tag}
-          </button>
-        ))}
+      {/* ── Difficulty filter ── */}
+      <div style={{ marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>
+          Difficulty
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+          <FilterChip
+            label="All"
+            active={activeDifficulty === 'All'}
+            onClick={() => setActiveDifficulty('All')}
+            activeColor="var(--yellow)"
+            activeBg="var(--yellow-bg)"
+            activeBorder="var(--yellow-border)"
+          />
+          {ALL_DIFFICULTIES.map(d => {
+            const dc = DIFFICULTY_COLOR[d] || {};
+            return (
+              <FilterChip
+                key={d}
+                label={d}
+                active={activeDifficulty === d}
+                onClick={() => setActiveDifficulty(d)}
+                activeColor={dc.color || 'var(--yellow)'}
+                activeBg={dc.bg || 'var(--yellow-bg)'}
+                activeBorder={dc.border || 'var(--yellow-border)'}
+              />
+            );
+          })}
+        </div>
       </div>
+
+      {/* ── Category filter ── */}
+      <div style={{ marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>
+          Category
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+          <FilterChip
+            label="All"
+            active={activeCategory === 'All'}
+            onClick={() => setActiveCategory('All')}
+            activeColor="var(--teal)"
+            activeBg="var(--teal-bg)"
+            activeBorder="var(--teal-border)"
+          />
+          {ALL_CATEGORIES.map(cat => (
+            <FilterChip
+              key={cat}
+              label={CATEGORY_LABEL[cat] || cat}
+              active={activeCategory === cat}
+              onClick={() => setActiveCategory(cat)}
+              activeColor="var(--teal)"
+              activeBg="var(--teal-bg)"
+              activeBorder="var(--teal-border)"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* ── Tag filter ── */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>
+          Topic tag
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+          <FilterChip
+            label="All"
+            active={activeTag === 'All'}
+            onClick={() => setActiveTag('All')}
+            activeColor="var(--teal)"
+            activeBg="var(--teal-bg)"
+            activeBorder="var(--teal-border)"
+          />
+          {ALL_TAGS.map(tag => (
+            <FilterChip
+              key={tag}
+              label={tag}
+              active={activeTag === tag}
+              onClick={() => setActiveTag(tag)}
+              activeColor="var(--teal)"
+              activeBg="var(--teal-bg)"
+              activeBorder="var(--teal-border)"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Result count when filtered */}
+      {(activeCategory !== 'All' || activeDifficulty !== 'All' || activeTag !== 'All') && (
+        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <span>{filtered.length} problem{filtered.length !== 1 ? 's' : ''} match</span>
+          {activeDifficulty !== 'All' && (
+            <span style={{ color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: '4px', padding: '0.05rem 0.4rem', fontSize: '0.74rem' }}>
+              {activeDifficulty}
+            </span>
+          )}
+          {activeCategory !== 'All' && (
+            <span style={{ color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: '4px', padding: '0.05rem 0.4rem', fontSize: '0.74rem' }}>
+              {CATEGORY_LABEL[activeCategory] || activeCategory}
+            </span>
+          )}
+          {activeTag !== 'All' && (
+            <span style={{ color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: '4px', padding: '0.05rem 0.4rem', fontSize: '0.74rem' }}>
+              {activeTag}
+            </span>
+          )}
+          <button
+            onClick={() => { setActiveCategory('All'); setActiveDifficulty('All'); setActiveTag('All'); }}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.74rem', textDecoration: 'underline', padding: 0 }}
+          >
+            Clear
+          </button>
+        </div>
+      )}
 
       {/* Problem cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+        {filtered.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
+            No problems match those filters.{' '}
+            <button
+              onClick={() => { setActiveCategory('All'); setActiveDifficulty('All'); setActiveTag('All'); }}
+              style={{ background: 'none', border: 'none', color: 'var(--teal)', cursor: 'pointer', fontSize: '0.875rem', textDecoration: 'underline' }}
+            >
+              Clear filters
+            </button>
+          </div>
+        )}
         {filtered.map(problem => {
           const prog = progress[problem.id];
           const isLocked = !problem.isFree && !unlocked;

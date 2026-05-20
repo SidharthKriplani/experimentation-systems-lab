@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { behavioralQuestions } from '../data/behavioralQuestions.js';
 import { getAllBehavioralProgress } from '../utils/behavioralProgress.js';
 
-const TAGS = ['All', 'influence', 'failure', 'leadership', 'data-impact', 'conflict', 'communication'];
-
 const DIFFICULTY_COLOR = {
   'Any level':  { color: 'var(--text-muted)', bg: 'var(--surface-2)',  border: 'var(--border)'         },
   'Mid-level':  { color: 'var(--accent)',     bg: 'var(--accent-bg)',  border: 'var(--accent-border)'  },
@@ -25,13 +23,74 @@ const RATING_COLOR = {
   miss:    'var(--red)',
 };
 
+// Derive unique categories and tags from actual data
+const ALL_CATEGORIES = (() => {
+  const cats = new Set();
+  behavioralQuestions.forEach(q => { if (q.category) cats.add(q.category); });
+  return Array.from(cats).sort((a, b) => a.localeCompare(b));
+})();
+
+const ALL_TAGS = (() => {
+  const tagSet = new Set();
+  behavioralQuestions.forEach(q => (q.tags || []).forEach(t => tagSet.add(t)));
+  return Array.from(tagSet).sort((a, b) => a.localeCompare(b)).slice(0, 14);
+})();
+
+const ALL_DIFFICULTIES = (() => {
+  const diffs = new Set();
+  behavioralQuestions.forEach(q => { if (q.difficulty) diffs.add(q.difficulty); });
+  // Preserve a sensible order if possible
+  const ORDER = ['Any level', 'Mid-level', 'Senior'];
+  const sorted = Array.from(diffs).sort((a, b) => {
+    const ia = ORDER.indexOf(a), ib = ORDER.indexOf(b);
+    if (ia !== -1 && ib !== -1) return ia - ib;
+    return a.localeCompare(b);
+  });
+  return sorted;
+})();
+
+function FilterChip({ label, active, onClick, activeColor, activeBg, activeBorder }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: '0.28rem 0.72rem',
+        borderRadius: '20px',
+        border: active
+          ? `1px solid ${activeBorder || 'var(--accent-border)'}`
+          : '1px solid var(--border)',
+        background: active
+          ? (activeBg || 'var(--accent-bg)')
+          : 'var(--surface)',
+        color: active
+          ? (activeColor || 'var(--accent)')
+          : 'var(--text-muted)',
+        fontSize: '0.78rem',
+        fontWeight: active ? 600 : 400,
+        cursor: 'pointer',
+        whiteSpace: 'nowrap',
+        textTransform: 'capitalize',
+        transition: 'all 0.12s',
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function BehavioralBrowser({ onStart, unlocked }) {
+  const [activeCategory, setActiveCategory] = useState('All');
   const [activeTag, setActiveTag] = useState('All');
+  const [activeDifficulty, setActiveDifficulty] = useState('All');
   const progress = getAllBehavioralProgress();
 
-  const filtered = activeTag === 'All'
-    ? behavioralQuestions
-    : behavioralQuestions.filter(q => q.category === activeTag || q.tags.includes(activeTag));
+  // AND logic: all active filters must match
+  const filtered = behavioralQuestions.filter(q => {
+    const catMatch = activeCategory === 'All' || q.category === activeCategory;
+    const tagMatch = activeTag === 'All' || (q.tags || []).includes(activeTag);
+    const diffMatch = activeDifficulty === 'All' || q.difficulty === activeDifficulty;
+    return catMatch && tagMatch && diffMatch;
+  });
 
   const completedCount = Object.keys(progress).length;
 
@@ -60,30 +119,125 @@ export function BehavioralBrowser({ onStart, unlocked }) {
         </div>
       </div>
 
-      {/* Tag filter */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '1.5rem' }}>
-        {TAGS.map(tag => (
-          <button
-            key={tag}
-            onClick={() => setActiveTag(tag)}
-            style={{
-              padding: '0.3rem 0.75rem',
-              borderRadius: '20px',
-              border: activeTag === tag ? '1px solid var(--accent-border)' : '1px solid var(--border)',
-              background: activeTag === tag ? 'var(--accent-bg)' : 'var(--surface)',
-              color: activeTag === tag ? 'var(--accent)' : 'var(--text-muted)',
-              fontSize: '0.8rem',
-              fontWeight: activeTag === tag ? 600 : 400,
-              cursor: 'pointer',
-            }}
-          >
-            {tag}
-          </button>
-        ))}
+      {/* ── Category filter ── */}
+      <div style={{ marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>
+          Category
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+          <FilterChip
+            label="All"
+            active={activeCategory === 'All'}
+            onClick={() => setActiveCategory('All')}
+            activeColor="var(--accent)"
+            activeBg="var(--accent-bg)"
+            activeBorder="var(--accent-border)"
+          />
+          {ALL_CATEGORIES.map(cat => {
+            const cc = CATEGORY_COLOR[cat] || {};
+            return (
+              <FilterChip
+                key={cat}
+                label={cat.replace(/-/g, ' ')}
+                active={activeCategory === cat}
+                onClick={() => setActiveCategory(cat)}
+                activeColor={cc.color || 'var(--accent)'}
+                activeBg={cc.bg || 'var(--accent-bg)'}
+                activeBorder={cc.border || 'var(--accent-border)'}
+              />
+            );
+          })}
+        </div>
       </div>
+
+      {/* ── Difficulty filter ── */}
+      <div style={{ marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>
+          Level
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+          <FilterChip
+            label="All"
+            active={activeDifficulty === 'All'}
+            onClick={() => setActiveDifficulty('All')}
+            activeColor="var(--accent)"
+            activeBg="var(--accent-bg)"
+            activeBorder="var(--accent-border)"
+          />
+          {ALL_DIFFICULTIES.map(d => {
+            const dc = DIFFICULTY_COLOR[d] || {};
+            return (
+              <FilterChip
+                key={d}
+                label={d}
+                active={activeDifficulty === d}
+                onClick={() => setActiveDifficulty(d)}
+                activeColor={dc.color || 'var(--accent)'}
+                activeBg={dc.bg || 'var(--accent-bg)'}
+                activeBorder={dc.border || 'var(--accent-border)'}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Tag filter ── */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>
+          Topic tag
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+          <FilterChip
+            label="All"
+            active={activeTag === 'All'}
+            onClick={() => setActiveTag('All')}
+            activeColor="var(--accent)"
+            activeBg="var(--accent-bg)"
+            activeBorder="var(--accent-border)"
+          />
+          {ALL_TAGS.map(tag => (
+            <FilterChip
+              key={tag}
+              label={tag}
+              active={activeTag === tag}
+              onClick={() => setActiveTag(tag)}
+              activeColor="var(--green)"
+              activeBg="var(--green-bg)"
+              activeBorder="var(--green-border)"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Result count when filtered */}
+      {(activeCategory !== 'All' || activeTag !== 'All' || activeDifficulty !== 'All') && (
+        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <span>{filtered.length} question{filtered.length !== 1 ? 's' : ''} match</span>
+          {activeCategory !== 'All' && <span style={{ color: 'var(--accent)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: '4px', padding: '0.05rem 0.4rem', fontSize: '0.74rem' }}>{activeCategory}</span>}
+          {activeDifficulty !== 'All' && <span style={{ color: 'var(--accent)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: '4px', padding: '0.05rem 0.4rem', fontSize: '0.74rem' }}>{activeDifficulty}</span>}
+          {activeTag !== 'All' && <span style={{ color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: '4px', padding: '0.05rem 0.4rem', fontSize: '0.74rem' }}>{activeTag}</span>}
+          <button
+            onClick={() => { setActiveCategory('All'); setActiveTag('All'); setActiveDifficulty('All'); }}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.74rem', textDecoration: 'underline', padding: 0 }}
+          >
+            Clear
+          </button>
+        </div>
+      )}
 
       {/* Question cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+        {filtered.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
+            No questions match those filters.{' '}
+            <button
+              onClick={() => { setActiveCategory('All'); setActiveTag('All'); setActiveDifficulty('All'); }}
+              style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', fontSize: '0.875rem', textDecoration: 'underline' }}
+            >
+              Clear filters
+            </button>
+          </div>
+        )}
         {filtered.map(question => {
           const prog = progress[question.id];
           const isLocked = !question.isFree && !unlocked;

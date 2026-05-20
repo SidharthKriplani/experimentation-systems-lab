@@ -1,5 +1,6 @@
 export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme }) {
   const navItems = [
+    { id: 'search', label: '🔍 Search' },
     { id: 'stat-foundations', label: 'Foundations' },
     { id: 'stats', label: 'Stats' },
     { id: 'metrics', label: 'Metrics' },
@@ -15,7 +16,10 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     { id: 'growth-analytics', label: 'Growth' },
     { id: 'blog', label: 'Learn' },
     { id: 'playbook', label: 'Playbook' },
+    { id: 'simulator', label: 'Simulate' },
+    { id: 'ab-interpreter', label: 'A/B Tool' },
     { id: 'pricing', label: 'Pricing' },
+    { id: 'bookmarks', label: '🔖 Saved' },
     { id: 'progress', label: 'Progress' },
   ];
 
@@ -83,7 +87,9 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
               || (item.id === 'behavioral' && currentPage === 'behavioral-runner')
               || (item.id === 'estimation' && currentPage === 'estimation-runner')
               || (item.id === 'stat-foundations' && currentPage === 'stat-foundations-runner')
-              || (item.id === 'growth-analytics' && currentPage === 'growth-analytics-runner');
+              || (item.id === 'growth-analytics' && currentPage === 'growth-analytics-runner')
+              || (item.id === 'search' && currentPage === 'search')
+              || (item.id === 'bookmarks' && currentPage === 'bookmarks');
             return (
               <button
                 key={item.id}

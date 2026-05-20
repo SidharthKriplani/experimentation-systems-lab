@@ -22,6 +22,8 @@ import { prioritizationScenarios } from '../data/prioritizationScenarios.js';
 import { behavioralQuestions } from '../data/behavioralQuestions.js';
 import { estimationProblems } from '../data/estimationProblems.js';
 import { statsFoundationsModules } from '../data/statsFoundationsModules.js';
+import { growthAnalyticsCases } from '../data/growthAnalyticsCases.js';
+import { getAllGrowthAnalyticsProgress } from '../utils/growthAnalyticsProgress.js';
 import { learningPaths } from '../data/learningPaths.js';
 import { GuidedPathCard } from '../components/paths/GuidedPathCard.jsx';
 
@@ -111,6 +113,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   const behavioralProgress = getAllBehavioralProgress();
   const estimationProg = getAllEstimationProgress();
   const sfProgress = getAllStatFoundationsProgress();
+  const gaProgress = getAllGrowthAnalyticsProgress();
 
   const statsCompleted = statsModules.filter(m => statsProgress[m.id]?.attempts > 0);
   const metricsCompleted = metricCases.filter(c => metricsProgress[c.id]?.attempts > 0);
@@ -149,10 +152,13 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
       onReset: makeRoomResetter(['pal-rca-progress-v1']) },
     { label: 'Cases', completed: casesCompleted.length, total: businessCases.length, best: casesBest,
       onReset: makeRoomResetter(['pal-cases-progress-v1']) },
+    { label: 'Growth Analytics', completed: growthAnalyticsCases.filter(c => gaProgress[c.id]?.rating).length, total: growthAnalyticsCases.length, color: 'var(--teal)',
+      onReset: makeRoomResetter(['pal-growth-analytics-progress-v1']) },
   ];
 
-  const totalCompleted = statsCompleted.length + metricsCompleted.length + designCompleted.length + completed.length + rcaCompleted.length + casesCompleted.length;
-  const grandTotal = statsModules.length + metricCases.length + designScenarios.length + scenarios.length + rcaCases.length + businessCases.length;
+  const gaCompleted = growthAnalyticsCases.filter(c => gaProgress[c.id]?.rating).length;
+  const totalCompleted = statsCompleted.length + metricsCompleted.length + designCompleted.length + completed.length + rcaCompleted.length + casesCompleted.length + gaCompleted;
+  const grandTotal = statsModules.length + metricCases.length + designScenarios.length + scenarios.length + rcaCases.length + businessCases.length + growthAnalyticsCases.length;
 
   // Strongest/weakest room (by completion %)
   const roomsWithData = allRoomProgress.filter(r => r.completed > 0);
@@ -200,6 +206,70 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   behavioralQuestions.forEach(q => { if (behavioralProgress[q.id]?.rating) completionMap[`behavioral:${q.id}`] = true; });
   estimationProblems.forEach(p => { if (estimationProg[p.id]?.rating) completionMap[`estimation:${p.id}`] = true; });
   statsFoundationsModules.forEach(m => { if (sfProgress[m.id]?.completedAt) completionMap[`stat-foundations:${m.id}`] = true; });
+  growthAnalyticsCases.forEach(c => { if (gaProgress[c.id]?.rating) completionMap[`growth-analytics:${c.id}`] = true; });
+
+  // Practice heatmap: collect all practice dates from all progress stores
+  function getPracticeDates() {
+    const dates = new Set();
+    const stores = [
+      'pal-stats-progress-v1', 'pal-metrics-progress-v2', 'pal-rca-progress-v1',
+      'pal-cases-progress-v1', 'pal-code-progress-v1', 'pal-behavioral-progress-v1',
+      'pal-estimation-progress-v1', 'pal-stat-foundations-progress-v1',
+      'pal-growth-analytics-progress-v1'
+    ];
+    stores.forEach(key => {
+      try {
+        const data = JSON.parse(localStorage.getItem(key) || '{}');
+        Object.values(data).forEach(entry => {
+          const ts = entry.completedAt || entry.lastCompletedAt;
+          if (ts) dates.add(new Date(ts).toISOString().slice(0, 10));
+        });
+      } catch {}
+    });
+    return dates;
+  }
+
+  const practiceDates = getPracticeDates();
+
+  // Build 13-week grid (91 days ending today)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const heatmapDays = [];
+  for (let i = 90; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    heatmapDays.push(d.toISOString().slice(0, 10));
+  }
+
+  // Streak: consecutive days ending today
+  let streak = 0;
+  for (let i = 0; i < 91; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const ds = d.toISOString().slice(0, 10);
+    if (practiceDates.has(ds)) streak++;
+    else break;
+  }
+
+  // Role Readiness Score
+  let readinessLevel, readinessDesc, readinessColor;
+  if (totalCompleted >= 60) {
+    readinessLevel = 'Staff Level';
+    readinessDesc = 'Consistently strong across stats, experimentation, growth, and communication.';
+    readinessColor = 'var(--teal)';
+  } else if (totalCompleted >= 30) {
+    readinessLevel = 'Senior Ready';
+    readinessDesc = 'Solid foundation. Focus on advanced causal inference and cross-functional cases.';
+    readinessColor = 'var(--yellow)';
+  } else if (totalCompleted >= 10) {
+    readinessLevel = 'Analyst Ready';
+    readinessDesc = 'Good core skills. Deepen RCA, growth analytics, and experiment design.';
+    readinessColor = 'var(--green)';
+  } else {
+    readinessLevel = 'Getting Started';
+    readinessDesc = 'Complete more cases to unlock your readiness assessment.';
+    readinessColor = 'var(--text-muted)';
+  }
 
   function handleClear() {
     if (window.confirm('Clear all progress across all rooms? This cannot be undone.')) {
@@ -231,6 +301,28 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
             color: 'var(--text-dim)', fontSize: '0.8rem', cursor: 'pointer',
           }}>Clear All Progress</button>
         )}
+      </div>
+
+      {/* Readiness Level Card */}
+      <div style={{
+        background: 'var(--surface)', border: `1px solid var(--border)`,
+        borderRadius: 'var(--radius-lg)', padding: '1rem 1.5rem',
+        boxShadow: 'var(--shadow-sm)', marginBottom: '1.25rem',
+        display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap',
+      }}>
+        <div style={{
+          fontSize: '1.35rem', fontWeight: 800, color: readinessColor,
+          letterSpacing: '-0.02em', lineHeight: 1,
+        }}>{readinessLevel}</div>
+        <div style={{ height: '28px', width: '1px', background: 'var(--border)', flexShrink: 0 }} />
+        <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', flex: 1, minWidth: '180px' }}>
+          {readinessDesc}
+        </div>
+        <div style={{
+          fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-dim)',
+          background: 'var(--surface-2)', border: '1px solid var(--border)',
+          borderRadius: '20px', padding: '0.2rem 0.6rem', whiteSpace: 'nowrap',
+        }}>{totalCompleted} completed</div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
@@ -327,6 +419,351 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
           ))}
         </div>
       </div>
+
+      {/* Practice Streak Heatmap */}
+      <div style={{
+        background: 'var(--surface)', border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.5rem',
+        boxShadow: 'var(--shadow-sm)', marginTop: '1.25rem',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.9rem' }}>
+          <div style={{
+            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.09em', color: 'var(--text-dim)',
+          }}>Practice Streak</div>
+          {streak > 0 && (
+            <span style={{
+              fontSize: '0.65rem', fontWeight: 700,
+              background: 'var(--yellow-bg)', color: 'var(--yellow)',
+              border: '1px solid var(--yellow-border)',
+              borderRadius: '10px', padding: '0.1rem 0.5rem',
+            }}>{streak} day{streak !== 1 ? 's' : ''}</span>
+          )}
+          {streak === 0 && (
+            <span style={{
+              fontSize: '0.65rem', color: 'var(--text-dim)',
+            }}>Practice today to start a streak</span>
+          )}
+        </div>
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', gap: '2px',
+          width: 'fit-content',
+        }}>
+          {heatmapDays.map(day => (
+            <div
+              key={day}
+              title={day}
+              style={{
+                width: '7px', height: '7px', borderRadius: '1px',
+                background: practiceDates.has(day) ? 'var(--yellow)' : 'var(--surface)',
+                border: practiceDates.has(day) ? 'none' : '1px solid var(--border)',
+                flexShrink: 0,
+              }}
+            />
+          ))}
+        </div>
+        <div style={{ marginTop: '0.5rem', fontSize: '0.65rem', color: 'var(--text-dim)' }}>
+          Last 13 weeks
+        </div>
+      </div>
+
+      {/* Study Plan — "What to Study Next" */}
+      {(() => {
+        // ── Collect per-room summaries ──────────────────────────────────────
+        const sfCompleted   = statsFoundationsModules.filter(m => sfProgress[m.id]?.completedAt).length;
+        const gaAttempted   = growthAnalyticsCases.filter(c => gaProgress[c.id]?.rating).length;
+        const behAttempted  = behavioralQuestions.filter(q => behavioralProgress[q.id]?.rating).length;
+        const estAttempted  = estimationProblems.filter(p => estimationProg[p.id]?.rating).length;
+        const priAttempted  = prioritizationScenarios.filter(s => priProgress[s.id]?.completedAt).length;
+
+        // Days-ago helper
+        function daysAgo(isoTs) {
+          if (!isoTs) return null;
+          const diff = Date.now() - new Date(isoTs).getTime();
+          return Math.floor(diff / 86400000);
+        }
+
+        const recommendations = [];
+
+        // ── 1. REVISIT — GA/Behavioral/Estimation rated ≤ 2 (miss/weak) ───────
+        // GA misses (rating 1–2)
+        growthAnalyticsCases.forEach(c => {
+          const p = gaProgress[c.id];
+          if (p?.rating && p.rating <= 2) {
+            const d = daysAgo(p.completedAt);
+            recommendations.push({
+              type: 'revisit',
+              icon: '🔄',
+              title: `Revisit — ${c.id}: ${c.title}`,
+              reason: `You rated this ${p.rating === 1 ? '"miss"' : '"weak"'}${d !== null ? ` ${d === 0 ? 'today' : `${d} day${d !== 1 ? 's' : ''} ago`}` : ''}.`,
+              nav: 'growth-analytics',
+              priority: 10 - p.rating,
+            });
+          }
+        });
+        // Behavioral misses (rating ≤ 2)
+        behavioralQuestions.forEach(q => {
+          const p = behavioralProgress[q.id];
+          if (p?.rating && p.rating <= 2) {
+            const d = daysAgo(p.completedAt);
+            recommendations.push({
+              type: 'revisit',
+              icon: '🔄',
+              title: `Revisit — ${q.title}`,
+              reason: `You rated this ${p.rating === 1 ? '"miss"' : '"weak"'}${d !== null ? ` ${d === 0 ? 'today' : `${d} day${d !== 1 ? 's' : ''} ago`}` : ''}. Behavioral answers need sharpening.`,
+              nav: 'behavioral',
+              priority: 10 - p.rating,
+            });
+          }
+        });
+        // Estimation misses (rating ≤ 2)
+        estimationProblems.forEach(ep => {
+          const p = estimationProg[ep.id];
+          if (p?.rating && p.rating <= 2) {
+            const d = daysAgo(p.completedAt);
+            recommendations.push({
+              type: 'revisit',
+              icon: '🔄',
+              title: `Revisit — ${ep.title}`,
+              reason: `You rated this ${p.rating === 1 ? '"miss"' : '"weak"'}${d !== null ? ` ${d === 0 ? 'today' : `${d} day${d !== 1 ? 's' : ''} ago`}` : ''}. Estimation frameworks need more practice.`,
+              nav: 'estimation',
+              priority: 10 - p.rating,
+            });
+          }
+        });
+        // Stats stuck at wrong/partial level
+        statsModules.forEach(m => {
+          const p = statsProgress[m.id];
+          if (p?.attempts > 0 && (p.level === 'wrong' || p.level === 'partial')) {
+            recommendations.push({
+              type: 'revisit',
+              icon: '🔄',
+              title: `Revisit Stats — ${m.title}`,
+              reason: `You scored "${p.level}" after ${p.attempts} attempt${p.attempts !== 1 ? 's' : ''}. One more pass should lock this in.`,
+              nav: 'stats',
+              priority: p.level === 'wrong' ? 9 : 7,
+            });
+          }
+        });
+
+        // ── 2. CROSS-ROOM BRIDGE — GA done but no SF, or SF done but no GA ────
+        if (gaAttempted >= 2 && sfCompleted === 0) {
+          recommendations.push({
+            type: 'bridge',
+            icon: '🔗',
+            title: 'Start Stat Foundations',
+            reason: `You've done ${gaAttempted} Growth Analytics case${gaAttempted !== 1 ? 's' : ''} but haven't touched Stat Foundations — the theory will make GA problems much clearer.`,
+            nav: 'stat-foundations',
+            priority: 8,
+          });
+        }
+        if (sfCompleted >= 5 && gaAttempted === 0) {
+          recommendations.push({
+            type: 'bridge',
+            icon: '🔗',
+            title: 'Apply your stats in Growth Analytics',
+            reason: `You've completed ${sfCompleted} Stat Foundations modules. Growth Analytics is the next step to apply that knowledge to real business cases.`,
+            nav: 'growth-analytics',
+            priority: 8,
+          });
+        }
+        // Behavioral bridge: done lots of cases but no behavioral
+        if ((casesCompleted.length >= 3 || gaAttempted >= 3) && behAttempted === 0) {
+          recommendations.push({
+            type: 'bridge',
+            icon: '🔗',
+            title: 'Add Behavioral practice',
+            reason: `You've been grinding analytical rooms but haven't practiced behavioral questions — interviewers always ask both.`,
+            nav: 'behavioral',
+            priority: 6,
+          });
+        }
+
+        // ── 3. UNTOUCHED ROOMS — completedCount === 0 ────────────────────────
+        const untouchedCandidates = [
+          { label: 'Growth Analytics', nav: 'growth-analytics', done: gaAttempted, total: growthAnalyticsCases.length, note: 'Cohort retention, DAU decomposition, funnels — the bread-and-butter of PM/DS interviews.' },
+          { label: 'Stat Foundations', nav: 'stat-foundations', done: sfCompleted, total: statsFoundationsModules.length, note: 'Build the statistical intuition behind every experiment you\'ll ever run.' },
+          { label: 'Estimation', nav: 'estimation', done: estAttempted, total: estimationProblems.length, note: 'Fermi estimation shows up in every PM interview — start here if you haven\'t.' },
+          { label: 'Behavioral', nav: 'behavioral', done: behAttempted, total: behavioralQuestions.length, note: 'STAR-format practice for leadership and influence questions.' },
+          { label: 'Prioritization', nav: 'prioritization', done: priAttempted, total: prioritizationScenarios.length, note: 'PM-critical skill — practice frameworks like RICE and cost-of-delay.' },
+          { label: 'Stats', nav: 'stats', done: statsCompleted.length, total: statsModules.length, note: 'Core statistical inference questions every DS interview includes.' },
+          { label: 'RCA', nav: 'rca', done: rcaCompleted.length, total: rcaCases.length, note: 'Root cause analysis — diagnosis is half the interview.' },
+          { label: 'Metrics', nav: 'metrics', done: metricsCompleted.length, total: metricCases.length, note: 'Define metrics, catch traps, handle proxy metrics.' },
+        ];
+        untouchedCandidates.forEach(r => {
+          if (r.done === 0) {
+            recommendations.push({
+              type: 'new',
+              icon: '🆕',
+              title: `Start ${r.label}`,
+              reason: r.note,
+              nav: r.nav,
+              priority: 5,
+            });
+          }
+        });
+
+        // ── 4. LEVEL-UP — room ≥ 50% but all done items at junior/analyst level ─
+        const roomsToLevelUp = [
+          { label: 'Stats', items: statsModules, prog: statsProgress, nav: 'stats', levelField: 'level' },
+          { label: 'Metrics', items: metricCases, prog: metricsProgress, nav: 'metrics', levelField: 'level' },
+          { label: 'RCA', items: rcaCases, prog: rcaProgress, nav: 'rca', levelField: 'level' },
+        ];
+        roomsToLevelUp.forEach(room => {
+          const attempted = room.items.filter(i => room.prog[i.id]?.attempts > 0);
+          const pct = room.items.length > 0 ? attempted.length / room.items.length : 0;
+          if (pct >= 0.5 && attempted.length >= 3) {
+            const allLow = attempted.every(i => {
+              const lvl = room.prog[i.id]?.level;
+              return lvl === 'wrong' || lvl === 'partial' || lvl === 'junior' || lvl === 'analyst';
+            });
+            if (allLow) {
+              recommendations.push({
+                type: 'levelup',
+                icon: '⬆️',
+                title: `Level up in ${room.label}`,
+                reason: `You've attempted ${attempted.length}/${room.items.length} ${room.label} problems but are still scoring at junior/analyst level. Try harder problems with a tighter framework.`,
+                nav: room.nav,
+                priority: 4,
+              });
+            }
+          }
+        });
+
+        // ── Sort, dedup by nav target, cap at 5 ──────────────────────────────
+        const seen = new Set();
+        const topRecs = recommendations
+          .sort((a, b) => b.priority - a.priority)
+          .filter(r => {
+            // For revisit type, allow multiple (different titles). For others, deduplicate by nav.
+            if (r.type === 'revisit') return true;
+            if (seen.has(r.nav)) return false;
+            seen.add(r.nav);
+            return true;
+          })
+          .slice(0, 5);
+
+        // ── Type → color mapping ──────────────────────────────────────────────
+        const typeStyle = {
+          revisit: { color: 'var(--teal)',   bg: 'var(--teal-bg)',   border: 'var(--teal-border)',   btnBg: 'var(--teal-bg)',   btnBorder: 'var(--teal-border)',   btnColor: 'var(--teal)'   },
+          new:     { color: 'var(--green)',  bg: 'var(--green-bg)',  border: 'var(--green-border)',  btnBg: 'var(--green-bg)',  btnBorder: 'var(--green-border)',  btnColor: 'var(--green)'  },
+          levelup: { color: 'var(--yellow)', bg: 'var(--yellow-bg)', border: 'var(--yellow-border)', btnBg: 'var(--yellow-bg)', btnBorder: 'var(--yellow-border)', btnColor: 'var(--yellow)' },
+          bridge:  { color: 'var(--purple)', bg: 'var(--purple-bg)', border: 'var(--purple-border)', btnBg: 'var(--purple-bg)', btnBorder: 'var(--purple-border)', btnColor: 'var(--purple)' },
+        };
+
+        const everythingStrong =
+          totalCompleted > 0 &&
+          recommendations.filter(r => r.type === 'revisit' || r.type === 'levelup').length === 0 &&
+          topRecs.length === 0;
+
+        return (
+          <div style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)', padding: '1.5rem',
+            boxShadow: 'var(--shadow-sm)', marginTop: '1.25rem',
+          }}>
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div>
+                <div style={{
+                  fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+                  letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.2rem',
+                }}>Study Plan</div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                  Personalized based on your history
+                </div>
+              </div>
+              {topRecs.length > 0 && (
+                <span style={{
+                  fontSize: '0.65rem', fontWeight: 700,
+                  background: 'var(--accent-bg)', color: 'var(--accent)',
+                  border: '1px solid var(--accent-border)',
+                  borderRadius: '10px', padding: '0.1rem 0.5rem',
+                }}>{topRecs.length} suggestion{topRecs.length !== 1 ? 's' : ''}</span>
+              )}
+            </div>
+
+            {/* "Crushing it" state */}
+            {(everythingStrong || (totalCompleted === 0 && topRecs.length === 0)) && (
+              <div style={{
+                background: 'var(--green-bg)', border: '1px solid var(--green-border)',
+                borderRadius: '8px', padding: '0.9rem 1rem',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
+              }}>
+                <div style={{ fontSize: '0.85rem', color: 'var(--green)', fontWeight: 600 }}>
+                  {totalCompleted === 0
+                    ? '👋 Pick any room to get started — each one sharpens a different interview skill.'
+                    : "You're crushing it! Keep the streak going."}
+                </div>
+                {onNavigate && (
+                  <button
+                    onClick={() => onNavigate('growth-analytics')}
+                    style={{
+                      background: 'var(--green-bg)', border: '1px solid var(--green-border)',
+                      borderRadius: '6px', padding: '0.4rem 0.75rem',
+                      color: 'var(--green)', fontSize: '0.78rem', fontWeight: 700,
+                      cursor: 'pointer', whiteSpace: 'nowrap',
+                    }}
+                  >Take Today's Drill →</button>
+                )}
+              </div>
+            )}
+
+            {/* Recommendation list */}
+            {topRecs.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                {topRecs.map((rec, idx) => {
+                  const ts = typeStyle[rec.type] || typeStyle.new;
+                  return (
+                    <div
+                      key={`${rec.type}-${rec.nav}-${idx}`}
+                      style={{
+                        background: 'var(--bg)',
+                        border: '1px solid var(--border)',
+                        borderLeft: `4px solid ${ts.color}`,
+                        borderRadius: '8px',
+                        padding: '0.75rem 1rem',
+                        display: 'flex', alignItems: 'flex-start',
+                        justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
+                      }}
+                    >
+                      {/* Rank + content */}
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', flex: 1, minWidth: 0 }}>
+                        <span style={{
+                          fontSize: '0.62rem', fontWeight: 800,
+                          color: ts.color, background: ts.bg,
+                          border: `1px solid ${ts.border}`,
+                          borderRadius: '4px', padding: '0.1rem 0.35rem',
+                          flexShrink: 0, marginTop: '0.1rem',
+                        }}>{idx + 1}</span>
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.2rem' }}>
+                            <span style={{ fontSize: '0.95rem' }}>{rec.icon}</span>
+                            <span style={{ fontWeight: 700, color: 'var(--text)', fontSize: '0.87rem' }}>{rec.title}</span>
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>{rec.reason}</div>
+                        </div>
+                      </div>
+                      {/* Action button */}
+                      {onNavigate && (
+                        <button
+                          onClick={() => onNavigate(rec.nav)}
+                          style={{
+                            background: ts.btnBg, border: `1px solid ${ts.btnBorder}`,
+                            borderRadius: '6px', padding: '0.35rem 0.7rem',
+                            color: ts.btnColor, fontSize: '0.75rem', fontWeight: 700,
+                            cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+                          }}
+                        >Open →</button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Review Queue */}
       {(() => {

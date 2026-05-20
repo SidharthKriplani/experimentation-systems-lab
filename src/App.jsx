@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts.js';
 import { track } from './utils/analytics.js';
 // Data
 import { scenarios } from './data/scenarios.js';
@@ -71,6 +72,10 @@ const StatsFoundationsBrowser = lazy(() => import('./pages/StatsFoundationsBrows
 const StatsFoundationsRunner  = lazy(() => import('./components/statsFoundations/StatsFoundationsRunner.jsx').then(m => ({ default: m.StatsFoundationsRunner })));
 const GrowthAnalyticsBrowser  = lazy(() => import('./pages/GrowthAnalyticsBrowser.jsx').then(m => ({ default: m.GrowthAnalyticsBrowser })));
 const GrowthAnalyticsRunner   = lazy(() => import('./components/growthAnalytics/GrowthAnalyticsRunner.jsx').then(m => ({ default: m.GrowthAnalyticsRunner })));
+const InterviewSimulator      = lazy(() => import('./pages/InterviewSimulator.jsx').then(m => ({ default: m.InterviewSimulator })));
+const ABTestInterpreter       = lazy(() => import('./pages/ABTestInterpreter.jsx').then(m => ({ default: m.ABTestInterpreter })));
+const SearchPage              = lazy(() => import('./pages/SearchPage.jsx').then(m => ({ default: m.SearchPage })));
+const BookmarksBrowser        = lazy(() => import('./pages/BookmarksBrowser.jsx').then(m => ({ default: m.BookmarksBrowser })));
 
 function getInitialTheme() {
   try {
@@ -122,6 +127,10 @@ export default function App() {
       pricing: 'Pricing — Product Analytics Lab',
       progress: 'My Progress — Product Analytics Lab',
       unlock: 'Unlock Access — Product Analytics Lab',
+      'simulator':      'Interview Simulator — Product Analytics Lab',
+      'ab-interpreter': 'A/B Test Interpreter — Product Analytics Lab',
+      'search':    'Search — Analytics Lab',
+      'bookmarks': 'Bookmarks — Product Analytics Lab',
     };
     document.title = titles[page] || 'Product Analytics Lab';
   }, [page]);
@@ -287,6 +296,14 @@ export default function App() {
     setUnlocked(true);
     navigate('browser');
   }
+
+  useKeyboardShortcuts([
+    { key: '/', action: () => setPage('search') },
+    { key: 'k', ctrlKey: true, action: () => setPage('search') },
+    { key: 'Escape', action: () => { if (page !== 'home') setPage('home'); } },
+    { key: 'p', action: () => setPage('progress') },
+    { key: 'h', action: () => setPage('home') },
+  ]);
 
   function getNextScenarioId(currentId) {
     const accessible = scenarios.filter(s => s.isFree || unlocked);
@@ -638,6 +655,37 @@ export default function App() {
           />
         )}
 
+        {/* ── Search Page ── */}
+        {page === 'search' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <SearchPage
+              onNavigate={(targetPage, itemId) => {
+                if (itemId) {
+                  switch (targetPage) {
+                    case 'browser':              openScenario(itemId); break;
+                    case 'stats':                openStatsModule(itemId); break;
+                    case 'metrics':              openMetricsCase(itemId); break;
+                    case 'design':               openDesignScenario(itemId); break;
+                    case 'rca':                  openRCACase(itemId); break;
+                    case 'cases':                openBusinessCase(itemId); break;
+                    case 'product-design':       openPDScenario(itemId); break;
+                    case 'code':                 openCodeModule(itemId); break;
+                    case 'prioritization':       openPrioritizationScenario(itemId); break;
+                    case 'behavioral':           openBehavioralQuestion(itemId); break;
+                    case 'estimation':           openEstimationProblem(itemId); break;
+                    case 'stat-foundations':     openStatFoundationsModule(itemId); break;
+                    case 'growth-analytics':     openGrowthAnalyticsCase(itemId); break;
+                    default:                     setPage(targetPage);
+                  }
+                } else {
+                  setPage(targetPage);
+                }
+              }}
+              allData={{ scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases }}
+            />
+          </Suspense>
+        )}
+
         {/* ── Support pages ── */}
         {page === 'pricing' && <Pricing onShowUnlock={() => setPage('unlock')} onBack={() => setPage('home')} />}
         {page === 'progress' && (
@@ -670,6 +718,36 @@ export default function App() {
             else if (room === 'prioritization') openPrioritizationScenario(id);
           }} />
         )}
+        {page === 'simulator' && <InterviewSimulator onBack={() => setPage('home')} onNavigate={navigate} />}
+        {page === 'ab-interpreter' && <ABTestInterpreter onBack={() => setPage('home')} />}
+        {page === 'bookmarks' && (
+          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+            <BookmarksBrowser
+              onBack={() => setPage('home')}
+              onNavigate={(targetPage, itemId) => {
+                if (itemId) {
+                  switch (targetPage) {
+                    case 'stat-foundations':  openStatFoundationsModule(itemId); break;
+                    case 'growth-analytics':  openGrowthAnalyticsCase(itemId); break;
+                    case 'stats':             openStatsModule(itemId); break;
+                    case 'metrics':           openMetricsCase(itemId); break;
+                    case 'rca':               openRCACase(itemId); break;
+                    case 'cases':             openBusinessCase(itemId); break;
+                    case 'behavioral':        openBehavioralQuestion(itemId); break;
+                    case 'estimation':        openEstimationProblem(itemId); break;
+                    case 'product-design':    openPDScenario(itemId); break;
+                    case 'prioritization':    openPrioritizationScenario(itemId); break;
+                    case 'browser':           openScenario(itemId); break;
+                    default:                  setPage(targetPage);
+                  }
+                } else {
+                  setPage(targetPage);
+                }
+              }}
+            />
+          </Suspense>
+        )}
+
         {page === 'qa' && (
           <QADashboard
             onNavigate={navigate}

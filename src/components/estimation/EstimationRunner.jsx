@@ -1,6 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveEstimationAttempt, getEstimationProgress } from '../../utils/estimationProgress.js';
 
+const ROOM_KEY = 'estimation';
+
+function loadNote(room, id) {
+  try {
+    const notes = JSON.parse(localStorage.getItem('pal-notes-v1') || '{}');
+    return notes[`${room}:${id}`] || '';
+  } catch { return ''; }
+}
+function saveNote(room, id, text) {
+  try {
+    const notes = JSON.parse(localStorage.getItem('pal-notes-v1') || '{}');
+    notes[`${room}:${id}`] = text;
+    localStorage.setItem('pal-notes-v1', JSON.stringify(notes));
+  } catch {}
+}
+
 const RATINGS = [
   {
     id: 'strong',
@@ -45,6 +61,8 @@ export function EstimationRunner({ problem, onBack, onNext }) {
   const [rating, setRating] = useState(existing?.rating || null);
   const [frameworkOpen, setFrameworkOpen] = useState(false);
   const [hintsOpen, setHintsOpen] = useState(false);
+  const [userNote, setUserNote] = useState('');
+  const [noteSaved, setNoteSaved] = useState(false);
 
   const [elapsed, setElapsed] = useState(0);
   const timerRef = useRef(null);
@@ -53,6 +71,11 @@ export function EstimationRunner({ problem, onBack, onNext }) {
     setElapsed(0);
     timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
     return () => clearInterval(timerRef.current);
+  }, [problem.id]);
+
+  useEffect(() => {
+    setUserNote(loadNote(ROOM_KEY, problem.id));
+    setNoteSaved(false);
   }, [problem.id]);
 
   function formatTime(s) {
@@ -228,12 +251,41 @@ export function EstimationRunner({ problem, onBack, onNext }) {
             onFocus={e => { e.target.style.borderColor = 'var(--teal-border)'; }}
             onBlur={e => { e.target.style.borderColor = 'var(--border)'; }}
           />
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.75rem', marginBottom: '0.75rem' }}>
             <span style={{ fontSize: '0.8rem', color: response.trim().length < 40 ? 'var(--text-dim)' : 'var(--teal)' }}>
               {response.trim().length < 40
                 ? `${response.trim().length}/40 characters to unlock`
                 : '✓ Ready to reveal'}
             </span>
+          </div>
+          <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
+              ✏️ Write your thinking first <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span>
+            </div>
+            <textarea
+              value={userNote}
+              onChange={e => { setUserNote(e.target.value); setNoteSaved(false); }}
+              placeholder="What's your read? Jot down your diagnosis before revealing the answer..."
+              style={{
+                width: '100%', minHeight: 80, padding: '10px 12px', background: 'var(--bg)',
+                border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
+                fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                boxSizing: 'border-box',
+              }}
+            />
+            <button
+              onClick={() => { saveNote(ROOM_KEY, problem.id, userNote); setNoteSaved(true); }}
+              style={{
+                marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
+                border: `1px solid ${noteSaved ? 'var(--green-border)' : 'var(--border)'}`,
+                borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
+              }}
+            >
+              {noteSaved ? '✓ Saved' : 'Save note'}
+            </button>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <button
               onClick={handleReveal}
               disabled={!canReveal}
@@ -345,6 +397,14 @@ export function EstimationRunner({ problem, onBack, onNext }) {
               ))}
             </ul>
           </div>
+
+          {/* Your notes */}
+          {userNote && (
+            <div style={{ marginBottom: '1rem', padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 6 }}>Your notes</div>
+              <div style={{ fontSize: 14, color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
+            </div>
+          )}
 
           {/* Self-rating */}
           <div style={{

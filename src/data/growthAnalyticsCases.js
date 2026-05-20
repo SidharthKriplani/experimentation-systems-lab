@@ -66,10 +66,7 @@ The next investigative step: segment retention by cohort, feature usage, and pla
       'Flat new users rules out acquisition as the cause. The CEO\'s hypothesis fails the first data check.',
       'Pouring acquisition spend into a leaky retention bucket is one of the most common and costly mistakes in growth — you buy users at CAC only to lose them in days.',
     ],
-    playbookLinks: [
-      { id: 'growth-accounting', label: 'Growth Accounting Framework' },
-      { id: 'dau-mau-ratio', label: 'DAU/MAU and Stickiness' },
-    ],
+    playbookLinks: [{ id: 'growth-accounting', label: 'Growth Accounting' }, { id: 'cohort-retention-curves', label: 'Cohort Retention' }],
   },
 
   {
@@ -142,10 +139,7 @@ Recommendation: (1) Add segment-stratified DAU/MAU to the weekly dashboard so th
       'Mix-shift effects are one of the most common causes of misleading top-line metric moves in growth. Decompose before prescribing.',
       'Power user stickiness is usually the right leading indicator for marketplace health — protect and monitor it separately.',
     ],
-    playbookLinks: [
-      { id: 'dau-mau-ratio', label: 'DAU/MAU and Stickiness' },
-      { id: 'segmentation-101', label: 'Segmentation in Product Analytics' },
-    ],
+    playbookLinks: [{ id: 'growth-accounting', label: 'Growth Accounting' }, { id: 'notification-driven-dau', label: 'Notification-Driven DAU' }],
   },
 
   {
@@ -224,10 +218,7 @@ Actions: (1) Stop investing in self-serve SMB acquisition at current unit econom
       'Segment characteristics (switching costs, ACV, procurement complexity) explain retention differences more often than product quality differences.',
       'A GTM problem masquerading as a product problem is extremely common in early SaaS — always segment cohorts by acquisition channel and customer profile before diagnosing.',
     ],
-    playbookLinks: [
-      { id: 'cohort-retention', label: 'Cohort Retention Analysis' },
-      { id: 'ltv-model', label: 'LTV Modeling Fundamentals' },
-    ],
+    playbookLinks: [{ id: 'cohort-retention-curves', label: 'Cohort Retention Curves' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
   },
 
   {
@@ -318,10 +309,7 @@ Profile completion is worth iterating on (it's 72% vs 78–85% benchmark) but sh
       'Prioritize the step with the largest relative gap AND the most recoverable users at the outcome you care about (purchases, not just completions).',
       'An "easy win" upstream that converts 5% more users into a broken downstream step generates almost no outcome improvement — fix the leak, not the tap.',
     ],
-    playbookLinks: [
-      { id: 'funnel-analysis', label: 'Funnel Analysis Framework' },
-      { id: 'conversion-rate-optimization', label: 'Conversion Rate Optimization' },
-    ],
+    playbookLinks: [{ id: 'funnel-analysis-framework', label: 'Funnel Analysis' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
   },
 
   {
@@ -410,10 +398,7 @@ Recommendation: Do not double paid social. Reallocate 60% paid social budget to 
       'Channels with the best unit economics (referral, SEO) often get underinvested because they\'re harder to scale or measure than paid.',
       'Set payback period gates — not just LTV at a single point. A channel with 12M+ payback is a cash flow risk even if LTV is eventually positive.',
     ],
-    playbookLinks: [
-      { id: 'ltv-model', label: 'LTV Modeling Fundamentals' },
-      { id: 'acquisition-channel-analysis', label: 'Acquisition Channel Analysis' },
-    ],
+    playbookLinks: [{ id: 'ltv-payback-period', label: 'LTV & Payback Period' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
   },
 
   {
@@ -502,10 +487,7 @@ Recommendation to leadership: (1) Do not issue a press release about "record eng
       'Notifications can inflate DAU while destroying long-term retention by training users to dismiss them. High open rate + low session = notification fatigue signal.',
       'Hollow growth is worse than flat growth — it burns CAC-equivalent notification budget, risks churning users, and misleads leadership into celebration mode.',
     ],
-    playbookLinks: [
-      { id: 'engagement-metrics', label: 'Engagement Metrics Beyond DAU' },
-      { id: 'notification-strategy', label: 'Push Notification Strategy' },
-    ],
+    playbookLinks: [{ id: 'notification-driven-dau', label: 'Notification-Driven DAU' }, { id: 'growth-accounting', label: 'Growth Accounting' }],
   },
 
   {
@@ -604,10 +586,7 @@ Actions: (1) Audit why organic referral collapsed — instrument K-factor by acq
       'K-factor collapse combined with CAC inflation is the signature pattern of product-led growth erosion: the product is losing its ability to earn users, so you buy more.',
       'A sustainable growth engine has a healthy organic base that amplifies paid. Paid-dependent growth at declining LTV:CAC is a treadmill, not a flywheel.',
     ],
-    playbookLinks: [
-      { id: 'growth-accounting', label: 'Growth Accounting Framework' },
-      { id: 'ltv-model', label: 'LTV Modeling Fundamentals' },
-    ],
+    playbookLinks: [{ id: 'organic-growth-quality', label: 'Organic vs Paid Growth' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
   },
 
   {
@@ -696,10 +675,7 @@ Recommendation: Fix-first. Pause growth spend above maintenance level. Allocate 
       'Payment method coverage is table stakes for international marketplaces — launching credit-card-only into low-card-penetration markets is a near-guaranteed PMF failure.',
       'Scaling acquisition into a PMF gap doesn\'t build a flywheel — it burns CAC acquiring users who churn because the product isn\'t ready for them.',
     ],
-    playbookLinks: [
-      { id: 'cohort-retention', label: 'Cohort Retention Analysis' },
-      { id: 'funnel-analysis', label: 'Funnel Analysis Framework' },
-    ],
+    playbookLinks: [{ id: 'cohort-retention-curves', label: 'Cohort Retention Curves' }, { id: 'funnel-analysis-framework', label: 'Funnel Analysis' }],
   },
 ];
 

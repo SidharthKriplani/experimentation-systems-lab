@@ -19,6 +19,7 @@ class ModuleErrorBoundary extends React.Component {
   }
 }
 import { saveStatFoundationsProgress, getStatFoundationsProgress } from '../../utils/statsFoundationsProgress.js';
+import { isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
 import { Module01_WhatIsData } from './modules/Module01_WhatIsData.jsx';
 import { Module02_CentralTendency } from './modules/Module02_CentralTendency.jsx';
 import { Module03_Spread } from './modules/Module03_Spread.jsx';
@@ -75,6 +76,11 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
   const module = statsFoundationsModules.find(m => m.id === moduleId);
   const ModuleComponent = MODULE_COMPONENTS[moduleId];
 
+  const [bookmarked, setBookmarked] = useState(() => {
+    try { return isBookmarked('stat-foundations', moduleId); } catch { return false; }
+  });
+  const [toastVisible, setToastVisible] = useState(false);
+
   if (!module || !ModuleComponent) {
     return (
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box', color: 'var(--text-muted)' }}>
@@ -91,8 +97,57 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
     onNext();
   }
 
+  function handleBookmarkToggle() {
+    try {
+      toggleBookmark('stat-foundations', module.id, module.title, module.difficulty, module.tags || []);
+      setBookmarked(prev => !prev);
+    } catch (e) {
+      console.warn('Bookmark toggle failed', e);
+    }
+  }
+
+  function handleCopyNotes() {
+    const playbookSection = module.playbookLinks?.length
+      ? `\n## Playbook Links\n- ${module.playbookLinks.map(l => l.label).join('\n- ')}`
+      : '';
+
+    const md = `# ${module.title}
+Difficulty: ${module.difficulty} | Est. ${module.estimatedMin} min
+
+## Key Insight
+${module.keyInsight}
+
+## Connection
+${module.connection}
+
+## Tags
+${(module.tags || []).join(', ')}${playbookSection}`;
+
+    navigator.clipboard.writeText(md).then(() => {
+      setToastVisible(true);
+      setTimeout(() => setToastVisible(false), 2000);
+    }).catch(() => {
+      // clipboard not available — silently ignore
+    });
+  }
+
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box', position: 'relative' }}>
+
+      {/* ── Toast notification ── */}
+      {toastVisible && (
+        <div style={{
+          position: 'fixed', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)',
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: '8px', padding: '0.55rem 1.1rem',
+          fontSize: '0.82rem', fontWeight: 600, color: 'var(--text)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.14)',
+          zIndex: 9999, pointerEvents: 'none',
+          animation: 'fadeIn 0.15s ease',
+        }}>
+          ✓ Copied to clipboard
+        </div>
+      )}
 
       {/* ── Top navigation bar ── */}
       <div style={{
@@ -140,19 +195,63 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
           {module.title}
         </div>
 
-        {/* Progress badge */}
-        <div style={{
-          background: 'var(--yellow-bg)',
-          border: '1px solid var(--yellow-border)',
-          borderRadius: '20px',
-          padding: '0.3rem 0.7rem',
-          fontSize: '0.75rem',
-          fontWeight: 600,
-          color: 'var(--yellow-text)',
-          whiteSpace: 'nowrap',
-          flexShrink: 0,
-        }}>
-          {module.index} / {TOTAL}
+        {/* Right-side action buttons + progress badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexShrink: 0 }}>
+          {/* Copy Notes button */}
+          <button
+            onClick={handleCopyNotes}
+            title="Copy module notes as Markdown"
+            style={{
+              background: 'none',
+              border: '1px solid var(--border)',
+              borderRadius: '6px',
+              padding: '0.35rem 0.6rem',
+              color: 'var(--text-muted)',
+              fontSize: '0.82rem',
+              cursor: 'pointer',
+              lineHeight: 1,
+              transition: 'all 0.12s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--text-muted)'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+          >
+            📋
+          </button>
+
+          {/* Bookmark button */}
+          <button
+            onClick={handleBookmarkToggle}
+            title={bookmarked ? 'Remove bookmark' : 'Bookmark this module'}
+            style={{
+              background: bookmarked ? 'var(--purple-bg)' : 'none',
+              border: `1px solid ${bookmarked ? 'var(--purple-border)' : 'var(--border)'}`,
+              borderRadius: '6px',
+              padding: '0.35rem 0.6rem',
+              color: bookmarked ? 'var(--purple)' : 'var(--text-muted)',
+              fontSize: '0.82rem',
+              cursor: 'pointer',
+              lineHeight: 1,
+              transition: 'all 0.12s',
+            }}
+            onMouseEnter={e => { if (!bookmarked) { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--text-muted)'; } }}
+            onMouseLeave={e => { if (!bookmarked) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)'; } }}
+          >
+            {bookmarked ? '🔖' : '🔖'}
+          </button>
+
+          {/* Progress badge */}
+          <div style={{
+            background: 'var(--yellow-bg)',
+            border: '1px solid var(--yellow-border)',
+            borderRadius: '20px',
+            padding: '0.3rem 0.7rem',
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            color: 'var(--yellow-text)',
+            whiteSpace: 'nowrap',
+          }}>
+            {module.index} / {TOTAL}
+          </div>
         </div>
       </div>
 

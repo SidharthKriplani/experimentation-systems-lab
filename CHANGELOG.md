@@ -4,6 +4,32 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.1.0] — 2025-01-XX
+
+### Added
+- **Interview Simulator** — 5-case mock interview loop (DS/PM mode), timer, notes, debrief screen with self-rating and full model answers
+- **A/B Test Interpreter** — standalone tool for computing z-test, p-value, 95% CI (Wilson), SRM check (chi-square), multiple testing warning, and verdict (Ship/Hold/Invalid)
+- **Growth Analytics Charts** — inline Recharts visualizations for all 8 GA cases: stacked bar, grouped bar, dual-line cohort, horizontal funnel, LTV/CAC comparison, session quality, 100% stacked area, geo comparison
+- **91-day Practice Heatmap** — Progress page shows contribution-style grid aggregating all 9 room progress stores
+- **Role Readiness Score** — Progress page calculates Getting Started / Analyst / Senior / Staff tier based on completion breadth
+- **Daily Drill** — Home page rotates a random case from a 14-item pool seeded by epoch day
+- **First-run Onboarding Modal** — shows on first visit with role-based room recommendations
+- **Last Visited Labels** — room cards on Home show how long ago you last visited
+- **Active Recall Textarea** — Stats, Behavioral, Estimation, RCA runners now have a persistent notes textarea (pal-notes-v1)
+- **Growth Analytics Playbook** — 7 new articles: Growth Accounting, Cohort Retention Curves, Funnel Analysis Framework, LTV & Payback Period, Acquisition Quality, Notification-Driven DAU, Organic Growth Quality
+- **S01-S08 Scenario Rewrite** — all Review scenarios now have stakeholderSummary, nextTestIdeas (3 each), keyTakeaways (5 each), scenarioFamily, tags, conceptTags
+
+### Fixed
+- `sitemap.xml`: added missing `#growth-analytics` route with priority 0.9
+- `growthAnalyticsCases.js`: playbookLinks updated to reference real article IDs (growth-accounting, cohort-retention-curves, etc.)
+- `Progress.jsx`: Growth Analytics room was missing from completionMap tracking
+
+### Changed
+- `PlaybookBrowser.jsx`: added Growth Analytics category (green palette, 📈 icon) with CTA renderer
+- `Header.jsx`: added Simulate and A/B Tool nav items
+
+---
+
 ## V3.6 — Monetization Layer + SEO + Mobile Fixes
 **Date:** May 2026
 **Commit message:** "feat: V3.6 — Pricing page, SEO layer, mobile responsive fixes"

@@ -428,7 +428,25 @@ The onboarding work is good. The experiment just needs to be run correctly befor
 
     interviewTakeaway: "SRM invalidates an experiment's causal inference regardless of how strong the metric results look — it signals compromised randomization, not just added noise, and must be investigated before any ship decision.",
 
-    relatedConcepts: ["SRM", "sample ratio mismatch", "randomization", "selection bias", "chi-squared test", "assignment pipeline"]
+    relatedConcepts: ["SRM", "sample ratio mismatch", "randomization", "selection bias", "chi-squared test", "assignment pipeline"],
+
+    // V2 scaling fields
+    scenarioFamily: "srm",
+    tags: ["SRM", "assignment bias", "onboarding", "B2B SaaS", "invalid experiment"],
+    conceptTags: ["sample ratio mismatch", "randomization", "selection bias", "chi-squared test"],
+    stakeholderSummary: "The onboarding experiment produced impressive-looking results, but the assignment was severely skewed — 62% of users ended up in the treatment group instead of the intended 50%. This breaks the experiment's causal logic: the treatment and control groups are no longer comparable. No ship or rollback decision is valid until we understand what went wrong in the assignment and fix it.",
+    nextTestIdeas: [
+      "Re-run the experiment with a daily SRM monitoring check built into the experiment pipeline — if assignment deviates by more than 2% from the intended split at 48 hours, pause automatically and investigate before accumulating more bad data.",
+      "Before re-running, instrument the new onboarding flow with explicit assignment logging at the client-side render event, not just the server-side assignment event, to catch the most common SRM cause: JS rendering inconsistency across browser and session types.",
+      "Design a parallel experiment focused solely on the 30-day trial-to-paid conversion metric — the business outcome metric that was still incomplete when this experiment was paused — using the fixed assignment pipeline."
+    ],
+    keyTakeaways: [
+      "SRM at 62/38 on a 50/50 experiment is not noise — a 24-percentage-point deviation almost always has a concrete root cause such as client-side rendering inconsistency, bot traffic inflating one arm, or a cookie/session boundary that re-assigns users.",
+      "SRM introduces directional bias, not just variance: if the extra users who silently landed in treatment share a systematic characteristic (device type, marketing channel, account tier), the treatment group is no longer a random sample and the measured effect is confounded.",
+      "A +18.3% adoption lift with a CI of [+5.1%, +31.5%] is extremely wide — even if the experiment were clean, the true effect could be closer to +5% than +18%, and SRM makes that estimate even less trustworthy.",
+      "The 30-day trial-to-paid conversion metric was incomplete (only 21 of 30 days observed) and non-significant — the metric that actually matters for a B2B SaaS business had not yet been observed when momentum for a ship decision was building.",
+      "SRM checks should be run at Day 3 and Day 7, not only at readout — running a broken experiment for 18 additional days after a detectable SRM was already present wastes data and organizational attention."
+    ]
   },
 
   // ─────────────────────────────────────────────
@@ -626,7 +644,25 @@ The right path: if the fix is genuinely achievable, keep the experiment running 
 
     interviewTakeaway: "Guardrail breaches require resolution before shipping, not post-ship fixes — and the 'we'll fix it later' promise is one of the most common ways technically correct short-term decisions become product quality problems.",
 
-    relatedConcepts: ["guardrail metric", "p75 latency", "performance regression", "device distribution", "holdout rollout"]
+    relatedConcepts: ["guardrail metric", "p75 latency", "performance regression", "device distribution", "holdout rollout"],
+
+    // V2 scaling fields
+    scenarioFamily: "guardrail",
+    tags: ["guardrail breach", "performance regression", "personalization", "consumer app", "p75 latency"],
+    conceptTags: ["guardrail metric", "p75 latency", "performance regression", "device distribution"],
+    stakeholderSummary: "The new recommendation algorithm genuinely improves retention and engagement — but it comes with an 820ms load time increase for the slowest 25% of users, which is four times our declared limit. On a consumer app, the slowest users are disproportionately on budget devices and already have higher churn risk. The algorithm is worth pursuing, but not in its current form — performance must be fixed before any rollout.",
+    nextTestIdeas: [
+      "Keep the experiment running and have engineering deploy a targeted performance fix within the current treatment arm — validate that p75 load time returns within the +200ms guardrail before proceeding to a ship decision, preserving randomization continuity.",
+      "Run a device-stratified analysis on the retention lift: separate the treatment effect for users on budget Android devices (where the +820ms load time is concentrated) from users on high-end devices — this will show whether the retention signal is coming from users who also pay the performance cost.",
+      "After fixing the load time issue, extend the experiment to 35 days to assess whether the retention benefit persists or decays as the novelty of better recommendations wears off for longer-tenure users."
+    ],
+    keyTakeaways: [
+      "A guardrail threshold of +200ms was declared before the experiment launched; an actual impact of +820ms is not a borderline case requiring judgment — it is a clear, 4x breach that requires resolution before any ship decision.",
+      "The p75 load time metric is the right guardrail for a consumer app, but the specific users at p75 matter: on a broad consumer device distribution, the slowest 25% of sessions are concentrated on older Android devices, often belonging to price-sensitive subscribers who are more likely to cancel than users on flagship hardware.",
+      "18 days may be too short to see the full churn effect of a persistent +820ms degradation — users often tolerate performance slowdowns in weeks 1-2 and churn in weeks 3-5 when the novelty of better content wears off but the latency cost remains.",
+      "The 'ship and fix later' promise has a predictable failure mode: after launch, the performance patch gets deprioritized by production realities, and six months later a retention degradation signal appears with no clear causal link to the unresolved load time regression.",
+      "The most operationally sound path — keeping the experiment running while engineering deploys a targeted fix — preserves both the randomization integrity and the data continuity, avoiding a full restart while still honoring the guardrail."
+    ]
   },
 
   // ─────────────────────────────────────────────
@@ -824,7 +860,25 @@ Don't ship this. But don't throw away the concept — there's a real signal wort
 
     interviewTakeaway: "Pre-planned primary metrics at pre-planned endpoints are the only valid basis for a ship decision — week-over-week sub-period analysis is exploratory at best, and a +22% notification opt-out rate is a stronger product signal than the primary metric result.",
 
-    relatedConcepts: ["novelty effect", "peeking", "pre-planned analysis", "notification opt-out", "habit formation", "guardrail metric"]
+    relatedConcepts: ["novelty effect", "peeking", "pre-planned analysis", "notification opt-out", "habit formation", "guardrail metric"],
+
+    // V2 scaling fields
+    scenarioFamily: "novelty_peeking",
+    tags: ["novelty effect", "peeking", "streak mechanics", "push notifications", "habit formation", "consumer app"],
+    conceptTags: ["novelty effect", "peeking", "pre-planned analysis", "notification opt-out", "guardrail metric"],
+    stakeholderSummary: "The streak feature produced an exciting week-1 result, but by week 2 the lift had nearly fully reverted — a textbook novelty effect. The pre-planned 14-day primary metric is not significant. More importantly, more than one in five users in the treatment group turned off push notifications, which is a direct signal that the daily reminder is creating resentment, not motivation. The right call is to not ship this design, but the streak concept itself is worth retesting with a less aggressive notification cadence.",
+    nextTestIdeas: [
+      "Redesign the notification strategy: test a weekly streak summary notification ('You're on a 5-day streak — keep it going') instead of a daily 8pm pressure reminder, and pre-specify a 28-day experiment window to capture sustainable habit formation rather than novelty-driven week-1 spikes.",
+      "Run a separate experiment isolating the visual streak gamification (counter + badge on home screen) from the push notification mechanism — this experiment conflated both variables, making it impossible to know whether the streak concept failed or the notification design failed.",
+      "Extend the primary metric observation window to 30 days for the next iteration and add 30-day notification opt-out rate as a co-equal guardrail alongside uninstall rate, treating a +10% opt-out rate as a hard stop regardless of engagement metrics."
+    ],
+    keyTakeaways: [
+      "The week-1 / week-2 decay pattern (+14.2% then +2.1%) is a clean novelty effect signature — users engaged with the streak feature because it was new, not because it changed their behavior, and the 14-day experiment endpoint was designed to see past exactly this initial spike.",
+      "Peeking — sharing preliminary results before the experiment endpoint — doesn't just introduce statistical risk; it creates organizational lock-in that makes the correct Day-14 decision politically costly, which is a real and underappreciated harm of early readouts.",
+      "A +22.3% notification opt-out rate is the most actionable finding in this readout: once users disable notifications, re-engagement becomes much harder, and this signal predicts long-term churn better than any week-1 engagement metric.",
+      "The primary metric over the pre-planned 14-day window (p=0.08) is not significant regardless of what the week-1 sub-period showed — reporting the sub-period result as the headline is selective reporting, not a reasonable adjustment for a slow-forming behavior.",
+      "This experiment conflated two testable mechanisms (streak gamification vs. daily notification pressure) in a single treatment, making it impossible to diagnose which component drove the opt-out spike — good experiment design would have separated them."
+    ]
   },
 
   // ─────────────────────────────────────────────
@@ -1234,7 +1288,25 @@ Longer term: the experiment brief process needs to require a single primary metr
 
     interviewTakeaway: "Declaring multiple co-equal primary metrics is equivalent to running multiple simultaneous tests with uncorrected alpha — two out of five significant results at p<0.05 is statistically consistent with no true effect, and the metric that matters most (downstream conversion) should drive the decision.",
 
-    relatedConcepts: ["multiple testing", "Bonferroni correction", "Benjamini-Hochberg", "false discovery rate", "experiment brief", "primary metric selection", "family-wise error rate"]
+    relatedConcepts: ["multiple testing", "Bonferroni correction", "Benjamini-Hochberg", "false discovery rate", "experiment brief", "primary metric selection", "family-wise error rate"],
+
+    // V2 scaling fields
+    scenarioFamily: "multiple_testing",
+    tags: ["multiple testing", "Bonferroni", "Benjamini-Hochberg", "pricing page", "B2B SaaS", "experiment brief"],
+    conceptTags: ["multiple testing", "false discovery rate", "primary metric selection", "family-wise error rate"],
+    stakeholderSummary: "The pricing page redesign showed two significant metrics out of five, but this isn't a win — with five simultaneous tests and no correction plan, finding two significant results at p<0.05 is consistent with random noise. Neither result survives standard multiple-comparison correction. The metric that actually measures revenue impact — 30-day paid conversion — is still incomplete and shows no signal. The right call is to wait 9 more days for the conversion metric to complete before making any decision.",
+    nextTestIdeas: [
+      "Wait 9 days for 30-day paid conversion to complete, then re-evaluate with paid conversion as the sole primary metric — if it is significant, you have a clean ship decision; if not, you have a clear null result to communicate to stakeholders.",
+      "Re-run a future pricing page experiment with a single pre-declared primary metric (30-day paid conversion), a properly powered sample size for that metric specifically, and trial starts demoted to a secondary metric that informs interpretation but does not drive the decision.",
+      "Introduce a formal experiment brief review process that requires any experiment with more than one primary metric to explicitly answer: 'If metric A goes up but metric B goes down, do we ship?' — the inability to answer that question reveals that only one metric is truly primary."
+    ],
+    keyTakeaways: [
+      "Declaring five co-equal primary metrics with no hierarchy and no correction plan is mathematically equivalent to running five simultaneous tests at α=0.05 — under the null hypothesis, you expect 0.25 false positives per experiment, making two out of five 'significant' results plausible as noise.",
+      "Under Bonferroni correction (α=0.01 per test for 5 tests), both significant results fail — trial starts (p=0.041) and demo requests (p=0.031) both miss the corrected threshold, and Benjamini-Hochberg FDR correction reaches the same conclusion.",
+      "The trial starts confidence interval [+0.2%, +8.2%] has a lower bound barely above zero — a result this fragile means a modestly different traffic composition over the same period could flip this to non-significant, regardless of multiple testing concerns.",
+      "30-day paid conversion is the only metric in this readout that directly measures whether the redesign generates revenue; making a ship decision at Day 21 of a 30-day window on that metric means deciding without the answer to the question that actually matters.",
+      "The 'experiment everything' instinct and the 'all our metrics are important' instinct are both healthy; they go wrong only when they are conflated — a single experiment can track many metrics, but it must have one pre-declared primary that determines the ship decision before any data is collected."
+    ]
   },
 
   // ─────────────────────────────────────────────
@@ -1435,7 +1507,25 @@ One more thing: the driver acceptance rate finding (+6.2%) is real and worth kee
 
     interviewTakeaway: "In a two-sided marketplace where supply cannot be split, standard rider/buyer-side A/B testing violates SUTVA — the correct experimental design is geographic holdout or switchback, where the unit of randomization is at or above the unit of interference.",
 
-    relatedConcepts: ["SUTVA", "marketplace interference", "network effects", "geographic holdout", "switchback experiment", "unit of randomization", "spillover effects", "two-sided marketplace"]
+    relatedConcepts: ["SUTVA", "marketplace interference", "network effects", "geographic holdout", "switchback experiment", "unit of randomization", "spillover effects", "two-sided marketplace"],
+
+    // V2 scaling fields
+    scenarioFamily: "network_effects",
+    tags: ["SUTVA violation", "marketplace interference", "supply sharing", "geographic holdout", "switchback", "on-demand delivery"],
+    conceptTags: ["SUTVA", "spillover effects", "unit of randomization", "marketplace interference", "network effects"],
+    stakeholderSummary: "The incentive redesign experiment appeared to show a benefit for treatment riders, but the experiment design was fundamentally broken: treatment and control riders shared the same driver pool, so drivers preferentially served treatment orders, leaving control riders underserved. This means we measured supply reallocation, not the effect of the incentive itself. The overall marketplace actually got slightly worse during the experiment. We cannot make a ship decision based on this result — we need to re-run using a city-level randomization design.",
+    nextTestIdeas: [
+      "Design a geographic holdout experiment across the existing 38 cities: assign approximately 19 cities to the new reliability bonus incentive and 19 to the existing surge structure, measure peak-hour cancellation rate at the city level for 28 days, and explicitly pre-declare city-level cancellation rate as the primary metric.",
+      "Before the geo-holdout, run a driver survey in 3-5 cities to quantify how predictable pay affects strategic acceptance behavior — this qualitative signal will help size the expected effect and set a realistic minimum detectable effect for the geo-holdout power calculation.",
+      "Design a switchback experiment in 6 cities alternating the incentive structure by week, with explicit carryover-period controls (48-hour washout between switches), to test whether the driver acceptance rate finding (+6.2%) translates into marketplace-level cancellation improvement in a cleaner setting."
+    ],
+    keyTakeaways: [
+      "SUTVA — the Stable Unit Treatment Value Assumption — requires that a unit's outcome depends only on its own treatment, not on others'; in a two-sided marketplace with shared supply, this assumption is violated the moment a rider-side treatment changes how drivers prioritize competing orders.",
+      "The clearest diagnostic for SUTVA violation is control group degradation: when control riders experience +4.8% worse cancellations than pre-experiment baseline, the experiment's control is no longer approximating the world without the treatment — the treatment is leaking through shared driver supply.",
+      "The overall marketplace cancellation rate increased vs. baseline (+1.2%) even while treatment riders improved; this is only possible if treatment riders' benefit came at the expense of control riders, meaning the incentive change redistributed cancellations rather than reducing them in aggregate.",
+      "The driver acceptance rate finding (+6.2%, p=0.021) is the most trustworthy result in this dataset because it measures a driver-level behavioral outcome that is not contaminated by which riders the driver subsequently serves — it confirms the incentive hypothesis is directionally plausible, worth testing in a valid design.",
+      "The unit of randomization must be at or above the unit of interference: in any marketplace where supply flows freely within a geography, the city is the minimum viable randomization unit for supply-side experiments."
+    ]
   },
 
   // ─────────────────────────────────────────────
@@ -1603,7 +1693,25 @@ One more thing: the VP of Customer Success wanting to demo this to a strategic a
 
     interviewTakeaway: "The correct response to 'design an A/B test for this' is first to check whether a valid A/B test is possible — low sample size, slow-moving metrics, or short timelines can make A/B testing invalid, and proposing rigorous alternatives (instrumented rollout, pre/post with success criteria, qualitative research) is more valuable than running an underpowered experiment.",
 
-    relatedConcepts: ["statistical power", "minimum detectable effect", "sample size", "quasi-experimental design", "propensity score matching", "instrumented rollout", "pre/post analysis", "when not to experiment"]
+    relatedConcepts: ["statistical power", "minimum detectable effect", "sample size", "quasi-experimental design", "propensity score matching", "instrumented rollout", "pre/post analysis", "when not to experiment"],
+
+    // V2 scaling fields
+    scenarioFamily: "when_not_to_experiment",
+    tags: ["statistical power", "minimum detectable effect", "small sample", "enterprise SaaS", "false rigor", "instrumented rollout"],
+    conceptTags: ["statistical power", "minimum detectable effect", "sample size", "quasi-experimental design", "when not to experiment"],
+    stakeholderSummary: "The audit workflow redesign is ready to ship, but the proposed A/B test has only 12% statistical power — meaning it has an 88% chance of missing a real improvement even if the feature genuinely works. With 65 accounts and a quarterly metric, a valid A/B test would take 18 months. The right path is a structured instrumented rollout with pre-declared success criteria and structured customer interviews — this produces more honest evidence than a statistically meaningless experiment, and can deliver preliminary signal within the quarter.",
+    nextTestIdeas: [
+      "Design an instrumented rollout with pre-declared success criteria: define 'success' as audit completion rate increasing by at least 3 percentage points within 2 quarters post-launch, declare this before rollout, and report against it at 3 months and 6 months — this is more informative than an 8-week underpowered A/B test.",
+      "Conduct structured qualitative interviews with 8-10 accounts at 6 weeks and 12 weeks post-launch to identify which specific features (drag-and-drop, inline commenting, automated reminders) are driving adoption and which are being ignored — qualitative research fills the gap that a small-N quantitative study cannot.",
+      "After 6 months of rollout data, apply propensity score matching on account characteristics (industry, company size, historical audit completion rate, account tenure) to construct a quasi-experimental comparison group from accounts that were onboarded before the redesign — this provides a retrospective causal estimate that is far stronger than an 8-week 12%-power experiment."
+    ],
+    keyTakeaways: [
+      "Statistical power is the first calculation to run before agreeing to any experiment design: with 65 accounts, a quarterly metric, and an 8-week timeline, power comes to approximately 12% — meaning you are almost certain to produce a misleading result regardless of whether the feature works.",
+      "An underpowered experiment is not 'weak evidence' — it is actively misleading: a non-significant result from a 12%-power study will incorrectly be interpreted as 'the feature doesn't work,' and a false positive (12% base rate) will be incorrectly interpreted as confirmation, producing decisions that would have been better made without the experiment.",
+      "The MDE at 8 weeks with 65 accounts is approximately +35% relative lift (71% → 96% audit completion) — naming this number explicitly in the stakeholder conversation reframes the question from 'why won't you run the experiment?' to 'is a 35% lift a plausible effect size?', which answers itself.",
+      "The 'experiment everything' philosophy is healthy for teams with high traffic and fast-moving metrics; applied to enterprise B2B products with dozens of accounts and quarterly outcome metrics, it produces a pattern where teams run experiments they cannot possibly learn from and make decisions on statistical noise.",
+      "Rigorous evidence collection does not require a randomized experiment — an instrumented rollout with pre-declared success criteria, explicit measurement of the primary metric pre and post, and structured qualitative interviews is a legitimate and often more informative evidence standard for small-N enterprise contexts."
+    ]
   },
 
   // ─────────────────────────────────────────────
