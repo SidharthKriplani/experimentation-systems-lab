@@ -141,7 +141,7 @@ export function BIBrowser({ onSelectCase, unlocked }) {
       {/* Case cards — 2-col grid on desktop, 1-col on mobile */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))',
         gap: '0.85rem',
       }}>
         {filtered.map(c => {

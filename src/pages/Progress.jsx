@@ -443,7 +443,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
           }}>{totalCompleted} completed</div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '1.25rem', alignItems: 'start' }}>
 
           {/* Readiness Summary */}
           <div style={{

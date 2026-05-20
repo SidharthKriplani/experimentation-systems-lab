@@ -65,7 +65,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
       {/* Case cards grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))',
         gap: '0.85rem',
       }}>
         {displayCases.map(mc => {

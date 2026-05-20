@@ -102,7 +102,7 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
       {/* Challenge grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(min(400px, 100%), 1fr))',
         gap: '1rem',
       }}>
         {sortedCases.map(c => {

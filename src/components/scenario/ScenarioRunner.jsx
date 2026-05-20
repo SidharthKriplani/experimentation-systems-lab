@@ -142,7 +142,7 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesign
       {/* ── Main 2-col layout ─────────────────────────────────────────── */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr) 360px',
+        gridTemplateColumns: 'minmax(0, 1fr) min(360px, 100%)',
         gap: '1.25rem',
         alignItems: 'start',
       }}>

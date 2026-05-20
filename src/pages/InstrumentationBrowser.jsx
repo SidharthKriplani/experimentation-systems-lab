@@ -125,7 +125,7 @@ export function InstrumentationBrowser({ onSelectCase, unlocked }) {
       {/* Case cards */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))',
         gap: '0.85rem',
       }}>
         {filtered.map(c => {
