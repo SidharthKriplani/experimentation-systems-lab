@@ -1,12 +1,40 @@
 # Product Analytics Lab — Audit Log
 
-Every structured review, quality pass, diagnostic sweep, benchmark check, and implicit audit run across PAL from V1 to V4.5.1. Covers architecture, source material, content quality, visual design, UX, feature completeness, bugs, performance, security, mobile, SEO, analytics instrumentation, and build safety.
+Every structured review, quality pass, diagnostic sweep, benchmark check, and implicit audit run across PAL from V1 to V4.5.1.
+
+**Rule:** AUDITS.md feeds IDEAS.md, not the reverse. Resolved audit findings that are buildable features go into IDEAS.md Tier 1. Features you want to build do not go here. Keep the directions clean: audits are diagnosis, IDEAS are treatment.
+
+Status: ✅ Resolved — ⚠️ Open / partially resolved
+
+---
+
+## Audit type reference
+
+| Type | What it covers |
+|---|---|
+| **Architecture** | Stack decisions, IA, build sequence, scope, risk |
+| **Source material** | Benchmark against real-world standards, interviews, competitor content |
+| **Content quality** | Voice, depth, story-first standard, debrief specificity |
+| **Visual** | Color system, contrast, spacing, CSS variable consistency |
+| **Accessibility** | WCAG contrast ratios, keyboard nav, touch targets |
+| **UX** | Cognitive load, first-impression, empty states, CTA hierarchy |
+| **Feature completeness** | Coverage gaps — rooms, nav, progress tracking, wiring |
+| **Bug / diagnostic** | Routing failures, paywall logic, state reset, broken rooms |
+| **Performance** | Bundle size, lazy loading, render bottlenecks |
+| **Security** | Secret management, PII exposure, gitignore |
+| **Mobile** | Viewport overflow, touch targets, responsive layout |
+| **SEO / Social** | OG tags, sitemap, robots.txt, structured data |
+| **Analytics** | Event taxonomy, PII policy, funnel gaps |
+| **Build safety** | Syntax errors, parse failures, Vite/Rolldown compatibility |
+| **IP / Moat** | What's genuinely hard to replicate? What to double down on? _(not yet run)_ |
+| **First-time user** | Cold incognito walk-through — every confusion point noted live _(not yet run)_ |
+| **MVP / Weight** | Which features earn their place? Cut/consolidate candidates _(not yet run)_ |
 
 ---
 
 ## Part I — Architecture & Strategic Audits
 
-### 1. Platform Architecture Audit (18 Questions)
+### 1. ✅ Platform Architecture Audit (18 Questions)
 **Version:** Pre-V1.2
 **Output:** `docs/PLATFORM_ARCHITECTURE_MEMO.md`
 
@@ -14,7 +42,7 @@ Founding document. Answered 18 hard questions before any multi-room code was wri
 
 ---
 
-### 2. Platform Risk Assessment
+### 2. ⚠️ Platform Risk Assessment
 **Version:** Pre-V1.2
 **Output:** 6 risks documented in `docs/PLATFORM_ARCHITECTURE_MEMO.md`
 
@@ -22,7 +50,7 @@ Six material risks identified before building: (1) content production bottleneck
 
 ---
 
-### 3. Ecosystem Homogeneity Audit
+### 3. ✅ Ecosystem Homogeneity Audit
 **Version:** V3.2.4
 **Output:** 3 features ported from genai-systems-lab; 1 security fix
 
@@ -30,7 +58,7 @@ Compared PAL against its sibling product (genai-systems-lab) for feature parity.
 
 ---
 
-### 4. Platform Gap vs. Interview Frequency
+### 4. ✅ Platform Gap vs. Interview Frequency
 **Version:** V3.4
 **Output:** 6 new rooms/expansions in V3.4
 
@@ -38,7 +66,7 @@ Mapped every room against the actual distribution of question types in DS/PM int
 
 ---
 
-### 5. Scenario Bank Taxonomy
+### 5. ✅ Scenario Bank Taxonomy
 **Version:** Pre-V1.2
 **Output:** `docs/SCENARIO_BANK_TAXONOMY.md`
 
@@ -46,7 +74,7 @@ Defined 15 scenario families (metric_conflict, srm, guardrail_breach, novelty_pe
 
 ---
 
-### 6. Beta Open-Access Decision
+### 6. ⚠️ Beta Open-Access Decision
 **Version:** V2.3
 **Output:** `isUnlocked()` returns `true`; all 44 items free during beta
 
@@ -54,7 +82,7 @@ Product audit of whether to charge before having usage data, retention signal, o
 
 ---
 
-### 7. GenAI Positioning Audit
+### 7. ✅ GenAI Positioning Audit
 **Version:** V3.1
 **Output:** GenAI is a thread, not a room — 3 GenAI Playbook articles added
 
@@ -62,7 +90,7 @@ Evaluated whether GenAI warranted its own room. Decision: GenAI is a lens applie
 
 ---
 
-### 8. Free/Paid Tier Design Audit
+### 8. ⚠️ Free/Paid Tier Design Audit
 **Version:** Pre-V1.5, revisited V3.6
 **Output:** Free tier defined per room; Stripe CTA wired but not live
 
@@ -72,7 +100,7 @@ Audited which items should stay permanently free. Decision: Stats Room fully fre
 
 ## Part II — Source Material Audits
 
-### 9. Wayfair-Style Interview PDF Benchmark
+### 9. ✅ Wayfair-Style Interview PDF Benchmark
 **Version:** V1 (pre-build)
 **Output:** 4 targeted scenario fixes applied to S01–S08
 
@@ -80,7 +108,7 @@ Read real Wayfair-style DS interview prep materials before building V1 content. 
 
 ---
 
-### 10. Interview Prep PDF Source Audit for Blog
+### 10. ✅ Interview Prep PDF Source Audit for Blog
 **Version:** V2.4/V3.5
 **Output:** Blog topic list derived from real prep materials; `IDEAS.md` created
 
@@ -90,7 +118,7 @@ Audited existing prep materials (Metric Universe Atlas, RCA Packet, Experimentat
 
 ## Part III — Content Quality Audits
 
-### 11. Content Quality Bar Definition
+### 11. ✅ Content Quality Bar Definition
 **Version:** Pre-V1.5
 **Output:** `docs/CONTENT_QUALITY_BAR.md`
 
@@ -98,7 +126,7 @@ Defined the 8-dimension minimum standard every scenario must pass: decision hard
 
 ---
 
-### 12. V1.6 Stats Room Mechanic Audit
+### 12. ✅ V1.6 Stats Room Mechanic Audit
 **Version:** V1.6
 **Output:** All 8 STAT modules redesigned from Q&A to claim-evaluation mechanic
 
@@ -106,7 +134,7 @@ Audited the V1.5 Stats Room format against the core product principle — "decis
 
 ---
 
-### 13. RCA SQL Step Specificity Audit
+### 13. ✅ RCA SQL Step Specificity Audit
 **Version:** V3.1
 **Output:** `sqlStep` added to all 6 RCA cases with case-specific queries
 
@@ -114,7 +142,7 @@ Before shipping the SQL Validation Step in RCA, audited each proposed query agai
 
 ---
 
-### 14. V3.0 Top-10 Playbook Article Voice Audit
+### 14. ✅ V3.0 Top-10 Playbook Article Voice Audit
 **Version:** V3.0
 **Output:** 13 articles with story-first rewrites, keyTakeaways, references
 
@@ -122,7 +150,7 @@ Audited the 10 highest-traffic Playbook articles for voice quality: story-first 
 
 ---
 
-### 15. V3.2.1 All-Playbook Content Quality Audit
+### 15. ✅ V3.2.1 All-Playbook Content Quality Audit
 **Version:** V3.2.1
 **Output:** 3 full rewrites, 2 opening narrative improvements
 
@@ -130,7 +158,7 @@ Reviewed all 117 Playbook articles against the story-first standard. Four genuin
 
 ---
 
-### 16. Flagship Article Identification Audit
+### 16. ✅ Flagship Article Identification Audit
 **Version:** V3.2.3
 **Output:** `end-to-end-experiment` identified as most-referenced article; given flagship treatment
 
@@ -138,7 +166,7 @@ Audited which Playbook article was most referenced by scenarios, other articles,
 
 ---
 
-### 17. Company Questions + Career Articles Audit
+### 17. ✅ Company Questions + Career Articles Audit
 **Version:** V3.x (task #82)
 **Output:** Thin articles in Company Questions + Career & Interview categories rewritten
 
@@ -146,7 +174,7 @@ Separate pass from the 117-article audit, specifically targeting the Company Que
 
 ---
 
-### 18. Playbook Worked Examples Coverage Audit
+### 18. ✅ Playbook Worked Examples Coverage Audit
 **Version:** V3.5
 **Output:** All 47 framework articles given worked examples (39 added in V3.5, 8 in V3.4)
 
@@ -154,7 +182,7 @@ Audited all framework articles for the presence of worked examples. Found that f
 
 ---
 
-### 19. Blog Content Completeness Audit
+### 19. ✅ Blog Content Completeness Audit
 **Version:** V3.5
 **Output:** 0/80 → all ~80 articles fully written
 
@@ -162,7 +190,7 @@ V3.5 found the Blog/Learn layer was at 0% content completion — 80 article shel
 
 ---
 
-### 20. V4.1 Review Scenario Quality Audit (S01–S08)
+### 20. ✅ V4.1 Review Scenario Quality Audit (S01–S08)
 **Version:** V4.1
 **Output:** All 8 Review scenarios rewritten to current quality bar
 
@@ -170,7 +198,7 @@ All original S01–S08 scenarios evaluated against the current standard. All 8 f
 
 ---
 
-### 21. V4.1 Stats + Metrics Enrichment Audit
+### 21. ✅ V4.1 Stats + Metrics Enrichment Audit
 **Version:** V4.1
 **Output:** STAT01–08 and M01–M06 enriched
 
@@ -178,7 +206,7 @@ Both rooms were shipped at an earlier, lower standard. All 14 items evaluated ag
 
 ---
 
-### 22. V4.1 Growth Analytics playbookLinks Audit
+### 22. ✅ V4.1 Growth Analytics playbookLinks Audit
 **Version:** V4.1
 **Output:** `growthAnalyticsCases.js` playbookLinks corrected to real article IDs
 
@@ -188,7 +216,7 @@ Audited all Growth Analytics case playbookLinks after the V3.5 Blog layer was wr
 
 ## Part IV — Visual & Design Audits
 
-### 23. Design Direction + CSS System Audit
+### 23. ✅ Design Direction + CSS System Audit
 **Version:** V1.1
 **Output:** Full CSS theme system (`index.css`), all 16 components migrated from hardcoded hex to CSS variables
 
@@ -196,7 +224,7 @@ Audited the V1 hardcoded hex color system — unscalable, inconsistent across 16
 
 ---
 
-### 24. Color System Conflict Audit
+### 24. ✅ Color System Conflict Audit
 **Version:** V2.2 (found), V3.2.2 + V4.1 (tails fixed)
 **Output:** Metrics teal → green across 5 files; 2 teal remnants fixed later
 
@@ -204,7 +232,7 @@ Discovered Metrics Room and Design Room both used `var(--teal)` — visually ide
 
 ---
 
-### 25. WCAG AA Contrast + Keyboard Accessibility Audit
+### 25. ✅ WCAG AA Contrast + Keyboard Accessibility Audit
 **Version:** V3.2.3
 **Output:** Contrast fixes, keyboard nav on all card divs, responsive nav
 
@@ -214,7 +242,7 @@ Light mode `--text-dim` was `#9ca3af` (contrast ~2.8:1, fails WCAG AA). Dark mod
 
 ## Part V — UX & Product Perspective Audits
 
-### 26. First-Impression Pre-Beta Audit
+### 26. ✅ First-Impression Pre-Beta Audit
 **Version:** V2.2
 **Output:** 3 P0 and 4 P1 issues fixed
 
@@ -222,7 +250,7 @@ Full front-door review before private beta launch (~6–8 testers). Unlock page 
 
 ---
 
-### 27. Home Page Density Audit (×2)
+### 27. ✅ Home Page Density Audit (×2)
 **Version:** V3.2.4 and V4.3
 **Output:** CTA reduction, section cleanup, room grid tightening both passes
 
@@ -230,7 +258,7 @@ Two separate passes. First (V3.2.4): reduced 3 equal CTAs to 1 primary + 1 secon
 
 ---
 
-### 28. Intuitive UX Audit — Home.jsx
+### 28. ✅ Intuitive UX Audit — Home.jsx
 **Version:** V3.2.4 (task #97)
 **Output:** Multiple Home.jsx UX issues fixed
 
@@ -238,7 +266,7 @@ Dedicated audit of Home.jsx UX issues beyond density: element ordering for first
 
 ---
 
-### 29. Role Readiness Score Design Audit
+### 29. ✅ Role Readiness Score Design Audit
 **Version:** V4.1
 **Output:** 4-tier readiness model (Getting Started / Analyst / Senior / Staff) on Progress page
 
@@ -246,7 +274,7 @@ Audited what criteria should constitute each readiness tier. Getting Started: an
 
 ---
 
-### 30. Design ↔ Review Scenario Pairing Completeness Audit
+### 30. ✅ Design ↔ Review Scenario Pairing Completeness Audit
 **Version:** V1.6 and V3.0
 **Output:** All D01–D08 paired with corresponding Review scenarios (and vice versa)
 
@@ -256,7 +284,7 @@ Audited that every Design scenario had a valid `pairedReviewScenarioId` and ever
 
 ## Part VI — Feature Completeness & Consistency Audits
 
-### 31. Automated Content Integrity — QA Dashboard (63 checks)
+### 31. ✅ Automated Content Integrity — QA Dashboard (63 checks)
 **Version:** V2.1
 **Output:** `src/utils/contentAudit.js` + `src/pages/QADashboard.jsx`
 
@@ -264,7 +292,7 @@ With 44 items across 6 rooms and a dense cross-reference graph, manual checking 
 
 ---
 
-### 32. QA Dashboard First Run — 5 Failures
+### 32. ✅ QA Dashboard First Run — 5 Failures
 **Version:** V2.1.1
 **Output:** 3 files fixed; 63/63 passing
 
@@ -272,7 +300,7 @@ First run of the QA Dashboard found 5 failures: all 8 stat modules missing `subt
 
 ---
 
-### 33. Next-Case Navigation Completeness Audit
+### 33. ✅ Next-Case Navigation Completeness Audit
 **Version:** V3.3.1
 **Output:** `onNext` added to ProductDesign and Code runners
 
@@ -282,7 +310,7 @@ Principle established: any feature added to "all rooms" must be verified with an
 
 ---
 
-### 34. Progress completionMap Gaps Audit
+### 34. ✅ Progress completionMap Gaps Audit
 **Version:** V3.5
 **Output:** 6 missing rooms added to completionMap
 
@@ -290,7 +318,7 @@ Audited `Progress.jsx` completionMap against the full room list. Found 6 rooms w
 
 ---
 
-### 35. V4.1 Progress.jsx Growth Analytics Gap
+### 35. ✅ V4.1 Progress.jsx Growth Analytics Gap
 **Version:** V4.1
 **Output:** Growth Analytics room added to completionMap
 
@@ -298,7 +326,7 @@ After GA room was built, a targeted audit found it was missing from `Progress.js
 
 ---
 
-### 36. V4.1 Sitemap Completeness Audit
+### 36. ✅ V4.1 Sitemap Completeness Audit
 **Version:** V4.1
 **Output:** `#growth-analytics` route added to `sitemap.xml`
 
@@ -306,7 +334,7 @@ After building the Growth Analytics room, audited `sitemap.xml` against all rout
 
 ---
 
-### 37. V4.2 BookmarksBrowser Wiring Audit
+### 37. ✅ V4.2 BookmarksBrowser Wiring Audit
 **Version:** V4.2
 **Output:** BookmarksBrowser wired into App.jsx + Header
 
@@ -314,7 +342,7 @@ BookmarksBrowser was built but not connected to routing or navigation — a comp
 
 ---
 
-### 38. Progress Page Coverage Audit — V4.5 Rooms
+### 38. ✅ Progress Page Coverage Audit — V4.5 Rooms
 **Version:** V4.5
 **Output:** 5 new rooms fully tracked in Progress.jsx
 
@@ -322,7 +350,7 @@ After V4.4 added Challenges, BI, Spot the Flaw, Take-Home, and Instrumentation, 
 
 ---
 
-### 39. Learning Path Coverage Audit
+### 39. ✅ Learning Path Coverage Audit
 **Version:** V3.5
 **Output:** 2 new paths added (Code Track + Full-Stack DS Interview); outcome statements added to all 4
 
@@ -332,7 +360,7 @@ Audited existing 4 learning paths (Beginner, Experimentation, Product Analytics,
 
 ## Part VII — Bug & Diagnostic Audits
 
-### 40. Broken Rooms Diagnostic — Metrics + RCA
+### 40. ✅ Broken Rooms Diagnostic — Metrics + RCA
 **Version:** V3.x (task #80)
 **Output:** Metrics + RCA rooms restored to working state
 
@@ -340,7 +368,7 @@ Separate diagnostic pass after discovering Metrics and RCA rooms had broken. Roo
 
 ---
 
-### 41. Internal Bug Audit (Agent Cross-Check)
+### 41. ✅ Internal Bug Audit (Agent Cross-Check)
 **Version:** V3.2.2
 **Output:** 5 bugs found and fixed
 
@@ -348,7 +376,7 @@ Spawned an independent agent to cross-check all routing, paywall, progress, and 
 
 ---
 
-### 42. localStorage Key Consistency Audit
+### 42. ✅ localStorage Key Consistency Audit
 **Version:** V3.2.2
 **Output:** Reset function fixed to cover all rooms; Product Design prefix-iteration added
 
@@ -356,7 +384,7 @@ During the bug audit, found that `onResetAllProgress` used flat key deletion for
 
 ---
 
-### 43. V4.1 Quick Fixes Pass
+### 43. ✅ V4.1 Quick Fixes Pass
 **Version:** V4.1
 **Output:** Pricing count corrected, error boundary added, social proof updated, per-room reset fixed, review queue bugs fixed
 
@@ -366,7 +394,7 @@ Post-release audit pass on V4.1 changes found: Pricing page showing wrong item c
 
 ## Part VIII — Performance & Technical Audits
 
-### 44. Bundle Performance Audit
+### 44. ✅ Bundle Performance Audit
 **Version:** V3.2.4
 **Output:** All 19 page/runner components converted to `React.lazy()` + `Suspense`
 
@@ -374,7 +402,7 @@ Audited bundle composition — all 19 rooms and runners were statically imported
 
 ---
 
-### 45. Previous Apostrophe Instance — challengesCases.js
+### 45. ✅ Previous Apostrophe Instance — challengesCases.js
 **Version:** Pre-V4.5.1 (first occurrence)
 **Output:** `Maps'` unescaped apostrophe fixed in `challengesCases.js`
 
@@ -382,7 +410,7 @@ First occurrence of the single-quote apostrophe class of build error. `Maps'` in
 
 ---
 
-### 46. Apostrophe Syntax Safety Scan — growthAnalyticsCases.js
+### 46. ✅ Apostrophe Syntax Safety Scan — growthAnalyticsCases.js
 **Version:** V4.5.1
 **Output:** 3 violations fixed; production build restored
 
@@ -392,7 +420,7 @@ Vercel build failure at `growthAnalyticsCases.js:146:206`. Three unescaped apost
 
 ## Part IX — Security Audit
 
-### 47. .env / Secret Management Audit
+### 47. ✅ .env / Secret Management Audit
 **Version:** V3.2.4
 **Output:** `.gitignore` created; `.env.example` added
 
@@ -402,7 +430,7 @@ Caught during the PostHog integration pass. `.gitignore` was missing entirely �
 
 ## Part X — Mobile Responsiveness Audits
 
-### 48. Mobile Audit — V3.6 Monetization Readiness
+### 48. ✅ Mobile Audit — V3.6 Monetization Readiness
 **Version:** V3.6
 **Output:** Touch targets, container widths, flex-wrap fixes across 6 files
 
@@ -410,7 +438,7 @@ Pre-launch production-readiness pass on a ~375px viewport. Findings: Header nav 
 
 ---
 
-### 49. Mobile Audit — V4.5 New Rooms
+### 49. ✅ Mobile Audit — V4.5 New Rooms
 **Version:** V4.5
 **Output:** `minmax(min(Xpx, 100%), 1fr)` fix across 8 files
 
@@ -420,7 +448,7 @@ All rooms added since V3.6 audited for mobile overflow. 8 files found using `min
 
 ## Part XI — SEO & Distribution Audit
 
-### 50. SEO Readiness Audit
+### 50. ✅ SEO Readiness Audit
 **Version:** V3.6
 **Output:** OG tags, Twitter card, JSON-LD structured data, sitemap, robots.txt, dynamic titles, og-image.png
 
@@ -430,7 +458,7 @@ Audited discoverability before monetization rollout. Found: no OG metadata (shar
 
 ## Part XII — Feature Coverage Audits (Content-Side)
 
-### 52. Leadership Lens Coverage Audit
+### 52. ✅ Leadership Lens Coverage Audit
 **Version:** V4.4
 **Output:** `leadershipNote` added to all 8 GA cases and RCA01–RCA08
 
@@ -438,7 +466,7 @@ Before shipping the Leadership Lens feature, audited which cases warranted a Sta
 
 ---
 
-### 53. Active Recall Textarea Runner Coverage Audit
+### 53. ✅ Active Recall Textarea Runner Coverage Audit
 **Version:** V4.1
 **Output:** Textarea added to Stats, Behavioral, Estimation, RCA runners; others explicitly excluded
 
@@ -446,7 +474,7 @@ Audited which runners should receive the active recall textarea (`pal-notes-v1`)
 
 ---
 
-### 54. Defense Doc Generator Keyword Taxonomy Audit
+### 54. ✅ Defense Doc Generator Keyword Taxonomy Audit
 **Version:** V4.4
 **Output:** Keyword-match taxonomy covering all 11 rooms in `DefenseDocGenerator.jsx`
 
@@ -454,7 +482,7 @@ To build the keyword-match engine that maps a job description to room recommenda
 
 ---
 
-### 55. Deep Copy + Voice Audit — Scenarios, Room Descriptions, Playbook
+### 55. ✅ Deep Copy + Voice Audit — Scenarios, Room Descriptions, Playbook
 **Version:** V3.x (task #81)
 **Output:** Playbook articles, scenario copy, and room descriptions rewritten to consistent voice
 
@@ -462,7 +490,7 @@ Broader than the specific article audits (audits #14, #15, #16). This pass revie
 
 ---
 
-### 56. Stat Foundations ↔ Playbook Interlink Audit
+### 56. ✅ Stat Foundations ↔ Playbook Interlink Audit
 **Version:** V3.5 (task #153)
 **Output:** Playbook article references added to all 12 SF modules
 
@@ -470,7 +498,7 @@ After both the Stat Foundations room and the full Blog/Learn layer were built, a
 
 ---
 
-### 57. Stats → Stat Foundations Back-Link + Difficulty Sort Audit
+### 57. ✅ Stats → Stat Foundations Back-Link + Difficulty Sort Audit
 **Version:** V4.1 (task #158)
 **Output:** Stats modules linked back to SF; difficulty sort applied to learning paths
 
@@ -478,7 +506,7 @@ After SF room was added, audited whether the existing Stats room modules linked 
 
 ---
 
-### 58. Behavioral Question ID Consistency Audit
+### 58. ✅ Behavioral Question ID Consistency Audit
 **Version:** V4.1 (task #144/#150)
 **Output:** Behavioral question IDs migrated to consistent format
 
@@ -488,7 +516,7 @@ Discovered behavioral questions had inconsistent ID schemes — some used `beh01
 
 ## Part XIII — Analytics Instrumentation Audit
 
-### 51. PostHog Event Taxonomy & PII Audit
+### 51. ⚠️ PostHog Event Taxonomy & PII Audit
 **Version:** V3.2.4
 **Output:** `src/utils/analytics.js`; PII sanitization, explicit event-only tracking
 
