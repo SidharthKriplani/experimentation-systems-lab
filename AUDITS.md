@@ -428,7 +428,65 @@ Audited discoverability before monetization rollout. Found: no OG metadata (shar
 
 ---
 
-## Part XII — Analytics Instrumentation Audit
+## Part XII — Feature Coverage Audits (Content-Side)
+
+### 52. Leadership Lens Coverage Audit
+**Version:** V4.4
+**Output:** `leadershipNote` added to all 8 GA cases and RCA01–RCA08
+
+Before shipping the Leadership Lens feature, audited which cases warranted a Staff/Director-level perspective note and verified full coverage across both rooms. Every GA case (ga01–ga08) and every original RCA case (RCA01–RCA08) received a `leadershipNote`. Cases in other rooms were explicitly excluded as out of scope.
+
+---
+
+### 53. Active Recall Textarea Runner Coverage Audit
+**Version:** V4.1
+**Output:** Textarea added to Stats, Behavioral, Estimation, RCA runners; others explicitly excluded
+
+Audited which runners should receive the active recall textarea (`pal-notes-v1`). Decision criteria: rooms with free-response thinking (stats concepts, behavioral stories, estimation approaches, RCA diagnosis) warranted it; structured-decision rooms (Review, Metrics, Cases, Design) did not — they already have structured response fields. Four runners confirmed and added.
+
+---
+
+### 54. Defense Doc Generator Keyword Taxonomy Audit
+**Version:** V4.4
+**Output:** Keyword-match taxonomy covering all 11 rooms in `DefenseDocGenerator.jsx`
+
+To build the keyword-match engine that maps a job description to room recommendations, audited all 11 rooms for their canonical interview keywords. Each room mapped to Primary / Secondary / Light tier based on keyword signal strength. This required reviewing every room's case tags, difficulty profiles, and the most common JD phrases that signal need for that skill.
+
+---
+
+### 55. Deep Copy + Voice Audit — Scenarios, Room Descriptions, Playbook
+**Version:** V3.x (task #81)
+**Output:** Playbook articles, scenario copy, and room descriptions rewritten to consistent voice
+
+Broader than the specific article audits (audits #14, #15, #16). This pass reviewed scenario copy (the situation text and debrief narrative in Review, RCA, Metrics cases), room descriptions on the Home page and browser headers, and Playbook article body tone for consistency with the "senior analyst voice" standard — specific, pressure-aware, never generic.
+
+---
+
+### 56. Stat Foundations ↔ Playbook Interlink Audit
+**Version:** V3.5 (task #153)
+**Output:** Playbook article references added to all 12 SF modules
+
+After both the Stat Foundations room and the full Blog/Learn layer were built, audited which Playbook articles should be linked from each SF module. Ensured every SF module had at least 1–2 relevant Playbook article references — creating the "learn the concept → read the framework → practice the case" loop for every stat foundation topic.
+
+---
+
+### 57. Stats → Stat Foundations Back-Link + Difficulty Sort Audit
+**Version:** V4.1 (task #158)
+**Output:** Stats modules linked back to SF; difficulty sort applied to learning paths
+
+After SF room was added, audited whether the existing Stats room modules linked back to the relevant SF foundational module ("not sure about p-values? → see Module 06"). Added back-links across all Stats modules that had SF equivalents. Also audited learning path ordering — items were not consistently sorted by difficulty within paths; corrected.
+
+---
+
+### 58. Behavioral Question ID Consistency Audit
+**Version:** V4.1 (task #144/#150)
+**Output:** Behavioral question IDs migrated to consistent format
+
+Discovered behavioral questions had inconsistent ID schemes — some used `beh01`–`beh08` (lowercase), some used `BEH01`–`BEH08` (uppercase), and the expansion to BEH21–BEH30 used a gap-numbering scheme that skipped BEH09–BEH20. Audited all references across `behavioralQuestions.js`, `behavioralProgress.js`, and `App.jsx`. Migrated to a consistent format.
+
+---
+
+## Part XIII — Analytics Instrumentation Audit
 
 ### 51. PostHog Event Taxonomy & PII Audit
 **Version:** V3.2.4
@@ -493,3 +551,10 @@ Before wiring PostHog, audited: what events matter (page_viewed, case_opened, pa
 | 49 | Mobile Audit — V4.5 New Rooms | V4.5 | Mobile |
 | 50 | SEO Readiness Audit | V3.6 | SEO |
 | 51 | PostHog Event Taxonomy + PII Audit | V3.2.4 | Analytics |
+| 52 | Leadership Lens Coverage Audit | V4.4 | Feature coverage |
+| 53 | Active Recall Textarea Runner Coverage | V4.1 | Feature coverage |
+| 54 | Defense Doc Generator Keyword Taxonomy | V4.4 | Feature coverage |
+| 55 | Deep Copy + Voice Audit (scenarios, rooms, playbook) | V3.x | Content quality |
+| 56 | Stat Foundations ↔ Playbook Interlink | V3.5 | Feature coverage |
+| 57 | Stats → SF Back-Link + Difficulty Sort | V4.1 | Feature coverage |
+| 58 | Behavioral Question ID Consistency | V4.1 | Bug/diagnostic |
