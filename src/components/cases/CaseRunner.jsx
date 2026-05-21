@@ -3,6 +3,7 @@ import { CaseStepPanel } from './CaseStepPanel.jsx';
 import { CaseScoreReveal } from './CaseScoreReveal.jsx';
 import { CaseDebriefPanel } from './CaseDebriefPanel.jsx';
 import { saveCaseAttempt, clearCaseProgress } from '../../utils/caseProgress.js';
+import { track } from '../../utils/analytics.js';
 
 // Phase labels for display
 const PHASE_LABELS = {
@@ -79,6 +80,7 @@ export function CaseRunner({ businessCase, savedProgress, unlocked, onBack, onNe
       const finalChoices = { ...submittedChoices, [currentPhase.id]: phaseChoices[currentPhase.id] };
       const scored = computeScore(businessCase, finalChoices);
       saveCaseAttempt(businessCase.id, finalChoices, scored, scored.level);
+      track('case_completed', { room: 'cases', id: businessCase.id, rating: scored.level });
       setResult({ ...scored, phaseChoices: finalChoices });
       setView('reveal');
       window.scrollTo({ top: 0, behavior: 'smooth' });

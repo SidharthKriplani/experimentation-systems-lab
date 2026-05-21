@@ -4,6 +4,7 @@ import { StatsScoreReveal } from './StatsScoreReveal.jsx';
 import { StatsConceptPanel } from './StatsConceptPanel.jsx';
 import { ConceptDrawer } from '../concepts/ConceptDrawer.jsx';
 import { saveStatsAttempt, clearStatsProgress } from '../../utils/statsProgress.js';
+import { track } from '../../utils/analytics.js';
 
 // views: 'question' | 'reveal' | 'debrief'
 
@@ -63,6 +64,7 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
     if (!selectedId) return;
     const opt = module.options.find(o => o.id === selectedId);
     saveStatsAttempt(module.id, selectedId, opt.level);
+    track('case_completed', { room: 'stats', id: module.id, rating: opt.level });
     setSubmitted(true);
     setView('reveal');
     window.scrollTo({ top: 0, behavior: 'smooth' });

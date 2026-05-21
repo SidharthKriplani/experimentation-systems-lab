@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { saveBIProgress, getBIProgress } from '../../utils/biProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const DIFF_CFG = {
   analyst: { label: 'Analyst', color: 'var(--blue-text)', bg: 'var(--blue-bg)',    border: 'var(--blue-border)' },
@@ -245,6 +246,7 @@ function RevealScreen({ caseData, onBack, onNext, unlocked }) {
   function handleRate(r) {
     setRating(r);
     saveBIProgress(caseData.id, r);
+    track('case_completed', { room: 'bi', id: caseData.id, rating: r });
   }
 
   function toggleCheck(i) {

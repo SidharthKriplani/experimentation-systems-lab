@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveInstrumentationProgress, getInstrumentationProgress } from '../../utils/instrumentationProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const DIFF_CFG = {
   junior: { label: 'Junior', color: 'var(--blue-text)', bg: 'var(--blue-bg)',    border: 'var(--blue-border)' },
@@ -294,6 +295,7 @@ function RevealScreen({ caseData, onBack, onNext }) {
   function handleRate(stars) {
     setRating(stars);
     saveInstrumentationProgress(caseData.id, { rating: stars });
+    track('case_completed', { room: 'instrumentation', id: caseData.id, rating: stars });
   }
 
   function toggleCheck(i) {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveEstimationAttempt, getEstimationProgress } from '../../utils/estimationProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const ROOM_KEY = 'estimation';
 
@@ -94,6 +95,7 @@ export function EstimationRunner({ problem, onBack, onNext }) {
   function handleRate(r) {
     setRating(r);
     saveEstimationAttempt(problem.id, response, r);
+    track('case_completed', { room: 'estimation', id: problem.id, rating: r });
   }
 
   function handleRetry() {

@@ -30,6 +30,7 @@ export function CodeRunner({ module, savedProgress, onBack, onNext }) {
   function handleRate(r) {
     setRating(r);
     saveCodeAttempt(module.id, response, r);
+    track('case_completed', { room: 'code', id: module.id, rating: r });
   }
 
   function handleRetry() {
@@ -298,6 +299,7 @@ function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry, onNext 
       py.runPython(`
 import sys
 import io
+import { track } from '../../utils/analytics.js';
 _stdout_capture = io.StringIO()
 sys.stdout = _stdout_capture
 `);

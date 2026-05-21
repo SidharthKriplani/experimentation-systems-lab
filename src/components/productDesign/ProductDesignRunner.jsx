@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+import { track } from '../../utils/analytics.js';
   savePhaseResponse,
   savePhaseRating,
   saveCompletedPhases,
@@ -316,6 +317,7 @@ export function ProductDesignRunner({ scenario, savedProgress, onBack, onNext })
       const finalCompleted = nextCompleted;
       const scored = computeProductDesignScore(scenario, ratings);
       saveProductDesignResult(scenario.id, scored);
+      track('case_completed', { room: 'product-design', id: scenario.id, rating: scored.level });
       setResult(scored);
       setView('debrief');
       window.scrollTo({ top: 0, behavior: 'smooth' });

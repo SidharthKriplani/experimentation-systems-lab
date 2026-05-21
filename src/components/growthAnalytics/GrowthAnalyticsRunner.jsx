@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { saveGrowthAnalyticsProgress, getGrowthAnalyticsProgress } from '../../utils/growthAnalyticsProgress.js';
 import { addBookmark, removeBookmark, isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
 import {
+import { track } from '../../utils/analytics.js';
   ResponsiveContainer,
   BarChart, Bar,
   LineChart, Line,
@@ -362,6 +363,7 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
   function handleRate(r) {
     setRating(r);
     saveGrowthAnalyticsProgress(caseData.id, r);
+    track('case_completed', { room: 'growth-analytics', id: caseData.id, rating: r });
   }
 
   function handleRetry() {

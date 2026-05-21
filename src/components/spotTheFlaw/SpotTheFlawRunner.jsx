@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { saveSTFProgress, getSTFProgress } from '../../utils/spotTheFlawProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const DIFF_CFG = {
   analyst: { label: 'Analyst', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
@@ -40,6 +41,7 @@ export function SpotTheFlawRunner({ caseData, onBack, onNext, unlocked }) {
   function handleRate(r) {
     setRating(r);
     saveSTFProgress(caseData.id, r);
+    track('case_completed', { room: 'spot-the-flaw', id: caseData.id, rating: r });
   }
 
   function handleRetry() {

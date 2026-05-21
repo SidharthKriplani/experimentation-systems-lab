@@ -40,6 +40,7 @@ import { Module17_MultipleTesting } from './modules/Module17_MultipleTesting.jsx
 import { Module18_RegressionToMean } from './modules/Module18_RegressionToMean.jsx';
 import { Module19_SelectionBias } from './modules/Module19_SelectionBias.jsx';
 import { Module20_PracticalSignificance } from './modules/Module20_PracticalSignificance.jsx';
+import { track } from '../../utils/analytics.js';
 
 const MODULE_COMPONENTS = {
   sf01: Module01_WhatIsData,
@@ -95,6 +96,7 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
 
   function handleNext() {
     saveStatFoundationsProgress(moduleId);
+    track('case_completed', { room: 'stat-foundations', id: moduleId, rating: null });
     onNext();
   }
 

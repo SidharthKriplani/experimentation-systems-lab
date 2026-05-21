@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { savePrioritizationAttempt, getPrioritizationProgress } from '../../utils/prioritizationProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const RATINGS = [
   { id: 'strong',  label: 'Nailed it',       sub: 'Hit the framework, the tradeoffs, and the recommendation' },
@@ -31,6 +32,7 @@ export function PrioritizationRunner({ scenario, onBack, onNext }) {
   function handleRate(r) {
     setRating(r);
     savePrioritizationAttempt(scenario.id, response, r);
+    track('case_completed', { room: 'prioritization', id: scenario.id, rating: r });
   }
 
   function handleRetry() {

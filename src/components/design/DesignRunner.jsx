@@ -5,6 +5,7 @@ import { DesignScoreReveal } from './DesignScoreReveal.jsx';
 import { DesignDebriefPanel } from './DesignDebriefPanel.jsx';
 import { ConceptDrawer } from '../concepts/ConceptDrawer.jsx';
 import {
+import { track } from '../../utils/analytics.js';
   saveDesignAnswers, saveCompletedPhases, saveDesignResult,
   clearDesignProgress, computeDesignScore,
 } from '../../utils/designProgress.js';
@@ -57,6 +58,7 @@ export function DesignRunner({ scenario, savedProgress, onBack, onGoToReview, on
   function handleSubmit(finalCompleted) {
     const scored = computeDesignScore(scenario, answers);
     saveDesignResult(scenario.id, scored);
+    track('case_completed', { room: 'design', id: scenario.id, rating: scored.level });
     setResult(scored);
     setView('reveal');
     window.scrollTo({ top: 0, behavior: 'smooth' });

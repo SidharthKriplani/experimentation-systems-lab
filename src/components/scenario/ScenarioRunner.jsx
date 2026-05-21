@@ -8,6 +8,7 @@ import { DecisionPanel } from './DecisionPanel.jsx';
 import { ScoreReveal } from './ScoreReveal.jsx';
 import { DebriefPanel } from './DebriefPanel.jsx';
 import { saveAttempt } from '../../utils/progress.js';
+import { track } from '../../utils/analytics.js';
 
 function PanelHeader({ title, subtitle }) {
   return (
@@ -59,6 +60,7 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesign
     if (!selectedDecision) return;
     const decision = scenario.decisions.find(d => d.id === selectedDecision);
     saveAttempt(scenario.id, selectedDecision, decision.score);
+    track('case_completed', { room: 'review', id: scenario.id, rating: decision.score });
     setSubmitted(true);
     setShowDebrief(true);
     setTimeout(() => {

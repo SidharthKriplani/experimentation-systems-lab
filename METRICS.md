@@ -20,12 +20,13 @@ What we track, what we measure success by, and what decisions have been made fro
 
 ## Tracked events
 
-All events fire from `src/App.jsx` via `track()` from `src/utils/analytics.js`.
+Events fire from `src/App.jsx` (navigation events) and directly from runner components (completion events) via `track()` from `src/utils/analytics.js`.
 
 | Event | When it fires | Properties |
 |---|---|---|
 | `page_viewed` | Every navigation (room open, page change) | `{ page: string }` |
 | `case_opened` | User opens any case that passes the paywall check | `{ room: string, id: string, title: string }` |
+| `case_completed` | User submits self-rating / final answer in any runner | `{ room: string, id: string, rating: string\|number\|null }` |
 | `paywall_hit` | User tries to open a locked case while `isUnlocked()` is false | `{ room: string, id: string }` |
 | `unlocked` | User successfully enters the beta unlock code | _(no properties)_ |
 | `open_challenge` | User opens a Cross-Room Challenge | `{ id: string, title: string }` |
@@ -34,7 +35,6 @@ All events fire from `src/App.jsx` via `track()` from `src/utils/analytics.js`.
 `stats`, `design`, `review`, `metrics`, `rca`, `cases`, `code`, `prioritization`, `behavioral`, `estimation`, `stat-foundations`, `growth-analytics`, `bi`, `spot-the-flaw`, `take-home`, `product-design`, `challenges`, `instrumentation`
 
 ### Events not yet tracked (gaps)
-- Case completion / self-rating submitted
 - Debrief revealed
 - Hint expanded
 - Playbook article opened
@@ -57,13 +57,13 @@ Case open (case_opened)
     ↓
 [Paywall hit → Unlock page]  ← currently bypassed (beta gate = true)
     ↓
-Case completion (self-rating submitted) ← NOT YET TRACKED
+Case completion (self-rating submitted) ← case_completed event
     ↓
 Return visit (heatmap activity) ← tracked via localStorage, not PostHog
 ```
 
 ### Current funnel gap
-We have top-of-funnel (page_viewed, case_opened) and the paywall signal (paywall_hit), but no completion signal. We cannot currently measure: what % of users who open a case actually finish it, what self-ratings look like in aggregate, or which rooms have the highest drop-off.
+Top-of-funnel (page_viewed, case_opened), paywall signal (paywall_hit), and completion signal (case_completed) are all live. Remaining gap: we cannot measure debrief read-through, hint usage, or which specific answers users select.
 
 ---
 
@@ -131,6 +131,6 @@ Before any paid conversion attempt, establish these baselines:
 
 1. Confirm `VITE_POSTHOG_KEY` is active in Vercel production environment
 2. Measure WAU and 7-day return rate for 4 weeks
-3. Add case completion event (`case_completed` with `{ room, id, rating }`)
+3. ✅ `case_completed` event shipped — all 18 runners instrumented
 4. Identify the most-opened room (content expansion priority)
 5. Identify the most paywall-hit room (first unlock candidate post-beta)

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { saveTakehomeProgress } from '../../utils/takehomeProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const WEIGHT_COLOR = {
   high:   { color: 'var(--red)',    bg: 'var(--red-bg)',    border: 'var(--red-border)',    label: 'High' },
@@ -69,6 +70,7 @@ export function TakehomeRunner({ caseData, onBack, onNext, unlocked }) {
       wordCount,
       rating: r,
     });
+    track('case_completed', { room: 'take-home', id: caseData.id, rating: r });
     setSaved(true);
   }
 

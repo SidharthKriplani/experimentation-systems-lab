@@ -3,6 +3,7 @@ import { RCAStepPanel } from './RCAStepPanel.jsx';
 import { RCAScoreReveal } from './RCAScoreReveal.jsx';
 import { RCADebriefPanel } from './RCADebriefPanel.jsx';
 import { saveRCAAttempt } from '../../utils/rcaProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const ROOM_KEY = 'rca';
 
@@ -134,6 +135,7 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
       const result = computeScore(rcaCase, stepChoices);
       setScoreResult(result);
       saveRCAAttempt(rcaCase.id, stepChoices, result.score, result.level);
+      track('case_completed', { room: 'rca', id: rcaCase.id, rating: result.level });
       setView('reveal');
     } else {
       setCurrentStepIndex(i => i + 1);

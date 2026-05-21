@@ -18,7 +18,7 @@ _(nothing active — update this at session start when pulling from Tier 1)_
 - More Instrumentation cases: dbt data models, data lineage, schema migration
 
 ### Features
-- `case_completed` PostHog event (`{ room, id, rating }`) — biggest current metrics gap; needed before any paid conversion attempt
+- ~~`case_completed` PostHog event~~ — ✅ shipped V4.6 (all 18 runners instrumented)
 - Interview debrief export (PDF of session answers + model answers) — high-value, users want to share results
 - Per-case notes that persist across sessions (currently one global textarea)
 - Search within a single room (room-level filter on global search)

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { saveChallengesProgress } from '../../utils/challengesProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const ROOM_COLORS = {
   'stats':            { color: 'var(--accent)',    bg: 'var(--accent-bg)',    border: 'var(--accent-border)' },
@@ -98,6 +99,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
   function handleRate(r) {
     setRating(r);
     saveChallengesProgress(caseData.id, r);
+    track('case_completed', { room: 'challenges', id: caseData.id, rating: r });
   }
 
   // ── Scenario Screen ───────────────────────────────────────────────────────

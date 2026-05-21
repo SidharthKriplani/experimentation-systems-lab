@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveBehavioralAttempt, getBehavioralProgress } from '../../utils/behavioralProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const ROOM_KEY = 'behavioral';
 
@@ -82,6 +83,7 @@ export function BehavioralRunner({ question, onBack, onNext }) {
   function handleRate(r) {
     setRating(r);
     saveBehavioralAttempt(question.id, response, r);
+    track('case_completed', { room: 'behavioral', id: question.id, rating: r });
   }
 
   function handleRetry() {

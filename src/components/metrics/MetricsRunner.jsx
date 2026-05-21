@@ -3,6 +3,7 @@ import { MetricChoicePanel } from './MetricChoicePanel.jsx';
 import { MetricScoreReveal } from './MetricScoreReveal.jsx';
 import { MetricDebriefPanel } from './MetricDebriefPanel.jsx';
 import { saveMetricsAttempt, clearMetricsProgress } from '../../utils/metricsProgress.js';
+import { track } from '../../utils/analytics.js';
 
 function computeScore(metricCase, fieldChoices) {
   let score = 0;
@@ -49,6 +50,7 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
     setScoreResult(result);
     setSubmitted(true);
     saveMetricsAttempt(metricCase.id, fieldChoices, result.score, result.level);
+    track('case_completed', { room: 'metrics', id: metricCase.id, rating: result.level });
     setView('reveal');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

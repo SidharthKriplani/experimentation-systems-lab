@@ -520,11 +520,19 @@ Discovered behavioral questions had inconsistent ID schemes — some used `beh01
 
 ## Part XIII — Analytics Instrumentation Audit
 
-### 51. ⚠️ PostHog Event Taxonomy & PII Audit
-**Version:** V3.2.4
-**Output:** `src/utils/analytics.js`; PII sanitization, explicit event-only tracking
+### 51. ✅ PostHog Event Taxonomy & PII Audit
+**Version:** V3.2.4 → updated V4.6
+**Output:** `src/utils/analytics.js`; PII sanitization, explicit event-only tracking; `case_completed` shipped
 
-Before wiring PostHog, audited: what events matter (page_viewed, case_opened, paywall_hit, unlocked), what should never be tracked (PII: email, name, ip), and what PostHog defaults to disable (`autocapture: false`, `capture_pageview: false` — only explicit events collected). Strip function removes PII keys via `sanitize_properties`. Env-var gated — app works identically without the key (no-op in prod, `console.debug` in dev).
+Before wiring PostHog, audited: what events matter (page_viewed, case_opened, paywall_hit, unlocked), what should never be tracked (PII: email, name, ip), and what PostHog defaults to disable (`autocapture: false`, `capture_pageview: false` — only explicit events collected). Strip function removes PII keys via `sanitize_properties`. Env-var gated — app works identically without the key. **V4.6 follow-through:** `case_completed` event added to all 18 room runners, closing the biggest funnel gap — we can now measure completion rates and self-rating distributions per room.
+
+---
+
+### 59. ✅ Analytics Completion Coverage Audit
+**Version:** V4.6
+**Output:** `track('case_completed', { room, id, rating })` in all 18 runner components
+
+Systematic audit of every room runner to find where self-rating / final answer is saved (the true completion signal). Runners fall into two patterns: (1) `handleRate(r)` pattern — Prioritization, Code, Behavioral, Estimation, BI, Growth Analytics, Spot the Flaw, Take-Home, Instrumentation, Challenges; (2) scored-submit pattern — Metrics (`handleSubmit`), Stats (`handleSubmit`), Review (`handleSubmit`), Design (`handleSubmit`), RCA (`handleNextStep` on final step), Cases (`handleNextPhase` on final phase), Product Design (`handleNext` on final phase). Stat Foundations fires on module completion with `rating: null`. All 18 wired in a single pass.
 
 ---
 
@@ -582,7 +590,7 @@ Before wiring PostHog, audited: what events matter (page_viewed, case_opened, pa
 | 48 | Mobile Audit — V3.6 | V3.6 | Mobile |
 | 49 | Mobile Audit — V4.5 New Rooms | V4.5 | Mobile |
 | 50 | SEO Readiness Audit | V3.6 | SEO |
-| 51 | PostHog Event Taxonomy + PII Audit | V3.2.4 | Analytics |
+| 51 | PostHog Event Taxonomy + PII Audit | V3.2.4 → V4.6 | Analytics |
 | 52 | Leadership Lens Coverage Audit | V4.4 | Feature coverage |
 | 53 | Active Recall Textarea Runner Coverage | V4.1 | Feature coverage |
 | 54 | Defense Doc Generator Keyword Taxonomy | V4.4 | Feature coverage |
