@@ -10,25 +10,29 @@ Status: ✅ Resolved — ⚠️ Open / partially resolved
 
 ## Audit type reference
 
+Start here when running an audit. Add rows as new types emerge.
+
 | Type | What it covers |
 |---|---|
-| **Architecture** | Stack decisions, IA, build sequence, scope, risk |
-| **Source material** | Benchmark against real-world standards, interviews, competitor content |
-| **Content quality** | Voice, depth, story-first standard, debrief specificity |
-| **Visual** | Color system, contrast, spacing, CSS variable consistency |
-| **Accessibility** | WCAG contrast ratios, keyboard nav, touch targets |
-| **UX** | Cognitive load, first-impression, empty states, CTA hierarchy |
-| **Feature completeness** | Coverage gaps — rooms, nav, progress tracking, wiring |
-| **Bug / diagnostic** | Routing failures, paywall logic, state reset, broken rooms |
-| **Performance** | Bundle size, lazy loading, render bottlenecks |
-| **Security** | Secret management, PII exposure, gitignore |
-| **Mobile** | Viewport overflow, touch targets, responsive layout |
-| **SEO / Social** | OG tags, sitemap, robots.txt, structured data |
-| **Analytics** | Event taxonomy, PII policy, funnel gaps |
+| **BUILD** | Prop wiring, dead code, duplicate keys, component contracts |
+| **Visual Consistency** | Color drift, spacing, border radius, font usage, CSS variable adherence |
+| **Navigation & Discoverability** | Hidden features, dead-end flows, tab/menu structure, active states |
+| **Content Integrity** | Stale copy, version mismatches, duplicate data keys, field coverage |
+| **Framework / Technical** | Language patterns, hook usage, render correctness, lazy loading |
+| **SEO / Social** | OG tags, meta descriptions, sitemap, robots.txt, sharing previews |
+| **UX / Human Elements** | Empty states, tone, onboarding friction, exit states, CTA hierarchy |
+| **Performance** | Bundle size, lazy loading, render bottlenecks, code splitting |
+| **Creativity / Product** | Design, value delivery, layout, differentiation, positioning |
+| **Coverage** | Which features/topics/rooms lack tests, questions, or cross-links |
+| **First-Time User** | Cold walk-through in incognito — every confusion point noted live _(not yet run)_ |
+| **MVP / Weight** | Which features earn their place? Cut or consolidate candidates _(not yet run)_ |
+| **IP / Moat** | What's hard to replicate? What's original? What to double down on? _(not yet run)_ |
+| **Architecture** | Stack decisions, IA, build sequence, scope, strategic risk |
+| **Source material** | Benchmark against real-world interview standards, competitor content |
+| **Security** | Secret management, PII exposure, gitignore, env vars |
+| **Mobile** | Viewport overflow, touch targets, responsive grid patterns |
+| **Analytics** | Event taxonomy, PII policy, funnel gaps, missing signals |
 | **Build safety** | Syntax errors, parse failures, Vite/Rolldown compatibility |
-| **IP / Moat** | What's genuinely hard to replicate? What to double down on? _(not yet run)_ |
-| **First-time user** | Cold incognito walk-through — every confusion point noted live _(not yet run)_ |
-| **MVP / Weight** | Which features earn their place? Cut/consolidate candidates _(not yet run)_ |
 
 ---
 
