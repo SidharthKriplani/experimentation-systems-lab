@@ -4,6 +4,22 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.6.0] — 2026-05
+
+### Added
+- **`case_completed` PostHog event** — all 18 room runners now fire `track('case_completed', { room, id, rating })` at the exact completion signal: self-rating submission in Prioritization, Code, Behavioral, Estimation, BI, Growth Analytics, Spot the Flaw, Take-Home, Instrumentation, and Challenges; final scored submit in Metrics, Stats, Review, and Design; final step/phase in RCA, Cases, and Product Design; module completion in Stat Foundations (`rating: null`). Closes the biggest funnel gap — completion rates and self-rating distributions are now measurable per room.
+- **MD Spine System** — five institutional memory files created or restructured to eliminate cold-start friction:
+  - `CLAUDE.md` (NEW) — AI session briefing: 5-line product summary, scope constraint, non-negotiable syntax rules (single quotes, escaped apostrophes, no template literals), CSS variable reference, lazy-loading pattern, mobile grid pattern, paywall rule, file structure, dev/commit workflow, git lock workaround, new-room checklist
+  - `DECISIONS.md` (NEW) — Present-tense prescriptive rulebook: architecture (no backend, React+Vite only, lazy loading, localStorage only), product scope (PAL boundaries, GenAI-as-thread), content (decision-first, one failure mode per case, debrief specs, single-quotes rule), design (CSS variables, light-mode default, mobile patterns, 44px touch), paywall (beta gate, free tier design, Stripe deferred), and a "deliberately not built" table
+  - `METRICS.md` (NEW) — Full analytics documentation: PostHog stack, 5 tracked events with properties, 18 rooms tracked via `case_opened`, untracked gaps list, user funnel diagram with explicit gap callout, all 24 localStorage keys, success metrics table (WAU, completion rate, return rate, room diversity), decisions-made-from-data log, next measurement priorities
+  - `IDEAS.md` (RESTRUCTURED) — Flat list → tiered backlog (In Progress / Tier 1 / Tier 2 / Tier 3 / Retired). Retired section preserves 12 conscious "not building" decisions with reasons
+  - `AUDITS.md` (ENHANCED) — Added canonical 19-type audit reference table (13 standard + 6 PAL-specific); ✅/⚠️ status flags on all 58 existing entries; 4 open items called out (#2 platform risk, #6 beta gate, #8 free/paid tier, #51 PostHog event taxonomy)
+
+### Files changed
+`src/components/metrics/MetricsRunner.jsx`, `src/components/prioritization/PrioritizationRunner.jsx`, `src/components/code/CodeRunner.jsx`, `src/components/behavioral/BehavioralRunner.jsx`, `src/components/estimation/EstimationRunner.jsx`, `src/components/bi/BIRunner.jsx`, `src/components/growthAnalytics/GrowthAnalyticsRunner.jsx`, `src/components/spotTheFlaw/SpotTheFlawRunner.jsx`, `src/components/challenges/ChallengesRunner.jsx`, `src/components/instrumentation/InstrumentationRunner.jsx`, `src/components/scenario/ScenarioRunner.jsx`, `src/components/stats/StatsRunner.jsx`, `src/components/design/DesignRunner.jsx`, `src/components/rca/RCARunner.jsx`, `src/components/cases/CaseRunner.jsx`, `src/components/productDesign/ProductDesignRunner.jsx`, `src/components/statsFoundations/StatsFoundationsRunner.jsx`, `src/components/takehome/TakehomeRunner.jsx` (all: +analytics import, +case_completed track call), `METRICS.md` (+case_completed event, funnel gap resolved, next priorities updated), `IDEAS.md` (case_completed marked shipped), `AUDITS.md` (#51 resolved, +audits #59 and #60, summary table updated), `CLAUDE.md` (NEW), `DECISIONS.md` (NEW), `METRICS.md` (NEW)
+
+---
+
 ## [4.5.1] — 2026-05
 
 ### Fixed

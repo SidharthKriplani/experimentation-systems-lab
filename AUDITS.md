@@ -1,6 +1,6 @@
 # Product Analytics Lab — Audit Log
 
-Every structured review, quality pass, diagnostic sweep, benchmark check, and implicit audit run across PAL from V1 to V4.5.1.
+Every structured review, quality pass, diagnostic sweep, benchmark check, and implicit audit run across PAL from V1 to V4.6.
 
 **Rule:** AUDITS.md feeds IDEAS.md, not the reverse. Resolved audit findings that are buildable features go into IDEAS.md Tier 1. Features you want to build do not go here. Keep the directions clean: audits are diagnosis, IDEAS are treatment.
 
@@ -536,6 +536,14 @@ Systematic audit of every room runner to find where self-rating / final answer i
 
 ---
 
+### 60. ✅ MD Spine System Documentation Audit
+**Version:** V4.6
+**Output:** `CLAUDE.md` (NEW), `DECISIONS.md` (NEW), `METRICS.md` (NEW), `IDEAS.md` (restructured), `AUDITS.md` (type table + ✅/⚠️ flags)
+
+Diagnosed institutional memory problem: every new session required expensive re-orientation via CHANGELOG.md alone. No single document told a contributor what the rules were (present tense, prescriptive), what's tracked, what the tiered backlog was, or what audits had been run. Designed and implemented the MD Spine System: (1) `CLAUDE.md` — cold-start briefing, non-negotiable code rules, file structure, dev workflow, new-room checklist; (2) `DECISIONS.md` — present-tense rulebook for architecture, product scope, content, design, paywall, analytics; (3) `METRICS.md` — full PostHog event taxonomy, funnel map, localStorage keys, success metric targets, explicit gap callout; (4) `IDEAS.md` — restructured from flat list to Tier 1/2/3 + In Progress + Retired with conscious "not building" rationale; (5) `AUDITS.md` — added canonical 19-type reference table + ✅/⚠️ status flags on all 58 existing audits.
+
+---
+
 ## Summary Table
 
 | # | Audit | Version | Category |
@@ -598,3 +606,5 @@ Systematic audit of every room runner to find where self-rating / final answer i
 | 56 | Stat Foundations ↔ Playbook Interlink | V3.5 | Feature coverage |
 | 57 | Stats → SF Back-Link + Difficulty Sort | V4.1 | Feature coverage |
 | 58 | Behavioral Question ID Consistency | V4.1 | Bug/diagnostic |
+| 59 | Analytics Completion Coverage (18 runners) | V4.6 | Analytics |
+| 60 | MD Spine System Documentation Audit | V4.6 | Architecture |
