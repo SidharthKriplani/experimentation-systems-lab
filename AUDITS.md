@@ -1,220 +1,397 @@
 # Product Analytics Lab — Audit Log
 
-Full record of every audit run against the PAL codebase: content integrity checks, bug sweeps, mobile responsiveness audits, security reviews, and build-safety scans. Ordered newest-first.
+Full record of every audit run against PAL: architecture reviews, content quality passes, design direction audits, product perspective reviews, UX audits, bug sweeps, accessibility checks, security reviews, mobile audits, and build-safety scans. Ordered newest-first within each section.
 
 ---
 
-## Audit 9 — Apostrophe / Syntax Safety Scan
-**Version:** V4.5.1 — 2026-05
-**Type:** Build safety / syntax audit
-**Trigger:** Vercel deployment failed with `[builtin:vite-transform] Expected ',' or '}' but found 'Identifier'` at `growthAnalyticsCases.js:146:206`
+## Part I — Architecture & Product Audits
 
-**What was checked:**
-All `leadershipNote` fields added during V4.4's Leadership Lens feature in `growthAnalyticsCases.js` — specifically any single-quoted JS strings containing apostrophes.
+### Platform Architecture Audit
+**Version:** Pre-V1.2 (2026-05)
+**Type:** Product architecture / IA / build sequence
+**Output:** `docs/PLATFORM_ARCHITECTURE_MEMO.md` (18 questions answered)
 
-**Findings (3 violations):**
-- Line 146: `the product's natural cadence` — unescaped apostrophe in single-quoted string
-- Line 227: `new cohort's Day-7` — unescaped apostrophe in single-quoted string
-- Line 603: `growth team's attribution` — unescaped apostrophe in single-quoted string
+The founding document for the full platform. Ran before any multi-room code was written. Asked and answered 18 hard questions:
 
-**Fix:** Python script replaced all three with `\'` escaped versions. Same class of bug previously found in `challengesCases.js` (`Maps'`).
+- Keep as Experimentation Systems Lab or upgrade to broader product? → Upgrade, rename to Product Analytics Lab.
+- What rooms should exist and in what order? → Stats → Metrics → Design → Review → RCA → Cases (follows analyst causality chain).
+- What should be built next? → Design Room (shares most code patterns with existing system, completes the design→review loop).
+- Platform shell or rooms-first? → Rooms-first. Empty nav items are a graveyard.
+- What absolutely should not be built yet? → 10 items listed: social features, team accounts, video content, LMS structure, AI evaluation, mobile app, API embeds, email/notification system, Stats Room as text-heavy MVP, Product Cases Room (breaks scoring model).
 
-**Rule established:** All JS data files use single quotes only. Any apostrophe inside a single-quoted string must be escaped as `\'`. No template literals (backticks) in data files — Vite/Rolldown will throw parse errors.
-
-**Files touched:** `src/data/growthAnalyticsCases.js`
-
----
-
-## Audit 8 — Mobile Responsiveness Audit (V4.5 rooms)
-**Version:** V4.5.0 — 2026-05
-**Type:** Mobile responsiveness audit
-**Trigger:** User asked "has the app been mobile optimized?" after V4.5 build
-
-**What was checked:**
-All rooms added or significantly changed since the V3.6 mobile pass — BIBrowser, InstrumentationBrowser, ChallengesBrowser, SpotTheFlawBrowser, TakehomeBrowser, ScenarioRunner, PlaybookBrowser, BlogBrowser, MetricsBrowser, Progress page.
-
-**Findings (8 files with overflow issues):**
-All failures shared the same root cause: CSS `minmax(Xpx, 1fr)` grid patterns where `X` exceeded the mobile viewport width, causing horizontal overflow.
-
-| File | Old pattern | Fixed pattern |
-|---|---|---|
-| `src/pages/BIBrowser.jsx` | `minmax(380px, 1fr)` | `minmax(min(380px, 100%), 1fr)` |
-| `src/pages/InstrumentationBrowser.jsx` | `minmax(380px, 1fr)` | `minmax(min(380px, 100%), 1fr)` |
-| `src/pages/ChallengesBrowser.jsx` | `minmax(420px, 1fr)` | `minmax(min(400px, 100%), 1fr)` |
-| `src/components/scenario/ScenarioRunner.jsx` | `'minmax(0, 1fr) 360px'` | `'minmax(0, 1fr) min(360px, 100%)'` |
-| `src/pages/PlaybookBrowser.jsx` | `minmax(340px, 1fr)` | `minmax(min(340px, 100%), 1fr)` |
-| `src/pages/BlogBrowser.jsx` | `minmax(340px, 1fr)` | `minmax(min(340px, 100%), 1fr)` |
-| `src/pages/MetricsBrowser.jsx` | `minmax(340px, 1fr)` | `minmax(min(340px, 100%), 1fr)` |
-| `src/pages/Progress.jsx` | `minmax(320px, 1fr)` | `minmax(min(320px, 100%), 1fr)` |
-
-**Fix pattern:** `minmax(min(Xpx, 100%), 1fr)` — the inner `min()` clamps the minimum track size to the viewport width, preventing grid items from causing horizontal scroll on narrow screens.
+**Identified risks (6):**
+1. Content production bottleneck — content quality is the binding constraint, not engineering speed
+2. Platform dilution — 6 thin rooms worse than 1 excellent room
+3. Stats Room becoming a textbook — interaction-first or don't ship
+4. Losing the "practice the calls" positioning — every room must be a judgment exercise
+5. Premature paid tier — real Stripe integration only makes sense with 3+ paid rooms
+6. Activation problem — solution is content quality and clear use cases, not gamification
 
 ---
 
-## Audit 7 — Mobile Responsiveness Audit (V3.6 rooms)
-**Version:** V3.6 — 2026-05
-**Type:** Mobile responsiveness audit
-**Trigger:** Pre-launch production-readiness pass before monetization rollout
-
-**What was checked:**
-All pages reachable from the nav on a narrow (~375px) viewport. Focus: room browsers, runners, Header nav touch targets.
-
-**Findings and fixes:**
-- `Header.jsx` — nav buttons lacked minimum touch target size. Added `minHeight: 44px` and `flexShrink: 0` for 44px touch targets (Apple HIG minimum).
-- `Home.jsx`, `StatsFoundationsBrowser.jsx`, `StatsFoundationsRunner.jsx`, `StatsBrowser.jsx` — main containers lacked `width: '100%'` and `boxSizing: 'border-box'`, causing content to escape container bounds on mobile.
-- `Module01_WhatIsData.jsx` — drop-zones row lacked `flexWrap: 'wrap'`, so columns didn't stack on narrow screens.
-
-**Files touched:** `Header.jsx`, `Home.jsx`, `StatsFoundationsBrowser.jsx`, `StatsFoundationsRunner.jsx`, `StatsBrowser.jsx`, `Module01_WhatIsData.jsx`
-
----
-
-## Audit 6 — Platform Gap Audit
+### Platform Gap Audit
 **Version:** V3.4 — 2026-05
-**Type:** Content completeness / feature gap audit
-**Trigger:** Pre-V3.4 sprint planning — honest assessment of what was missing relative to real interview frequency
+**Type:** Content coverage vs. real interview frequency
+**Output:** 6 new rooms/expansions shipped in V3.4
 
-**What was checked:**
-Room-by-room coverage mapped against the actual distribution of interview question types in DS/PM loops at top-tier tech companies.
+Mapped every room against the actual distribution of question types in DS/PM interviews at top-tier tech companies. Found 6 material gaps:
 
-**Findings (6 material gaps):**
-1. **RCA Room thin** — only 6 cases (RCA01–RCA06) relative to how frequently RCA drives the first 30 minutes of DS interviews. Needed 12.
-2. **Cases Room thin** — only 4 cases (C01–C04). Business framing and stakeholder recommendation questions appear in every senior DS/PM loop. Needed 12.
-3. **No behavioral/leadership room** — the STAR format and influence/conflict scenarios are tested in every PM and senior DS loop. Zero coverage.
-4. **No Fermi/estimation room** — Fermi questions ("How many Uber rides per day in NYC?") appear in 60–70% of DS phone screens. Zero coverage.
-5. **No causal inference beyond A/B** — DiD, RDD, Synthetic Control, IV all appear at senior DS / research levels. Only standard A/B covered.
-6. **Code Room missing interview-format SQL** — anti-joins, rolling DAU, sessionization, top-N per group are canonical SQL interview questions. Only analytics SQL existed.
-
-**Resolution:** All 6 gaps addressed in V3.4 — RCA expanded to 12, Cases expanded to 12, Behavioral Room (8 questions) added, Estimation Room (8 problems) added, Stats expanded with STAT17–20 (causal inference), Code expanded with C15–C18 (interview SQL).
-
----
-
-## Audit 5 — Security Audit
-**Version:** V3.2.4 — 2026-05
-**Type:** Security / secret management audit
-**Trigger:** Caught incidentally during the PostHog analytics integration pass
-
-**What was checked:**
-`.gitignore` contents relative to the new `.env` file introduced for `VITE_POSTHOG_KEY` and `VITE_STRIPE_PAYMENT_LINK`.
-
-**Finding:**
-`.gitignore` was missing entirely — any `.env` file with a real PostHog key or Stripe key would have been committed to the public GitHub repository on the next `git add .`.
-
-**Fix:**
-- Added `.gitignore` with `.env` and `.env.*` entries (with `!.env.example` exception to keep the template visible).
-- Created `.env.example` documenting `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` for contributors.
-
-**Files touched:** `.gitignore` (new), `.env.example` (new)
-
----
-
-## Audit 4 — Internal Bug Audit (Agent Cross-Check)
-**Version:** V3.2.2 — 2026-05
-**Type:** Feature/routing correctness audit
-**Trigger:** Proactive cross-check before community beta launch — spawned a separate agent to review all routing, paywall, progress, and nav logic independently
-
-**What was checked:**
-All routing branches in `App.jsx`, paywall display logic across all room browsers, progress reset completeness, Header nav items vs. registered pages, and CSS color variable consistency across all runners.
-
-**Findings (5 bugs):**
-
-| Bug | File | Description |
+| Gap | Finding | Resolution |
 |---|---|---|
-| BUG-01 | `App.jsx` | `onOpenItem` missing `product-design` and `prioritization` branches — Playbook "Now practice it" links for those rooms silently did nothing |
-| BUG-02 | `CasesBrowser.jsx` | Hardcoded `isLocked={false}` — C03/C04 showed no paywall indicator for locked users |
-| BUG-03 | `App.jsx` | `onResetAllProgress` missing `pal-code-progress-v1` and `pal-pri-progress-v1` keys; Product Design keys required prefix-iteration |
-| BUG-04 | `Header.jsx` | `product-design` had no nav entry — room was unreachable from header; `product-design-runner` had no active-state condition |
-| BUG-05 | `MetricsRunner.jsx` | Two `var(--teal)` / `var(--teal-border)` remnants left from V2.2 teal→green migration |
-
-**All 5 fixed in V3.2.2.**
+| RCA Room thin | Only 6 cases vs. frequency of RCA in first 30 min of DS loops | Expanded to 12 (RCA07–RCA12) |
+| Cases Room thin | Only 4 cases vs. frequency in senior DS/PM loops | Expanded to 12 (C07–C12) |
+| No behavioral room | Zero coverage of STAR format, influence, conflict scenarios | Built Behavioral Room (8 questions) |
+| No estimation room | Fermi questions appear in 60–70% of DS phone screens | Built Estimation Room (8 problems) |
+| No causal inference beyond A/B | DiD, RDD, Synthetic Control, IV appear at senior levels | Added STAT17–20 |
+| No interview-format SQL | Anti-joins, rolling DAU, sessionization all canonical SQL questions | Added C15–C18 |
 
 ---
 
-## Audit 3 — Playbook Content Quality Audit
+### Scenario Bank Taxonomy Audit
+**Version:** Pre-V1.2 (2026-05)
+**Type:** Content taxonomy / scenario family framework
+**Output:** `docs/SCENARIO_BANK_TAXONOMY.md`
+
+Defined 15 scenario families before writing most content. Each family teaches one category of experimentation failure — no scenario should straddle two families. Planned 50 scenarios total across 8 playable at launch.
+
+Families defined: metric_conflict, srm, guardrail_breach, novelty_peeking, hte_subgroups, multiple_testing, sutva_interference, when_not_to_experiment, underpowered, cuped_variance, geo_holdout, switchback, b2b_constraints, right_censored, multi_touch.
+
+Distribution targets set: 20 Analyst / 20 Senior / 10 Staff across all 15 families. No family more than 4 scenarios, none represented at only one difficulty level.
+
+This taxonomy governs all Review Room scenario assignments and is referenced by the Content Quality Bar.
+
+---
+
+### Beta Launch Product Audit
+**Version:** V2.3 — 2026-05
+**Type:** Product / business model audit
+**Output:** Full open access during beta (`isUnlocked()` returns `true`)
+
+Audited the readiness to charge users before having usage data, retention signal, or testimonials. Decision: remove all paywalls during beta. Rationale: get traffic and habit first, introduce paid tier after metrics exist. Unlock code `EXP-LAB-DEV-2026` preserved in file but inactive. All 44 items made fully accessible.
+
+---
+
+## Part II — Content Quality Audits
+
+### Content Quality Bar Definition
+**Version:** Pre-V1.5 (2026-05)
+**Type:** Quality standards framework
+**Output:** `docs/CONTENT_QUALITY_BAR.md`
+
+Defined the minimum standard every scenario must pass before shipping. Eight quality dimensions:
+
+1. **Decision hardness** — surface read must differ from correct read; if a 2-year analyst gets it on first pass, it's too easy
+2. **Metric readout quality** — table must create tension, not just information; realistic p-values, at least one guardrail with real stakes
+3. **Warning flags** — real validity concerns discoverable from available data, correct severity, 3–6 per scenario
+4. **Decision option calibration** — four levels: Junior Miss (defensible wrong), Analyst-Ready (right call, incomplete reasoning), Senior-Ready (right call + mechanism), Staff-Level (precision + stakeholder framing)
+5. **Debrief quality** — specific to this scenario, not generic; names failure mode, explains why it matters here, addresses most common wrong answer, 400–700 words
+6. **Business context specificity** — fictional company + specific product moment + real stakeholder pressure; not flavor text
+7. **Scenario family alignment** — teaches exactly one failure mode, not two
+8. **Difficulty tier consistency** — if all testers at target level get it right, it's mis-tiered
+
+Ship checklist: 10 items including "at least one person who didn't write it has reviewed the debrief."
+
+---
+
+### V4.1 Review Scenario Quality Audit — S01–S08 Rewrite
+**Version:** V4.1 — 2026-05
+**Type:** Content quality audit
+**Output:** All 8 original Review Room scenarios rewritten
+
+Evaluated all S01–S08 Review scenarios against the current quality bar. All 8 failed the debrief specificity test — debriefs were generically written and didn't add precision beyond what was visible in the metrics. Rewrote all 8 with: stakeholderSummary, nextTestIdeas (3 each), keyTakeaways (5 each), scenarioFamily tag, conceptTags.
+
+---
+
+### V4.1 Stats + Metrics Enrichment Audit
+**Version:** V4.1 — 2026-05
+**Type:** Content depth audit
+**Output:** STAT01–08 and M01–M06 enriched to current quality bar
+
+Evaluated all 8 Stats modules (STAT01–08) and all 6 Metrics cases (M01–M06) against the quality bar set after V3.4. Found that both rooms were shipped at an earlier, lower standard. All 14 items enriched — deeper debrief specificity, stronger business context, richer failure mode explanations.
+
+---
+
+### Playbook Content Quality Audit — 117 Articles
 **Version:** V3.2.1 — 2026-05
 **Type:** Content quality audit
-**Trigger:** Pre-community-beta content review — all 117 Playbook articles evaluated against a story-first, narrative-depth standard
+**Output:** 3 full rewrites, 2 opening narrative improvements
 
-**What was checked:**
-Every article in `PlaybookBrowser.jsx` assessed for: story-first opening (concrete scenario, not definition), narrative depth beyond framework/checklist, interview application clarity, keyTakeaways presence.
+Reviewed all 117 Playbook articles against a story-first, narrative-depth standard. Four articles failed: framework/checklist-only structure, no opening scenario, no depth.
 
-**Findings:**
-4 articles were genuinely thin — framework or checklist only, no opening scenario, no depth:
-- `take-rate` (Metrics): 3 bullet points, no story, no worked example
-- `data-quality` (SQL & Data): bare checklist + one callout, no opening scenario, no SQL example
-- `search-ranking-metrics` (Product Sense): framework_box + callout only, no gaming hierarchy, no offline evaluation guidance
-- `guardrails` (Metrics): dry definition opener with no human stakes
-- `segment-before-aggregate` (RCA): no concrete investigation scenario
-
-**Resolution:** Full rewrites of `take-rate`, `data-quality`, `search-ranking-metrics`. Opening narrative improvements on `guardrails` and `segment-before-aggregate`. All rewrites added concrete story hooks, worked examples, and stronger interview application framing.
-
----
-
-## Audit 2 — First-Impression / Pre-Beta Launch Audit
-**Version:** V2.2 — 2026-05
-**Type:** UX / content freshness audit
-**Trigger:** Imminent private beta launch to "Data All In" WhatsApp community (~6–8 testers)
-
-**What was checked:**
-Full front-door review — Unlock page copy, color system conflicts, homepage CTA clarity, room browser labels, progress reset completeness, nav label conventions.
-
-**Findings:**
-
-| Severity | Issue | File |
+| Article | Issue | Resolution |
 |---|---|---|
-| P0 | `Unlock.jsx` copy was V1-era ("unlock 8 scenarios", "Scenario Browser", "Paid access coming soon") — product had 44 items across 6 rooms | `Unlock.jsx` |
-| P0 | Metrics Room and Design Room both used `var(--teal)` — visually identical rooms | `Home.jsx`, `MetricsBrowser.jsx`, `JudgmentBank.jsx`, `QADashboard.jsx`, `Progress.jsx` |
-| P0 | `CasesBrowser.jsx` h1 and eyebrow both said "Cases Room" (duplicate label) | `CasesBrowser.jsx` |
-| P1 | Homepage had 3 equal-weight CTAs with no clear primary action | `Home.jsx` |
-| P1 | `StatsBrowser.jsx` showing raw `module.situation.context.slice(0,120)` as card description instead of `module.subtitle` | `StatsBrowser.jsx` |
-| P1 | Progress "Clear" button only cleared Review Room — all other rooms unaffected | `Progress.jsx` |
-| P1 | Nav label "Judgment Bank" was internal/developer terminology | `Header.jsx` |
-
-**Resolution:** All P0s and P1s fixed in V2.2. QA audit confirmed 63/63 checks passing post-fix.
+| `take-rate` | 3 bullet points, no story, no worked example | Full rewrite — Q2 earnings story opening, mix-shift section, double-axis analysis |
+| `data-quality` | Bare checklist, no opening scenario, no SQL example | Full rewrite — silent join fanout error story, 6 checks, worked SQL example |
+| `search-ranking-metrics` | Framework + callout only, no gaming hierarchy | Full rewrite — ranking regression story, gaming hierarchy, offline evaluation |
+| `guardrails` | Dry definition opener | Opening narrative rewrite — marketplace story, late discovery |
+| `segment-before-aggregate` | No concrete investigation scenario | Opening rewrite — concrete 9:47am Slack message scenario |
 
 ---
 
-## Audit 1 — Automated Content Integrity Audit (QA Dashboard)
-**Version:** V2.1 — 2026-05
-**Type:** Automated content integrity / data consistency audit
-**Trigger:** Pre-beta — with 44 playable items across 6 rooms and a dense cross-reference graph (concept IDs, paired scenario IDs, learning path item IDs), manual checking became unreliable
+### V3.0 Content Audit — Top 10 Playbook Articles
+**Version:** V3.0 — 2026-05
+**Type:** Content quality / voice audit
+**Output:** 10 articles with story-first rewrites, keyTakeaways, references
 
-**Audit tool built:**
-- `src/utils/contentAudit.js` — pure function `runContentAudit()` returning 63 structured checks
-- `src/pages/QADashboard.jsx` — internal dashboard rendering all checks with pass/fail/warning, room badges, affected item lists. Hidden behind a footer link (`qa` route) — not visible to end users.
+Audited the 10 highest-traffic Playbook articles for emotional/human-tone quality. All 10 received: story-first opening paragraph rewrites, `keyTakeaways: string[]` (5 bullets), `references: [...]` with real citations and URLs.
+
+Articles audited: `srm`, `novelty-effect`, `sutva`, `peeking`, `cuped`, `denominator-discipline`, `five-metric-types`, `guardrails`, `guardrail-conflicts`, `multiple-testing`, `cdshv-framework`, `meta-dau-drop`, `airbnb-booking-drop`.
+
+Opening rewrite principle established: scenario hooks before definitions, human stakes of getting it wrong, pressure and ambiguity as the real context.
+
+---
+
+### V2.1 Automated Content Integrity Audit (QA Dashboard)
+**Version:** V2.1 — 2026-05
+**Type:** Automated content integrity
+**Output:** `src/utils/contentAudit.js` + `src/pages/QADashboard.jsx` — 63 checks
+
+With 44 playable items across 6 rooms and a dense cross-reference graph, manual checking became unreliable before community beta. Built an automated audit tool.
 
 **63 checks cover:**
 - Item counts per room match expected totals
-- All required fields present on every item (title, subtitle, difficulty, isFree, etc.)
-- Concept IDs referenced by items actually exist in `concepts.js`
+- All required fields present on every item
+- Concept IDs referenced by items exist in `concepts.js`
 - Learning path item IDs resolve to real items
 - Paired scenario IDs (`pairedReviewScenarioId` / `pairedDesignScenarioId`) are mutually valid
 - `isFree` flag consistency with stated free-item counts
 
-**First run result (V2.1):** 5 failures
+**First run (V2.1): 5 failures**
 
-| Check | Failure |
+| Failure | Fix |
 |---|---|
-| Required fields — statsModules | All 8 stat modules missing `subtitle` field |
-| Concept reference integrity | `retention`, `funnel-decomposition`, `segmentation`, `data-quality-check`, `cohort-analysis` IDs missing from `concepts.js` |
-| Paired scenario ID validity | D04 had wrong `pairedReviewScenarioId: 's06-five-metrics'` — correct is `'s06-five-metrics-problem'` |
+| All 8 stat modules missing `subtitle` field | Added subtitles stat01–stat08 |
+| 5 concept IDs missing from `concepts.js` (`retention`, `funnel-decomposition`, `segmentation`, `data-quality-check`, `cohort-analysis`) | Added all 5 |
+| D04 wrong `pairedReviewScenarioId` | Corrected to `'s06-five-metrics-problem'` |
 
-**Resolution (V2.1.1):** All 5 failures fixed. Final score: 63/63 passing.
-
-**Files touched:** `src/utils/contentAudit.js` (NEW), `src/pages/QADashboard.jsx` (NEW), `src/data/statsModules.js`, `src/data/concepts.js`, `src/data/designScenarios.js`
-
-**Status:** QA Dashboard still live at the `/qa` route (hidden footer link). Re-runnable at any time.
+**Post-fix: 63/63 passing.** QA Dashboard still live at `/qa` route (hidden footer link). Re-runnable at any time.
 
 ---
 
-## Audit coverage by type
+### V1.6 Stats Mechanic Quality Audit
+**Version:** V1.6 — 2025
+**Type:** Content mechanic audit
+**Output:** STAT01–08 redesigned from basic Q&A to claim-evaluation mechanic
 
-| Type | Versions | Count |
+Audited the V1.5 Stats Room against the core product principle: "decision-first, always." Found that the original STAT01–04 format (definition + Q&A) was teaching recall, not judgment. The product needed a "claim evaluation" mechanic — user reads a stakeholder claim, inspects supporting data, evaluates whether the claim holds.
+
+All 8 stats modules redesigned around "Claim to Evaluate" panel: a stakeholder makes a specific claim about an experiment result, user agrees/partially agrees/disagrees with structured reasoning. This redesign made Stats Room consistent with the Review Room's judgment-first format.
+
+---
+
+## Part III — Visual & Design Audits
+
+### Design Direction Audit
+**Version:** V1.1 (2025)
+**Type:** Visual identity / design system audit
+**Output:** Full CSS theme system (`src/index.css`), light/dark mode, all 16 components migrated
+
+Audited the hardcoded hex color system in V1 and found it unscalable and visually inconsistent across 16 components. Defined the correct aesthetic direction: "serious analytical learning workspace" — Linear, PostHog, Retool, Stripe Docs as reference points. Not edtech, not gamified.
+
+Design principles established:
+- Surface hierarchy: home canvas slightly warmer, card surfaces darker (depth, not flat)
+- CSS variables introduced: `--bg`, `--surface`, `--accent`, `--teal`, `--yellow`, `--purple`, `--green`, `--red` etc.
+- Light mode as default (desktop analytical workspace register)
+- Theme toggle persisted in localStorage (`exp-lab-theme`)
+- Dark mode via `data-theme="dark"` on `<html>`
+
+All 16 component files migrated from hardcoded colors to CSS variables.
+
+---
+
+### Color System Conflict Audit
+**Version:** V2.2 — 2026-05
+**Type:** Visual design consistency audit
+**Output:** Metrics color changed teal→green across 5 files
+
+Discovered that Metrics Room and Design Room both used `var(--teal)` — visually identical rooms with no color differentiation. Metrics Room rebranded to `var(--green)` across 5 files: `Home.jsx`, `MetricsBrowser.jsx`, `JudgmentBank.jsx`, `QADashboard.jsx`, `Progress.jsx`.
+
+Follow-up (V3.2.2 / V4.1): Two `var(--teal)` references remained in `MetricsRunner.jsx` case header label and submit button — caught in a later bug audit and corrected to `var(--green)`.
+
+---
+
+### V3.2.3 Visual & Accessibility Audit
+**Version:** V3.2.3 — 2026-05
+**Type:** Visual quality + WCAG accessibility audit
+**Output:** Contrast fixes, responsive nav, keyboard accessibility on all card divs
+
+**WCAG AA contrast:**
+- Light mode `--text-dim` changed from `#9ca3af` (contrast ~2.8:1, fails AA) to `#6b7280` (~4.5:1, passes AA)
+- Dark mode `--text-dim` bumped from `#545b7a` (~2.1:1) to `#8890a8` (~4.5:1)
+
+**Responsive nav:** Header `<nav>` given `overflowX: 'auto'` and `scrollbarWidth: 'none'` — scrolls horizontally on narrow viewports without breaking layout.
+
+**Keyboard accessibility:** `role="button"`, `tabIndex={0}`, and `onKeyDown` (Enter/Space handlers) added to all clickable card `<div>` elements in `MetricsBrowser`, `RCABrowser`, `CasesBrowser`, `DesignBrowser`, `StatsBrowser`. Locked cards in `CasesBrowser` get `tabIndex={-1}`.
+
+---
+
+## Part IV — UX & Product Perspective Audits
+
+### First-Impression Audit (Pre-Beta Launch)
+**Version:** V2.2 — 2026-05
+**Type:** UX / content freshness / front-door audit
+**Output:** 7 issues fixed (3 P0, 4 P1)
+
+Full front-door review before private beta launch to "Data All In" WhatsApp community (~6–8 testers). Evaluated: Unlock page copy, color conflicts, homepage CTA hierarchy, room browser labels, progress reset completeness, nav labels.
+
+| Priority | Issue |
+|---|---|
+| P0 | `Unlock.jsx` copy was V1-era — product had 44 items, copy still said 8 scenarios |
+| P0 | Metrics and Design rooms both used `var(--teal)` — visually identical |
+| P0 | `CasesBrowser.jsx` h1 and eyebrow both said "Cases Room" — duplicate |
+| P1 | Homepage had 3 equal-weight CTAs with no primary action |
+| P1 | `StatsBrowser.jsx` showing raw `module.situation.context.slice(0,120)` as description instead of `module.subtitle` |
+| P1 | Progress "Clear" button only cleared Review Room, not all rooms |
+| P1 | Nav label "Judgment Bank" was internal terminology; renamed to "Library" |
+
+---
+
+### UX Density Audit — Home Page
+**Version:** V3.2.4 / V4.3 — 2026-05
+**Type:** Information density / cognitive load audit
+**Output:** CTA reduction, section header cleanup, room grid tightening
+
+Two passes. First pass (V3.2.4): homepage had 3 equal-weight CTAs — reduced to 1 primary + 1 secondary, removed developer diary section, tightened subheadline. Second pass (V4.3): further density reduction — cleaner hero, tighter room grid, less visual noise.
+
+Principle established: every element on the Home page must either orient first-time users or re-orient returning users. Developer-diary content and equal-weight CTAs fail both tests.
+
+---
+
+### Next-Case Navigation Completeness Audit
+**Version:** V3.3.1 — 2026-05
+**Type:** Feature consistency audit
+**Output:** Next-case nav added to ProductDesign and Code runners
+
+After V3.2.3 added next-case nav to RCA, Metrics, and Cases, and V3.3 added it to Design and Prioritization, discovered that ProductDesign and Code runners had been missed entirely. Audited every runner in the app against the pattern — two missing. Added `onNext` prop to both.
+
+Principle: any feature added to "all rooms" should be verified with an explicit pass over every room component, not assumed complete.
+
+---
+
+### User Journey Completeness Audit — Progress Page
+**Version:** V4.5 — 2026-05
+**Type:** Feature coverage audit
+**Output:** 5 new rooms added to all Progress tracking structures
+
+After V4.4 added Challenges, BI, Spot the Flaw, Take-Home, and Instrumentation rooms, audited Progress.jsx for coverage gaps. Found: none of the 5 new rooms appeared in completion bars, heatmap date stores, completionMap, `totalCompleted`/`grandTotal`, or `getNextSuggested()`. Fixed all gaps in V4.5.
+
+---
+
+## Part V — Bug & Routing Audits
+
+### Internal Bug Audit (Agent Cross-Check)
+**Version:** V3.2.2 — 2026-05
+**Type:** Feature/routing correctness audit (independent agent review)
+**Output:** 5 bugs found and fixed
+
+Spawned a separate agent to cross-check all routing, paywall, progress, and nav logic independently before community beta launch.
+
+| Bug | File | Description |
 |---|---|---|
-| Content integrity (automated) | V2.1, V2.1.1 | 2 |
-| Content quality (manual) | V2.2, V3.0, V3.2.1 | 3 |
-| Bug / routing / feature correctness | V3.2.2 | 1 |
-| Security / secret management | V3.2.4 | 1 |
-| Platform gap / coverage | V3.4 | 1 |
-| Mobile responsiveness | V3.6, V4.5 | 2 |
-| Build safety / syntax | V4.5.1 | 1 |
-| **Total** | | **11** |
+| BUG-01 | `App.jsx` | `onOpenItem` missing `product-design` and `prioritization` branches — "Now practice it" links silently did nothing |
+| BUG-02 | `CasesBrowser.jsx` | Hardcoded `isLocked={false}` — C03/C04 showed no paywall for locked users |
+| BUG-03 | `App.jsx` | `onResetAllProgress` missing `pal-code-progress-v1` and `pal-pri-progress-v1`; Product Design keys required prefix-iteration |
+| BUG-04 | `Header.jsx` | `product-design` had no nav entry — room was unreachable from header |
+| BUG-05 | `MetricsRunner.jsx` | Two `var(--teal)` remnants from V2.2 teal→green migration |
+
+---
+
+## Part VI — Security Audit
+
+### .env / Secret Management Audit
+**Version:** V3.2.4 — 2026-05
+**Type:** Security audit
+**Output:** `.gitignore` created, `.env.example` added
+
+Caught incidentally during PostHog analytics integration. Found that `.gitignore` was missing entirely — any `.env` file with a real PostHog key or Stripe key would have been committed to the public GitHub repo on next `git add .`.
+
+**Fix:** Added `.gitignore` with `.env` and `.env.*` (with `!.env.example` exception). Created `.env.example` documenting `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST`.
+
+---
+
+## Part VII — Mobile Responsiveness Audits
+
+### Mobile Audit — V4.5 Rooms (Post-V3.6)
+**Version:** V4.5 — 2026-05
+**Type:** Mobile responsiveness audit
+**Trigger:** User check: "has the app been mobile optimized?"
+
+Audited all rooms added since the V3.6 mobile pass. 8 files with overflow issues found — all shared the same root cause: `minmax(Xpx, 1fr)` where `X` exceeded the mobile viewport width.
+
+**Fix pattern:** `minmax(min(Xpx, 100%), 1fr)` — inner `min()` clamps minimum track size to viewport width.
+
+| File | Fix |
+|---|---|
+| `BIBrowser.jsx` | `380px` → `min(380px, 100%)` |
+| `InstrumentationBrowser.jsx` | `380px` → `min(380px, 100%)` |
+| `ChallengesBrowser.jsx` | `420px` → `min(400px, 100%)` |
+| `ScenarioRunner.jsx` | `360px` → `min(360px, 100%)` |
+| `PlaybookBrowser.jsx` | `340px` → `min(340px, 100%)` |
+| `BlogBrowser.jsx` | `340px` → `min(340px, 100%)` |
+| `MetricsBrowser.jsx` | `340px` → `min(340px, 100%)` |
+| `Progress.jsx` | `320px` → `min(320px, 100%)` |
+
+---
+
+### Mobile Audit — V3.6 (Monetization Readiness)
+**Version:** V3.6 — 2026-05
+**Type:** Mobile responsiveness audit
+**Trigger:** Pre-launch production-readiness pass before monetization rollout
+
+Full nav review on a ~375px viewport. Findings:
+- `Header.jsx` — nav buttons lacked minimum touch target size. Added `minHeight: 44px`, `flexShrink: 0`.
+- `Home.jsx`, `StatsFoundationsBrowser.jsx`, `StatsFoundationsRunner.jsx`, `StatsBrowser.jsx` — containers lacked `width: 100%` and `boxSizing: border-box`.
+- `Module01_WhatIsData.jsx` — drop-zones row lacked `flexWrap: wrap`, columns wouldn't stack.
+
+---
+
+## Part VIII — Build Safety Audits
+
+### Apostrophe / Syntax Safety Scan — V4.5.1
+**Version:** V4.5.1 — 2026-05
+**Type:** Build safety audit
+**Trigger:** Vercel build failure — `growthAnalyticsCases.js:146:206` — `Expected ',' or '}' but found 'Identifier'`
+
+Three unescaped apostrophes in `leadershipNote` single-quoted strings added during V4.4 Leadership Lens feature:
+
+| Line | Violation | Fix |
+|---|---|---|
+| 146 | `the product's natural cadence` | `product\'s` |
+| 227 | `new cohort's Day-7` | `cohort\'s` |
+| 603 | `growth team's attribution` | `team\'s` |
+
+Same class of bug previously caught in `challengesCases.js` (`Maps'`).
+
+**Rule:** All JS data files use single quotes only. Any apostrophe inside a single-quoted string must be escaped as `\'`. No template literals in data files — Vite/Rolldown will throw parse errors.
+
+---
+
+## Summary table
+
+| # | Audit | Version | Type |
+|---|---|---|---|
+| 1 | Platform Architecture (18 Qs) | Pre-V1.2 | Architecture / product |
+| 2 | Platform Risk Assessment (6 risks) | Pre-V1.2 | Product risk |
+| 3 | Platform Gap vs. Interview Frequency | V3.4 | Coverage / content |
+| 4 | Scenario Bank Taxonomy (15 families) | Pre-V1.2 | Content taxonomy |
+| 5 | Beta Open-Access Decision | V2.3 | Business / product |
+| 6 | Content Quality Bar Definition | Pre-V1.5 | Quality framework |
+| 7 | S01–S08 Review Scenario Rewrite | V4.1 | Content quality |
+| 8 | STAT01–08 + M01–M06 Enrichment | V4.1 | Content quality |
+| 9 | 117 Playbook Article Quality Audit | V3.2.1 | Content quality |
+| 10 | V3.0 Top-10 Article Voice Audit | V3.0 | Content quality |
+| 11 | Automated Content Integrity (63 checks) | V2.1 | Automated integrity |
+| 12 | 5-Failure Content Integrity Patch | V2.1.1 | Automated integrity |
+| 13 | V1.6 Stats Mechanic Audit | V1.6 | Content mechanic |
+| 14 | Design Direction + CSS System Audit | V1.1 | Visual / design system |
+| 15 | Color System Conflict (Metrics teal→green) | V2.2 | Visual consistency |
+| 16 | WCAG Contrast + Keyboard A11y Audit | V3.2.3 | Visual / accessibility |
+| 17 | First-Impression Pre-Beta Audit | V2.2 | UX / front-door |
+| 18 | Home Page Density Audit (×2) | V3.2.4 + V4.3 | UX / cognitive load |
+| 19 | Next-Case Nav Completeness Audit | V3.3.1 | Feature consistency |
+| 20 | Progress Page Coverage Audit | V4.5 | Feature coverage |
+| 21 | Internal Bug Audit (agent cross-check, 5 bugs) | V3.2.2 | Bug / routing |
+| 22 | .env Secret Management Audit | V3.2.4 | Security |
+| 23 | Mobile Audit — V4.5 rooms (8 files) | V4.5 | Mobile responsiveness |
+| 24 | Mobile Audit — V3.6 launch readiness | V3.6 | Mobile responsiveness |
+| 25 | Apostrophe Syntax Safety Scan | V4.5.1 | Build safety |
