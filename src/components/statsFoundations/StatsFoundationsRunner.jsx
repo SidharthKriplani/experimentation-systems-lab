@@ -40,6 +40,11 @@ import { Module17_MultipleTesting } from './modules/Module17_MultipleTesting.jsx
 import { Module18_RegressionToMean } from './modules/Module18_RegressionToMean.jsx';
 import { Module19_SelectionBias } from './modules/Module19_SelectionBias.jsx';
 import { Module20_PracticalSignificance } from './modules/Module20_PracticalSignificance.jsx';
+import { Module21_Counterfactuals } from './modules/Module21_Counterfactuals.jsx';
+import { Module22_DiD } from './modules/Module22_DiD.jsx';
+import { Module23_RD } from './modules/Module23_RD.jsx';
+import { Module24_SyntheticControl } from './modules/Module24_SyntheticControl.jsx';
+import { Module25_IV } from './modules/Module25_IV.jsx';
 import { track } from '../../utils/analytics.js';
 
 const MODULE_COMPONENTS = {
@@ -63,6 +68,11 @@ const MODULE_COMPONENTS = {
   sf18: Module18_RegressionToMean,
   sf19: Module19_SelectionBias,
   sf20: Module20_PracticalSignificance,
+  sf21: Module21_Counterfactuals,
+  sf22: Module22_DiD,
+  sf23: Module23_RD,
+  sf24: Module24_SyntheticControl,
+  sf25: Module25_IV,
 };
 
 const TOTAL = statsFoundationsModules.length;
@@ -313,7 +323,7 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
             This module is locked
           </div>
           <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.5rem', maxWidth: '360px', margin: '0 auto 1.5rem' }}>
-            Unlock full access to all 20 Stat Foundations modules, plus every other room in Product Analytics Lab.
+            Unlock full access to all 25 Stat Foundations modules, plus every other room in Product Analytics Lab.
           </div>
           <button
             onClick={onBack}

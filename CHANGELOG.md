@@ -4,6 +4,55 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.8.0] — 2026-05
+
+### Added — SF Causal Inference Expansion (sf21–sf25)
+
+Five new Advanced Stat Foundations modules completing the causal inference curriculum:
+
+- **sf21 — Counterfactuals & Causal Inference** (`Module21_Counterfactuals.jsx`) — 3-scenario classify exercise. Users label each comparison (observational, RCT, before/after) as Causal or Confounded and receive scored feedback with explanations. Establishes the foundational framing for all quasi-experimental methods.
+- **sf22 — Difference-in-Differences** (`Module22_DiD.jsx`) — Live DiD calculator with 4 editable inputs (T before, T after, C before, C after). 3 presets including the STAT17 example. Displays Treatment Δ, Control Δ (the "would-have-happened trend"), and DiD estimate with color coding and annotation calling out when raw Δ would be wrong.
+- **sf23 — Regression Discontinuity** (`Module23_RD.jsx`) — SVG visualization (460×200) of a credit score cutoff at 680. Two views: Outcome jump (scatter with causal jump bracket) and Score density (McCrary histogram). Toggle "Show manipulation" reveals bunching/dip pattern and red dots, demonstrating how RD validity breaks.
+- **sf24 — Synthetic Control** (`Module24_SyntheticControl.jsx`) — Donor pool selector with 3 candidates (Donor A: valid, low RMSE; Donor B: divergent pre-period; Donor C: previously treated). User picks the valid control, sees result + explanation. SVG time-series shows treated unit vs. highlighted donor with pre/post zones.
+- **sf25 — Instrumental Variables** (`Module25_IV.jsx`) — 3-conditions checker (Relevance, Exogeneity, Exclusion Restriction). Each condition has 3 options; user selects for each and receives feedback with testability notes. DAG diagram (Z → D → Y, with crossed Z → Y path) renders inline. Score summary on completion.
+
+### Wired — sfPrerequisites cross-links (Stats Room → SF)
+
+Added `sfPrerequisites` to all 11 Stats Room modules that previously lacked them:
+- STAT10 (novelty-effect): sf21, sf11
+- STAT11 (bayesian-stopping): sf11, sf12
+- STAT12 (metric-hierarchy): sf21, sf11
+- STAT13 (did-parallel-trends): sf21, sf22
+- STAT14 (rd-manipulation): sf21, sf23
+- STAT15 (synthetic-control-donor-pool): sf21, sf24
+- STAT16 (iv-exclusion-restriction): sf21, sf25
+- STAT17 (did): sf22
+- STAT18 (rdd): sf23
+- STAT19 (synthetic-control): sf24
+- STAT20 (iv-selection): sf25
+
+### Fixed — Module20 button
+
+- `Module20_PracticalSignificance.jsx` had "Complete ✓" (green) as its final button. Since sf21 now follows it, changed to "Next concept →" (yellow) to match all other non-terminal modules. sf25 retains "Complete ✓" as the new final module.
+
+### Updated — StatsFoundationsRunner locked screen
+
+- "all 20 Stat Foundations modules" → "all 25 Stat Foundations modules"
+
+### Files changed
+`src/components/statsFoundations/modules/Module20_PracticalSignificance.jsx` (button),
+`src/components/statsFoundations/modules/Module21_Counterfactuals.jsx` (new),
+`src/components/statsFoundations/modules/Module22_DiD.jsx` (new),
+`src/components/statsFoundations/modules/Module23_RD.jsx` (new),
+`src/components/statsFoundations/modules/Module24_SyntheticControl.jsx` (new),
+`src/components/statsFoundations/modules/Module25_IV.jsx` (new),
+`src/data/statsFoundationsModules.js` (sf21–sf25 data entries, comment updated),
+`src/components/statsFoundations/StatsFoundationsRunner.jsx` (5 imports, MODULE_COMPONENTS, locked screen copy),
+`src/data/statsModules.js` (sfPrerequisites added to STAT10–20),
+`CHANGELOG.md` (this entry)
+
+---
+
 ## [4.7.2] — 2026-05
 
 ### Fixed — Stats Room (audit #67)

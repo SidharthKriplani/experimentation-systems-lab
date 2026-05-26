@@ -691,6 +691,7 @@ export const statsModules = [
     linkedConceptIds: ['novelty-effect', 'confidence-interval', 'p-value'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf21', title: 'Counterfactuals & Causal Inference' }, { id: 'sf11', title: 'Hypothesis Testing' }],
 
     situation: {
       company: 'Prism Learning',
@@ -765,6 +766,7 @@ export const statsModules = [
     linkedConceptIds: ['bayesian-ab-testing', 'optional-stopping', 'pre-registration'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf11', title: 'Hypothesis Testing' }, { id: 'sf12', title: 'Power & Effect Size' }],
 
     situation: {
       company: 'Volta Fintech',
@@ -839,6 +841,7 @@ export const statsModules = [
     linkedConceptIds: ['metric-hierarchy', 'proxy-metric', 'guardrail-metric', 'p-value'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf21', title: 'Counterfactuals & Causal Inference' }, { id: 'sf11', title: 'Hypothesis Testing' }],
 
     situation: {
       company: 'Orbit Streaming',
@@ -909,6 +912,7 @@ export const statsModules = [
     linkedConceptIds: ['diff-in-diff', 'parallel-trends', 'selection-bias', 'causal-inference'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf21', title: 'Counterfactuals & Causal Inference' }, { id: 'sf22', title: 'Difference-in-Differences' }],
 
     situation: {
       company: 'Crafted',
@@ -979,6 +983,7 @@ export const statsModules = [
     linkedConceptIds: ['regression-discontinuity', 'mccrary-test', 'late', 'manipulation-bias'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf21', title: 'Counterfactuals & Causal Inference' }, { id: 'sf23', title: 'Regression Discontinuity' }],
 
     situation: {
       company: 'Volta',
@@ -1049,6 +1054,7 @@ export const statsModules = [
     linkedConceptIds: ['synthetic-control', 'sutva', 'donor-pool', 'pre-treatment-fit', 'counterfactual'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf21', title: 'Counterfactuals & Causal Inference' }, { id: 'sf24', title: 'Synthetic Control' }],
 
     situation: {
       company: 'Spark',
@@ -1119,6 +1125,7 @@ export const statsModules = [
     linkedConceptIds: ['instrumental-variables', 'exclusion-restriction', 'late', 'instrument-validity', 'confounding'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf21', title: 'Counterfactuals & Causal Inference' }, { id: 'sf25', title: 'Instrumental Variables' }],
 
     situation: {
       company: 'Prism',
@@ -1193,6 +1200,7 @@ export const statsModules = [
     linkedConceptIds: ['diff-in-diff', 'counterfactual', 'causal-inference'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf22', title: 'Difference-in-Differences' }],
 
     situation: {
       company: 'Threadline',
@@ -1267,6 +1275,7 @@ export const statsModules = [
     linkedConceptIds: ['regression-discontinuity', 'causal-inference', 'selection-bias'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf23', title: 'Regression Discontinuity' }],
 
     situation: {
       company: 'Crafted',
@@ -1341,6 +1350,7 @@ export const statsModules = [
     linkedConceptIds: ['synthetic-control', 'diff-in-diff', 'counterfactual', 'causal-inference'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf24', title: 'Synthetic Control' }],
 
     situation: {
       company: 'Spark',
@@ -1415,6 +1425,7 @@ export const statsModules = [
     linkedConceptIds: ['instrumental-variables', 'selection-bias', 'causal-inference', 'endogeneity'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
+    sfPrerequisites: [{ id: 'sf25', title: 'Instrumental Variables' }],
 
     situation: {
       company: 'Crafted',

@@ -1,0 +1,178 @@
+import { useState, useMemo } from 'react';
+
+const W = 460;
+const H = 200;
+const PAD = { left: 40, right: 20, top: 20, bottom: 30 };
+const INNER_W = W - PAD.left - PAD.right;
+const INNER_H = H - PAD.top - PAD.bottom;
+const CUTOFF_SCORE = 680;
+const SCORE_MIN = 620;
+const SCORE_MAX = 740;
+
+function scoreToX(score) {
+  return PAD.left + ((score - SCORE_MIN) / (SCORE_MAX - SCORE_MIN)) * INNER_W;
+}
+
+function rateToY(rate) {
+  return PAD.top + (1 - rate) * INNER_H;
+}
+
+// Generates outcome points (default rate or GMV rate depending on context)
+function genPoints(hasBunching) {
+  const pts = [];
+  for (let s = SCORE_MIN; s <= SCORE_MAX; s += 5) {
+    const isAbove = s >= CUTOFF_SCORE;
+    const baseRate = isAbove ? 0.62 : 0.45;
+    const noise = (Math.sin(s * 0.3) * 0.04);
+    // If bunching, add extra 'fake' dots just above cutoff
+    if (hasBunching && s >= CUTOFF_SCORE && s <= CUTOFF_SCORE + 15) {
+      pts.push({ score: s, rate: baseRate + noise + 0.05, fake: true });
+    } else {
+      pts.push({ score: s, rate: baseRate + noise, fake: false });
+    }
+  }
+  return pts;
+}
+
+// Density bar heights (simulating a histogram of score counts near cutoff)
+function genDensity(hasBunching) {
+  const bars = [];
+  for (let s = SCORE_MIN; s < SCORE_MAX; s += 10) {
+    let height = 0.4 + Math.abs(Math.sin(s * 0.15)) * 0.3;
+    if (hasBunching && s >= CUTOFF_SCORE && s < CUTOFF_SCORE + 20) {
+      height += 0.45; // spike just above cutoff
+    }
+    if (hasBunching && s >= CUTOFF_SCORE - 20 && s < CUTOFF_SCORE) {
+      height -= 0.2; // dip just below
+    }
+    bars.push({ score: s, height: Math.max(0.05, Math.min(1, height)) });
+  }
+  return bars;
+}
+
+export function Module23_RD({ module, onNext }) {
+  const [showManipulation, setShowManipulation] = useState(false);
+  const [view, setView] = useState('outcome'); // 'outcome' | 'density'
+
+  const outcomePoints = useMemo(() => genPoints(showManipulation), [showManipulation]);
+  const densityBars = useMemo(() => genDensity(showManipulation), [showManipulation]);
+  const cutoffX = scoreToX(CUTOFF_SCORE);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+      <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
+        Regression Discontinuity (RD) exploits a <strong>sharp threshold rule</strong>: units just
+        above vs. just below the cutoff are near-identical except for treatment assignment. This
+        near-random assignment around the threshold makes the comparison almost as credible as a
+        randomized experiment — but only if units cannot control which side they land on.
+      </p>
+
+      {/* Controls */}
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>View:</span>
+        {['outcome', 'density'].map(v => (
+          <button key={v} onClick={() => setView(v)} style={{ fontSize: '0.8rem', padding: '0.3rem 0.75rem', borderRadius: 6, border: `1px solid ${view === v ? 'var(--accent-border)' : 'var(--border)'}`, background: view === v ? 'var(--accent-bg)' : 'var(--surface)', color: view === v ? 'var(--accent)' : 'var(--text-secondary)', cursor: 'pointer', fontWeight: view === v ? 700 : 400 }}>
+            {v === 'outcome' ? 'Outcome jump' : 'Score density (McCrary)'}
+          </button>
+        ))}
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', marginLeft: 'auto', fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+          <input type="checkbox" checked={showManipulation} onChange={e => setShowManipulation(e.target.checked)} style={{ accentColor: 'var(--red)', width: 14, height: 14 }} />
+          Show manipulation
+        </label>
+      </div>
+
+      {/* SVG visualisation */}
+      <div style={{ background: 'var(--surface-2)', border: `1.5px solid ${showManipulation ? 'var(--red-border)' : 'var(--border)'}`, borderRadius: 'var(--radius)', padding: '0.75rem', overflowX: 'auto' }}>
+        <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxWidth: W, display: 'block', margin: '0 auto' }}>
+          {/* Background zones */}
+          <rect x={PAD.left} y={PAD.top} width={cutoffX - PAD.left} height={INNER_H} fill="var(--surface)" opacity={0.6} />
+          <rect x={cutoffX} y={PAD.top} width={PAD.left + INNER_W - (cutoffX - PAD.left)} height={INNER_H} fill="var(--accent-bg)" opacity={0.4} />
+
+          {/* Threshold line */}
+          <line x1={cutoffX} y1={PAD.top - 5} x2={cutoffX} y2={PAD.top + INNER_H} stroke={showManipulation ? 'var(--red)' : 'var(--accent)'} strokeWidth={2} strokeDasharray="5,3" />
+          <text x={cutoffX + 4} y={PAD.top + 12} fontSize={9} fill={showManipulation ? 'var(--red)' : 'var(--accent)'} fontWeight={700}>{showManipulation ? '⚠ 680 cutoff' : '680 cutoff'}</text>
+
+          {view === 'outcome' ? (
+            <>
+              {/* Outcome dots */}
+              {outcomePoints.map((p, i) => (
+                <circle key={i} cx={scoreToX(p.score)} cy={rateToY(p.rate)} r={4}
+                  fill={p.fake ? 'var(--red)' : p.score >= CUTOFF_SCORE ? 'var(--accent)' : 'var(--text-muted)'}
+                  opacity={p.fake ? 0.95 : 0.75}
+                />
+              ))}
+              {/* Discontinuity bracket */}
+              {!showManipulation && (
+                <>
+                  <line x1={cutoffX - 1} y1={rateToY(0.45)} x2={cutoffX - 1} y2={rateToY(0.62)} stroke="var(--green)" strokeWidth={2} />
+                  <text x={cutoffX - 30} y={rateToY(0.535)} fontSize={9} fill="var(--green)" fontWeight={700} textAnchor="middle">Causal jump</text>
+                </>
+              )}
+              {/* Axis labels */}
+              <text x={PAD.left} y={H - 4} fontSize={8} fill="var(--text-muted)">620</text>
+              <text x={W - PAD.right} y={H - 4} fontSize={8} fill="var(--text-muted)" textAnchor="end">740</text>
+              <text x={cutoffX} y={H - 4} fontSize={8} fill="var(--text-muted)" textAnchor="middle">Credit score →</text>
+              <text x={PAD.left - 8} y={PAD.top + INNER_H / 2} fontSize={8} fill="var(--text-muted)" textAnchor="middle" transform={`rotate(-90, ${PAD.left - 8}, ${PAD.top + INNER_H / 2})`}>Conversion rate</text>
+              {/* Zone labels */}
+              <text x={(PAD.left + cutoffX) / 2} y={PAD.top + 14} fontSize={9} fill="var(--text-muted)" textAnchor="middle">Below cutoff</text>
+              <text x={(cutoffX + W - PAD.right) / 2} y={PAD.top + 14} fontSize={9} fill="var(--accent)" fontWeight={600} textAnchor="middle">Above cutoff</text>
+            </>
+          ) : (
+            <>
+              {/* Density bars (McCrary test visualization) */}
+              {densityBars.map((b, i) => {
+                const barW = INNER_W / densityBars.length - 1;
+                const barH = b.height * (INNER_H * 0.8);
+                const bx = scoreToX(b.score);
+                const isBunched = showManipulation && b.score >= CUTOFF_SCORE && b.score < CUTOFF_SCORE + 20;
+                const isDepleted = showManipulation && b.score >= CUTOFF_SCORE - 20 && b.score < CUTOFF_SCORE;
+                const fillColor = isBunched ? 'var(--red)' : isDepleted ? 'var(--yellow)' : b.score >= CUTOFF_SCORE ? 'var(--accent)' : 'var(--teal)';
+                return (
+                  <rect key={i} x={bx} y={PAD.top + INNER_H - barH} width={barW} height={barH}
+                    fill={fillColor} opacity={0.7} rx={1} />
+                );
+              })}
+              {/* Axis labels */}
+              <text x={cutoffX} y={H - 4} fontSize={8} fill="var(--text-muted)" textAnchor="middle">Credit score →</text>
+              <text x={PAD.left - 8} y={PAD.top + INNER_H / 2} fontSize={8} fill="var(--text-muted)" textAnchor="middle" transform={`rotate(-90, ${PAD.left - 8}, ${PAD.top + INNER_H / 2})`}>Count</text>
+              {showManipulation && (
+                <>
+                  <text x={(cutoffX + cutoffX + 30) / 2} y={PAD.top + 14} fontSize={9} fill="var(--red)" fontWeight={700} textAnchor="middle">Bunching ↑</text>
+                  <text x={(cutoffX - 20 + cutoffX) / 2 - 15} y={PAD.top + 14} fontSize={9} fill="var(--yellow-text)" fontWeight={700} textAnchor="middle">Dip ↓</text>
+                </>
+              )}
+              {!showManipulation && (
+                <text x={cutoffX} y={PAD.top + 14} fontSize={9} fill="var(--green)" fontWeight={700} textAnchor="middle">Smooth ✓</text>
+              )}
+            </>
+          )}
+        </svg>
+        <div style={{ fontSize: '0.75rem', color: showManipulation ? 'var(--red)' : 'var(--text-muted)', textAlign: 'center', marginTop: '0.35rem', fontWeight: showManipulation ? 700 : 400 }}>
+          {view === 'outcome'
+            ? (showManipulation ? 'Red dots = manipulators above threshold who are systematically different — RD comparison is contaminated.' : 'Sharp jump at 680 is the causal estimate (LATE). Units just below are the counterfactual for units just above.')
+            : (showManipulation ? 'McCrary density test: statistically significant bunching above cutoff + dip below = manipulation detected. RD is not valid.' : 'Smooth density through threshold = no manipulation. Local randomization assumption is credible.')
+          }
+        </div>
+      </div>
+
+      {/* Key Insight */}
+      <div style={{ background: 'var(--yellow-bg)', border: '1.5px solid var(--yellow-border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--yellow-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.88rem', color: 'var(--yellow-text)', lineHeight: 1.6 }}>{module?.keyInsight}</div>
+      </div>
+
+      {/* Connection */}
+      <div style={{ background: 'var(--accent-bg)', border: '1.5px solid var(--accent-border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{module?.connection}</div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onNext} style={{ padding: '0.7rem 1.75rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', boxShadow: 'var(--shadow)', letterSpacing: '0.02em' }}>
+          Next concept →
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,279 @@
+import { useState } from 'react';
+
+const W = 460;
+const H = 200;
+const PAD = { left: 40, right: 20, top: 20, bottom: 30 };
+const INNER_W = W - PAD.left - PAD.right;
+const INNER_H = H - PAD.top - PAD.bottom;
+const INTERVENTION_T = 8; // time index of intervention (out of 0..14)
+const T_POINTS = 15;
+
+// Pre-defined synthetic control candidates
+const DONORS = [
+  {
+    id: 'A',
+    label: 'Donor A',
+    description: 'Similar market, similar pre-period trend. Pre-period RMSE: 0.8pp.',
+    prePeriodRMSE: 0.8,
+    valid: true,
+    color: 'var(--green)',
+    borderColor: 'var(--green-border)',
+    bgColor: 'var(--green-bg)',
+    // pre-period tracks treated closely, post drifts naturally
+    getY: (t) => {
+      const base = 32 + t * 0.4;
+      const noise = Math.sin(t * 1.1) * 0.8;
+      return base + noise;
+    },
+  },
+  {
+    id: 'B',
+    label: 'Donor B',
+    description: 'Different trajectory pre-period. Pre-period RMSE: 6.1pp.',
+    prePeriodRMSE: 6.1,
+    valid: false,
+    color: 'var(--red)',
+    borderColor: 'var(--red-border)',
+    bgColor: 'var(--red-bg)',
+    // diverges badly pre-period
+    getY: (t) => {
+      const base = 38 - t * 0.3;
+      const noise = Math.cos(t * 0.7) * 1.5;
+      return base + noise;
+    },
+  },
+  {
+    id: 'C',
+    label: 'Donor C',
+    description: 'Tracks pre-period trend but received similar intervention at t=6.',
+    prePeriodRMSE: 0.9,
+    valid: false,
+    color: 'var(--yellow-text)',
+    borderColor: 'var(--yellow-border)',
+    bgColor: 'var(--yellow-bg)',
+    // close pre-period but already treated earlier — exclusion restriction violated
+    getY: (t) => {
+      const base = 32 + t * 0.4;
+      const noise = Math.sin(t * 0.9) * 0.7;
+      const earlyTreatment = t >= 6 ? (t - 6) * 0.8 : 0;
+      return base + noise + earlyTreatment;
+    },
+  },
+];
+
+// Treated unit
+function treatedY(t) {
+  const base = 32 + t * 0.4;
+  const noise = Math.sin(t * 1.1) * 0.8;
+  const lift = t >= INTERVENTION_T ? (t - INTERVENTION_T + 1) * 1.8 : 0;
+  return base + noise + lift;
+}
+
+function tToX(t) {
+  return PAD.left + (t / (T_POINTS - 1)) * INNER_W;
+}
+
+function yToSvg(y, minY, maxY) {
+  return PAD.top + (1 - (y - minY) / (maxY - minY)) * INNER_H;
+}
+
+function buildPath(pts, minY, maxY) {
+  return pts
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${tToX(p.t).toFixed(1)} ${yToSvg(p.y, minY, maxY).toFixed(1)}`)
+    .join(' ');
+}
+
+export function Module24_SyntheticControl({ module, onNext }) {
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+
+  function handleSelect(id) {
+    if (revealed) return;
+    setSelected(id);
+  }
+
+  function handleReveal() {
+    if (!selected) return;
+    setRevealed(true);
+  }
+
+  // Build all time-series data
+  const allT = Array.from({ length: T_POINTS }, (_, i) => i);
+  const treatedPts = allT.map(t => ({ t, y: treatedY(t) }));
+
+  const donorPts = DONORS.map(d => ({
+    id: d.id,
+    pts: allT.map(t => ({ t, y: d.getY(t) })),
+  }));
+
+  // Compute y-range for SVG scaling
+  const allYValues = [
+    ...treatedPts.map(p => p.y),
+    ...DONORS.flatMap(d => allT.map(t => d.getY(t))),
+  ];
+  const minY = Math.min(...allYValues) - 2;
+  const maxY = Math.max(...allYValues) + 2;
+
+  const selectedDonor = DONORS.find(d => d.id === selected);
+  const interventionX = tToX(INTERVENTION_T);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+      <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
+        Synthetic Control builds a <strong>weighted combination of untreated units</strong> that best
+        matches the treated unit's pre-period trajectory. The counterfactual is the synthetic trend
+        post-treatment. The key validity check: the donor must <em>not</em> itself be treated, and
+        must track the target closely before the intervention.
+      </p>
+
+      {/* Donor selection */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          Pick the valid synthetic control:
+        </div>
+        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+          {DONORS.map(d => {
+            const isSelected = selected === d.id;
+            const showResult = revealed && isSelected;
+            const borderColor = showResult
+              ? (d.valid ? 'var(--green-border)' : 'var(--red-border)')
+              : isSelected ? 'var(--accent-border)' : 'var(--border)';
+            const bg = showResult
+              ? (d.valid ? 'var(--green-bg)' : 'var(--red-bg)')
+              : isSelected ? 'var(--accent-bg)' : 'var(--surface-2)';
+
+            return (
+              <button
+                key={d.id}
+                onClick={() => handleSelect(d.id)}
+                style={{
+                  flex: 1, minWidth: 130, padding: '0.7rem 0.9rem', borderRadius: 'var(--radius)',
+                  border: `1.5px solid ${borderColor}`, background: bg,
+                  color: showResult ? (d.valid ? 'var(--green)' : 'var(--red)') : isSelected ? 'var(--accent)' : 'var(--text-secondary)',
+                  cursor: revealed ? 'default' : 'pointer', textAlign: 'left', transition: 'all 0.15s',
+                }}
+              >
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, marginBottom: '0.2rem' }}>{d.label}</div>
+                <div style={{ fontSize: '0.75rem', lineHeight: 1.4 }}>{d.description}</div>
+              </button>
+            );
+          })}
+        </div>
+        {!revealed && (
+          <button
+            onClick={handleReveal}
+            disabled={!selected}
+            style={{
+              alignSelf: 'flex-start', padding: '0.4rem 1.1rem', borderRadius: 6, fontSize: '0.82rem',
+              fontWeight: 700, border: 'none',
+              background: selected ? 'var(--accent)' : 'var(--border)',
+              color: selected ? '#fff' : 'var(--text-muted)', cursor: selected ? 'pointer' : 'default',
+            }}
+          >
+            Check answer
+          </button>
+        )}
+        {revealed && (
+          <div style={{ fontSize: '0.85rem', color: selectedDonor?.valid ? 'var(--green)' : 'var(--red)', fontWeight: 700 }}>
+            {selectedDonor?.valid
+              ? '✓ Correct — Donor A has the lowest pre-period RMSE and was not itself treated. Good synthetic control.'
+              : selected === 'B'
+                ? '✗ Donor B diverges sharply pre-period — it doesn\'t track the treated unit, so post-period divergence is uninterpretable as a causal effect.'
+                : '✗ Donor C has good pre-period fit, but it received a similar intervention at t=6. Using it as a counterfactual contaminates the estimate — the "control" is itself treated.'}
+          </div>
+        )}
+      </div>
+
+      {/* SVG chart */}
+      <div style={{ background: 'var(--surface-2)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.75rem', overflowX: 'auto' }}>
+        <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxWidth: W, display: 'block', margin: '0 auto' }}>
+          {/* Pre/post zones */}
+          <rect x={PAD.left} y={PAD.top} width={interventionX - PAD.left} height={INNER_H} fill="var(--surface)" opacity={0.5} />
+          <rect x={interventionX} y={PAD.top} width={W - PAD.right - interventionX} height={INNER_H} fill="var(--accent-bg)" opacity={0.35} />
+
+          {/* Intervention line */}
+          <line x1={interventionX} y1={PAD.top - 4} x2={interventionX} y2={PAD.top + INNER_H}
+            stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="5,3" />
+          <text x={interventionX + 3} y={PAD.top + 10} fontSize={8} fill="var(--accent)" fontWeight={700}>Intervention</text>
+
+          {/* Donor lines */}
+          {DONORS.map(d => {
+            const pts = donorPts.find(dp => dp.id === d.id).pts;
+            const isHighlighted = selected === d.id;
+            return (
+              <path
+                key={d.id}
+                d={buildPath(pts, minY, maxY)}
+                fill="none"
+                stroke={isHighlighted ? d.color : 'var(--border)'}
+                strokeWidth={isHighlighted ? 2 : 1}
+                opacity={isHighlighted ? 0.9 : 0.5}
+                strokeDasharray={isHighlighted ? 'none' : '4,3'}
+              />
+            );
+          })}
+
+          {/* Treated unit line */}
+          <path
+            d={buildPath(treatedPts, minY, maxY)}
+            fill="none"
+            stroke="var(--text)"
+            strokeWidth={2.5}
+            opacity={0.9}
+          />
+
+          {/* Effect arrow (post-intervention, if valid donor selected and revealed) */}
+          {revealed && selected === 'A' && (() => {
+            const lastT = T_POINTS - 1;
+            const donorY = DONORS[0].getY(lastT);
+            const treatY = treatedY(lastT);
+            const x = tToX(lastT) - 4;
+            const y1 = yToSvg(donorY, minY, maxY);
+            const y2 = yToSvg(treatY, minY, maxY);
+            return (
+              <>
+                <line x1={x} y1={y1} x2={x} y2={y2} stroke="var(--green)" strokeWidth={2} />
+                <text x={x - 24} y={(y1 + y2) / 2 + 4} fontSize={8} fill="var(--green)" fontWeight={700} textAnchor="middle">Effect</text>
+              </>
+            );
+          })()}
+
+          {/* Legend */}
+          <line x1={PAD.left} y1={PAD.top + 8} x2={PAD.left + 18} y2={PAD.top + 8} stroke="var(--text)" strokeWidth={2.5} />
+          <text x={PAD.left + 22} y={PAD.top + 12} fontSize={8} fill="var(--text)" fontWeight={700}>Treated unit</text>
+
+          {/* Axis labels */}
+          <text x={PAD.left} y={H - 4} fontSize={8} fill="var(--text-muted)">t=0</text>
+          <text x={W - PAD.right} y={H - 4} fontSize={8} fill="var(--text-muted)" textAnchor="end">t=14</text>
+          <text x={(PAD.left + W - PAD.right) / 2} y={H - 4} fontSize={8} fill="var(--text-muted)" textAnchor="middle">Time →</text>
+          <text x={PAD.left - 8} y={PAD.top + INNER_H / 2} fontSize={8} fill="var(--text-muted)" textAnchor="middle"
+            transform={`rotate(-90, ${PAD.left - 8}, ${PAD.top + INNER_H / 2})`}>Metric (%)</text>
+          <text x={(PAD.left + interventionX) / 2} y={PAD.top + 18} fontSize={8} fill="var(--text-muted)" textAnchor="middle">Pre-period</text>
+          <text x={(interventionX + W - PAD.right) / 2} y={PAD.top + 18} fontSize={8} fill="var(--accent)" fontWeight={600} textAnchor="middle">Post-period</text>
+        </svg>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.3rem' }}>
+          Hover / select a donor to highlight it. Causal effect = gap between treated and synthetic control post-intervention.
+        </div>
+      </div>
+
+      {/* Key Insight */}
+      <div style={{ background: 'var(--yellow-bg)', border: '1.5px solid var(--yellow-border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--yellow-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.88rem', color: 'var(--yellow-text)', lineHeight: 1.6 }}>{module?.keyInsight}</div>
+      </div>
+
+      {/* Connection */}
+      <div style={{ background: 'var(--accent-bg)', border: '1.5px solid var(--accent-border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{module?.connection}</div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onNext} style={{ padding: '0.7rem 1.75rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', boxShadow: 'var(--shadow)', letterSpacing: '0.02em' }}>
+          Next concept →
+        </button>
+      </div>
+    </div>
+  );
+}

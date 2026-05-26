@@ -1,5 +1,5 @@
 // Product Analytics Lab — Stat Foundations Room Module Data
-// 13 sequential modules building statistical intuition from ground up toward experimentation
+// 25 sequential modules building statistical intuition from ground up toward experimentation
 
 export const statsFoundationsModules = [
   {
@@ -247,6 +247,56 @@ export const statsFoundationsModules = [
     keyInsight: 'With 10M users, a 0.001% lift is statistically significant but worth nothing. With 1,000 users, a 5% lift might not reach significance yet. Effect size + business impact calculation must accompany every p-value.',
     connection: 'The capstone concept: you now have all the tools — distributions, CLT, CI, hypothesis testing, power, MDE — to evaluate whether a result is both statistically trustworthy and practically worth acting on.',
     playbookLinks: [{ id: 'practical-vs-statistical', label: 'Practical vs Statistical Significance' }, { id: 'power-mde', label: 'Power & MDE' }, { id: 'p-values', label: 'p-values' }],
+  },
+  {
+    id: 'sf21', index: 21, title: 'Counterfactuals & Causal Inference',
+    subtitle: 'Why you can\'t infer causation from correlation — and what makes an A/B test different',
+    difficulty: 'Advanced',
+    tags: ['causal inference', 'counterfactual', 'confounding', 'randomization', 'before-after'],
+    estimatedMin: 7, isFree: false,
+    keyInsight: 'The fundamental problem of causal inference: you can never observe both outcomes for the same unit. A/B tests solve this by creating a group that IS the counterfactual through random assignment.',
+    connection: 'Every non-experimental comparison — observational data, before/after, top vs. bottom users — has a confounding risk. Randomization is what makes the A/B test result actionable.',
+    playbookLinks: [{ id: 'srm', label: 'SRM' }, { id: 'hte', label: 'Heterogeneous Treatment Effects' }],
+  },
+  {
+    id: 'sf22', index: 22, title: 'Difference-in-Differences',
+    subtitle: 'Stripping out the trend to isolate the causal effect',
+    difficulty: 'Advanced',
+    tags: ['diff-in-diff', 'DiD', 'parallel trends', 'quasi-experiment', 'causal inference'],
+    estimatedMin: 8, isFree: false,
+    keyInsight: 'DiD removes time trends that would have happened regardless. The control group isn\'t a comparison — it\'s a trend-adjuster. Validity hinges entirely on whether the parallel trends assumption holds.',
+    connection: 'When you can\'t randomize — staged rollouts, regional launches, policy changes — DiD is the go-to tool. It\'s how you avoid attributing a seasonal lift to your feature.',
+    playbookLinks: [{ id: 'diff-in-diff', label: 'Difference-in-Differences' }],
+  },
+  {
+    id: 'sf23', index: 23, title: 'Regression Discontinuity',
+    subtitle: 'Exploiting a threshold to create near-random assignment',
+    difficulty: 'Advanced',
+    tags: ['regression discontinuity', 'RD', 'threshold', 'McCrary test', 'manipulation'],
+    estimatedMin: 8, isFree: false,
+    keyInsight: 'RD is valid only when units cannot precisely control which side of the cutoff they land on. A McCrary density test — looking for bunching just above the threshold — is the primary manipulation check.',
+    connection: 'Used when you have a hard rule that gates access: credit scores, test score thresholds, quota-based program eligibility. The LATE estimate applies only near the cutoff — not to the broader population.',
+    playbookLinks: [{ id: 'regression-discontinuity', label: 'Regression Discontinuity' }],
+  },
+  {
+    id: 'sf24', index: 24, title: 'Synthetic Control',
+    subtitle: 'Building a data-driven counterfactual from donor units',
+    difficulty: 'Advanced',
+    tags: ['synthetic control', 'counterfactual', 'donor pool', 'pre-period fit', 'quasi-experiment'],
+    estimatedMin: 8, isFree: false,
+    keyInsight: 'A synthetic control is only as good as its pre-period fit. If the donor unit doesn\'t track the treated unit before the intervention, any post-period gap is uninterpretable. Also: the donor must itself be untreated.',
+    connection: 'Used for single-unit interventions (one market, one country, one city) where you can\'t randomize. Common in geo-based product experiments and policy evaluation.',
+    playbookLinks: [{ id: 'synthetic-control', label: 'Synthetic Control' }],
+  },
+  {
+    id: 'sf25', index: 25, title: 'Instrumental Variables',
+    subtitle: 'Finding clean causal variation when treatment is endogenous',
+    difficulty: 'Advanced',
+    tags: ['instrumental variables', 'IV', 'LATE', 'exclusion restriction', 'endogeneity'],
+    estimatedMin: 9, isFree: false,
+    keyInsight: 'IV isolates the causal effect using only the variation in treatment driven by the instrument. Weak instruments inflate standard errors. Violations of the exclusion restriction silently bias estimates — you can\'t test this statistically.',
+    connection: 'IV is the last resort when randomization fails and other quasi-experiments don\'t apply. In product analytics, encouragement designs (randomly offering a feature) are a form of IV — intent-to-treat vs. TOT.',
+    playbookLinks: [{ id: 'instrumental-variables', label: 'Instrumental Variables' }],
   },
 ];
 
