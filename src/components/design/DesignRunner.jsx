@@ -4,8 +4,8 @@ import { DesignFieldGroup } from './DesignFieldGroup.jsx';
 import { DesignScoreReveal } from './DesignScoreReveal.jsx';
 import { DesignDebriefPanel } from './DesignDebriefPanel.jsx';
 import { ConceptDrawer } from '../concepts/ConceptDrawer.jsx';
-import {
 import { track } from '../../utils/analytics.js';
+import {
   saveDesignAnswers, saveCompletedPhases, saveDesignResult,
   clearDesignProgress, computeDesignScore,
 } from '../../utils/designProgress.js';

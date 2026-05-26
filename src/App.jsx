@@ -752,6 +752,7 @@ export default function App() {
               ? () => openStatFoundationsModule(nextStatFoundationsId)
               : () => setPage('stat-foundations')}
             unlocked={unlocked}
+            onNavigate={navigate}
           />
         )}
 

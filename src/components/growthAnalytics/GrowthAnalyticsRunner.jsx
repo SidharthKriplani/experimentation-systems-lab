@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { saveGrowthAnalyticsProgress, getGrowthAnalyticsProgress } from '../../utils/growthAnalyticsProgress.js';
 import { addBookmark, removeBookmark, isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
-import {
 import { track } from '../../utils/analytics.js';
+import {
   ResponsiveContainer,
   BarChart, Bar,
   LineChart, Line,

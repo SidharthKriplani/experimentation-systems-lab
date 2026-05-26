@@ -73,7 +73,7 @@ const DIFFICULTY_STYLE = {
   Advanced:     { color: 'var(--red)',    bg: 'var(--red-bg)',    border: 'var(--red-border)' },
 };
 
-export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
+export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked, onNavigate }) {
   const module = statsFoundationsModules.find(m => m.id === moduleId);
   const ModuleComponent = MODULE_COMPONENTS[moduleId];
 
@@ -313,7 +313,7 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
             This module is locked
           </div>
           <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.5rem', maxWidth: '360px', margin: '0 auto 1.5rem' }}>
-            Unlock full access to all 13 Stat Foundations modules, plus every other room in Product Analytics Lab.
+            Unlock full access to all 20 Stat Foundations modules, plus every other room in Product Analytics Lab.
           </div>
           <button
             onClick={onBack}
@@ -343,7 +343,16 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>📖 Playbook Reading</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {module.playbookLinks.map(link => (
-                    <span key={link.id} style={{ fontSize: 13, color: 'var(--accent)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 6, padding: '4px 10px', cursor: 'default' }}>{link.label}</span>
+                    <span
+                      key={link.id}
+                      onClick={() => onNavigate && onNavigate('playbook')}
+                      title="Open Playbook"
+                      style={{ fontSize: 13, color: 'var(--accent)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 6, padding: '4px 10px', cursor: onNavigate ? 'pointer' : 'default', textDecoration: 'none', transition: 'opacity 0.15s' }}
+                      onMouseEnter={e => { if (onNavigate) e.currentTarget.style.opacity = '0.75'; }}
+                      onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+                    >
+                      {link.label} →
+                    </span>
                   ))}
                 </div>
               </div>
