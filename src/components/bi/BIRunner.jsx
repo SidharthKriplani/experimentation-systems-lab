@@ -1,6 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { saveBIProgress, getBIProgress } from '../../utils/biProgress.js';
 import { track } from '../../utils/analytics.js';
+
+const ROOM_KEY = 'bi';
+const NOTES_KEY = 'pal-notes-v1';
+function loadNote(room, id) {
+  try { const n = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}'); return n[room + ':' + id] || ''; } catch { return ''; }
+}
+function saveNote(room, id, text) {
+  try { const n = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}'); n[room + ':' + id] = text; localStorage.setItem(NOTES_KEY, JSON.stringify(n)); } catch {}
+}
 
 const DIFF_CFG = {
   analyst: { label: 'Analyst', color: 'var(--blue-text)', bg: 'var(--blue-bg)',    border: 'var(--blue-border)' },
@@ -242,6 +251,8 @@ function RevealScreen({ caseData, onBack, onNext, unlocked }) {
   const existing = getBIProgress(caseData.id);
   const [rating, setRating] = useState(existing?.rating || null);
   const [checked, setChecked] = useState([false, false, false]);
+  const [userNote, setUserNote] = useState(() => loadNote(ROOM_KEY, caseData.id));
+  const [noteSaved, setNoteSaved] = useState(false);
 
   function handleRate(r) {
     setRating(r);
@@ -477,6 +488,32 @@ function RevealScreen({ caseData, onBack, onNext, unlocked }) {
           })}
         </div>
       </div>
+
+            <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
+                ✏️ Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
+              </div>
+              <textarea
+                value={userNote}
+                onChange={e => { setUserNote(e.target.value); setNoteSaved(false); }}
+                placeholder="Jot your thinking before revealing the answer..."
+                style={{
+                  width: '100%', minHeight: 72, padding: '10px 12px', background: 'var(--bg)',
+                  border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
+                  fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                  boxSizing: 'border-box',
+                }}
+              />
+              <button
+                onClick={() => { saveNote(ROOM_KEY, caseData.id, userNote); setNoteSaved(true); }}
+                style={{
+                  marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
+                  border: '1px solid ' + (noteSaved ? 'var(--green-border)' : 'var(--border)'),
+                  borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                  color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
+                }}
+              >{noteSaved ? '✓ Saved' : 'Save note'}</button>
+            </div>
 
       {/* Actions */}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>

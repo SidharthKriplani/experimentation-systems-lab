@@ -1,9 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MetricChoicePanel } from './MetricChoicePanel.jsx';
 import { MetricScoreReveal } from './MetricScoreReveal.jsx';
 import { MetricDebriefPanel } from './MetricDebriefPanel.jsx';
 import { saveMetricsAttempt, clearMetricsProgress } from '../../utils/metricsProgress.js';
 import { track } from '../../utils/analytics.js';
+
+const ROOM_KEY = 'metrics';
+const NOTES_KEY = 'pal-notes-v1';
+function loadNote(room, id) {
+  try { const n = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}'); return n[room + ':' + id] || ''; } catch { return ''; }
+}
+function saveNote(room, id, text) {
+  try { const n = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}'); n[room + ':' + id] = text; localStorage.setItem(NOTES_KEY, JSON.stringify(n)); } catch {}
+}
 
 function computeScore(metricCase, fieldChoices) {
   let score = 0;
@@ -38,6 +47,9 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
       ? computeScore(metricCase, savedProgress.fieldChoices)
       : null
   );
+  const [userNote, setUserNote] = useState(() => loadNote(ROOM_KEY, metricCase.id));
+  const [noteSaved, setNoteSaved] = useState(false);
+  useEffect(() => { setUserNote(loadNote(ROOM_KEY, metricCase.id)); setNoteSaved(false); }, [metricCase.id]);
 
   const allAnswered = metricCase.fields.every(f => fieldChoices[f.id]);
 
@@ -159,6 +171,31 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
       {/* Debrief view */}
       {view === 'debrief' && (
         <div style={{ marginTop: '1.25rem' }}>
+          <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
+              ✏️ Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
+            </div>
+            <textarea
+              value={userNote}
+              onChange={e => { setUserNote(e.target.value); setNoteSaved(false); }}
+              placeholder="Jot your thinking — what stood out, what you missed, what to remember..."
+              style={{
+                width: '100%', minHeight: 72, padding: '10px 12px', background: 'var(--bg)',
+                border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
+                fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                boxSizing: 'border-box',
+              }}
+            />
+            <button
+              onClick={() => { saveNote(ROOM_KEY, metricCase.id, userNote); setNoteSaved(true); }}
+              style={{
+                marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
+                border: '1px solid ' + (noteSaved ? 'var(--green-border)' : 'var(--border)'),
+                borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
+              }}
+            >{noteSaved ? '✓ Saved' : 'Save note'}</button>
+          </div>
           <MetricDebriefPanel
             metricCase={metricCase}
             onRetry={handleRetry}

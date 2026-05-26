@@ -4,6 +4,24 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.8.3] — 2026-05
+
+### Added — Per-case notes in 4 runners + Take-Home expansion to 10 cases
+
+**Per-case persistent notes** added to GrowthAnalyticsRunner, BIRunner, InstrumentationRunner, and MetricsRunner. Notes use the shared `pal-notes-v1` localStorage key (namespaced as `room:id`) — same pattern already in StatsRunner, RCARunner, BehavioralRunner, EstimationRunner. Notes appear before the reveal button in GA/Instrumentation/BI runners, and at the top of the debrief section in MetricsRunner.
+
+**Take-Home Room expanded from 5 to 10 cases:**
+- TH06 — Search Relevance Degradation (Google/DS/senior) — position-1 CTR decomposition, zero-click analysis, query-type segmentation, SERP feature cannibalization
+- TH07 — Premium Feature Adoption Plateau (Notion/PM/senior) — activation vs retention distinction, habit trigger design, B2B SaaS solo vs team segmentation
+- TH08 — Marketplace Liquidity Collapse in New Market (Upwork/both/staff) — supply quality vs quantity, GMV impact, pricing mismatch in SEA, trust bootstrapping
+- TH09 — Email Engagement Collapse Post-Redesign (Substack/DS/senior) — deliverability audit first, counterfactual construction, email client rendering segmentation, rollback experiment
+- TH10 — Activation Drop After Onboarding Redesign (Duolingo/both/analyst, FREE) — D1 vs D7 paradox, commitment psychology, speed vs personalization experiment
+
+### Files changed
+`src/components/growthAnalytics/GrowthAnalyticsRunner.jsx`, `src/components/bi/BIRunner.jsx`, `src/components/instrumentation/InstrumentationRunner.jsx`, `src/components/metrics/MetricsRunner.jsx` (notes added), `src/data/takehomeCases.js` (TH06–TH10), `CHANGELOG.md`
+
+---
+
 ## [4.8.2] — 2026-05
 
 ### Added — Playbook articles for BI, Instrumentation, and Take-Home rooms
