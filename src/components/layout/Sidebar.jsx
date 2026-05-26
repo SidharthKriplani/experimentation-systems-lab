@@ -1,30 +1,45 @@
 export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme, isOpen, onClose }) {
   const navGroups = [
     {
-      label: 'ROOMS',
+      label: 'EXPERIMENTS',
       items: [
         { id: 'stat-foundations', label: 'Stat Foundations' },
         { id: 'stats', label: 'Stats' },
-        { id: 'metrics', label: 'Metrics' },
         { id: 'design', label: 'A/B Design' },
         { id: 'browser', label: 'Review' },
+        { id: 'spot-the-flaw', label: '🐛 Spot the Flaw' },
+      ],
+    },
+    {
+      label: 'ANALYTICS',
+      items: [
+        { id: 'metrics', label: 'Metrics' },
         { id: 'rca', label: 'RCA' },
         { id: 'cases', label: 'Cases' },
-        { id: 'code', label: 'Code' },
         { id: 'growth-analytics', label: 'Growth Analytics' },
         { id: 'bi', label: 'BI & Reporting' },
+        { id: 'instrumentation', label: 'Instrumentation' },
+      ],
+    },
+    {
+      label: 'PRODUCT',
+      items: [
         { id: 'product-design', label: 'PM Design' },
         { id: 'prioritization', label: 'Prioritize' },
         { id: 'behavioral', label: 'Behavioral' },
         { id: 'estimation', label: 'Estimation' },
-        { id: 'instrumentation', label: 'Instrumentation' },
+      ],
+    },
+    {
+      label: 'CODE',
+      items: [
+        { id: 'code', label: 'Code' },
       ],
     },
     {
       label: 'PRACTICE',
       items: [
         { id: 'challenges', label: '⚡ Challenges' },
-        { id: 'spot-the-flaw', label: '🐛 Spot the Flaw' },
         { id: 'take-home', label: '📝 Take-Home' },
         { id: 'simulator', label: 'Simulator' },
         { id: 'ab-interpreter', label: 'A/B Interpreter' },
