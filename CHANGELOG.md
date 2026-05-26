@@ -4,6 +4,31 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.8.4] — 2026-05
+
+### Fixed + Audited — Progress heatmap keys, Growth Analytics expansion, Spot the Flaw audit
+
+**Progress.jsx heatmap key fix:** `getPracticeDates()` was scanning `pal-rca-progress-v1` and `pal-cases-progress-v1` — stale keys. The actual utils use `pal-rca-progress-v2` and `pal-cases-progress-v2`. Any RCA or Cases practice was invisible on the activity heatmap. Fixed to v2.
+
+**Growth Analytics expanded to 12 cases (GA09–GA12):**
+- GA09 — LTV Diverged: Subscription vs Ads (Meta/senior) — 3-year LTV methodology, cohort windowing, churn timing, revenue-timing bias, Recharts scatter overlay
+- GA10 — Viral Loop K-Factor Dropped (Pinterest/staff) — K-factor decomposition, invite friction vs social norm decay, invite funnel segmentation, clustered A/B design, Recharts bar chart
+- GA11 — Paywall Conversion Stalled (Spotify/senior) — funnel segmentation by usage depth, message-market fit, free vs premium marginal value curve, Recharts funnel
+- GA12 — Geographic Expansion Retention Gap (Uber Eats/senior) — density economics, restaurant supply quality, competitive intensity, localization lag, Recharts grouped bar
+
+**Spot the Flaw audit (STF09–STF12):** All four cases had only 2 `keyTakeaways` instead of 3. Added a third actionable takeaway to each:
+- STF09 (Confounding): correct solution requires RCT or matched cohort study, not just larger observational sample
+- STF10 (Regression to Mean): correct design is RCT with randomly split bottom-decile performers — control provides the RTM baseline
+- STF11 (P-Hacking/HARKing): HARKing is indistinguishable from pre-planned analysis without pre-registration — post-hoc subgroup findings are hypothesis-generating only
+- STF12 (Network Contamination): full-rollout lift will not match test estimate — cross-contamination disappears when entire population is treated
+
+**SpotTheFlawRunner notes:** Added `pal-notes-v1` persistent notes (textarea + Save button) to reveal screen, before the self-rating section. Same pattern as all other runners.
+
+### Files changed
+`src/pages/Progress.jsx` (heatmap v2 keys), `src/data/growthAnalyticsCases.js` (GA09–GA12), `src/components/growthAnalytics/GrowthAnalyticsRunner.jsx` (GA09–GA12 charts), `src/data/spotTheFlawCases.js` (3rd keyTakeaway for STF09–STF12), `src/components/spotTheFlaw/SpotTheFlawRunner.jsx` (notes), `CHANGELOG.md`
+
+---
+
 ## [4.8.3] — 2026-05
 
 ### Added — Per-case notes in 4 runners + Take-Home expansion to 10 cases

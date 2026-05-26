@@ -317,8 +317,8 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   function getPracticeDates() {
     const dates = new Set();
     const stores = [
-      'pal-stats-progress-v1', 'pal-metrics-progress-v2', 'pal-rca-progress-v1',
-      'pal-cases-progress-v1', 'pal-code-progress-v1', 'pal-behavioral-progress-v1',
+      'pal-stats-progress-v1', 'pal-metrics-progress-v2', 'pal-rca-progress-v2',
+      'pal-cases-progress-v2', 'pal-code-progress-v1', 'pal-behavioral-progress-v1',
       'pal-estimation-progress-v1', 'pal-stat-foundations-progress-v1',
       'pal-growth-analytics-progress-v1',
       'pal-challenges-progress-v1', 'pal-bi-progress-v1', 'pal-stf-progress-v1', 'pal-takehome-progress-v1',

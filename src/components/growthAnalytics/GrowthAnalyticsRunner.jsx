@@ -90,6 +90,41 @@ const ga08Data = [
   { metric: 'M6 Retention', us: 44, latam: 17 },
 ];
 
+const ga09Data = [
+  { channel: 'Organic', ltvCac: 13.4, ltv: 121, cac: 9 },
+  { channel: 'Referral', ltvCac: 10.7, ltv: 128, cac: 12 },
+  { channel: 'Paid Social', ltvCac: 1.3, ltv: 58, cac: 44 },
+];
+
+const ga09MixData = [
+  { year: 'Last Year', organic: 38, referral: 22, paid: 40 },
+  { year: 'This Year', organic: 21, referral: 14, paid: 65 },
+];
+
+const ga10Data = [
+  { period: '6 Mo Ago', sharingRate: 0.80, convRate: 50, kFactor: 0.40 },
+  { period: 'Current',  sharingRate: 0.85, convRate: 24, kFactor: 0.20 },
+];
+
+const ga10DeviceData = [
+  { device: 'Desktop', convRate: 49, share: 22 },
+  { device: 'Mobile',  convRate: 11, share: 78 },
+];
+
+const ga11Data = [
+  { week: 'Wk 1', conversion: 4.8, activation: 68 },
+  { week: 'Wk 2', conversion: 4.6, activation: 64 },
+  { week: 'Wk 4', conversion: 4.3, activation: 58 },
+  { week: 'Wk 8', conversion: 4.2, activation: 49 },
+  { week: 'Wk 12', conversion: 4.1, activation: 41 },
+];
+
+const ga12Data = [
+  { metric: 'D30 Retention', us: 38, latam: 23, sea: 26 },
+  { metric: 'D90 Retention', us: 24, latam: 11, sea: 14 },
+  { metric: 'First Purchase', us: 31, latam: 9,  sea: 12 },
+];
+
 // ── Shared chart wrapper ─────────────────────────────────────────────────────
 
 function ChartCard({ children, height = 200 }) {
@@ -256,6 +291,74 @@ function GA08Chart() {
   );
 }
 
+function GA09Chart() {
+  return (
+    <ChartCard height={200}>
+      <BarChart data={ga09Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="channel" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis yAxisId="left"  tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'LTV:CAC', angle: -90, position: 'insideLeft', fill: 'var(--text-muted)', fontSize: 10, dx: -2 }} />
+        <YAxis yAxisId="right" orientation="right" tickFormatter={v => `$${v}`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'LTV / CAC ($)', angle: 90, position: 'insideRight', fill: 'var(--text-muted)', fontSize: 10, dx: 2 }} />
+        <Tooltip />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Bar yAxisId="left"  dataKey="ltvCac" name="LTV:CAC Ratio" fill={C.teal}   />
+        <Bar yAxisId="right" dataKey="ltv"    name="LTV ($)"       fill={C.green}  />
+        <Bar yAxisId="right" dataKey="cac"    name="CAC ($)"       fill={C.red}    />
+      </BarChart>
+    </ChartCard>
+  );
+}
+
+function GA10Chart() {
+  return (
+    <ChartCard height={200}>
+      <BarChart data={ga10DeviceData} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="device" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis yAxisId="left"  tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'Conv Rate %', angle: -90, position: 'insideLeft', fill: 'var(--text-muted)', fontSize: 10, dx: -2 }} />
+        <YAxis yAxisId="right" orientation="right" tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'Traffic Share %', angle: 90, position: 'insideRight', fill: 'var(--text-muted)', fontSize: 10, dx: 2 }} />
+        <Tooltip formatter={v => `${v}%`} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Bar yAxisId="left"  dataKey="convRate" name="Conversion Rate %" fill={C.teal}   />
+        <Bar yAxisId="right" dataKey="share"    name="Traffic Share %"  fill={C.yellow} />
+      </BarChart>
+    </ChartCard>
+  );
+}
+
+function GA11Chart() {
+  return (
+    <ChartCard height={210}>
+      <LineChart data={ga11Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 80]} />
+        <Tooltip formatter={v => `${v}%`} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Line type="monotone" dataKey="conversion" name="Paywall Conversion %" stroke={C.yellow} strokeWidth={2} dot={{ r: 4 }} />
+        <Line type="monotone" dataKey="activation"  name="Feature Activation %"  stroke={C.teal}   strokeWidth={2} dot={{ r: 4 }} />
+      </LineChart>
+    </ChartCard>
+  );
+}
+
+function GA12Chart() {
+  return (
+    <ChartCard height={200}>
+      <BarChart data={ga12Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+        <XAxis dataKey="metric" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 50]} />
+        <Tooltip formatter={v => `${v}%`} />
+        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Bar dataKey="us"    name="US (Core)"  fill={C.teal}   />
+        <Bar dataKey="latam" name="LatAm"      fill={C.yellow} />
+        <Bar dataKey="sea"   name="SEA"        fill={C.blue}   />
+      </BarChart>
+    </ChartCard>
+  );
+}
+
 // ── Case chart dispatcher ────────────────────────────────────────────────────
 
 function CaseChart({ caseId }) {
@@ -267,6 +370,10 @@ function CaseChart({ caseId }) {
   if (caseId === 'GA06') return <GA06Chart />;
   if (caseId === 'GA07') return <GA07Chart />;
   if (caseId === 'GA08') return <GA08Chart />;
+  if (caseId === 'GA09') return <GA09Chart />;
+  if (caseId === 'GA10') return <GA10Chart />;
+  if (caseId === 'GA11') return <GA11Chart />;
+  if (caseId === 'GA12') return <GA12Chart />;
   return null;
 }
 

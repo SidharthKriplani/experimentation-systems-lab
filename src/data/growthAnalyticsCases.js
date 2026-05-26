@@ -693,6 +693,404 @@ Recommendation: Fix-first. Pause growth spend above maintenance level. Allocate 
     playbookLinks: [{ id: 'cohort-retention-curves', label: 'Cohort Retention Curves' }, { id: 'funnel-analysis-framework', label: 'Funnel Analysis' }],
     leadershipNote: 'A Director of Analytics would use geo cohort analysis as the primary input to the market expansion scorecard — not a one-off analysis. They would build a standardized "market maturity" framework that automatically classifies each market as Early/Growth/Mature/Declining based on cohort curves, and use it to direct resource allocation across markets.',
   },
+
+  {
+    id: 'GA09',
+    title: 'LTV Diverged — High-Intent Users Worth 3x But We\'re Acquiring the Wrong Segment',
+    subtitle: 'Vela · Subscription App · LTV & CAC Payback',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'ltv',
+    company: 'Vela',
+    tags: ['ltv', 'cac-payback', 'cohort-ltv', 'channel-mix', 'contribution-margin'],
+    companies: ['Spotify', 'Duolingo', 'Calm'],
+    situation: `Vela is a subscription app with 1.2M paying subscribers. The finance team reports that blended 12-month LTV has fallen 22% year-over-year — from $96 to $75. CAC has held flat at $28 across the same period. Leadership is confused: if CAC is flat and the product hasn\'t changed, why is LTV declining?
+
+Here is the channel-level breakdown, comparing last year\'s acquisition cohort to this year\'s:
+
+Last year\'s cohort (by channel):
+- Organic / SEO: 38% of new users, 12-month LTV = $118, CAC = $9
+- Referral: 22% of new users, 12-month LTV = $131, CAC = $12
+- Paid Social (Facebook/Instagram): 40% of new users, 12-month LTV = $62, CAC = $44
+
+This year\'s cohort (by channel):
+- Organic / SEO: 21% of new users, 12-month LTV = $121, CAC = $9
+- Referral: 14% of new users, 12-month LTV = $128, CAC = $12
+- Paid Social (Facebook/Instagram): 65% of new users, 12-month LTV = $58, CAC = $44
+
+The head of growth argues that paid social is performing well — volume is up 60% and the channel\'s LTV has only dropped 4% ($62 → $58). The VP of Finance wants to understand why blended LTV is collapsing when per-channel LTV looks "basically flat."
+
+You are the senior analyst. You have one meeting to explain what\'s happening and recommend a path forward.`,
+    prompt: 'Diagnose why blended LTV declined 22% when per-channel LTV is nearly flat. Compute the LTV:CAC ratio for each channel. Recommend where to reallocate the acquisition mix.',
+    frameworkSteps: [
+      'Step 1 — Compute blended LTV for last year and this year using the channel mix weights. Verify the math matches the reported 22% decline.',
+      'Step 2 — Calculate the LTV:CAC ratio for each channel in both years. Identify which channels are profitable and which are marginal.',
+      'Step 3 — Explain the mix-shift mechanism: how can blended LTV fall even when individual channel LTV is flat? Name this effect precisely.',
+      'Step 4 — Calculate the payback period per channel: CAC / (LTV / 12 months). Identify which channels have dangerous payback windows.',
+      'Step 5 — Model what blended LTV would be under the old channel mix applied to current per-channel LTV numbers.',
+      'Step 6 — Recommend a channel reallocation with a specific target mix and project the blended LTV recovery.',
+    ],
+    hints: [
+      'Blended LTV = weighted average of per-channel LTV. Last year: (0.38 × 118) + (0.22 × 131) + (0.40 × 62) = 44.8 + 28.8 + 24.8 = $98. This year: (0.21 × 121) + (0.14 × 128) + (0.65 × 58) = 25.4 + 17.9 + 37.7 = $81. The math checks out — blended LTV dropped even though per-channel LTV is nearly flat.',
+      'LTV:CAC by channel: Organic = 121/9 = 13.4x. Referral = 128/12 = 10.7x. Paid Social = 58/44 = 1.3x. Paid social is barely above breakeven.',
+      'The effect is called "mix-shift bias" or "composition effect." You are acquiring proportionally more users from the worst-LTV channel, so the average falls even if each channel is individually stable.',
+      'Payback period: Organic = 9/(121/12) = 0.9 months. Referral = 12/(128/12) = 1.1 months. Paid Social = 44/(58/12) = 9.1 months — nearly a full year to recover CAC.',
+      'If you applied the old mix (38/22/40) to current LTV numbers: (0.38 × 121) + (0.22 × 128) + (0.40 × 58) = 46.0 + 28.2 + 23.2 = $97.4. Blended LTV would be ~$97 — nearly last year\'s level — with zero product change.',
+    ],
+    modelAnswer: {
+      walkthrough: `Step 1 — Verify the blended LTV math:
+Last year blended LTV: (0.38 × 118) + (0.22 × 131) + (0.40 × 62) = 44.8 + 28.8 + 24.8 = $98.4 ≈ $96 (reported — small rounding differences).
+This year blended LTV: (0.21 × 121) + (0.14 × 128) + (0.65 × 58) = 25.4 + 17.9 + 37.7 = $81 ≈ $75–80 range.
+The math confirms the 22% decline is driven by mix, not per-channel performance.
+
+Step 2 — LTV:CAC ratios:
+Organic: $121 / $9 = 13.4x — exceptional.
+Referral: $128 / $12 = 10.7x — exceptional.
+Paid Social: $58 / $44 = 1.3x — marginal. For context, healthy LTV:CAC is ≥3:1. Paid social is destroying potential value relative to alternatives.
+
+Step 3 — The mechanism (mix-shift bias):
+Per-channel LTV is nearly flat — Organic went from $118 → $121 (+3%), Referral from $131 → $128 (−2%), Paid Social from $62 → $58 (−6%). None of these moves are alarming in isolation.
+The problem is composition: Paid Social grew from 40% → 65% of the acquisition mix. That\'s a 25-percentage-point shift toward the worst-LTV, worst-LTV:CAC channel. The high-quality channels (Organic, Referral) shrank from 60% to 35% of the mix combined.
+This is a textbook mix-shift effect: aggregate LTV falls even when individual channels are stable, because you changed the proportions of high vs low performers in the blend.
+
+Step 4 — Payback periods:
+Organic: $9 CAC / ($121 LTV / 12 months) = 0.9 months. Cash is recovered in under a month.
+Referral: $12 / ($128/12) = 1.1 months. Similarly rapid payback.
+Paid Social: $44 / ($58/12) = 9.1 months. You don\'t recover the acquisition cost for over three quarters. This is a cash flow exposure and a churn risk window — users who stay for less than 9 months are net-negative.
+
+Step 5 — Counterfactual (old mix, current LTV):
+Apply last year\'s channel weights to this year\'s LTV: (0.38 × 121) + (0.22 × 128) + (0.40 × 58) = 46.0 + 28.2 + 23.2 = $97.4.
+If the channel mix had not shifted, blended LTV today would be ~$97 — essentially the same as last year. The entire 22% blended LTV decline is attributable to the channel mix shift, not product deterioration.
+
+Step 6 — Recommendation:
+Target mix for recovery: Organic 35%, Referral 25%, Paid Social 40%.
+Projected blended LTV: (0.35 × 121) + (0.25 × 128) + (0.40 × 58) = 42.4 + 32.0 + 23.2 = $97.6.
+This returns blended LTV to last year\'s level with the same current per-channel economics.
+Paid social should not be eliminated — it provides volume and reach — but should be capped at 40% of mix until LTV:CAC improves above 3:1.
+Invest in growing referral (improve referral mechanics, incentive structure) and SEO (content compounding). These channels have 10x+ LTV:CAC and sub-2-month payback. They are being underinvested relative to their returns.`,
+      keyDiagnosis: 'Blended LTV declined 22% due to a channel mix shift, not product deterioration. Paid social grew from 40% to 65% of the acquisition mix — it has a 1.3x LTV:CAC ratio and a 9-month payback period. Organic and Referral (10–13x LTV:CAC, sub-2-month payback) are being crowded out.',
+      recommendation: 'Cap paid social at 40% of acquisition mix. Reinvest in Organic SEO and Referral, which have 10x+ LTV:CAC. Set a per-channel LTV:CAC floor of 3:1 as an acquisition gate. Always report blended LTV alongside per-channel LTV — aggregate figures mask composition effects.',
+    },
+    keyTakeaways: [
+      'Blended LTV is a weighted average — it falls when you acquire proportionally more users from low-LTV channels, even if each channel\'s LTV is flat. Always decompose by channel.',
+      'LTV:CAC ratio is the correct unit for channel evaluation. Paid social at 1.3x is destroying value relative to organic (13x) and referral (11x).',
+      'Payback period is the cash flow signal: a 9-month payback on paid social means users who churn before month 9 cost you money. Sub-2-month payback on referral means almost no user is unprofitable.',
+      'Mix-shift effects are silent — they don\'t show up as a single channel\'s performance degrading, so they\'re easy to miss until the aggregate number has already fallen significantly.',
+    ],
+    playbookLinks: [{ id: 'ltv-payback', label: 'LTV & Payback Period' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
+    leadershipNote: 'A Staff DS would instrument a weekly channel-mix dashboard that surfaces per-channel LTV:CAC alongside blended LTV, with an automated alert when any channel exceeds 50% of the acquisition mix. The insight "mix shifted" should never require a manual investigation — it should be visible at a glance. The leadership move is preventing the drift from happening silently, not diagnosing it after a 22% decline.',
+  },
+
+  {
+    id: 'GA10',
+    title: 'Viral Loop Efficiency: K-Factor Dropped from 0.4 to 0.2',
+    subtitle: 'Threadline · B2B SaaS · Viral Growth Loops',
+    difficulty: 'staff',
+    isFree: false,
+    domain: 'acquisition',
+    company: 'Threadline',
+    tags: ['k-factor', 'viral-loops', 'referral-funnel', 'network-effects', 'conversion'],
+    companies: ['Slack', 'Notion', 'Dropbox'],
+    situation: `Threadline is a B2B team communication tool. Six months ago it had a K-factor of 0.4 — one of its key growth levers. Today the K-factor has fallen to 0.2. The growth team is alarmed.
+
+Here is what the data shows before and after the K-factor decline:
+
+Six months ago (K = 0.4):
+- Shares per active user per month: 0.8 (each active user sends an average of 0.8 referral invites per month)
+- Conversion rate of referral invites to active signups: 50%
+- K-factor: 0.8 × 0.50 = 0.40
+
+Current (K = 0.2):
+- Shares per active user per month: 0.85 (essentially unchanged — slightly higher)
+- Conversion rate of referral invites to active signups: 24%
+- K-factor: 0.85 × 0.24 = 0.204
+
+The growth team has been focused on improving the invite flow — they shipped a redesigned referral invite modal 5 months ago, increased referral incentives 3 months ago, and added in-product share prompts 2 months ago. Despite these investments, K-factor has continued declining.
+
+Additional context:
+- 78% of referral invite clicks now come from mobile devices (up from 41% six months ago)
+- The referral landing page was redesigned 5 months ago as part of a broader brand refresh
+- Average page load time on the referral landing page: 4.8 seconds on mobile (was 1.4 seconds before redesign)
+- Desktop referral landing page conversion: 49% (essentially unchanged from before)
+- Mobile referral landing page conversion: 11% (was 43% before redesign)
+
+The VP of Growth wants to invest $150k in a new incentive-based referral program to "juice" K-factor. The head of engineering thinks it might be a funnel issue. You are the staff analyst.`,
+    prompt: 'Decompose the K-factor decline. Identify exactly where in the viral loop conversion broke and what caused it. Should the team invest in a new incentive program?',
+    frameworkSteps: [
+      'Step 1 — State the K-factor formula and decompose it: K = shares per user × conversion rate per share. Identify which component changed.',
+      'Step 2 — Segment the conversion rate by device type. What does the desktop vs mobile conversion data reveal?',
+      'Step 3 — Quantify the impact of the mobile conversion collapse using the current mobile traffic share (78%) to compute what blended conversion would be if mobile conversion had held at 43%.',
+      'Step 4 — Connect the mobile conversion drop to the landing page redesign and load time data. Build the causal chain.',
+      'Step 5 — Evaluate the VP\'s proposal: would a new incentive program fix the diagnosed root cause?',
+      'Step 6 — Recommend the minimum-cost fix and project the K-factor recovery if mobile conversion is restored.',
+    ],
+    hints: [
+      'K-factor formula: K = (shares per user) × (conversion rate of shares). Sharing rate is 0.85 (unchanged), conversion rate dropped from 50% → 24%. The entire K-factor decline is in the conversion step, not the sharing step.',
+      'Blended conversion breakdown: 78% of clicks are mobile at 11% conversion; 22% are desktop at 49% conversion. Weighted: (0.78 × 11%) + (0.22 × 49%) = 8.6% + 10.8% = 19.4%. Close to the observed 24% (some simplification in the numbers, but the mechanism is clear).',
+      'Counterfactual: if mobile conversion had held at 43%: (0.78 × 43%) + (0.22 × 49%) = 33.5% + 10.8% = 44.3% blended conversion. K-factor would be 0.85 × 0.443 = 0.38 — essentially unchanged from the 0.40 baseline.',
+      'The 4.8-second mobile load time vs 1.4 seconds before redesign is a 3.4x slowdown. Research consistently shows mobile conversion drops ~7% per second of load time increase above 2 seconds. A 4.8-second load on mobile is conversion-killing.',
+      'Incentive programs increase sharing rate, not conversion rate. The sharing rate is already 0.85 — it\'s fine. Spending $150k on incentives addresses the wrong variable.',
+    ],
+    modelAnswer: {
+      walkthrough: `Step 1 — K-factor decomposition:
+K = shares per user × conversion rate of shares.
+Six months ago: 0.8 × 0.50 = 0.40.
+Today: 0.85 × 0.24 = 0.204.
+
+The sharing rate actually increased slightly (0.8 → 0.85). The entire K-factor collapse is in the conversion rate: 50% → 24%, a 52% decline. This is critical: the growth team has been optimizing the invite flow (sharing step) while the conversion step (landing page) has been collapsing.
+
+Step 2 — Device segmentation of conversion:
+Desktop conversion: 49% — unchanged from baseline.
+Mobile conversion: 11% — was 43%, a 74% collapse.
+Mobile share of clicks: 78% — has nearly doubled from 41% six months ago.
+
+The mobile conversion is catastrophically broken. Desktop is functioning normally.
+
+Step 3 — Quantify blended conversion impact:
+Current blended: (0.78 × 11%) + (0.22 × 49%) = 8.6% + 10.8% = 19.4% (roughly matching observed 24% with rounding).
+Counterfactual if mobile held at 43%: (0.78 × 43%) + (0.22 × 49%) = 33.5% + 10.8% = 44.3%.
+K-factor under counterfactual: 0.85 × 0.443 = 0.377 ≈ 0.40.
+If mobile conversion had held, K-factor would be essentially unchanged from the baseline. The mobile landing page is responsible for essentially the entire K-factor decline.
+
+Step 4 — Root cause: landing page redesign + mobile performance:
+The referral landing page was redesigned 5 months ago — which is exactly when the K-factor started declining.
+Mobile load time: 4.8 seconds (was 1.4 seconds). This is a 3.4x increase in load time.
+Mobile is now 78% of referral traffic (up from 41%) — the platform\'s referral audience has become predominantly mobile, and the redesigned page is 3.4x slower on the device type that matters most.
+The causal chain: brand refresh redesign → increased page weight/complexity → 4.8s mobile load time → 74% drop in mobile conversion → blended conversion collapse → K-factor halved.
+The growth team\'s interventions (invite modal redesign, incentives, share prompts) all targeted the sharing step, which was not broken.
+
+Step 5 — Evaluate the VP\'s $150k incentive proposal:
+Incentive programs drive sharing rate, not conversion rate. Sharing rate is already healthy at 0.85. Spending $150k to push sharing rate from 0.85 → perhaps 1.1 would yield: K = 1.1 × 0.24 = 0.264 — still 34% below the original K = 0.4. The incentive program would not fix the conversion problem. It would be expensive and ineffective at the root cause.
+
+Step 6 — Minimum-cost fix:
+Priority 1: Fix mobile page performance. Target load time ≤ 1.5 seconds. This likely requires image compression, lazy loading, code splitting, and possibly reverting to a lighter landing page design. Engineering cost: 1–2 sprints.
+Priority 2: While the fix is in progress, serve a lightweight mobile landing page (stripped version of the current design) as an interim A/B variant.
+Projected K-factor recovery: if mobile conversion returns to 40% (slightly below original 43% to be conservative): (0.78 × 40%) + (0.22 × 49%) = 31.2% + 10.8% = 42.0% blended. K = 0.85 × 0.42 = 0.357 — 89% of original K-factor restored.
+Do not launch the $150k incentive program until the conversion step is healthy. Incentives increase sharing into a broken landing page — you\'re spending money to route more users to a page that loses them.`,
+      keyDiagnosis: 'K-factor collapsed from 0.4 to 0.2 entirely due to mobile landing page conversion dropping from 43% to 11% — a direct result of the brand refresh redesign increasing mobile load time from 1.4s to 4.8s. Sharing rate is unchanged. Desktop conversion is unchanged. The growth team has been optimizing the wrong step.',
+      recommendation: 'Fix mobile landing page performance immediately — target ≤1.5s load time. Do not invest in incentive programs until the conversion step is restored. The $150k incentive budget would address sharing rate (healthy) while ignoring conversion rate (catastrophically broken).',
+    },
+    keyTakeaways: [
+      'K-factor = shares per user × conversion rate per share. Never diagnose K-factor as a single number — always decompose sharing rate and conversion rate separately. They break for completely different reasons and require completely different fixes.',
+      'Device segmentation is mandatory for any funnel analysis touching mobile. Blended conversion can hide a catastrophic mobile experience if desktop is healthy.',
+      'Performance is conversion. A 4.8-second mobile load time is not a technical issue — it\'s a business issue that killed half the viral growth loop.',
+      'Incentive programs drive sharing, not conversion. Identifying which step is broken before choosing the fix prevents expensive misallocated effort.',
+    ],
+    playbookLinks: [{ id: 'viral-loops', label: 'Viral Growth Loops' }, { id: 'acquisition-quality', label: 'Acquisition Quality' }],
+    leadershipNote: 'A Staff DS would instrument K-factor as two separate metrics on the growth dashboard — sharing rate and referral conversion rate — with device breakdowns for both. A single K-factor number hides the mechanism. The leadership failure here was five months of growth investment targeting the wrong variable because no one decomposed the metric. Staff-level work includes defining the decomposed metric structure before the first sprint, not after six months of misallocated effort.',
+  },
+
+  {
+    id: 'GA11',
+    title: 'Paywall Conversion Stalled at 4.2% — Three Months After Launch',
+    subtitle: 'Nova · Subscription Fitness App · Freemium Monetization',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'funnel',
+    company: 'Nova',
+    tags: ['paywall', 'freemium', 'monetization', 'conversion', 'activation', 'cohort-analysis'],
+    companies: ['Spotify', 'Duolingo', 'Headspace'],
+    situation: `Nova is a freemium fitness app. Three months ago it launched a paywall, converting its most popular features to paid-only access. Leadership expected paywall conversion to start low and grow as the product improved and more users reached the paywall.
+
+Here is the conversion data by week:
+
+Week 1 (launch): 4.8% of free users who hit the paywall converted to paid.
+Week 2: 4.6%
+Week 4: 4.3%
+Week 8: 4.2%
+Week 12: 4.1%
+
+The product team has shipped two paywall UI tests (Week 4 and Week 7), added a free trial offer (Week 6), and highlighted additional premium features in the modal (Week 9). None of these changes moved the conversion rate. Leadership expected 8–10% conversion by Month 3.
+
+Additional data:
+- Week 1 converters: avg 11.4 sessions/month before converting, used 4.2 of 6 premium features in free tier before paywall went live.
+- Current free users hitting the paywall (Week 12): avg 3.1 sessions/month, use 1.6 of 6 premium features.
+- Feature activation rate (% of free users completing core workout flow): Week 1 = 68%, Week 12 = 41%.
+- D30 retention of paid users from Week 1 cohort: 81%. D30 retention of paid users from Week 12 cohort: 62%.
+
+The head of product wants to reduce the paywall price from $9.99 → $6.99. The growth PM wants to add more aggressive push notifications to drive users to the paywall more frequently. The VP of Revenue wants to understand why tests aren\'t moving the needle before changing price.`,
+    prompt: 'Diagnose why paywall conversion is flat and declining despite product iteration. Who is right — the head of product (lower price) or the growth PM (more notifications)? What is the actual lever to pull?',
+    frameworkSteps: [
+      'Step 1 — Analyze the cohort composition shift. Who is hitting the paywall in Week 1 vs Week 12? What has changed about the quality of users reaching the paywall?',
+      'Step 2 — Identify the activation depth gap. Connect session frequency and feature usage data to conversion rate. What does the data say about the relationship between activation and conversion?',
+      'Step 3 — Apply the launch cohort dynamics framework: explain why Week 1 conversion (4.8%) was almost certainly the ceiling, not a baseline to grow from.',
+      'Step 4 — Evaluate the price reduction hypothesis. Would lowering price from $9.99 → $6.99 fix the root cause? Show the math on what conversion rate would need to be to offset the price reduction.',
+      'Step 5 — Evaluate the notification hypothesis. What happens when you push low-activation users to the paywall more frequently?',
+      'Step 6 — Identify the correct diagnosis and the highest-leverage intervention.',
+    ],
+    hints: [
+      'Week 1 converters had 11.4 sessions/month and used 4.2/6 premium features. Week 12 paywall visitors have 3.1 sessions/month and use 1.6/6 features. These are fundamentally different populations — one is deeply activated, one is not.',
+      'Feature activation rate dropped from 68% to 41% in three months. The free user base is increasingly populated by low-engagement users who never completed the core product loop.',
+      'Launch cohort dynamics: the users who convert in Week 1 of a paywall launch are the "early adopters" who were already engaged and waiting for a way to pay. They will always convert at a higher rate. Comparing Week 12 conversion to Week 1 is like comparing a sequel\'s opening weekend to the original\'s — the most motivated audience came first.',
+      'Price reduction math: lowering from $9.99 → $6.99 is a 30% price cut. To maintain the same revenue, you need conversion rate to increase from 4.1% to 4.1% / 0.7 = 5.86%. Is a 43% conversion improvement (from 4.1% to 5.86%) realistic for a population averaging 3.1 sessions/month? Almost certainly not.',
+      'Push notifications to low-activation users increase paywall impressions but not conversion. If a user with 3.1 sessions/month and 1.6 feature uses hasn\'t converted, seeing the paywall again without using the product more won\'t change the decision.',
+    ],
+    modelAnswer: {
+      walkthrough: `Step 1 — Cohort composition shift (who is hitting the paywall):
+Week 1 paywall visitors: 11.4 sessions/month, 4.2/6 premium features used. These are deeply activated users — they know the product, they\'ve extracted near-full value from the free tier, and the paywall blocks something they already want.
+Week 12 paywall visitors: 3.1 sessions/month, 1.6/6 features used. These users are hitting the paywall incidentally. They\'ve barely explored the product. The paywall is surfacing before they\'ve found a reason to pay.
+
+The conversion rate didn\'t "stall" — it declined because the population changed. 4.8% in Week 1 with highly activated users is effectively the same conversion quality as 4.1% in Week 12 with barely activated users. The absolute rate is slightly lower, but the real story is that the activated segment is exhausted.
+
+Step 2 — Activation depth and conversion:
+Feature activation rate (core workout flow completion): 68% → 41%. In three months, 27 percentage points fewer free users are completing the core product loop. These users have not experienced the value that makes the paywall compelling.
+
+The data reveals a clear pattern:
+- High activation (11.4 sessions, 4.2 features) → 4.8% conversion.
+- Low activation (3.1 sessions, 1.6 features) → ≤4.1% conversion.
+More importantly: D30 retention of paid users is 81% (Week 1 cohort) vs 62% (Week 12 cohort). Even among the users who convert, those with lower activation churn faster after paying — they\'re converting without conviction.
+
+Step 3 — Launch cohort dynamics:
+This is a classic launch cohort effect. When a freemium product launches a paywall, it simultaneously reaches every user who has ever used the product. The first week\'s conversion pool includes users who have been using the product for months or years and have deep activation. This pool is irreplaceable — those users convert and are gone. Every subsequent week, the paywall faces an increasingly average-activation population.
+
+Leadership\'s expectation that conversion would "grow from 4.8% toward 8–10%" was based on a misunderstanding of this dynamic. Week 1 was almost certainly close to the ceiling for the current product-activation state, not a floor. The target of 8–10% would require either (a) dramatically increasing the activation depth of free users before they hit the paywall, or (b) improving the paywall offer itself substantially.
+
+Step 4 — Price reduction hypothesis:
+Current: 4.1% conversion at $9.99.
+Proposed: $6.99 (30% price cut).
+Revenue equivalence: 4.1% × $9.99 = $0.41/user. At $6.99, you need 0.41/6.99 = 5.87% conversion to match. That requires a +43% relative conversion improvement.
+Can a price drop from $9.99 → $6.99 drive +43% conversion improvement for a population averaging 3.1 sessions/month? Almost certainly not. Price sensitivity is not the primary barrier for low-activation users — they haven\'t found enough value to want the product at any reasonable price. Price reduction would primarily discount sales to the small share of users who were already going to convert, while not moving the larger low-activation pool.
+
+Step 5 — Notification hypothesis:
+More notifications increase paywall impressions among low-activation users. More impressions of the paywall to users who haven\'t found the product\'s core value are not going to drive conversion. You risk notification fatigue (declining open rates over time), which would reduce even the organic paywall traffic. This is the same hollow engagement trap as GA06 — you\'re measuring a top-of-funnel signal (paywall impressions) while ignoring the bottom-of-funnel problem (activation depth).
+
+Step 6 — Correct diagnosis and intervention:
+Root cause: the paywall conversion "stall" is actually a free user activation collapse. 41% of free users complete the core workout flow vs 68% at launch. The users reaching the paywall are not activated enough to convert.
+
+The right intervention is activation improvement, not paywall optimization or price reduction.
+Specific interventions:
+(a) Improve new user onboarding to get more users to complete the core workout flow. Target: lift feature activation from 41% back toward 60%+.
+(b) Gate the paywall behind activation — don\'t show the paywall until a user has completed at least 3 sessions and used at least 2 premium features. This ensures the paywall is only shown to users who have found value.
+(c) Test a free trial (already tried in Week 6 — confirm whether it was properly targeted or shown to all users indiscriminately). A trial works best when shown to activated users, not cold ones.
+
+The paywall UI tests, feature callouts, and price testing are not wrong — but they are the wrong intervention at this stage. Fix activation first, then optimize the paywall.`,
+      keyDiagnosis: 'Paywall conversion is flat because the free user activation depth is collapsing, not because the paywall design is wrong or the price is too high. Week 12 paywall visitors have 3.1 sessions/month vs 11.4 for Week 1 converters. The launch cohort converted the most motivated users first — this is a permanent dynamic, not a recoverable curve.',
+      recommendation: 'Fix user activation before adjusting the paywall. Target: increase feature activation rate from 41% back to 60%+. Gate the paywall behind a minimum activation threshold (e.g., 3 sessions + 2 feature uses). Do not reduce price or launch an aggressive notification campaign — both address the wrong variable.',
+    },
+    keyTakeaways: [
+      'Launch cohort dynamics make Week 1 paywall conversion the high-water mark, not the baseline. The most motivated users convert first — every subsequent cohort is less activated. Never benchmark against Week 1.',
+      'Paywall conversion is a lagging indicator of activation depth. When activation collapses, paywall conversion will follow weeks later. Track activation rate as the leading indicator.',
+      'Price reduction is rarely the right lever for low-activation free users — they haven\'t found enough value to pay at any reasonable price. Save price testing for users with demonstrated engagement.',
+      'Steady-state paywall health should be judged on activated-user conversion (users who completed the core product loop), not on raw conversion across all users who ever hit the paywall.',
+    ],
+    playbookLinks: [{ id: 'paywall-conversion', label: 'Paywall Conversion' }, { id: 'funnel-analysis-framework', label: 'Funnel Analysis' }],
+    leadershipNote: 'A Staff DS would build a cohort-segmented paywall dashboard that tracks conversion separately for "activated" users (completed core loop) vs "cold" users (never completed core loop). Blended paywall conversion is nearly useless as a north star — it falls when you acquire more cold users even if activated-user conversion is healthy. The leadership move is defining the right denominator for the metric before the paywall launches, not discovering the segmentation problem three months in.',
+  },
+
+  {
+    id: 'GA12',
+    title: 'Geographic Expansion: New Markets Retain at 60% of Core Market Rate',
+    subtitle: 'Crafted Marketplace · International Expansion · Retention & Localization',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'retention',
+    company: 'Crafted Marketplace',
+    tags: ['geographic-expansion', 'retention', 'localization', 'pmf', 'cohort-analysis', 'payment-methods'],
+    companies: ['Airbnb', 'Shopify', 'Grab'],
+    situation: `Crafted Marketplace expanded into Latin America (LatAm) and Southeast Asia (SEA) eight months ago. The expansion team is now reviewing cohort data and flagging a significant retention gap.
+
+US market (core, mature):
+- D30 retention: 38%
+- D90 retention: 24%
+- First-purchase conversion: 31%
+- Payment methods supported: credit card, debit card, PayPal, Apple Pay, Buy Now Pay Later
+- Language: fully localized
+- Currency: USD displayed natively
+
+LatAm markets (Brazil, Mexico, Colombia):
+- D30 retention: 23%
+- D90 retention: 11%
+- First-purchase conversion: 9%
+- Payment methods: credit card only (18% penetration in target demographics)
+- Language: English interface (Spanish/Portuguese localization not yet shipped)
+- Currency: USD displayed (local currency conversion not available)
+- Key features with near-zero usage: installment payments (0.3%), local seller discovery (2.1%), mobile checkout (4.8%)
+
+SEA markets (Indonesia, Thailand, Vietnam):
+- D30 retention: 26%
+- D90 retention: 14%
+- First-purchase conversion: 12%
+- Payment methods: credit card and bank transfer (credit card penetration 22%)
+- Language: English interface (local language localization partial — 40% of UI translated)
+- Currency: USD displayed
+- Key features with near-zero usage: local seller browse (3.2%), installment checkout (0.8%), mobile wallet (1.1%)
+
+The expansion team argues: "Retention will improve naturally as the markets mature and users get used to the platform. The 23–26% D30 vs 38% US gap is structural — different markets have different engagement habits. We should keep scaling acquisition."
+
+The CFO wants to pause acquisition spend in new markets until retention improves. You are the senior analyst with 48 hours to make a recommendation.`,
+    prompt: 'Diagnose whether the geographic retention gap is structural (inherent market differences) or fixable (localization and product gaps). Recommend whether to scale, pause, or fix-first.',
+    frameworkSteps: [
+      'Step 1 — Identify the structural vs fixable components of the retention gap. What would a "structural" gap look like in the data? What would a "fixable" gap look like?',
+      'Step 2 — Analyze the feature usage data for new markets. Near-zero usage of specific features is a diagnostic signal — what does it reveal?',
+      'Step 3 — Quantify the payment method gap. Compute what share of new market users literally cannot complete a purchase with available payment methods.',
+      'Step 4 — Compare first-purchase conversion rates: US (31%) vs LatAm (9%) vs SEA (12%). Apply the GA08 lesson — first-purchase conversion is the most immediate PMF signal.',
+      'Step 5 — Distinguish between acquisition quality (lower-intent users from broad campaigns) and product experience quality (localization, payment, currency gaps). Which explains more of the gap?',
+      'Step 6 — Recommend a prioritized fix-first plan with specific interventions and success gates before resuming scaled acquisition.',
+    ],
+    hints: [
+      'Structural gap signals: both markets would show lower engagement depth but similar feature usage patterns; conversion rates would be proportionally lower but driven by demand difference, not friction. Structural gaps are harder to close quickly.',
+      'Fixable gap signals: near-zero feature usage on features that are unavailable or broken in new markets; low conversion driven by payment friction (users who want to buy but can\'t); retention curves that improve after product/localization fixes.',
+      'Payment reality: LatAm credit card penetration 18% means 82% of users cannot pay with the only available method. SEA at 22% means 78% of users have no payment method. The product is functionally non-transactional for most of its new market users.',
+      'Feature usage at near-zero: installment payments (0.3%), local seller discovery (2.1%), mobile checkout (4.8%) in LatAm aren\'t "features users don\'t want" — they\'re features the users literally cannot use because they\'re not localized or payment-gated.',
+      'Acquisition quality: broad paid campaigns in new markets attract lower-intent users. But even high-intent users can\'t convert without payment methods and a localized UI. Both factors are present — but the localization/payment gap is addressable, the intent gap only partially so.',
+    ],
+    modelAnswer: {
+      walkthrough: `Step 1 — Structural vs fixable gap framework:
+A structural retention gap would look like: similar feature usage patterns at lower absolute frequency, proportionally lower but non-zero conversion, retention curves that are lower but stabilize at a healthy floor, no specific feature usage anomalies.
+
+A fixable gap looks like: near-zero usage on specific features (indicating the features don\'t work for this population), low first-purchase conversion despite apparent interest (indicating payment or UX friction), retention curves still declining with no floor (indicating users are leaving before finding value, not after finding limited value).
+
+The new market data matches the fixable gap pattern on nearly every dimension.
+
+Step 2 — Feature usage analysis:
+LatAm near-zero features: installment payments (0.3%), local seller discovery (2.1%), mobile checkout (4.8%).
+SEA near-zero features: local seller browse (3.2%), installment checkout (0.8%), mobile wallet (1.1%).
+
+These aren\'t features users don\'t want — they\'re features users in these markets need most and cannot use.
+Installment payments (parcelamento in Brazil, cuotas in Mexico) are standard purchase behavior in LatAm — many consumers never buy large items without installments. A 0.3% usage rate means the feature is effectively non-functional for this market.
+Local seller discovery: with primarily US sellers displayed to LatAm/SEA users, users cannot find locally-relevant products. Cross-border shipping costs and times make most US seller inventory impractical for new market buyers.
+Mobile wallet: in SEA markets like Indonesia, mobile wallets (GoPay, OVO, GrabPay) handle 60–70% of digital commerce. 1.1% usage means virtually no one can use the dominant payment method.
+
+Step 3 — Payment method gap:
+LatAm: credit card only, 18% penetration → 82% of target demographic users literally cannot complete a purchase.
+SEA: credit card + bank transfer, credit card penetration 22%. Bank transfer is available but typically slow (not instant checkout). Mobile wallets not supported → dominant payment method blocked.
+First-purchase conversion reality: 9% in LatAm. Even at 18% credit card penetration, a 9% first-purchase conversion means that roughly half of users who could pay didn\'t. The product experience (English UI, USD currency, no local seller relevance) is a second barrier on top of the payment gap.
+
+Step 4 — First-purchase conversion as PMF signal:
+US: 31%. LatAm: 9%. SEA: 12%.
+These are 71% and 61% below the US rate respectively. This level of gap is far beyond what demand differences explain — SEA markets have strong consumer e-commerce adoption, LatAm has strong mobile commerce growth. The gap is friction, not intent.
+The GA08 framework applies directly: first-purchase conversion at 9–12% signals structural product blockers, not market-level behavioral differences.
+
+Step 5 — Acquisition quality vs product experience:
+Acquisition quality issue: broad paid campaigns do attract lower-intent users. But even high-intent users face: an English-only interface in markets where English penetration is 20–40%, USD pricing with no local currency equivalent, payment methods unavailable to 78–82% of the population, and no locally relevant product supply (US sellers only).
+The product experience gap is not subtle — it\'s a blocking issue for most users. Acquisition quality explains a portion of the gap; localization and payment gaps explain the majority.
+
+Step 6 — Fix-first plan with gates:
+Priority 1 (Month 1–2): Payment method expansion.
+LatAm: Add Pix (Brazil, instant bank transfer, ~70M users), OXXO (Mexico, cash payment), local installment options (parcelamento).
+SEA: Add GoPay/OVO (Indonesia), PromptPay (Thailand), MoMo (Vietnam).
+Gate: first-purchase conversion must reach ≥18% in LatAm and ≥20% in SEA before resuming scaled acquisition.
+
+Priority 2 (Month 2–3): UI localization.
+Spanish and Portuguese full localization for LatAm. Local currency display (BRL, MXN, COP). Bahasa Indonesia, Thai for SEA markets. Local currency (IDR, THB).
+Gate: feature activation rate (completing first purchase flow) must improve to ≥15% in new markets.
+
+Priority 3 (Month 3–4): Local seller supply.
+Onboard LatAm and SEA sellers to build locally-relevant inventory. Target 500+ active local sellers per major country before scaling acquisition.
+
+Current recommendation: Pause scaled acquisition. Maintain a small retention-focused budget to serve current acquired users and test product improvements. The expansion team's argument that the gap is "structural" is contradicted by near-zero feature usage on core transactional features — these are fixable gaps, not market behavior differences.`,
+      keyDiagnosis: 'The D30 retention gap (38% US vs 23% LatAm, 26% SEA) is primarily fixable, not structural. Near-zero usage of payment and checkout features confirms that 78–82% of new market users cannot complete transactions. First-purchase conversion at 9–12% (vs 31% US) signals payment and localization friction, not fundamental demand gaps.',
+      recommendation: 'Fix-first: pause scaled acquisition and invest new market budget in (1) local payment methods (Pix, OXXO, mobile wallets), (2) Spanish/Portuguese/Bahasa UI localization and local currency display, (3) local seller acquisition. Resume scaled acquisition when first-purchase conversion exceeds 18% (LatAm) and 20% (SEA).',
+    },
+    keyTakeaways: [
+      'Never accept a geographic retention gap as "structural" without first ruling out localization and payment method gaps. Near-zero feature usage is the diagnostic — it means the feature is broken for that market, not irrelevant.',
+      'Payment method coverage is table stakes for international e-commerce. Launching with credit-card-only into markets where credit card penetration is 18–22% means 80% of your target users are functionally blocked from transacting.',
+      'First-purchase conversion is the most immediate PMF signal in a marketplace. A gap of 61–71% below the core market rate is a product problem, not a demand problem — especially in markets with demonstrated e-commerce adoption.',
+      'Structural gaps (genuine behavioral or demand differences) close slowly with time. Fixable gaps (payment, localization, supply) close quickly once the fixes ship. Identify which type you have before deciding whether to scale or fix.',
+    ],
+    playbookLinks: [{ id: 'geographic-retention', label: 'Geographic Retention Analysis' }, { id: 'cohort-retention-curves', label: 'Cohort Retention Curves' }],
+    leadershipNote: 'A Staff DS would build a "market readiness scorecard" that evaluates each new market on payment method coverage, UI localization completeness, and first-purchase conversion before acquisition spend is authorized. The scorecard exists before the expansion launch — not as a post-hoc analysis three months after the retention gap appears. The geographic retention gap in this case was entirely predictable from the product configuration. A Director of Analytics would have flagged it at launch as a blocker.',
+  },
 ];
 
 export const growthAnalyticsCasesById = Object.fromEntries(

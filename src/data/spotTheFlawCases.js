@@ -212,6 +212,7 @@ export const spotTheFlawCases = [
     keyTakeaways: [
       'Self-selected groups always confound feature attribution — high-intent users seek out premium products',
       'Observational "Premium users do X more" findings require RCTs or matched controls before making causal claims',
+      'The correct solution is a randomized experiment or a matched cohort study — observational comparisons between self-selected groups cannot establish causation regardless of sample size',
     ],
   },
   {
@@ -235,6 +236,7 @@ export const spotTheFlawCases = [
     keyTakeaways: [
       'Regression to the mean always inflates interventions applied to extreme performers — always include a matched control',
       'Pre/post analysis on selected-worst-performers is a misleading evaluation design',
+      'The correct design is an RCT: randomly split bottom-decile performers into treatment and control — the control group provides the regression-to-mean baseline and isolates the causal effect',
     ],
   },
   {
@@ -258,6 +260,7 @@ export const spotTheFlawCases = [
     keyTakeaways: [
       'Running N tests at α=0.05 gives ~54% chance of at least one false positive for N=15 — always correct for multiple comparisons',
       'When the primary metric fails, subgroup "wins" are noise, not signal — pre-register your primary metric',
+      'HARKing (Hypothesizing After Results are Known) is indistinguishable from pre-planned analysis unless the primary metric was pre-registered — treat any post-hoc subgroup finding as hypothesis-generating, not confirmatory',
     ],
   },
   {
@@ -281,6 +284,7 @@ export const spotTheFlawCases = [
     keyTakeaways: [
       'Standard A/B randomization fails on social networks because users interact — SUTVA is violated by design',
       'Cluster randomization by social graph community or geo-market is the correct design for networked interventions',
+      'The estimated lift from a standard A/B test on a social network will not generalize to full rollout — cross-contamination effects disappear when the entire population is treated, making post-rollout performance appear weaker than the test suggested',
     ],
   },
 ];
