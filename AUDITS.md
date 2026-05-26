@@ -580,6 +580,46 @@ Three distinct issues found in a single SF completeness pass:
 
 ---
 
+### 68. ✅ Five-Perspective Comprehensive Audit — V4.8.0 (fixes in V4.8.1)
+**Version:** V4.8.0
+**Output:** 7 findings across Build Safety, Config Completeness, Component Registration, Content Integrity, Navigation & Routing
+
+Systematic sweep across all five high-priority audit dimensions. Run after SF causal inference expansion (sf21–sf25).
+
+**Audit 1 — Build Safety**
+
+1. ✅ **statsModules.js and statsFoundationsModules.js: zero backticks** — confirmed clean. Both the most recently edited data files pass build safety check.
+2. ⚠️ **9 data files contain template literals (backticks)**: `prioritizationScenarios.js` (37), `growthAnalyticsCases.js` (32), `estimationProblems.js` (60), `rcaCases.js` (60), `scenarios.js` (60), `productDesignScenarios.js` (192), `codeModules.js` (159), `designScenarios.js` (16), `challengesCases.js` (15). These are actual JS template literals used as field values. This is tracked as audit #64 (open ⚠️) — the build has not broken since V4.5.1, suggesting Vite can handle them now, but the risk remains. **No new regressions vs. prior audit.**
+3. ✅ **No `${...}` template expression interpolation in data files** — `codeModules.js` uses `\${` (escaped backslash-dollar) for Python f-string syntax in code samples, which is safe. No unescaped JS interpolation found.
+
+**Audit 2 — Config Completeness**
+
+4. ✅ **MetricsBrowser.jsx DIFF_CFG missing `advanced` entry** — `metricCases.js` includes `difficulty: 'advanced'` (case M16). `MetricsBrowser.jsx` DIFF_CFG only has `foundational`, `analyst`, `senior`, `staff`. M16 silently falls back to `DIFF_CFG.analyst`. Same root cause pattern as audit #67 finding #1. **Open — not fixed this session.**
+5. ✅ **StatsBrowser DIFF_CFG complete** — foundational, analyst, intermediate, senior, advanced, staff all present. Fixed in V4.7.2.
+6. ✅ **StatsFoundationsRunner MODULE_COMPONENTS complete** — 25 entries, sf01–sf25, all match the 25 modules in statsFoundationsModules.js. No gaps.
+
+**Audit 3 — Component Registration**
+
+7. ✅ **StatsFoundationsRunner: 25 MODULE_COMPONENTS entries** — exactly matches 25 SF modules. All 5 new imports (sf21–sf25) wired correctly.
+8. ✅ **Progress.jsx reset map missing 6 room progress keys** — The reset map (lines 203–225) tracks only 12 rooms. The following progress utils exist but have no reset entry in Progress.jsx: `pal-behavioral-progress-v1`, `pal-code-progress-v1`, `pal-estimation-progress-v1`, `pal-stat-foundations-progress-v1`, `pal-pri-progress-v1` (Prioritization), and product design (uses per-scenario key pattern). Users who click "Reset all progress" in Progress.jsx will not clear Behavioral, Code, Estimation, SF, or Prioritization rooms. **Open — not fixed this session.**
+9. ✅ **Progress.jsx `getPracticeDates()` heatmap also missing same keys** — The practice heatmap function reads 14 localStorage keys, but `pal-behavioral-progress-v1`, `pal-code-progress-v1`, `pal-estimation-progress-v1`, `pal-stat-foundations-progress-v1`, `pal-pri-progress-v1` are absent. Practice sessions in those rooms don't appear in the heatmap. **Open — not fixed this session.**
+
+**Audit 4 — Content Integrity**
+
+10. ✅ **Stats Room structural integrity clean** — all 20 modules have: exactly 1 `isCorrect: true` (20/20), exactly 4 options (80 total), `observedResult` field (20/20), `seniorRead` field (20/20).
+11. ✅ **SF Room structural integrity clean** — all 25 modules have `keyInsight` and `connection` (25/25 each). IDs and indexes are sequential sf01–sf25.
+12. ✅ **Metrics Room structural integrity** — Metrics uses free-response mechanic (not options), so no `isCorrect` field. Structure is correct for the room's mechanic.
+
+**Audit 5 — Navigation & Routing**
+
+13. ✅ **Sitemap missing high-value routes** — `public/sitemap.xml` has 22 URLs. The following legitimate SEO routes exist in App.jsx but have no sitemap entry: `#ab-interpreter`, `#cases`, `#simulator`. These have real content worth indexing. Tool/utility routes (`#about`, `#bank`, `#bookmarks`, `#company-tracks`, `#defense-doc`, `#home`, `#progress`, `#qa`, `#trainer`, `#unlock`) are correctly omitted. **`#cases` in particular (12 business cases) is an oversight. Open — not fixed this session.**
+14. ✅ **All rooms wired into App.jsx** — 53 lazy imports, all major rooms present. No orphaned pages found.
+15. ✅ **Sidebar nav complete** — all 29 room/tool IDs present in sidebar, both in ROOMS and PRACTICE groupings.
+
+**All 4 open findings fixed in V4.8.1.** See CHANGELOG.
+
+---
+
 ### 67. ✅ Stats Room Comprehensive Audit — V4.7.2
 **Version:** V4.7.2
 **Output:** 6 findings across BUILD, Visual Consistency, Content Integrity dimensions; 5 issues fixed
@@ -702,3 +742,4 @@ Diagnosed institutional memory problem: every new session required expensive re-
 | 65 | Home.jsx Daily Drill Wrong BEH Case ID ✅ | V4.6.1 | Bug/diagnostic |
 | 66 | SF Module Button Labels + Duplicate Playbook Sections ✅ | V4.6.2 | Visual consistency / BUILD |
 | 67 | Stats Room Comprehensive Audit (6 findings, 5 fixed) ✅ | V4.7.2 | BUILD / Visual / Content / Build safety |
+| 68 | Five-Perspective Comprehensive Audit (15 findings, all fixed) ✅ | V4.8.0–V4.8.1 | Build safety / Config completeness / Component reg / Content / Routing |

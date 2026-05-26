@@ -208,9 +208,9 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
     { label: 'Review', completed: completed.length, total: scenarios.length, best: reviewBest,
       onReset: makeRoomResetter(['exp-lab-progress-v1']) },
     { label: 'RCA', completed: rcaCompleted.length, total: rcaCases.length, best: rcaBest,
-      onReset: makeRoomResetter(['pal-rca-progress-v1']) },
+      onReset: makeRoomResetter(['pal-rca-progress-v2']) },
     { label: 'Cases', completed: casesCompleted.length, total: businessCases.length, best: casesBest,
-      onReset: makeRoomResetter(['pal-cases-progress-v1']) },
+      onReset: makeRoomResetter(['pal-cases-progress-v2']) },
     { label: 'Growth Analytics', completed: growthAnalyticsCases.filter(c => gaProgress[c.id]?.rating).length, total: growthAnalyticsCases.length, color: 'var(--teal)',
       onReset: makeRoomResetter(['pal-growth-analytics-progress-v1']) },
     { label: 'Challenges', completed: challengesCases.filter(c => challengesProgress[c.id]?.completedAt).length, total: challengesCases.length, color: 'var(--yellow)',
@@ -223,6 +223,16 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
       onReset: makeRoomResetter(['pal-takehome-progress-v1']) },
     { label: 'Instrumentation', completed: instrumentationCases.filter(c => instrProgress[c.id]?.completedAt).length, total: instrumentationCases.length, color: 'var(--teal)',
       onReset: makeRoomResetter(['pal-instrumentation-progress-v1']) },
+    { label: 'Behavioral', completed: behavioralQuestions.filter(q => behavioralProgress[q.id]?.rating).length, total: behavioralQuestions.length, color: 'var(--purple)',
+      onReset: makeRoomResetter(['pal-behavioral-progress-v1']) },
+    { label: 'Code', completed: codeModules.filter(m => codeProgress[m.id]?.completedAt).length, total: codeModules.length, color: 'var(--accent)',
+      onReset: makeRoomResetter(['pal-code-progress-v1']) },
+    { label: 'Estimation', completed: estimationProblems.filter(p => estimationProg[p.id]?.rating).length, total: estimationProblems.length, color: 'var(--teal)',
+      onReset: makeRoomResetter(['pal-estimation-progress-v1']) },
+    { label: 'Stat Foundations', completed: statsFoundationsModules.filter(m => sfProgress[m.id]?.completedAt).length, total: statsFoundationsModules.length, color: 'var(--teal)',
+      onReset: makeRoomResetter(['pal-stat-foundations-progress-v1']) },
+    { label: 'Prioritization', completed: prioritizationScenarios.filter(s => priProgress[s.id]?.completedAt).length, total: prioritizationScenarios.length, color: 'var(--yellow)',
+      onReset: makeRoomResetter(['pal-pri-progress-v1']) },
   ];
 
   const gaCompleted = growthAnalyticsCases.filter(c => gaProgress[c.id]?.rating).length;
@@ -312,7 +322,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
       'pal-estimation-progress-v1', 'pal-stat-foundations-progress-v1',
       'pal-growth-analytics-progress-v1',
       'pal-challenges-progress-v1', 'pal-bi-progress-v1', 'pal-stf-progress-v1', 'pal-takehome-progress-v1',
-      'pal-instrumentation-progress-v1'
+      'pal-instrumentation-progress-v1', 'pal-pri-progress-v1'
     ];
     stores.forEach(key => {
       try {

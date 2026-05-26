@@ -4,6 +4,21 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.8.1] — 2026-05
+
+### Fixed — Audit #68 findings (4 bugs)
+
+- **MetricsBrowser.jsx DIFF_CFG missing `intermediate` and `advanced` entries** — `metricCases.js` has `difficulty: 'advanced'` (case M16). MetricsBrowser only defined foundational/analyst/senior/staff. M16 silently fell back to the analyst badge. Added `intermediate` (yellow) and `advanced` (purple) to complete the config map. Same root cause as audit #67 finding #1 — config not updated when new content was added.
+- **Progress.jsx reset map missing 5 rooms** — `allRoomProgress` had no reset entries for Behavioral, Code, Estimation, Stat Foundations, or Prioritization. "Reset room progress" button in Progress.jsx would silently skip all five. Added reset entries for all five with correct localStorage keys.
+- **Progress.jsx reset map stale keys** — RCA used `pal-rca-progress-v1` (correct key is `v2`); Cases used `pal-cases-progress-v1` (correct key is `v2`). Both updated to match current utils.
+- **Progress.jsx heatmap missing Prioritization key** — `getPracticeDates()` scanned 14 stores but excluded `pal-pri-progress-v1`. Prioritization practice sessions were invisible on the activity heatmap. Key added.
+- **Sitemap missing 3 indexable routes** — `#cases` (12 business cases), `#simulator` (Interview Simulator), `#ab-interpreter` (A/B Interpreter) had no sitemap entries despite having substantive content worth indexing. Added at priority 0.8/0.7.
+
+### Files changed
+`src/pages/MetricsBrowser.jsx`, `src/pages/Progress.jsx`, `public/sitemap.xml`, `AUDITS.md` (audit #68 resolved), `CHANGELOG.md` (this entry)
+
+---
+
 ## [4.8.0] — 2026-05
 
 ### Added — SF Causal Inference Expansion (sf21–sf25)

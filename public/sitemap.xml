@@ -16,6 +16,9 @@
   <url><loc>https://experimentation-systems-lab.vercel.app/#spot-the-flaw</loc><priority>0.8</priority></url>
   <url><loc>https://experimentation-systems-lab.vercel.app/#take-home</loc><priority>0.8</priority></url>
   <url><loc>https://experimentation-systems-lab.vercel.app/#instrumentation</loc><priority>0.8</priority></url>
+  <url><loc>https://experimentation-systems-lab.vercel.app/#cases</loc><priority>0.8</priority></url>
+  <url><loc>https://experimentation-systems-lab.vercel.app/#simulator</loc><priority>0.7</priority></url>
+  <url><loc>https://experimentation-systems-lab.vercel.app/#ab-interpreter</loc><priority>0.7</priority></url>
   <url><loc>https://experimentation-systems-lab.vercel.app/#challenges</loc><priority>0.7</priority></url>
   <url><loc>https://experimentation-systems-lab.vercel.app/#search</loc><priority>0.6</priority></url>
   <url><loc>https://experimentation-systems-lab.vercel.app/#consult</loc><priority>0.6</priority></url>

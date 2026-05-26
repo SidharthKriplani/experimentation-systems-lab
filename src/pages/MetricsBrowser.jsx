@@ -3,9 +3,11 @@ import { metricCases } from '../data/metricCases.js';
 import { getMetricsProgress } from '../utils/metricsProgress.js';
 
 const DIFF_CFG = {
-  foundational: { label: 'Foundational', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
-  analyst:      { label: 'Analyst',      color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
+  foundational: { label: 'Foundational', color: 'var(--blue-text)', bg: 'var(--blue-bg)',   border: 'var(--blue-border)' },
+  analyst:      { label: 'Analyst',      color: 'var(--blue-text)', bg: 'var(--blue-bg)',   border: 'var(--blue-border)' },
+  intermediate: { label: 'Intermediate', color: 'var(--yellow)',    bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
   senior:       { label: 'Senior',       color: 'var(--yellow)',    bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
+  advanced:     { label: 'Advanced',     color: 'var(--purple)',    bg: 'var(--purple-bg)', border: 'var(--purple-border)' },
   staff:        { label: 'Staff',        color: 'var(--teal)',      bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
 };
 
