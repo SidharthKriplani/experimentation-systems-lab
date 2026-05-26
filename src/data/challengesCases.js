@@ -9,13 +9,7 @@ export const challengesCases = [
     estimatedMin: 20,
     company: 'Meta',
     tags: ['srm', 'dau', 'rca', 'notifications', 'experiment-validity'],
-    scenario: `Meta's Feed team is running an A/B test of a new ML-based ranking algorithm. The experiment launched on Monday with a 10% treatment split (approximately 30M users globally). The new algorithm is designed to surface higher-quality long-form content over reactive short-form posts.
-
-By day 4, the experiment dashboard shows encouraging results: the primary metric (Feed session time) is up +6% in treatment, with p=0.04. The team is cautiously optimistic. Then the alerting system fires: platform-wide DAU has dropped 15% over the past 48 hours. The drop is not isolated to the experiment cohort — it appears global.
-
-Further investigation reveals an anomaly in the experiment itself: treatment group has 10.3% of users rather than the target 10.0%. This represents roughly 900,000 extra users in treatment who should not be there. The experiment infrastructure team says "it's within normal variance," but the data science team is skeptical.
-
-Simultaneously, the trust & safety team flags that a major push notification deliverability incident occurred on day 3 — a routing bug caused ~40% of scheduled re-engagement notifications to fail to send. Users who normally return via notification link rather than direct app open saw sharp drops in their return rates.`,
+    scenario: 'Meta\'s Feed team is running an A/B test of a new ML-based ranking algorithm. The experiment launched on Monday with a 10% treatment split (approximately 30M users globally). The new algorithm is designed to surface higher-quality long-form content over reactive short-form posts.\n\nBy day 4, the experiment dashboard shows encouraging results: the primary metric (Feed session time) is up +6% in treatment, with p=0.04. The team is cautiously optimistic. Then the alerting system fires: platform-wide DAU has dropped 15% over the past 48 hours. The drop is not isolated to the experiment cohort — it appears global.\n\nFurther investigation reveals an anomaly in the experiment itself: treatment group has 10.3% of users rather than the target 10.0%. This represents roughly 900,000 extra users in treatment who should not be there. The experiment infrastructure team says "it\'s within normal variance," but the data science team is skeptical.\n\nSimultaneously, the trust & safety team flags that a major push notification deliverability incident occurred on day 3 — a routing bug caused ~40% of scheduled re-engagement notifications to fail to send. Users who normally return via notification link rather than direct app open saw sharp drops in their return rates.',
     subQuestions: [
       {
         id: 'q1',
@@ -78,15 +72,7 @@ Simultaneously, the trust & safety team flags that a major push notification del
     estimatedMin: 20,
     company: 'Airbnb',
     tags: ['metric-tradeoffs', 'guardrail-metrics', 'multi-metric', 'host-trust', 'product-judgment'],
-    scenario: `Airbnb's Supply team is testing a UI change: Instant Book listings are given a significantly larger card in search results, a top-position boost, and a new "Book instantly — no wait" badge. The hypothesis is that reducing friction in the booking decision will increase conversion and GMV.
-
-The experiment ran for 3 weeks across all US users (n=2.1M per group). The results are in, and they are causing a heated debate in the weekly product review meeting.
-
-Positive signals: Booking conversion rate increased +8% (p=0.01). Revenue per user increased +5.3% (p=0.006). These numbers are clearly significant and the growth team is excited.
-
-Negative signals: Host response rate (the share of inquiries to non-Instant-Book hosts that receive a response within 24 hours) dropped 12%. The hypothesis is that the UI de-emphasis made traditional-request hosts feel their listings were second-class, and some reduced their activity. Guest post-stay review scores fell from 4.71 to 4.68 — a drop of 0.03 points (p=0.08). Repeat booking rate at 90 days has not yet been measured (the experiment is too new).
-
-The product manager wants to ship. The trust & safety team wants to pause. The data science team is asked to make the recommendation.`,
+    scenario: 'Airbnb\'s Supply team is testing a UI change: Instant Book listings are given a significantly larger card in search results, a top-position boost, and a new "Book instantly — no wait" badge. The hypothesis is that reducing friction in the booking decision will increase conversion and GMV.\n\nThe experiment ran for 3 weeks across all US users (n=2.1M per group). The results are in, and they are causing a heated debate in the weekly product review meeting.\n\nPositive signals: Booking conversion rate increased +8% (p=0.01). Revenue per user increased +5.3% (p=0.006). These numbers are clearly significant and the growth team is excited.\n\nNegative signals: Host response rate (the share of inquiries to non-Instant-Book hosts that receive a response within 24 hours) dropped 12%. The hypothesis is that the UI de-emphasis made traditional-request hosts feel their listings were second-class, and some reduced their activity. Guest post-stay review scores fell from 4.71 to 4.68 — a drop of 0.03 points (p=0.08). Repeat booking rate at 90 days has not yet been measured (the experiment is too new).\n\nThe product manager wants to ship. The trust & safety team wants to pause. The data science team is asked to make the recommendation.',
     subQuestions: [
       {
         id: 'q1',
@@ -148,13 +134,7 @@ The product manager wants to ship. The trust & safety team wants to pause. The d
     estimatedMin: 25,
     company: 'Google',
     tags: ['growth-accounting', 'acquisition-quality', 'ltv', 'retention-decay', 'campaign-attribution'],
-    scenario: `Google Maps ran a major global marketing campaign over Q3 — TV ads, app store featuring, influencer partnerships, and referral bonuses. The campaign budget was $120M. The growth team is reporting a triumph: DAU grew 18% YoY, with new user installs doubling in the campaign period.
-
-However, the product analytics team has been tracking a parallel set of signals that tell a different story. In the 90 days following campaign launch, three metrics have declined materially: session depth (average actions per session) fell from 5.2 to 3.8; day-7 return rate fell from 41% to 34% for campaign-acquired cohorts vs 41% baseline for organic cohorts; and NPS dropped from 52 to 44.
-
-The growth team argues these are normal "dilution effects" from bringing in a broader audience. The product team argues the campaign is acquiring low-quality users who are degrading engagement signals and will have significantly lower LTV than organic users. The CMO wants to run a second campaign at $150M next quarter.
-
-You have been asked to adjudicate the dispute and provide a recommendation on whether to run the second campaign.`,
+    scenario: 'Google Maps ran a major global marketing campaign over Q3 — TV ads, app store featuring, influencer partnerships, and referral bonuses. The campaign budget was $120M. The growth team is reporting a triumph: DAU grew 18% YoY, with new user installs doubling in the campaign period.\n\nHowever, the product analytics team has been tracking a parallel set of signals that tell a different story. In the 90 days following campaign launch, three metrics have declined materially: session depth (average actions per session) fell from 5.2 to 3.8; day-7 return rate fell from 41% to 34% for campaign-acquired cohorts vs 41% baseline for organic cohorts; and NPS dropped from 52 to 44.\n\nThe growth team argues these are normal "dilution effects" from bringing in a broader audience. The product team argues the campaign is acquiring low-quality users who are degrading engagement signals and will have significantly lower LTV than organic users. The CMO wants to run a second campaign at $150M next quarter.\n\nYou have been asked to adjudicate the dispute and provide a recommendation on whether to run the second campaign.',
     subQuestions: [
       {
         id: 'q1',
@@ -216,13 +196,7 @@ You have been asked to adjudicate the dispute and provide a recommendation on wh
     estimatedMin: 25,
     company: 'Netflix',
     tags: ['simpson-paradox', 'segment-analysis', 'ml-regression', 'sql', 'rollback-decision'],
-    scenario: `Netflix's Personalization team shipped a new recommendation model — a transformer-based architecture trained on 18 months of watch history — globally to all 250M subscribers. The A/B test prior to launch showed aggregate CTR improved +3% (p<0.001) and streaming hours per user increased +1.8%. The model shipped on a Tuesday.
-
-By Friday, a data scientist on the Growth team notices something alarming while building a routine retention report: CTR for new users (account age <30 days) has dropped 18% post-launch compared to the pre-launch baseline. Meanwhile, veteran users (account age >1 year) show a CTR improvement of +7%. The overall improvement of +3% is a weighted average of a large veteran population improvement masking a severe new-user regression.
-
-The new model was trained on 18 months of watch history. New users, by definition, have little to no watch history. The model was not explicitly tested on this segment before launch. There are currently 8M new users (account age <30 days) on the platform, all experiencing degraded recommendations.
-
-The VP of Product has been notified. The question is: roll back globally, partial rollback for new users, or proceed and iterate?`,
+    scenario: 'Netflix\'s Personalization team shipped a new recommendation model — a transformer-based architecture trained on 18 months of watch history — globally to all 250M subscribers. The A/B test prior to launch showed aggregate CTR improved +3% (p<0.001) and streaming hours per user increased +1.8%. The model shipped on a Tuesday.\n\nBy Friday, a data scientist on the Growth team notices something alarming while building a routine retention report: CTR for new users (account age <30 days) has dropped 18% post-launch compared to the pre-launch baseline. Meanwhile, veteran users (account age >1 year) show a CTR improvement of +7%. The overall improvement of +3% is a weighted average of a large veteran population improvement masking a severe new-user regression.\n\nThe new model was trained on 18 months of watch history. New users, by definition, have little to no watch history. The model was not explicitly tested on this segment before launch. There are currently 8M new users (account age <30 days) on the platform, all experiencing degraded recommendations.\n\nThe VP of Product has been notified. The question is: roll back globally, partial rollback for new users, or proceed and iterate?',
     subQuestions: [
       {
         id: 'q1',
@@ -254,40 +228,9 @@ The VP of Product has been notified. The question is: roll back globally, partia
         id: 'q3',
         room: 'code',
         label: 'SQL',
-        question: 'Write the SQL to detect this pattern. Given tables `events(user_id, event_type, timestamp)` and `users(user_id, created_at)`, compute CTR (click events / impression events) broken down by user tenure bucket (<30 days, 30–365 days, >365 days), for pre-launch vs post-launch periods. Assume launch date is 2024-11-05.',
+        question: 'Write the SQL to detect this pattern. Given tables \'events(user_id, event_type, timestamp)\' and \'users(user_id, created_at)\', compute CTR (click events / impression events) broken down by user tenure bucket (<30 days, 30–365 days, >365 days), for pre-launch vs post-launch periods. Assume launch date is 2024-11-05.',
         hint: 'You need: (1) tenure bucket per user based on account age at time of event, (2) period label (pre vs post), (3) aggregate clicks and impressions per bucket × period, (4) CTR = clicks / impressions. Watch for division by zero.',
-        modelAnswer: `WITH tenure_events AS (
-  SELECT
-    e.user_id,
-    e.event_type,
-    e.timestamp,
-    CASE
-      WHEN e.timestamp < '2024-11-05' THEN 'pre_launch'
-      ELSE 'post_launch'
-    END AS period,
-    CASE
-      WHEN DATEDIFF('day', u.created_at, e.timestamp) < 30  THEN 'new_user'
-      WHEN DATEDIFF('day', u.created_at, e.timestamp) <= 365 THEN 'mid_tenure'
-      ELSE 'veteran'
-    END AS tenure_bucket
-  FROM events e
-  JOIN users u ON e.user_id = u.user_id
-  WHERE e.event_type IN ('impression', 'click')
-    AND e.timestamp BETWEEN '2024-10-01' AND '2024-11-20'
-)
-SELECT
-  tenure_bucket,
-  period,
-  COUNT(*) FILTER (WHERE event_type = 'impression') AS impressions,
-  COUNT(*) FILTER (WHERE event_type = 'click')      AS clicks,
-  ROUND(
-    1.0 * COUNT(*) FILTER (WHERE event_type = 'click')
-        / NULLIF(COUNT(*) FILTER (WHERE event_type = 'impression'), 0),
-    4
-  ) AS ctr
-FROM tenure_events
-GROUP BY tenure_bucket, period
-ORDER BY tenure_bucket, period;`,
+        modelAnswer: 'WITH tenure_events AS (\n  SELECT\n    e.user_id,\n    e.event_type,\n    e.timestamp,\n    CASE\n      WHEN e.timestamp < \'2024-11-05\' THEN \'pre_launch\'\n      ELSE \'post_launch\'\n    END AS period,\n    CASE\n      WHEN DATEDIFF(\'day\', u.created_at, e.timestamp) < 30  THEN \'new_user\'\n      WHEN DATEDIFF(\'day\', u.created_at, e.timestamp) <= 365 THEN \'mid_tenure\'\n      ELSE \'veteran\'\n    END AS tenure_bucket\n  FROM events e\n  JOIN users u ON e.user_id = u.user_id\n  WHERE e.event_type IN (\'impression\', \'click\')\n    AND e.timestamp BETWEEN \'2024-10-01\' AND \'2024-11-20\'\n)\nSELECT\n  tenure_bucket,\n  period,\n  COUNT(*) FILTER (WHERE event_type = \'impression\') AS impressions,\n  COUNT(*) FILTER (WHERE event_type = \'click\')      AS clicks,\n  ROUND(\n    1.0 * COUNT(*) FILTER (WHERE event_type = \'click\')\n        / NULLIF(COUNT(*) FILTER (WHERE event_type = \'impression\'), 0),\n    4\n  ) AS ctr\nFROM tenure_events\nGROUP BY tenure_bucket, period\nORDER BY tenure_bucket, period;',
         keyPoints: [
           'DATEDIFF between event timestamp and user created_at gives the tenure at time of event — critical to get right when users age across the measurement window.',
           'NULLIF prevents division-by-zero when a bucket has impressions but no clicks (or vice versa).',
@@ -315,13 +258,7 @@ ORDER BY tenure_bucket, period;`,
     estimatedMin: 30,
     company: 'Stripe',
     tags: ['market-sizing', 'experiment-design', 'holdout', 'expansion', 'b2b-saas'],
-    scenario: `Stripe Tax is an automated tax compliance product for online businesses — it calculates, collects, and remits sales tax / VAT automatically. It launched in the US in 2021 and has been growing steadily. The product team is now evaluating expansion to 15 EU countries where Stripe has significant payment processing market share but no Stripe Tax product currently.
-
-The EU expansion would require significant engineering work (country-specific tax rule libraries, VAT compliance integrations, language localization), estimated at 18 months of effort from a 12-person team. Before committing, leadership wants: (1) a market size estimate to validate the revenue opportunity, (2) a phased launch plan that de-risks the bet, and (3) a statistical assessment of early results from a pilot launch.
-
-The product team ran a pilot: 3 countries (Germany, France, Netherlands) went live with Stripe Tax 90 days ago. The remaining 12 EU countries remain in holdout. Early results show a +14% revenue lift in the live countries vs holdout (p=0.07, n=450 companies per group at the time of analysis).
-
-The VP of Finance is asking: is this enough to proceed with the full 15-country rollout?`,
+    scenario: 'Stripe Tax is an automated tax compliance product for online businesses — it calculates, collects, and remits sales tax / VAT automatically. It launched in the US in 2021 and has been growing steadily. The product team is now evaluating expansion to 15 EU countries where Stripe has significant payment processing market share but no Stripe Tax product currently.\n\nThe EU expansion would require significant engineering work (country-specific tax rule libraries, VAT compliance integrations, language localization), estimated at 18 months of effort from a 12-person team. Before committing, leadership wants: (1) a market size estimate to validate the revenue opportunity, (2) a phased launch plan that de-risks the bet, and (3) a statistical assessment of early results from a pilot launch.\n\nThe product team ran a pilot: 3 countries (Germany, France, Netherlands) went live with Stripe Tax 90 days ago. The remaining 12 EU countries remain in holdout. Early results show a +14% revenue lift in the live countries vs holdout (p=0.07, n=450 companies per group at the time of analysis).\n\nThe VP of Finance is asking: is this enough to proceed with the full 15-country rollout?',
     subQuestions: [
       {
         id: 'q1',
@@ -383,13 +320,7 @@ The VP of Finance is asking: is this enough to proceed with the full 15-country 
     estimatedMin: 25,
     company: 'Uber',
     tags: ['sutva', 'network-effects', 'interference', 'north-star', 'social-features'],
-    scenario: `Uber's Product team is testing "Ride Together" — a feature that lets friends coordinate shared rides. Users can invite friends to join their route, split the fare, and plan pickups for groups. The feature is designed to capitalize on social coordination use cases: going to concerts, airports, or sporting events with friends.
-
-The experiment team ran a standard A/B test: 50% of users in San Francisco were assigned to treatment (can see and use Ride Together), 50% to control (standard Uber experience). After 6 weeks, the results look phenomenal: treatment users show +22% increase in ride frequency vs control. The team is ready to ship globally.
-
-However, a senior data scientist raises a concern in the pre-ship review: "SUTVA is violated. Treatment and control users are in the same city and interact with each other. A treatment user who invites a control user for a Ride Together trip is exposing control users to the feature and potentially generating rides in the control group that wouldn't otherwise occur. The +22% is biased and we don't know in which direction."
-
-The experiment team pushes back: "The effect is so large it must be real regardless of SUTVA violations." The PM asks you to adjudicate.`,
+    scenario: 'Uber\'s Product team is testing "Ride Together" — a feature that lets friends coordinate shared rides. Users can invite friends to join their route, split the fare, and plan pickups for groups. The feature is designed to capitalize on social coordination use cases: going to concerts, airports, or sporting events with friends.\n\nThe experiment team ran a standard A/B test: 50% of users in San Francisco were assigned to treatment (can see and use Ride Together), 50% to control (standard Uber experience). After 6 weeks, the results look phenomenal: treatment users show +22% increase in ride frequency vs control. The team is ready to ship globally.\n\nHowever, a senior data scientist raises a concern in the pre-ship review: "SUTVA is violated. Treatment and control users are in the same city and interact with each other. A treatment user who invites a control user for a Ride Together trip is exposing control users to the feature and potentially generating rides in the control group that wouldn\'t otherwise occur. The +22% is biased and we don\'t know in which direction."\n\nThe experiment team pushes back: "The effect is so large it must be real regardless of SUTVA violations." The PM asks you to adjudicate.',
     subQuestions: [
       {
         id: 'q1',

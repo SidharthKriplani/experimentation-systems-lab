@@ -33,13 +33,6 @@ const ROOM_SUBGROUPS = [
       { id: 'estimation',      label: 'Estimation' },
     ],
   },
-  {
-    id: 'code',
-    label: 'Code',
-    items: [
-      { id: 'code', label: 'Code' },
-    ],
-  },
 ];
 
 const FLAT_GROUPS = [
@@ -66,8 +59,9 @@ const FLAT_GROUPS = [
   {
     label: 'LEARN',
     items: [
-      { id: 'blog',     label: 'Learn' },
-      { id: 'playbook', label: 'Playbook' },
+      { id: 'blog',        label: 'Learn' },
+      { id: 'playbook',    label: 'Playbook' },
+      { id: 'foundations', label: 'Theory Hub' },
     ],
   },
   {
@@ -245,7 +239,6 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
           {/* ── FOUNDATIONS ── */}
           <SectionLabel label="FOUNDATIONS" />
           <NavItem id="stat-foundations" />
-          <NavItem id="foundations" />
 
           {/* ── ROOMS (accordion) ── */}
           <SectionLabel label="ROOMS" />
@@ -304,6 +297,9 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
               </div>
             );
           })}
+
+          {/* ── Code (flat, no accordion wrapper) ── */}
+          <NavItem id="code" />
 
           {/* ── FLAT GROUPS ── */}
           {FLAT_GROUPS.map(group => (

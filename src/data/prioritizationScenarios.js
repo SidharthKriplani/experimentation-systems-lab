@@ -11,7 +11,7 @@ export const prioritizationScenarios = [
     difficulty: 'Intermediate',
     isFree: true,
     tags: ['RICE', 'sprint planning', 'backlog'],
-    context: `You're a PM on Spotify's Discovery team. You have 6 sprints of capacity (1 sprint = 2 engineers × 2 weeks). Five feature requests have landed in your backlog from different stakeholders. You need to stack-rank them and commit to a roadmap for the next quarter.`,
+    context: 'You\'re a PM on Spotify\'s Discovery team. You have 6 sprints of capacity (1 sprint = 2 engineers × 2 weeks). Five feature requests have landed in your backlog from different stakeholders. You need to stack-rank them and commit to a roadmap for the next quarter.',
     items: [
       {
         id: 'A',
@@ -64,7 +64,7 @@ export const prioritizationScenarios = [
         stakeholder: 'Engineering (tech debt)',
       },
     ],
-    prompt: `Score each item using RICE (Reach, Impact, Confidence, Effort). Then stack-rank the 5 items and explain which 2–3 you commit to this quarter given 6 sprints of capacity. Defend any item you deliberately deprioritize.`,
+    prompt: 'Score each item using RICE (Reach, Impact, Confidence, Effort). Then stack-rank the 5 items and explain which 2–3 you commit to this quarter given 6 sprints of capacity. Defend any item you deliberately deprioritize.',
     hints: [
       'RICE = (Reach × Impact × Confidence) / Effort. Normalize reach to the same timeframe (monthly users).',
       'Impact is typically scored 0.25 (minimal), 0.5, 1 (default), 2, 3 (massive). Use the A/B data and survey data to anchor your estimates.',
@@ -112,7 +112,7 @@ export const prioritizationScenarios = [
     difficulty: 'Intermediate',
     isFree: false,
     tags: ['effort-impact', '2×2 matrix', 'quick wins'],
-    context: `You're a PM on Airbnb's Host Experience team. A new VP has joined and wants to know: "What can we ship in 60 days that will meaningfully move host satisfaction?" You have a list of 8 initiatives your team has scoped. Your job is to map them onto an effort–impact matrix and identify the quick wins.`,
+    context: 'You\'re a PM on Airbnb\'s Host Experience team. A new VP has joined and wants to know: "What can we ship in 60 days that will meaningfully move host satisfaction?" You have a list of 8 initiatives your team has scoped. Your job is to map them onto an effort–impact matrix and identify the quick wins.',
     items: [
       { id: '1', name: 'Instant payout option', effort: 'Low', impact: 'High', detail: 'Toggle in payout settings. Engineering says 2 weeks.' },
       { id: '2', name: 'AI-generated listing description', effort: 'Medium', impact: 'High', detail: 'GPT-4 draft from photos + amenities. 6 weeks to MVP.' },
@@ -123,7 +123,7 @@ export const prioritizationScenarios = [
       { id: '7', name: 'Photo quality score for listings', effort: 'High', impact: 'Medium', detail: 'CV model scoring listing photos + suggestions. 12 weeks.' },
       { id: '8', name: 'Multi-unit bulk calendar update', effort: 'Medium', impact: 'High', detail: 'For hosts with 5+ listings. 4 weeks. Affects only ~8% of hosts but drives 35% of revenue.' },
     ],
-    prompt: `Place each initiative on a 2×2 effort–impact matrix (Low/High for each axis). Identify your quick wins, strategic bets, fill-ins, and time-sinks. Then recommend what to commit to the VP for the 60-day window, and explain your reasoning.`,
+    prompt: 'Place each initiative on a 2×2 effort–impact matrix (Low/High for each axis). Identify your quick wins, strategic bets, fill-ins, and time-sinks. Then recommend what to commit to the VP for the 60-day window, and explain your reasoning.',
     hints: [
       'Quick wins = Low effort, High impact. These are your 60-day answer.',
       'Strategic bets = High effort, High impact. Worth a roadmap slot, but not in 60 days.',
@@ -170,7 +170,7 @@ export const prioritizationScenarios = [
     difficulty: 'Advanced',
     isFree: false,
     tags: ['technical debt', 'velocity', 'PM-engineering alignment'],
-    context: `Notion's growth team has been shipping fast for 18 months. The engineering lead comes to you (PM) with a proposal: "We need a full quarter — 3 months — to pay down sync infrastructure debt. We're burning 40% of sprint velocity on incident response and workarounds." The CPO wants a new AI features roadmap delivered this quarter. You need to frame this tradeoff for the exec team.`,
+    context: 'Notion\'s growth team has been shipping fast for 18 months. The engineering lead comes to you (PM) with a proposal: "We need a full quarter — 3 months — to pay down sync infrastructure debt. We\'re burning 40% of sprint velocity on incident response and workarounds." The CPO wants a new AI features roadmap delivered this quarter. You need to frame this tradeoff for the exec team.',
     situation: {
       currentVelocity: '12 story points/sprint average (was 20 eighteen months ago)',
       incidentRate: '3–4 P1 incidents/month attributed to sync layer',
@@ -179,7 +179,7 @@ export const prioritizationScenarios = [
       expectedOutcome: 'Engineering estimates velocity returns to 18–20 sp/sprint post-refactor; incident rate drops to <1/month',
       aiRoadmap: '4 AI features planned (Notion AI 2.0, smart search, meeting notes, action items extraction) — each estimated 1–2 sprints',
     },
-    prompt: `Build the business case for or against the tech debt quarter. Structure your argument around: (1) velocity tax quantification, (2) opportunity cost, (3) risk of not doing it, (4) your recommendation with conditions. Then write the 3-sentence exec summary you'd present to the CPO.`,
+    prompt: 'Build the business case for or against the tech debt quarter. Structure your argument around: (1) velocity tax quantification, (2) opportunity cost, (3) risk of not doing it, (4) your recommendation with conditions. Then write the 3-sentence exec summary you\'d present to the CPO.',
     hints: [
       'Velocity tax = the compounding cost of working around debt. 8 sp/sprint lost × 26 sprints/year = ~208 sp/year of lost output.',
       'Opportunity cost: what AI features get delayed, and what is the business cost of that delay (competitive positioning, user retention)?',
@@ -210,14 +210,8 @@ export const prioritizationScenarios = [
     difficulty: 'Advanced',
     isFree: false,
     tags: ['stakeholder conflict', 'growth vs. safety', 'roadmap negotiation'],
-    context: `You're a PM on Meta's Feed Integrity team. Two VPs have conflicting requests for the next sprint cycle:
-
-**VP of Growth:** "We need to reduce friction in the new user onboarding flow. The current email verification step is causing 18% drop-off. Ship an option to skip it and verify later."
-
-**VP of Trust & Safety:** "Unverified accounts are 3x more likely to be used in coordinated inauthentic behavior campaigns. We cannot remove verification. In fact, we want to make it mandatory before any posting."
-
-Both are right. Both have data. You have one sprint. What do you do?`,
-    prompt: `Map the underlying interests (not positions) of each stakeholder. Identify the option space beyond the binary. Propose a solution that partially satisfies both and explain the tradeoffs you're accepting. Write the alignment memo you'd send to both VPs before the sprint starts.`,
+    context: 'You\'re a PM on Meta\'s Feed Integrity team. Two VPs have conflicting requests for the next sprint cycle:\n\n**VP of Growth:** "We need to reduce friction in the new user onboarding flow. The current email verification step is causing 18% drop-off. Ship an option to skip it and verify later."\n\n**VP of Trust & Safety:** "Unverified accounts are 3x more likely to be used in coordinated inauthentic behavior campaigns. We cannot remove verification. In fact, we want to make it mandatory before any posting."\n\nBoth are right. Both have data. You have one sprint. What do you do?',
+    prompt: 'Map the underlying interests (not positions) of each stakeholder. Identify the option space beyond the binary. Propose a solution that partially satisfies both and explain the tradeoffs you\'re accepting. Write the alignment memo you\'d send to both VPs before the sprint starts.',
     hints: [
       'Positions vs. interests: Growth VP wants lower drop-off; Trust VP wants fewer fake accounts. These are different from their stated requests.',
       'The binary is: "skip verification" vs. "require verification." The option space is much larger.',
@@ -239,7 +233,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
       ],
       recommendation: 'Test: "Browse-now, Post-later" — users can complete onboarding and consume content without verification; a soft wall appears on first attempt to post or comment. Hypothesis: this preserves 50–70% of the drop-off gain for Growth while maintaining verification-before-action for Safety.',
       successMetrics: 'D7 retention of browse-only users, verification completion rate (does deferral lead to eventual completion?), fake account rate in the deferred cohort vs. baseline.',
-      alignmentMemo: `Both of your goals are correct and both matter to Meta\'s long-term health. I'm proposing we run a 2-week experiment on a "Browse-now, Post-later" flow. New users can complete registration and enter the product immediately; a verification prompt appears on first attempt to post or react. This lets us measure whether deferred verification preserves conversion without inflating the unverified posting population. We will share a joint readout in 3 weeks with data on D7 retention, verification completion, and early integrity signals. No final roadmap decision until we have that data.`,
+      alignmentMemo: 'Both of your goals are correct and both matter to Meta\'s long-term health. I\'m proposing we run a 2-week experiment on a "Browse-now, Post-later" flow. New users can complete registration and enter the product immediately; a verification prompt appears on first attempt to post or react. This lets us measure whether deferred verification preserves conversion without inflating the unverified posting population. We will share a joint readout in 3 weeks with data on D7 retention, verification completion, and early integrity signals. No final roadmap decision until we have that data.',
     },
     keyTakeaways: [
       "Stakeholder conflicts are usually conflicts of interest, not conflicts of fact — map the underlying interests first.",
@@ -257,7 +251,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
     difficulty: 'Intermediate',
     isFree: false,
     tags: ['OKRs', 'north star', 'DAU vs. learning'],
-    context: `Duolingo's North Star is Daily Active Users (DAU). But the CEO has been publicly critical of "engagement for engagement's sake" — the product should make people better at languages, not just addicted. You have 4 initiatives proposed for Q3. Each maps to a different objective. Your job: stack-rank them against a dual mandate of DAU + learning efficacy.`,
+    context: 'Duolingo\'s North Star is Daily Active Users (DAU). But the CEO has been publicly critical of "engagement for engagement\'s sake" — the product should make people better at languages, not just addicted. You have 4 initiatives proposed for Q3. Each maps to a different objective. Your job: stack-rank them against a dual mandate of DAU + learning efficacy.',
     items: [
       {
         id: 'A',
@@ -296,7 +290,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         effort: 'High (5 sprints)',
       },
     ],
-    prompt: `Score each initiative against Duolingo's dual mandate: DAU impact and learning efficacy. Then stack-rank the 4 items with explicit tradeoff language. If the CEO's "learning, not addiction" framing is real strategy (not just PR), how does it change your stack rank?`,
+    prompt: 'Score each initiative against Duolingo\'s dual mandate: DAU impact and learning efficacy. Then stack-rank the 4 items with explicit tradeoff language. If the CEO\'s "learning, not addiction" framing is real strategy (not just PR), how does it change your stack rank?',
     hints: [
       'DAU is the North Star metric. But a North Star built on low-quality engagement is a fragile one.',
       'Distinguish between DAU growth that comes from habit formation vs. fear/compulsion. Streak Saver is the latter.',
@@ -330,7 +324,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
     difficulty: 'Advanced',
     isFree: false,
     tags: ['platform vs. feature', 'time horizon', 'dependency management'],
-    context: `You're a PM on Stripe's Payments Platform team. Three internal product teams have submitted roadmap requests for your team's API capabilities. All three are legitimate. All three have deadlines. You have 2 engineers and 2 quarters.`,
+    context: 'You\'re a PM on Stripe\'s Payments Platform team. Three internal product teams have submitted roadmap requests for your team\'s API capabilities. All three are legitimate. All three have deadlines. You have 2 engineers and 2 quarters.',
     requests: [
       {
         requestor: 'Stripe Billing team',
@@ -354,7 +348,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         strategicValue: 'Reduces false positive rate by estimated 15%, saving ~$8M in disputed charges/year',
       },
     ],
-    prompt: `Map each request against a platform vs. feature lens: which requests build durable platform capability vs. which are feature-specific implementations? Then propose a sequencing plan for 2 quarters that accounts for dependencies, effort, and strategic value. Identify what you will say no to (or delay), and how you will communicate it.`,
+    prompt: 'Map each request against a platform vs. feature lens: which requests build durable platform capability vs. which are feature-specific implementations? Then propose a sequencing plan for 2 quarters that accounts for dependencies, effort, and strategic value. Identify what you will say no to (or delay), and how you will communicate it.',
     hints: [
       'Platform capability = reusable by multiple teams, extends API surface, creates long-term leverage. Feature = solves one team\'s specific need.',
       'Retry logic (Billing) could be platform if designed generically (any team could use configurable retries). Or it could be bespoke. Your architecture choice matters.',
@@ -375,7 +369,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         totalEffort: '18 weeks across 2 engineers = 9 weeks each. Feasible if work is parallelizable with clear ownership.',
       },
       tradeoffs: 'No explicit "no" needed — everything fits if sequenced correctly. The risk is Q3 parallelism: both Billing and Radar in Q3 means less room for incident response. Communicate this explicitly: "We are at full capacity Q3. Any scope addition delays one of these commitments."',
-      communicationTemplate: `Here's how we are sequencing the next 2 quarters: Radar pre-auth signals and Billing retry logic ship in Q3 (full capacity). Multi-party splits begin Q3, ship Q4. We have zero slack in Q3 — any additional request displaces one of these. If priorities change, let's discuss before committing to new work.`,
+      communicationTemplate: 'Here\'s how we are sequencing the next 2 quarters: Radar pre-auth signals and Billing retry logic ship in Q3 (full capacity). Multi-party splits begin Q3, ship Q4. We have zero slack in Q3 — any additional request displaces one of these. If priorities change, let\'s discuss before committing to new work.',
     },
     keyTakeaways: [
       'Platform vs. feature is an architecture decision with roadmap consequences — a bespoke solution today becomes platform debt tomorrow.',
@@ -393,7 +387,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
     difficulty: 'Senior',
     isFree: false,
     tags: ['engagement vs. retention', 'gamification', 'north star conflict', 'ethical product'],
-    context: `It's Q2 planning at Duolingo. Internal research has surfaced a troubling finding: users with streaks longer than 90 days have a 22% lower score on standardized language proficiency tests than matched users without streaks who practice at the same frequency. The hypothesis: streak pressure pushes users toward fast, easy lessons to preserve the streak rather than tackling harder, higher-value material. Simultaneously, the streak feature is the single largest DAU driver in the product — removing it would likely cost 9–11% DAU in the short term. Three competing proposals are on the table for the next quarter. You must choose one, justify it to the CEO, and write the tradeoff memo.`,
+    context: 'It\'s Q2 planning at Duolingo. Internal research has surfaced a troubling finding: users with streaks longer than 90 days have a 22% lower score on standardized language proficiency tests than matched users without streaks who practice at the same frequency. The hypothesis: streak pressure pushes users toward fast, easy lessons to preserve the streak rather than tackling harder, higher-value material. Simultaneously, the streak feature is the single largest DAU driver in the product — removing it would likely cost 9–11% DAU in the short term. Three competing proposals are on the table for the next quarter. You must choose one, justify it to the CEO, and write the tradeoff memo.',
     items: [
       {
         id: 'A',
@@ -426,7 +420,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         stakeholder: 'Head of Learning Science, Brand team',
       },
     ],
-    prompt: `Evaluate each proposal against Duolingo's dual mandate (DAU growth and genuine language learning). Score them on mission alignment, short-term DAU impact, and long-term retention potential. Recommend one, and write the 4-sentence CEO memo explaining your choice and the tradeoffs you are accepting.`,
+    prompt: 'Evaluate each proposal against Duolingo\'s dual mandate (DAU growth and genuine language learning). Score them on mission alignment, short-term DAU impact, and long-term retention potential. Recommend one, and write the 4-sentence CEO memo explaining your choice and the tradeoffs you are accepting.',
     hints: [
       'DAU built on streak anxiety is a different kind of engagement than DAU built on felt progress. Ask which compounds better at 12 months.',
       'The research finding (22% lower proficiency for streak users) is not proof of causation — consider confounders before treating it as a mandate to kill the streak.',
@@ -466,7 +460,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         },
       ],
       recommendation: 'Ship C in Q2 as the learning experiment; design B as the Q3 bet contingent on C\'s results. Explicitly do not ship A.',
-      ceoMemo: `Our internal research shows streak users score 22% lower on proficiency tests — a signal we cannot ignore if our mission is real language learning. I am recommending we launch an opt-in goals-based mode for new users this quarter to test whether removing streak pressure improves early learning quality and D90 retention. We will not ship the Streak Shield expansion; it monetizes the engagement gap rather than closing it. If the goals-based cohort shows a D30 retention lift, we will have the evidence to redesign the streak mechanic for the full user base in Q3.`,
+      ceoMemo: 'Our internal research shows streak users score 22% lower on proficiency tests — a signal we cannot ignore if our mission is real language learning. I am recommending we launch an opt-in goals-based mode for new users this quarter to test whether removing streak pressure improves early learning quality and D90 retention. We will not ship the Streak Shield expansion; it monetizes the engagement gap rather than closing it. If the goals-based cohort shows a D30 retention lift, we will have the evidence to redesign the streak mechanic for the full user base in Q3.',
     },
     keyTakeaways: [
       'Engagement mechanics that conflict with the product\'s mission create a structural trust problem — users eventually notice the gap between what the product promises and what it delivers.',
@@ -484,7 +478,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
     difficulty: 'Senior',
     isFree: false,
     tags: ['B2B vs. B2C', 'enterprise features', 'resource constraint', 'constituency conflict'],
-    context: `Notion's growth has bifurcated. Consumer signups (individuals and small teams) are growing at 18% YoY, driven by mobile usage — 41% of sessions are now on mobile, but the mobile editor lags significantly behind desktop: no inline database editing, no drag-and-drop block reordering, limited slash-command support. Meanwhile, Notion's enterprise pipeline has 14 deals worth a combined $8.2M ARR stalled because of the same two missing features: SAML SSO and admin audit logs. The enterprise sales team has given a "last chance" ultimatum — ship these by end of Q3 or lose the deals. The consumer product team has three mobile editor improvements scoped and ready. You have one engineering team (6 engineers) for the quarter. Enterprise features are estimated at 10 engineer-weeks total. The three mobile improvements together are 14 engineer-weeks. You have approximately 18 usable engineer-weeks this quarter after accounting for on-call and maintenance overhead.`,
+    context: 'Notion\'s growth has bifurcated. Consumer signups (individuals and small teams) are growing at 18% YoY, driven by mobile usage — 41% of sessions are now on mobile, but the mobile editor lags significantly behind desktop: no inline database editing, no drag-and-drop block reordering, limited slash-command support. Meanwhile, Notion\'s enterprise pipeline has 14 deals worth a combined $8.2M ARR stalled because of the same two missing features: SAML SSO and admin audit logs. The enterprise sales team has given a "last chance" ultimatum — ship these by end of Q3 or lose the deals. The consumer product team has three mobile editor improvements scoped and ready. You have one engineering team (6 engineers) for the quarter. Enterprise features are estimated at 10 engineer-weeks total. The three mobile improvements together are 14 engineer-weeks. You have approximately 18 usable engineer-weeks this quarter after accounting for on-call and maintenance overhead.',
     items: [
       {
         id: 'ENT1',
@@ -537,7 +531,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         stakeholder: 'Consumer PM',
       },
     ],
-    prompt: `You have 18 engineer-weeks. Enterprise features total 10. All three mobile improvements total 14. You cannot do everything. Build a prioritization recommendation with explicit sequencing, identify what gets cut or deferred, and write the stakeholder communication to both the Head of Enterprise Sales and the Head of Consumer Product explaining your decision.`,
+    prompt: 'You have 18 engineer-weeks. Enterprise features total 10. All three mobile improvements total 14. You cannot do everything. Build a prioritization recommendation with explicit sequencing, identify what gets cut or deferred, and write the stakeholder communication to both the Head of Enterprise Sales and the Head of Consumer Product explaining your decision.',
     hints: [
       'Enterprise ARR at risk ($8.2M) vs. consumer feature value: what is the revenue equivalent of a 9% mobile session depth increase for 12M users?',
       'SSO + Audit Logs (10 weeks) fit inside the 18-week budget — you have 8 weeks left for mobile. That is not enough for all three mobile items (14 weeks).',
@@ -562,8 +556,8 @@ Both are right. Both have data. You have one sprint. What do you do?`,
       },
       rationale: '$8.2M ARR with a hard Q3 deadline is not a prioritization question — it\'s a constraint. The real question is how to best use the 8 remaining weeks. MOB1 has the strongest evidence (NPS + session data, 75% confidence) and the largest reach among content-creating users. Partial MOB2 ships something real to the consumer base without overpromising. MOB3 is deferred because its confidence is the lowest and its reach is uncertain.',
       stakeholderCommunication: {
-        enterprise: `We are fully committing Q3 engineering capacity to SAML SSO and admin audit logs. Both will ship before end of Q3. We have allocated 10 of our 18 available engineer-weeks to these two items specifically because of the deal timeline. You have our commitment.`,
-        consumer: `This quarter, we are shipping inline database editing for mobile (our highest-impact mobile improvement based on NPS data) and an initial version of drag-and-drop block reordering. Full drag-and-drop and slash-command parity are targeted for Q4. We are making this tradeoff because we have $8.2M in enterprise deals with a hard Q3 deadline — those features are non-negotiable this quarter. I want to be honest with you about the constraint rather than overpromise.`,
+        enterprise: 'We are fully committing Q3 engineering capacity to SAML SSO and admin audit logs. Both will ship before end of Q3. We have allocated 10 of our 18 available engineer-weeks to these two items specifically because of the deal timeline. You have our commitment.',
+        consumer: 'This quarter, we are shipping inline database editing for mobile (our highest-impact mobile improvement based on NPS data) and an initial version of drag-and-drop block reordering. Full drag-and-drop and slash-command parity are targeted for Q4. We are making this tradeoff because we have $8.2M in enterprise deals with a hard Q3 deadline — those features are non-negotiable this quarter. I want to be honest with you about the constraint rather than overpromise.',
       },
     },
     keyTakeaways: [
@@ -582,7 +576,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
     difficulty: 'Senior',
     isFree: false,
     tags: ['bug triage', 'reliability vs. growth', 'trust metrics', 'technical debt'],
-    context: `You are PM for Airbnb's Host Platform team. After a summer of rapid feature shipping, your bug backlog has grown to 15 open reliability bugs — a mix of P1 and P2 severity. Host trust scores (measured by a quarterly survey) dropped 4 points (from 72 to 68 out of 100) in the last survey cycle. Separately, the Host Growth team has handed off three new-host onboarding features to your team for implementation; they are critical to hitting a Q4 goal of +20% new host activations. Your team has 5 engineers and 8 sprints this half. The 15 bugs are estimated at 11 sprint-units of effort in total. The 3 growth features are estimated at 9 sprint-units combined. You have 10 sprint-units of safe capacity (leaving buffer for incidents). You cannot ship everything. Prioritize.`,
+    context: 'You are PM for Airbnb\'s Host Platform team. After a summer of rapid feature shipping, your bug backlog has grown to 15 open reliability bugs — a mix of P1 and P2 severity. Host trust scores (measured by a quarterly survey) dropped 4 points (from 72 to 68 out of 100) in the last survey cycle. Separately, the Host Growth team has handed off three new-host onboarding features to your team for implementation; they are critical to hitting a Q4 goal of +20% new host activations. Your team has 5 engineers and 8 sprints this half. The 15 bugs are estimated at 11 sprint-units of effort in total. The 3 growth features are estimated at 9 sprint-units combined. You have 10 sprint-units of safe capacity (leaving buffer for incidents). You cannot ship everything. Prioritize.',
     items: [
       {
         id: 'BUG-A',
@@ -660,7 +654,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         stakeholder: 'Host Growth PM, CRM team',
       },
     ],
-    prompt: `You have 10 sprint-units of capacity. Bugs total 11 sprint-units; growth features total 9 sprint-units. Build a prioritized portfolio recommendation. For the bugs: triage by severity, trust impact, and legal/financial risk. For the growth features: prioritize by confidence and strategic alignment with the +20% activation goal. Show your allocation explicitly and explain what you defer and why.`,
+    prompt: 'You have 10 sprint-units of capacity. Bugs total 11 sprint-units; growth features total 9 sprint-units. Build a prioritized portfolio recommendation. For the bugs: triage by severity, trust impact, and legal/financial risk. For the growth features: prioritize by confidence and strategic alignment with the +20% activation goal. Show your allocation explicitly and explain what you defer and why.',
     hints: [
       'P1 bugs are non-negotiable regardless of growth pressure — payout delays and double bookings directly cause host churn.',
       'Legal risk (tax errors) elevates a P2 bug to near-P1 priority because the liability exposure is asymmetric.',
@@ -713,7 +707,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
     difficulty: 'Staff',
     isFree: false,
     tags: ['roadmap planning', 'now/next/later', 'time horizons', 'capacity planning'],
-    context: `You are a Staff PM on Meta's Reels product team. It is Q4 planning. The team has 12 engineers and a steady-state velocity of roughly 8 significant features per half. Leadership wants a 12-month roadmap structured as Now (ships this half), Next (ships next half), Later (ships in 12+ months), and Never (explicitly not doing). You have 8 candidate ideas from various sources: user research, competitive intelligence, monetization requests, and engineering proposals. Your job is to assign each idea to a time horizon, defend every assignment, and identify what you are explicitly killing.`,
+    context: 'You are a Staff PM on Meta\'s Reels product team. It is Q4 planning. The team has 12 engineers and a steady-state velocity of roughly 8 significant features per half. Leadership wants a 12-month roadmap structured as Now (ships this half), Next (ships next half), Later (ships in 12+ months), and Never (explicitly not doing). You have 8 candidate ideas from various sources: user research, competitive intelligence, monetization requests, and engineering proposals. Your job is to assign each idea to a time horizon, defend every assignment, and identify what you are explicitly killing.',
     items: [
       {
         id: '1',
@@ -780,7 +774,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         strategicFit: 'Medium — distribution optimization; Stories team would own the CTA UI',
       },
     ],
-    prompt: `Assign each of the 8 ideas to Now, Next, Later, or Never. For each assignment, write 2–3 sentences of reasoning. Then write a brief "what we are not doing and why" section for any items you assign to Never or Later. Finally, identify the single biggest sequencing risk in your roadmap.`,
+    prompt: 'Assign each of the 8 ideas to Now, Next, Later, or Never. For each assignment, write 2–3 sentences of reasoning. Then write a brief "what we are not doing and why" section for any items you assign to Never or Later. Finally, identify the single biggest sequencing risk in your roadmap.',
     hints: [
       'Now = ships this half. You have ~8 significant feature slots. Prioritize items that are high-confidence, high-strategic-fit, AND either low-effort or have a hard deadline.',
       'Regulatory deadlines (item 4, EU accessibility) create a Now constraint regardless of prioritization — missing a regulatory deadline has asymmetric downside.',
@@ -848,7 +842,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
           reasoning: 'This is a finance and strategy decision, not a product engineering decision. The Reels team should not own this on its roadmap — escalate to leadership as a strategic investment request. If approved, it becomes a separate budget line and program managed by Creator Partnerships, not product engineering.',
         },
       ],
-      notDoingSection: `We are assigning the Creator Bonus Program to "Never" on the product roadmap because it is fundamentally a finance and strategic investment decision requiring exec approval and a $200M+ budget commitment — not an engineering build. We will escalate this through the correct channel (strategy review) rather than carry it as a product backlog item. Shopping in-video tagging is deferred to Later because our ability to launch it successfully depends on readiness from the commerce and creator teams that is not currently present; shipping the feature before those dependencies are met would result in a poor creator and user experience.`,
+      notDoingSection: 'We are assigning the Creator Bonus Program to "Never" on the product roadmap because it is fundamentally a finance and strategic investment decision requiring exec approval and a $200M+ budget commitment — not an engineering build. We will escalate this through the correct channel (strategy review) rather than carry it as a product backlog item. Shopping in-video tagging is deferred to Later because our ability to launch it successfully depends on readiness from the commerce and creator teams that is not currently present; shipping the feature before those dependencies are met would result in a poor creator and user experience.',
       sequencingRisk: 'The single biggest sequencing risk is item 6 (Reels Shopping). Even if we defer it to Later correctly, there is organizational pressure to pull it into Next because of TikTok Shop competition. If we commit engineering to it before the commerce merchant onboarding is ready, we will deliver a half-built product at a high eng cost — be explicit with leadership about the dependency before any timeline commitment.',
     },
     keyTakeaways: [
@@ -867,7 +861,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
     difficulty: 'Staff',
     isFree: false,
     tags: ['platform team', 'dependency management', 'sequencing', 'negotiation', 'staff PM'],
-    context: `You are the PM for Figma's Platform Infrastructure team — one team of 5 engineers that owns the plugin API, the rendering engine extension points, and the multiplayer sync primitives. It is the start of Q1. Three product teams have submitted requests for platform changes that they each need this quarter to ship their respective roadmap commitments. All three have executive sponsorship. The platform team has approximately 14 engineer-weeks of discretionary capacity this quarter (after incident response, on-call, and maintenance overhead). Combined, the three teams' requests total 22 engineer-weeks. Something must give. Your job: sequence, negotiate, and communicate.`,
+    context: 'You are the PM for Figma\'s Platform Infrastructure team — one team of 5 engineers that owns the plugin API, the rendering engine extension points, and the multiplayer sync primitives. It is the start of Q1. Three product teams have submitted requests for platform changes that they each need this quarter to ship their respective roadmap commitments. All three have executive sponsorship. The platform team has approximately 14 engineer-weeks of discretionary capacity this quarter (after incident response, on-call, and maintenance overhead). Combined, the three teams\' requests total 22 engineer-weeks. Something must give. Your job: sequence, negotiate, and communicate.',
     requests: [
       {
         requestor: 'FigJam team',
@@ -894,7 +888,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         technicalNote: 'Isolated rendering context addition. Medium complexity but well-understood problem space.',
       },
     ],
-    prompt: `You have 14 engineer-weeks. Three requests total 22 engineer-weeks. Design a sequencing plan that respects the hardest deadline, maximizes strategic value, and minimizes the damage of what you cannot deliver. Then write the negotiation memo you send to all three requesting teams, including what you are asking each team to accept and what commitments you are making in return.`,
+    prompt: 'You have 14 engineer-weeks. Three requests total 22 engineer-weeks. Design a sequencing plan that respects the hardest deadline, maximizes strategic value, and minimizes the damage of what you cannot deliver. Then write the negotiation memo you send to all three requesting teams, including what you are asking each team to accept and what commitments you are making in return.',
     hints: [
       'Config (FigJam) is a hard external deadline with reputational stakes — this is the clearest "commit first" item.',
       'Dev Mode sync (10 weeks) is the highest strategic value item (enterprise churn) but also the most technically risky — touching multiplayer sync core means a mistake could affect all Figma products.',
@@ -924,9 +918,9 @@ Both are right. Both have data. You have one sprint. What do you do?`,
         phased_option: 'For Dev Mode: propose a Q1 investigation spike (2 weeks) to design the sync architecture and identify the minimum-viable change that reduces annotation lag by >50% without touching the core protocol. This gives Dev Mode team a meaningful Q1 output and reduces Q2 delivery risk.',
       },
       negotiationMemo: {
-        FigJam: `We are fully committing the FigJam plugin API event hooks as our top Q1 deliverable. This will ship with buffer before Config. We have allocated 8 of our 14 available engineer-weeks to this work. You can plan your 6 plugin partners\' launches against this commitment.`,
-        Slides: `We are committing the presentation mode rendering context for Q1 alongside the FigJam work. The scope is well-defined and isolated — we are targeting delivery by week 10 of the quarter, giving your beta program 4 weeks to integrate before Q1 close. This is a firm commitment.`,
-        DevMode: `We cannot fully deliver the multiplayer sync extension in Q1 — it is 10 engineer-weeks against our 2-week remaining Q1 capacity after the FigJam and Slides commits. Here is what we can do: a 2-week architecture spike in Q1 to design the sync change and validate that we can reduce annotation lag without protocol regressions. This produces a technical spec and risk assessment that de-risks the full Q2 build. Full delivery commits to Q2, with a target of week 6 of Q2. We want to partner closely on the spike given the stakes for enterprise retention — can we schedule a weekly sync?`,
+        FigJam: 'We are fully committing the FigJam plugin API event hooks as our top Q1 deliverable. This will ship with buffer before Config. We have allocated 8 of our 14 available engineer-weeks to this work. You can plan your 6 plugin partners\' launches against this commitment.',
+        Slides: 'We are committing the presentation mode rendering context for Q1 alongside the FigJam work. The scope is well-defined and isolated — we are targeting delivery by week 10 of the quarter, giving your beta program 4 weeks to integrate before Q1 close. This is a firm commitment.',
+        DevMode: 'We cannot fully deliver the multiplayer sync extension in Q1 — it is 10 engineer-weeks against our 2-week remaining Q1 capacity after the FigJam and Slides commits. Here is what we can do: a 2-week architecture spike in Q1 to design the sync change and validate that we can reduce annotation lag without protocol regressions. This produces a technical spec and risk assessment that de-risks the full Q2 build. Full delivery commits to Q2, with a target of week 6 of Q2. We want to partner closely on the spike given the stakes for enterprise retention — can we schedule a weekly sync?',
       },
     },
     keyTakeaways: [
@@ -945,17 +939,7 @@ Both are right. Both have data. You have one sprint. What do you do?`,
     difficulty: 'Staff',
     isFree: false,
     tags: ['north star conflict', 'multi-sided marketplace', 'A/B test interpretation', 'tradeoffs'],
-    context: `DoorDash operates a three-sided marketplace: customers, Dashers (drivers), and restaurants. An A/B test of a new "batched order optimization" algorithm just concluded. The algorithm batches multiple orders per Dasher run to improve route efficiency. Results after 4 weeks on 15% of traffic:
-
-**Customer metrics:** Avg delivery time increased from 31 min to 36 min (+16%). Customer CSAT dropped 3.2 points (8.4% relative decline). Order cancellation rate +0.8pp.
-
-**Dasher metrics:** Earnings per hour increased +$1.40 (+9%). BUT: tip-to-delivery-time ratio declined — customers tip less on longer deliveries. Dasher satisfaction score dropped 1.1 points. Dasher churn in the test cohort +4.2% over 4 weeks (leading indicator).
-
-**Restaurant metrics:** Order accuracy complaints increased 12% (batched orders = longer hold times = food quality issues). Restaurant partner satisfaction score down 2.1 points.
-
-**DoorDash financials:** Delivery cost per order down $0.48 (the efficiency gain). Total orders in test cohort up 3.1% (cheaper delivery attracted more orders).
-
-The VP of Product wants a recommendation in 48 hours: ship, kill, or iterate. What do you do?`,
+    context: 'DoorDash operates a three-sided marketplace: customers, Dashers (drivers), and restaurants. An A/B test of a new "batched order optimization" algorithm just concluded. The algorithm batches multiple orders per Dasher run to improve route efficiency. Results after 4 weeks on 15% of traffic:\n\n**Customer metrics:** Avg delivery time increased from 31 min to 36 min (+16%). Customer CSAT dropped 3.2 points (8.4% relative decline). Order cancellation rate +0.8pp.\n\n**Dasher metrics:** Earnings per hour increased +$1.40 (+9%). BUT: tip-to-delivery-time ratio declined — customers tip less on longer deliveries. Dasher satisfaction score dropped 1.1 points. Dasher churn in the test cohort +4.2% over 4 weeks (leading indicator).\n\n**Restaurant metrics:** Order accuracy complaints increased 12% (batched orders = longer hold times = food quality issues). Restaurant partner satisfaction score down 2.1 points.\n\n**DoorDash financials:** Delivery cost per order down $0.48 (the efficiency gain). Total orders in test cohort up 3.1% (cheaper delivery attracted more orders).\n\nThe VP of Product wants a recommendation in 48 hours: ship, kill, or iterate. What do you do?',
     situation: {
       testDuration: '4 weeks',
       testSize: '15% of traffic',
@@ -963,7 +947,7 @@ The VP of Product wants a recommendation in 48 hours: ship, kill, or iterate. Wh
       businessContext: 'DoorDash is in a profitability push — cost per order reduction is a board-level priority',
       competitiveContext: 'Uber Eats and Grubhub have similar batching algorithms; DoorDash\'s brand is built on reliability and speed, not cost',
     },
-    prompt: `Diagnose the A/B test results across all three constituencies. Identify the root tension in the batching algorithm design. Then make a recommendation: ship, kill, or iterate — with specific conditions and next steps. Write the VP summary (6 sentences max) and identify the one metric you would use as the North Star to resolve this tradeoff if you could only pick one.`,
+    prompt: 'Diagnose the A/B test results across all three constituencies. Identify the root tension in the batching algorithm design. Then make a recommendation: ship, kill, or iterate — with specific conditions and next steps. Write the VP summary (6 sentences max) and identify the one metric you would use as the North Star to resolve this tradeoff if you could only pick one.',
     hints: [
       'The financial gain (+3.1% orders, -$0.48/order cost) is real but must be weighed against the constituent satisfaction regression — in a marketplace, constituent churn is an existential risk.',
       'Dasher churn (+4.2% in 4 weeks) is the most dangerous leading indicator. Supply-side churn in a marketplace creates a flywheel in reverse: fewer Dashers → longer delivery times → more customer churn → fewer orders → even less Dasher income.',
@@ -988,8 +972,8 @@ The VP of Product wants a recommendation in 48 hours: ship, kill, or iterate. Wh
         'Test restaurant-side operational fix (insulated packaging requirement for batch-eligible restaurants) independently of the algorithm change.',
         'Re-run the experiment with these constraints applied. Hypothesis: the unit economics gain will be 60–70% of the original while recovering CSAT and Dasher metrics to near-baseline.',
       ],
-      northStarChoice: `If forced to pick one metric: Dasher supply health (churn rate). In a three-sided marketplace, supply is the scarcest input. Customer churn without Dasher supply recovery leads to a death spiral — you cannot serve the demand side without the supply side. A DoorDash without enough Dashers is not a slightly worse DoorDash; it is a broken product. All other metrics are downstream of supply availability.`,
-      vpSummary: `The batching algorithm delivers real unit economics gains ($0.48/order, +3.1% orders) but at the cost of declining satisfaction across all three constituencies — most critically, Dasher churn is up 4.2% in the test cohort, which is an early supply-side warning we cannot ignore. Customer CSAT dropped 3.2 points and restaurant order accuracy complaints rose 12%, signaling the efficiency gain is being extracted from constituent experience rather than created. My recommendation is to iterate: apply a maximum delivery time deviation cap, exempt DashPass orders, reduce max batch size to 2, and re-run. The financial case for batching is real and worth pursuing, but the current design ships the cost to the constituencies who are hardest to recover once lost. We should retest in 6 weeks with the constrained algorithm and evaluate whether we can preserve 60–70% of the efficiency gain with acceptable constituent impact.`,
+      northStarChoice: 'If forced to pick one metric: Dasher supply health (churn rate). In a three-sided marketplace, supply is the scarcest input. Customer churn without Dasher supply recovery leads to a death spiral — you cannot serve the demand side without the supply side. A DoorDash without enough Dashers is not a slightly worse DoorDash; it is a broken product. All other metrics are downstream of supply availability.',
+      vpSummary: 'The batching algorithm delivers real unit economics gains ($0.48/order, +3.1% orders) but at the cost of declining satisfaction across all three constituencies — most critically, Dasher churn is up 4.2% in the test cohort, which is an early supply-side warning we cannot ignore. Customer CSAT dropped 3.2 points and restaurant order accuracy complaints rose 12%, signaling the efficiency gain is being extracted from constituent experience rather than created. My recommendation is to iterate: apply a maximum delivery time deviation cap, exempt DashPass orders, reduce max batch size to 2, and re-run. The financial case for batching is real and worth pursuing, but the current design ships the cost to the constituencies who are hardest to recover once lost. We should retest in 6 weeks with the constrained algorithm and evaluate whether we can preserve 60–70% of the efficiency gain with acceptable constituent impact.',
     },
     keyTakeaways: [
       'In multi-sided marketplaces, the supply side (Dashers) is typically the most fragile input — supply churn creates a negative flywheel that demand-side growth cannot reverse quickly.',

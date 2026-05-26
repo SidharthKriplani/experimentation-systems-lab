@@ -537,13 +537,7 @@ export const designScenarios = [
     },
 
     seniorDesign: {
-      rationale: `The most important decision in this design is the primary metric. Checkout conversion rate is the intuitive choice — it\'s what the hypothesis is about. But it\'s the wrong primary metric for a business decision. Revenue per checkout user captures both sides of the tradeoff: the conversion lift and the upsell revenue loss. A test that ships on conversion alone can miss the actual business outcome entirely.
-
-The second critical decision is the decision rule. Pre-committing before the data arrives is what separates analytical discipline from rationalization. The rule must specify: what constitutes a guardrail breach, what happens when guardrails and primary conflict, and what the null-result path looks like. Without this, every outcome becomes negotiable.
-
-On trust checks: SRM is always first. A checkout flow with a redirect step or eligibility gate has obvious SRM failure modes. Running the analysis without an SRM check is leaving a trapdoor open.
-
-The Q4 confound is the sleeper risk. The test window overlaps with holiday season behavioral shifts. Any result should be interpreted with the caveat that Q4 intent and basket sizes may not generalize to steady-state behavior.`,
+      rationale: 'The most important decision in this design is the primary metric. Checkout conversion rate is the intuitive choice — it\'s what the hypothesis is about. But it\'s the wrong primary metric for a business decision. Revenue per checkout user captures both sides of the tradeoff: the conversion lift and the upsell revenue loss. A test that ships on conversion alone can miss the actual business outcome entirely.\n\nThe second critical decision is the decision rule. Pre-committing before the data arrives is what separates analytical discipline from rationalization. The rule must specify: what constitutes a guardrail breach, what happens when guardrails and primary conflict, and what the null-result path looks like. Without this, every outcome becomes negotiable.\n\nOn trust checks: SRM is always first. A checkout flow with a redirect step or eligibility gate has obvious SRM failure modes. Running the analysis without an SRM check is leaving a trapdoor open.\n\nThe Q4 confound is the sleeper risk. The test window overlaps with holiday season behavioral shifts. Any result should be interpreted with the caveat that Q4 intent and basket sizes may not generalize to steady-state behavior.',
       commonMistakes: [
         {
           mistake: 'Choosing checkout conversion rate as the primary metric',
@@ -1071,13 +1065,7 @@ The Q4 confound is the sleeper risk. The test window overlaps with holiday seaso
     },
 
     seniorDesign: {
-      rationale: `The most important trust check for this test is not SRM (though SRM is essential) — it\'s verifying the ML model is actually working. A server-side ML assignment that silently fails is a silent validity threat. The test will appear to run, the SRM check might pass, and the results will be biased toward the null by the degraded treatment experience.
-
-On randomization: session-level assignment is a critical mistake for any test where the treatment happens at signup. Users who abandon and return would see different versions, creating contamination in both arms. User-level assignment is the only valid choice.
-
-The ML warm-up risk is underappreciated. If the model retrains during the experiment, later treatment users get a better model than earlier users. This creates a time trend in the treatment effect that standard analysis won\'t detect.
-
-The decision rule needs to separate the activation result from the churn result. A feature that improves week-1 activation by creating a compelling but misleading first experience — causing users to explore, then churn — is not a win. Treat week-1 churn as a blocking guardrail, not an advisory metric.`,
+      rationale: 'The most important trust check for this test is not SRM (though SRM is essential) — it\'s verifying the ML model is actually working. A server-side ML assignment that silently fails is a silent validity threat. The test will appear to run, the SRM check might pass, and the results will be biased toward the null by the degraded treatment experience.\n\nOn randomization: session-level assignment is a critical mistake for any test where the treatment happens at signup. Users who abandon and return would see different versions, creating contamination in both arms. User-level assignment is the only valid choice.\n\nThe ML warm-up risk is underappreciated. If the model retrains during the experiment, later treatment users get a better model than earlier users. This creates a time trend in the treatment effect that standard analysis won\'t detect.\n\nThe decision rule needs to separate the activation result from the churn result. A feature that improves week-1 activation by creating a compelling but misleading first experience — causing users to explore, then churn — is not a win. Treat week-1 churn as a blocking guardrail, not an advisory metric.',
       commonMistakes: [
         {
           mistake: 'Session-level randomization',
@@ -1569,13 +1557,7 @@ The decision rule needs to separate the activation result from the churn result.
     },
 
     seniorDesign: {
-      rationale: `The central design decision is whether to pre-register the mobile subgroup analysis. This is not a detail — it\'s the difference between a legitimate finding and a post-hoc narrative. If you design the experiment with overall WAU as the primary, and you don\'t pre-register the mobile/desktop subgroup split, then a mobile-only treatment effect is exploratory at best and a finding to report at worst.
-
-The correct design pre-registers: (1) overall WAU as the primary, (2) the mobile vs. desktop subgroup split as a pre-specified secondary analysis, (3) the expected direction (mobile > desktop). This means if the overall effect is null but mobile is positive, you can legitimately interpret the pre-registered subgroup result — with appropriate caveats about lower power.
-
-Account-level vs. user-level randomization is also a real decision here. B2B products with team-level discussion of new features should consider account-level randomization to prevent within-team contamination. Either is defensible, but the choice should be explicit.
-
-Novelty effect is the main runtime risk. 4 weeks with weekly breakdowns is the minimum to diagnose a decaying novelty effect vs. a sustained engagement improvement on a UX redesign.`,
+      rationale: 'The central design decision is whether to pre-register the mobile subgroup analysis. This is not a detail — it\'s the difference between a legitimate finding and a post-hoc narrative. If you design the experiment with overall WAU as the primary, and you don\'t pre-register the mobile/desktop subgroup split, then a mobile-only treatment effect is exploratory at best and a finding to report at worst.\n\nThe correct design pre-registers: (1) overall WAU as the primary, (2) the mobile vs. desktop subgroup split as a pre-specified secondary analysis, (3) the expected direction (mobile > desktop). This means if the overall effect is null but mobile is positive, you can legitimately interpret the pre-registered subgroup result — with appropriate caveats about lower power.\n\nAccount-level vs. user-level randomization is also a real decision here. B2B products with team-level discussion of new features should consider account-level randomization to prevent within-team contamination. Either is defensible, but the choice should be explicit.\n\nNovelty effect is the main runtime risk. 4 weeks with weekly breakdowns is the minimum to diagnose a decaying novelty effect vs. a sustained engagement improvement on a UX redesign.',
       commonMistakes: [
         {
           mistake: 'Not pre-registering the mobile subgroup analysis',
@@ -2074,13 +2056,7 @@ Novelty effect is the main runtime risk. 4 weeks with weekly breakdowns is the m
     },
 
     seniorDesign: {
-      rationale: `The central problem in this design is the PM\'s framing. "All 6 metrics should improve" is not a hypothesis — it\'s a wish. Letting it stand as the success definition means the readout will become a post-hoc exercise in finding which metrics moved in the right direction, and calling that success.
-
-The analyst\'s job before this test starts is to get a pre-committed primary metric agreed upon. That means going back to the PM and asking: "If exactly one of these six metrics moves in the right direction, is that a success? Which one would it be?" That conversation is analytically essential, not politically optional.
-
-The multiple testing correction is not optional either. If you track 6 metrics without correction, you will report false positives. The structure is: one primary (retention or WAU), one or two guardrails (unsubscribe rate, response time), the rest informational. Bonferroni or Benjamini-Hochberg across the primary + guardrails is appropriate.
-
-The notification volume check is the most important trust check specific to this design. If the smart grouping algorithm reduces notification volume, any engagement change is partially explained by volume, not quality. That confound must be verified before interpreting results.`,
+      rationale: 'The central problem in this design is the PM\'s framing. "All 6 metrics should improve" is not a hypothesis — it\'s a wish. Letting it stand as the success definition means the readout will become a post-hoc exercise in finding which metrics moved in the right direction, and calling that success.\n\nThe analyst\'s job before this test starts is to get a pre-committed primary metric agreed upon. That means going back to the PM and asking: "If exactly one of these six metrics moves in the right direction, is that a success? Which one would it be?" That conversation is analytically essential, not politically optional.\n\nThe multiple testing correction is not optional either. If you track 6 metrics without correction, you will report false positives. The structure is: one primary (retention or WAU), one or two guardrails (unsubscribe rate, response time), the rest informational. Bonferroni or Benjamini-Hochberg across the primary + guardrails is appropriate.\n\nThe notification volume check is the most important trust check specific to this design. If the smart grouping algorithm reduces notification volume, any engagement change is partially explained by volume, not quality. That confound must be verified before interpreting results.',
       commonMistakes: [
         {
           mistake: 'Treating all 6 PM metrics as co-equal primaries',
@@ -2614,13 +2590,7 @@ The notification volume check is the most important trust check specific to this
     },
 
     seniorDesign: {
-      rationale: `The central problem in this design is the PM\'s proposal to use CTR as the primary metric. The ML model was trained to optimize CTR — using CTR to evaluate it creates a circular test that can only validate whether the model learned its training signal. It cannot tell you whether the model improves user outcomes.
-
-The right primary metric is downstream of the click: search-to-add-to-cart rate or revenue per searcher. These measure whether users actually found and wanted what the search returned. They are much harder to game by clickbait titles and misleading thumbnails.
-
-Reformulation rate is the single most important guardrail. A user who rewrites their query after seeing results is directly telling you the first results failed. If reformulation rate rises while CTR rises, the ML model learned to surface clickbait — results that attract attention but don\'t match intent.
-
-The 21-day runtime matters. Search ranking novelty effects are real: users click new result arrangements out of curiosity. Week-1 CTR will overstate steady-state quality. Build week-over-week monitoring into the analysis plan.`,
+      rationale: 'The central problem in this design is the PM\'s proposal to use CTR as the primary metric. The ML model was trained to optimize CTR — using CTR to evaluate it creates a circular test that can only validate whether the model learned its training signal. It cannot tell you whether the model improves user outcomes.\n\nThe right primary metric is downstream of the click: search-to-add-to-cart rate or revenue per searcher. These measure whether users actually found and wanted what the search returned. They are much harder to game by clickbait titles and misleading thumbnails.\n\nReformulation rate is the single most important guardrail. A user who rewrites their query after seeing results is directly telling you the first results failed. If reformulation rate rises while CTR rises, the ML model learned to surface clickbait — results that attract attention but don\'t match intent.\n\nThe 21-day runtime matters. Search ranking novelty effects are real: users click new result arrangements out of curiosity. Week-1 CTR will overstate steady-state quality. Build week-over-week monitoring into the analysis plan.',
       commonMistakes: [
         {
           mistake: 'Using CTR as the primary metric for a model trained on CTR',
@@ -3104,13 +3074,7 @@ The 21-day runtime matters. Search ranking novelty effects are real: users click
     },
 
     seniorDesign: {
-      rationale: `The notification timing test is a proxy metric trap dressed up as an engagement experiment. The ML model was trained to maximize open rate. Using open rate as the primary metric is circular — it validates the training signal, not the user outcome.
-
-The business question is: does personalized timing increase genuine re-engagement? That means sessions, task completions, or weekly activity — not a tap on a notification. A user who opens a notification while commuting and immediately closes the app has been "engaged" by the open rate metric and not engaged at all by any meaningful definition.
-
-Opt-out and uninstall are the most important harm signals. They are irreversible. A timing model that improves engagement for 5% of users while driving 2% more opt-outs is a net negative — you\'ve permanently lost the notification channel for a meaningful portion of your user base. These must be blocking guardrails, not observations to review post-launch.
-
-The delayed harm accumulation risk is underappreciated. Notification fatigue builds slowly. A 21-day test may still underestimate long-term opt-out effects. Flag this limitation explicitly in the analysis.`,
+      rationale: 'The notification timing test is a proxy metric trap dressed up as an engagement experiment. The ML model was trained to maximize open rate. Using open rate as the primary metric is circular — it validates the training signal, not the user outcome.\n\nThe business question is: does personalized timing increase genuine re-engagement? That means sessions, task completions, or weekly activity — not a tap on a notification. A user who opens a notification while commuting and immediately closes the app has been "engaged" by the open rate metric and not engaged at all by any meaningful definition.\n\nOpt-out and uninstall are the most important harm signals. They are irreversible. A timing model that improves engagement for 5% of users while driving 2% more opt-outs is a net negative — you\'ve permanently lost the notification channel for a meaningful portion of your user base. These must be blocking guardrails, not observations to review post-launch.\n\nThe delayed harm accumulation risk is underappreciated. Notification fatigue builds slowly. A 21-day test may still underestimate long-term opt-out effects. Flag this limitation explicitly in the analysis.',
       commonMistakes: [
         {
           mistake: 'Using notification open rate as the primary metric for a model trained on open rate',
@@ -3583,15 +3547,7 @@ The delayed harm accumulation risk is underappreciated. Notification fatigue bui
     },
 
     seniorDesign: {
-      rationale: `This scenario is explicitly about recognizing that standard A/B testing is structurally invalid in certain marketplace contexts. The proposed seller-level A/B test has a SUTVA problem that cannot be fixed by adjusting the analysis — it requires a different design.
-
-The interference mechanism is specific: buyers contact multiple sellers simultaneously. A buyer who is "won" by a treatment seller (fast response, badge, algorithmic boost) is potentially a buyer who would have purchased from a control seller in the counterfactual. Treatment seller conversion increases through reallocation, not through additive platform GMV.
-
-The only design that can measure a platform-level effect is geographic holdout: entire markets get the full program or serve as holdout. Within each market, supply and demand are isolated together, so there is no cross-contamination.
-
-The tradeoff is power: the number of independent geographic markets may be small, making the MDE relatively large. This is a design constraint you must acknowledge, not a reason to fall back to seller-level A/B.
-
-The decision rule must explicitly check for demand displacement: if treatment markets lift while control markets decline, the program is redistributing GMV, not creating it. Block the ship decision on this evidence.`,
+      rationale: 'This scenario is explicitly about recognizing that standard A/B testing is structurally invalid in certain marketplace contexts. The proposed seller-level A/B test has a SUTVA problem that cannot be fixed by adjusting the analysis — it requires a different design.\n\nThe interference mechanism is specific: buyers contact multiple sellers simultaneously. A buyer who is "won" by a treatment seller (fast response, badge, algorithmic boost) is potentially a buyer who would have purchased from a control seller in the counterfactual. Treatment seller conversion increases through reallocation, not through additive platform GMV.\n\nThe only design that can measure a platform-level effect is geographic holdout: entire markets get the full program or serve as holdout. Within each market, supply and demand are isolated together, so there is no cross-contamination.\n\nThe tradeoff is power: the number of independent geographic markets may be small, making the MDE relatively large. This is a design constraint you must acknowledge, not a reason to fall back to seller-level A/B.\n\nThe decision rule must explicitly check for demand displacement: if treatment markets lift while control markets decline, the program is redistributing GMV, not creating it. Block the ship decision on this evidence.',
       commonMistakes: [
         {
           mistake: 'Running seller-level A/B without acknowledging marketplace interference',
@@ -4057,13 +4013,7 @@ The decision rule must explicitly check for demand displacement: if treatment ma
     },
 
     seniorDesign: {
-      rationale: `The central design challenge is defining what activation actually means. "Checklist completion" is not activation — it\'s a proxy for it, and a gameable one. The 7-step checklist includes "set personal preferences" — a step users can complete in 10 seconds with no product engagement. If completion is the success metric, the team will ship a checklist that teaches users to clear a progress bar, not use the product.
-
-The right primary metric is the specific set of behaviors that Loopwise data shows predict 30-day retention: creating a project, adding a task, and inviting a teammate. All three, in the first 7 days. These require actual product engagement, not just UI interaction.
-
-The retention guardrail is the most important signal for catching checklist gaming. If treatment accounts show higher week-1 activation but flat or worse 14-day retention, users went through the checklist motions without forming product habits. That is a false positive. The decision rule must block shipping in this case.
-
-B2B SaaS volume constraint: at 220 new accounts per week, you need 6+ weeks for adequate power at reasonable effect sizes. Be honest about this upfront — don\'t start the experiment with a 14-day timeline and then extend post-hoc.`,
+      rationale: 'The central design challenge is defining what activation actually means. "Checklist completion" is not activation — it\'s a proxy for it, and a gameable one. The 7-step checklist includes "set personal preferences" — a step users can complete in 10 seconds with no product engagement. If completion is the success metric, the team will ship a checklist that teaches users to clear a progress bar, not use the product.\n\nThe right primary metric is the specific set of behaviors that Loopwise data shows predict 30-day retention: creating a project, adding a task, and inviting a teammate. All three, in the first 7 days. These require actual product engagement, not just UI interaction.\n\nThe retention guardrail is the most important signal for catching checklist gaming. If treatment accounts show higher week-1 activation but flat or worse 14-day retention, users went through the checklist motions without forming product habits. That is a false positive. The decision rule must block shipping in this case.\n\nB2B SaaS volume constraint: at 220 new accounts per week, you need 6+ weeks for adequate power at reasonable effect sizes. Be honest about this upfront — don\'t start the experiment with a 14-day timeline and then extend post-hoc.',
       commonMistakes: [
         {
           mistake: 'Using checklist completion as the primary metric',

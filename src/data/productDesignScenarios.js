@@ -16,9 +16,7 @@ export const productDesignScenarios = [
     category: 'Consumer App',
     tags: ['content discovery', 'personalization', 'consumer'],
     isFree: true,
-    prompt: `You are a PM at Spotify. Podcast listening has grown significantly over the last three years, but podcast discovery still largely depends on users knowing what to search for. Users who don't already know a show's name rarely find new podcasts organically.
-
-Design a feature to meaningfully improve podcast discovery — specifically for users who want to find something new but don't know what to search for.`,
+    prompt: 'You are a PM at Spotify. Podcast listening has grown significantly over the last three years, but podcast discovery still largely depends on users knowing what to search for. Users who don\'t already know a show\'s name rarely find new podcasts organically.\n\nDesign a feature to meaningfully improve podcast discovery — specifically for users who want to find something new but don\'t know what to search for.',
     phases: [
       {
         id: 'clarify',
@@ -33,19 +31,7 @@ Design a feature to meaningfully improve podcast discovery — specifically for 
           'Asks about timeline and resource constraints',
           'Avoids asking questions that have obvious answers from the brief',
         ],
-        modelAnswer: `Before designing, I'd want to clarify:
-
-1. **Who is the primary target user?** New Spotify users who haven't engaged with podcasts, or existing podcast listeners we want to expand? Or music-only users we want to convert? These require very different solutions.
-
-2. **What does "improve discovery" mean in measurable terms?** Are we targeting first podcast listen, podcast engagement (completion rate, return listening), or new show subscriptions? The success metric should exist before the solution.
-
-3. **What's the baseline?** How are users currently discovering podcasts — search, editorial playlists, social shares? And where does that discovery fail? Knowing the existing funnel shapes what we build.
-
-4. **Platform constraint?** Mobile first, or does this span desktop, TV, car? Discovery patterns differ meaningfully by context.
-
-5. **Are there content constraints?** Do we have licensing or editorial curation capacity for something like a recommendation engine vs. a curated shelf?
-
-6. **What's the timeline?** A 6-week sprint suggests iterating on existing surfaces; a longer timeline could support an ML-driven feature.`,
+        modelAnswer: 'Before designing, I\'d want to clarify:\n\n1. **Who is the primary target user?** New Spotify users who haven\'t engaged with podcasts, or existing podcast listeners we want to expand? Or music-only users we want to convert? These require very different solutions.\n\n2. **What does "improve discovery" mean in measurable terms?** Are we targeting first podcast listen, podcast engagement (completion rate, return listening), or new show subscriptions? The success metric should exist before the solution.\n\n3. **What\'s the baseline?** How are users currently discovering podcasts — search, editorial playlists, social shares? And where does that discovery fail? Knowing the existing funnel shapes what we build.\n\n4. **Platform constraint?** Mobile first, or does this span desktop, TV, car? Discovery patterns differ meaningfully by context.\n\n5. **Are there content constraints?** Do we have licensing or editorial curation capacity for something like a recommendation engine vs. a curated shelf?\n\n6. **What\'s the timeline?** A 6-week sprint suggests iterating on existing surfaces; a longer timeline could support an ML-driven feature.',
       },
       {
         id: 'users',
@@ -58,20 +44,7 @@ Design a feature to meaningfully improve podcast discovery — specifically for 
           'Makes a clear recommendation for which segment to focus on',
           'Justifies the choice with business logic, not just intuition',
         ],
-        modelAnswer: `Three segments stand out:
-
-**1. Music-first users who haven't tried podcasts**
-Large in volume. Their barrier is awareness and cold-start unfamiliarity — they don't know where to start. Discovery tools could convert them, but it requires disrupting existing listening habits. High ceiling, higher friction.
-
-**2. Lapsed podcast listeners (engaged 3–6 months ago, now inactive)**
-They've proven they like podcasts but have churned from the habit. They're familiar with the format but haven't found a compelling show to stick with. They're more receptive to re-engagement through personalized recommendations.
-
-**3. Active podcast listeners who want more shows**
-Already engaged. Their pain is variety and serendipitous discovery — they want to find shows adjacent to what they love but can't search for what they don't know exists.
-
-**Focus: Segment 3 (active podcast listeners)**
-
-They're already in the behavior, so we can measure impact quickly. They have strong signal (listening history) for personalization, and solving for them builds infrastructure that later scales to segments 1 and 2. Their engagement also pulls up north star metrics most directly.`,
+        modelAnswer: 'Three segments stand out:\n\n**1. Music-first users who haven\'t tried podcasts**\nLarge in volume. Their barrier is awareness and cold-start unfamiliarity — they don\'t know where to start. Discovery tools could convert them, but it requires disrupting existing listening habits. High ceiling, higher friction.\n\n**2. Lapsed podcast listeners (engaged 3–6 months ago, now inactive)**\nThey\'ve proven they like podcasts but have churned from the habit. They\'re familiar with the format but haven\'t found a compelling show to stick with. They\'re more receptive to re-engagement through personalized recommendations.\n\n**3. Active podcast listeners who want more shows**\nAlready engaged. Their pain is variety and serendipitous discovery — they want to find shows adjacent to what they love but can\'t search for what they don\'t know exists.\n\n**Focus: Segment 3 (active podcast listeners)**\n\nThey\'re already in the behavior, so we can measure impact quickly. They have strong signal (listening history) for personalization, and solving for them builds infrastructure that later scales to segments 1 and 2. Their engagement also pulls up north star metrics most directly.',
       },
       {
         id: 'goals',
@@ -85,20 +58,7 @@ They're already in the behavior, so we can measure impact quickly. They have str
           'Explains the denominator for each rate metric',
           'Avoids using revenue as the north star for a discovery feature',
         ],
-        modelAnswer: `**North Star: New unique shows streamed per active podcast listener per month**
-This captures discovery success (new shows, not re-listens) and is directly tied to the problem. It's more meaningful than "impressions" or "clicks" because it measures actual listening, not just exposure.
-
-**Diagnostic metrics:**
-- Click-through rate on discovery surface (discovery content → show page)
-- Show page → first episode start rate (are users interested once they land?)
-- Episode completion rate for discovery-sourced starts (quality signal)
-- Day-7 and Day-30 return rate to newly discovered shows (is the recommendation durable?)
-
-**Guardrail:**
-- Existing podcast listening volume per active listener must not decline (we're adding discovery, not disrupting existing habits)
-- Music listening engagement should not decrease significantly (podcast discovery shouldn't cannibalize the core product)
-
-**Primary metric for experiment:** New unique shows with ≥1 episode started, per active podcast listener, in the 30 days after feature exposure.`,
+        modelAnswer: '**North Star: New unique shows streamed per active podcast listener per month**\nThis captures discovery success (new shows, not re-listens) and is directly tied to the problem. It\'s more meaningful than "impressions" or "clicks" because it measures actual listening, not just exposure.\n\n**Diagnostic metrics:**\n- Click-through rate on discovery surface (discovery content → show page)\n- Show page → first episode start rate (are users interested once they land?)\n- Episode completion rate for discovery-sourced starts (quality signal)\n- Day-7 and Day-30 return rate to newly discovered shows (is the recommendation durable?)\n\n**Guardrail:**\n- Existing podcast listening volume per active listener must not decline (we\'re adding discovery, not disrupting existing habits)\n- Music listening engagement should not decrease significantly (podcast discovery shouldn\'t cannibalize the core product)\n\n**Primary metric for experiment:** New unique shows with ≥1 episode started, per active podcast listener, in the 30 days after feature exposure.',
       },
       {
         id: 'solutions',
@@ -112,17 +72,7 @@ This captures discovery success (new shows, not re-listens) and is directly tied
           'Avoids generic ideas like "recommendation algorithm" without mechanism',
           'At least one solution is novel or non-obvious',
         ],
-        modelAnswer: `**Option 1: "Because You Listened To…" Discovery Shelf (Low effort, quick signal)**
-Surface a dedicated discovery shelf on the Podcasts tab showing shows algorithmically similar to the user's recent listens. Each recommendation is labeled with the connection ("Because you listen to Lex Fridman"). Clear, personal, and low-friction. Risk: cold-start problem for new podcast listeners; depends heavily on existing catalog relationships.
-
-**Option 2: Mood/Context-Based Podcast Channels (Medium effort, differentiated)**
-Instead of topic-based discovery (users don't know genre), offer mode-based channels: "Something to learn on my commute," "True crime for tonight," "Quick 10-minute stories." Users discover shows through a context/mood entry point rather than by searching for a genre they can't name. Novel, but requires strong editorial/curation infrastructure.
-
-**Option 3: Social Discovery via Friends & Followed Artists (Medium effort, platform leverage)**
-Surface what Spotify friends or followed artists are listening to. This leverages social proof without requiring active sharing. "Artists you follow are listening to this podcast" is a unique Spotify angle other platforms can't replicate. Risk: relies on social graph density and opt-in sharing, which may be limited.
-
-**Option 4: Conversational Discovery (High effort, strategic bet)**
-An in-app prompt: "Tell me what you're in the mood for" — uses LLM to generate personalized show recommendations from a text description. Higher development lift but matches the search-vs-browse tension head-on. Could be built on top of existing Spotify AI DJ infrastructure.`,
+        modelAnswer: '**Option 1: "Because You Listened To…" Discovery Shelf (Low effort, quick signal)**\nSurface a dedicated discovery shelf on the Podcasts tab showing shows algorithmically similar to the user\'s recent listens. Each recommendation is labeled with the connection ("Because you listen to Lex Fridman"). Clear, personal, and low-friction. Risk: cold-start problem for new podcast listeners; depends heavily on existing catalog relationships.\n\n**Option 2: Mood/Context-Based Podcast Channels (Medium effort, differentiated)**\nInstead of topic-based discovery (users don\'t know genre), offer mode-based channels: "Something to learn on my commute," "True crime for tonight," "Quick 10-minute stories." Users discover shows through a context/mood entry point rather than by searching for a genre they can\'t name. Novel, but requires strong editorial/curation infrastructure.\n\n**Option 3: Social Discovery via Friends & Followed Artists (Medium effort, platform leverage)**\nSurface what Spotify friends or followed artists are listening to. This leverages social proof without requiring active sharing. "Artists you follow are listening to this podcast" is a unique Spotify angle other platforms can\'t replicate. Risk: relies on social graph density and opt-in sharing, which may be limited.\n\n**Option 4: Conversational Discovery (High effort, strategic bet)**\nAn in-app prompt: "Tell me what you\'re in the mood for" — uses LLM to generate personalized show recommendations from a text description. Higher development lift but matches the search-vs-browse tension head-on. Could be built on top of existing Spotify AI DJ infrastructure.',
       },
       {
         id: 'prioritize',
@@ -136,25 +86,7 @@ An in-app prompt: "Tell me what you're in the mood for" — uses LLM to generate
           'Describes what v1 looks like (minimum scope to learn)',
           'Acknowledges the tradeoff of the choice made',
         ],
-        modelAnswer: `**Recommendation: Ship Option 1 ("Because You Listened To…" shelf) as the v1 test**
-
-**Rationale:**
-It builds on existing recommendation infrastructure, doesn't require new UI paradigms, and gives us a clean north star signal (new shows started) within a 2-week experiment window. Option 2 and 3 are strategically interesting but require more build time and have more assumptions to validate.
-
-**What v1 looks like:**
-- A shelf on the Podcasts home tab with 6–8 algorithmic recommendations
-- Each card shows: show name, episode count, and a "because you listened to X" label
-- Tapping goes to the show page, not directly to an episode
-- Surface area is mobile only for the v1 test
-
-**Test design:**
-Run a 14-day A/B test: treatment (shelf visible) vs. control (no shelf). Primary metric: new unique shows with ≥1 episode started per listener. Guardrail: existing podcast listening volume.
-
-**If it works:**
-Expand to desktop and test contextual placement (top of tab vs. mid-page). Then layer in social/friends data to improve recommendation quality (Option 3 becomes a ranking signal, not a separate feature).
-
-**Tradeoff acknowledged:**
-We're shipping a cold-start-limited solution first. Users with limited podcast history will see weaker recommendations. We'll measure recommendation quality by segment and decide whether to add a fallback for low-history users in v2.`,
+        modelAnswer: '**Recommendation: Ship Option 1 ("Because You Listened To…" shelf) as the v1 test**\n\n**Rationale:**\nIt builds on existing recommendation infrastructure, doesn\'t require new UI paradigms, and gives us a clean north star signal (new shows started) within a 2-week experiment window. Option 2 and 3 are strategically interesting but require more build time and have more assumptions to validate.\n\n**What v1 looks like:**\n- A shelf on the Podcasts home tab with 6–8 algorithmic recommendations\n- Each card shows: show name, episode count, and a "because you listened to X" label\n- Tapping goes to the show page, not directly to an episode\n- Surface area is mobile only for the v1 test\n\n**Test design:**\nRun a 14-day A/B test: treatment (shelf visible) vs. control (no shelf). Primary metric: new unique shows with ≥1 episode started per listener. Guardrail: existing podcast listening volume.\n\n**If it works:**\nExpand to desktop and test contextual placement (top of tab vs. mid-page). Then layer in social/friends data to improve recommendation quality (Option 3 becomes a ranking signal, not a separate feature).\n\n**Tradeoff acknowledged:**\nWe\'re shipping a cold-start-limited solution first. Users with limited podcast history will see weaker recommendations. We\'ll measure recommendation quality by segment and decide whether to add a fallback for low-history users in v2.',
       },
     ],
   },
@@ -171,9 +103,7 @@ We're shipping a cold-start-limited solution first. Users with limited podcast h
     category: 'Marketplace',
     tags: ['two-sided marketplace', 'supply-side', 'retention'],
     isFree: false,
-    prompt: `You are a PM at Airbnb. Data shows that guest booking conversion drops 18% when hosts take more than 12 hours to respond to a booking request. Currently, 31% of requests see a host response time over 12 hours.
-
-Design a solution to reduce host response lag and improve booking conversion — without harming host satisfaction or causing hosts to accept bookings they'll cancel later.`,
+    prompt: 'You are a PM at Airbnb. Data shows that guest booking conversion drops 18% when hosts take more than 12 hours to respond to a booking request. Currently, 31% of requests see a host response time over 12 hours.\n\nDesign a solution to reduce host response lag and improve booking conversion — without harming host satisfaction or causing hosts to accept bookings they\'ll cancel later.',
     phases: [
       {
         id: 'clarify',
@@ -188,19 +118,7 @@ Design a solution to reduce host response lag and improve booking conversion —
           'Asks about Instant Book eligibility and current adoption',
           'Distinguishes between improving response time and preventing slow responses',
         ],
-        modelAnswer: `Before designing, I'd clarify:
-
-1. **What are the root causes of slow responses?** Is it hosts who are genuinely unavailable, hosts who are hesitant (uncertainty about the guest), or a notification delivery problem? These require different solutions.
-
-2. **What does host segmentation look like?** Superhosts (likely higher response rates) vs occasional home-sharers vs professional property managers — each has different motivations and constraints.
-
-3. **What's the current notification stack?** Do we send push, email, or SMS? What are open/response rates on those notifications? Is there a fatigue problem?
-
-4. **What is Instant Book adoption currently?** If hosts are already eligible for Instant Book, why aren't they using it? Is it a trust/control issue?
-
-5. **How do we define "host satisfaction"?** Is it measured by survey, star rating, or continued hosting activity? What's the acceptable degradation threshold?
-
-6. **What is the nature of the bookings being slow-responded to?** Are these long-stay, high-value requests? New guest profiles? Knowing which requests cause hesitation shapes what we build.`,
+        modelAnswer: 'Before designing, I\'d clarify:\n\n1. **What are the root causes of slow responses?** Is it hosts who are genuinely unavailable, hosts who are hesitant (uncertainty about the guest), or a notification delivery problem? These require different solutions.\n\n2. **What does host segmentation look like?** Superhosts (likely higher response rates) vs occasional home-sharers vs professional property managers — each has different motivations and constraints.\n\n3. **What\'s the current notification stack?** Do we send push, email, or SMS? What are open/response rates on those notifications? Is there a fatigue problem?\n\n4. **What is Instant Book adoption currently?** If hosts are already eligible for Instant Book, why aren\'t they using it? Is it a trust/control issue?\n\n5. **How do we define "host satisfaction"?** Is it measured by survey, star rating, or continued hosting activity? What\'s the acceptable degradation threshold?\n\n6. **What is the nature of the bookings being slow-responded to?** Are these long-stay, high-value requests? New guest profiles? Knowing which requests cause hesitation shapes what we build.',
       },
       {
         id: 'users',
@@ -213,19 +131,7 @@ Design a solution to reduce host response lag and improve booking conversion —
           'Considers host motivation and trust dynamics, not just notification behavior',
           'Makes a clear recommendation for which segment to target first',
         ],
-        modelAnswer: `Three host segments with distinct response behaviors:
-
-**1. Occasional/part-time home sharers (primary target)**
-High volume, lower response consistency. They're often at work, asleep, or simply not checking the app frequently. The response lag is largely passive — not a rejection signal, just inattention. Most of the 31% slow-response problem likely lives here. High leverage: even small nudges can meaningfully improve response time.
-
-**2. Superhosts and experienced hosts**
-Low response lag already (it's a Superhost criterion). Not the core problem. May be useful as a benchmark for what good looks like.
-
-**3. Professional property managers**
-Manage multiple listings. Their response lag may be structural (review queues, team coordination) rather than personal inattention. May need different tooling (dashboard-level tools) rather than mobile push notifications.
-
-**Focus: Segment 1 (occasional home sharers)**
-They represent the bulk of the problem, they're responsive to gentle nudges (no deep structural barriers), and improvements here have the largest conversion impact at scale. The solution should be lightweight, mobile-first, and reduce friction in responding — not just increase notification frequency.`,
+        modelAnswer: 'Three host segments with distinct response behaviors:\n\n**1. Occasional/part-time home sharers (primary target)**\nHigh volume, lower response consistency. They\'re often at work, asleep, or simply not checking the app frequently. The response lag is largely passive — not a rejection signal, just inattention. Most of the 31% slow-response problem likely lives here. High leverage: even small nudges can meaningfully improve response time.\n\n**2. Superhosts and experienced hosts**\nLow response lag already (it\'s a Superhost criterion). Not the core problem. May be useful as a benchmark for what good looks like.\n\n**3. Professional property managers**\nManage multiple listings. Their response lag may be structural (review queues, team coordination) rather than personal inattention. May need different tooling (dashboard-level tools) rather than mobile push notifications.\n\n**Focus: Segment 1 (occasional home sharers)**\nThey represent the bulk of the problem, they\'re responsive to gentle nudges (no deep structural barriers), and improvements here have the largest conversion impact at scale. The solution should be lightweight, mobile-first, and reduce friction in responding — not just increase notification frequency.',
       },
       {
         id: 'goals',
@@ -239,21 +145,7 @@ They represent the bulk of the problem, they're responsive to gentle nudges (no 
           'Distinguishes between response rate and response quality',
           'Considers long-term host retention as a constraint',
         ],
-        modelAnswer: `**Primary metric: Guest booking conversion rate within 12 hours of request submission**
-This captures the real business outcome — completed bookings, not just host responses. We want faster responses that convert to bookings, not faster refusals.
-
-**Diagnostic metrics:**
-- Host response time distribution (% responding in <1hr, 1–6hrs, 6–12hrs, 12–24hrs)
-- Host acceptance rate on responded requests (quality signal — we don't want pressure-accepted bookings)
-- % of sessions where guest abandons while waiting for host response
-
-**Guardrail metrics:**
-- Host post-booking cancellation rate must not increase (pressure = stress = later cancellations)
-- Host satisfaction score (NPS or continued listing activity) — we protect the supply side
-- % of hosts who temporarily deactivate listings after intervention (early signal of stress)
-
-**North star for the overall feature:**
-Completed bookings per active guest search session — the ultimate measure of both guest intent and host supply health.`,
+        modelAnswer: '**Primary metric: Guest booking conversion rate within 12 hours of request submission**\nThis captures the real business outcome — completed bookings, not just host responses. We want faster responses that convert to bookings, not faster refusals.\n\n**Diagnostic metrics:**\n- Host response time distribution (% responding in <1hr, 1–6hrs, 6–12hrs, 12–24hrs)\n- Host acceptance rate on responded requests (quality signal — we don\'t want pressure-accepted bookings)\n- % of sessions where guest abandons while waiting for host response\n\n**Guardrail metrics:**\n- Host post-booking cancellation rate must not increase (pressure = stress = later cancellations)\n- Host satisfaction score (NPS or continued listing activity) — we protect the supply side\n- % of hosts who temporarily deactivate listings after intervention (early signal of stress)\n\n**North star for the overall feature:**\nCompleted bookings per active guest search session — the ultimate measure of both guest intent and host supply health.',
       },
       {
         id: 'solutions',
@@ -267,17 +159,7 @@ Completed bookings per active guest search session — the ultimate measure of b
           'At least one solution addresses the host trust/hesitation angle',
           'Avoids "just send more notifications" without mechanism',
         ],
-        modelAnswer: `**Option 1: Smart Response Reminders (Low effort)**
-Send escalating, contextual push notifications: first nudge at 2hrs with the guest's profile summary (name, verified status, prior stay history), second at 6hrs with "Your booking request will expire in 6 hours." The key insight: framing it as "guest is waiting" is more effective than "you have a notification." Risk: notification fatigue if poorly calibrated.
-
-**Option 2: One-tap Response Card (Medium effort)**
-Re-design the response notification as a rich push notification with 3 buttons: Accept / Decline / Ask a Question. Hosts can respond without opening the app. Reduces friction for the majority of cases where the host has already decided. Risk: some hosts may accept without reading carefully, increasing mismatch.
-
-**Option 3: Response Window Visibility for Guests + Host Accountability Score (Medium effort)**
-Show guests the host's average response time on the listing page ("Usually responds within 2 hours"). This creates soft social accountability — hosts who see guests filtering by response time have an incentive to improve. Hosts get a response-time badge visible on their listing. Risk: hosts who can't respond fast may feel unfairly disadvantaged; could reduce supply.
-
-**Option 4: Flexible Booking Mode (High effort, strategic)**
-Introduce a "Flexible Hold" booking type: guest pays a small deposit to hold the listing for 24hrs while host confirms. Removes urgency pressure on both sides — guest isn't lost while waiting, host has more time without losing a committed booking. Risk: adds complexity to the booking flow and may reduce overall booking velocity for guests who want instant confirmation.`,
+        modelAnswer: '**Option 1: Smart Response Reminders (Low effort)**\nSend escalating, contextual push notifications: first nudge at 2hrs with the guest\'s profile summary (name, verified status, prior stay history), second at 6hrs with "Your booking request will expire in 6 hours." The key insight: framing it as "guest is waiting" is more effective than "you have a notification." Risk: notification fatigue if poorly calibrated.\n\n**Option 2: One-tap Response Card (Medium effort)**\nRe-design the response notification as a rich push notification with 3 buttons: Accept / Decline / Ask a Question. Hosts can respond without opening the app. Reduces friction for the majority of cases where the host has already decided. Risk: some hosts may accept without reading carefully, increasing mismatch.\n\n**Option 3: Response Window Visibility for Guests + Host Accountability Score (Medium effort)**\nShow guests the host\'s average response time on the listing page ("Usually responds within 2 hours"). This creates soft social accountability — hosts who see guests filtering by response time have an incentive to improve. Hosts get a response-time badge visible on their listing. Risk: hosts who can\'t respond fast may feel unfairly disadvantaged; could reduce supply.\n\n**Option 4: Flexible Booking Mode (High effort, strategic)**\nIntroduce a "Flexible Hold" booking type: guest pays a small deposit to hold the listing for 24hrs while host confirms. Removes urgency pressure on both sides — guest isn\'t lost while waiting, host has more time without losing a committed booking. Risk: adds complexity to the booking flow and may reduce overall booking velocity for guests who want instant confirmation.',
       },
       {
         id: 'prioritize',
@@ -291,23 +173,7 @@ Introduce a "Flexible Hold" booking type: guest pays a small deposit to hold the
           'Names the biggest risk and how to monitor it',
           'Describes what "success" looks like and what the v2 follow-up would be',
         ],
-        modelAnswer: `**Recommendation: Option 2 (One-tap Response Card) — ship first**
-
-**Reasoning:**
-Option 1 (reminders) is the simplest but addresses a symptom (hosts forget). Option 2 addresses the real friction: opening the app, navigating to the request, reading it, and responding — that's 5–7 steps. A one-tap response card collapses it to 2. If the primary cause of slow responses is friction rather than deliberate hesitation, this has significantly higher impact than reminders alone.
-
-**Experiment design:**
-- Treatment: rich push notifications with one-tap Accept / Decline / Question buttons
-- Control: existing notification (tap → app → respond flow)
-- Unit: booking request, randomized at the host level
-- Runtime: 3 weeks (enough to see full response-to-booking conversion)
-- Primary metric: guest booking conversion within 12 hours
-- Guardrail: post-booking host cancellation rate (must not increase >3% relative)
-
-**Biggest risk:** Hosts who previously read the full guest profile before deciding may now accept too quickly, leading to post-booking cancellations. This is why the guardrail on cancellation rate is critical.
-
-**V2 follow-up:**
-If Option 2 succeeds, layer in Option 1 (contextual reminders) as a complement — the reminder encourages opening the rich notification. Then evaluate Option 3 (response time badge) as a long-term supply quality signal.`,
+        modelAnswer: '**Recommendation: Option 2 (One-tap Response Card) — ship first**\n\n**Reasoning:**\nOption 1 (reminders) is the simplest but addresses a symptom (hosts forget). Option 2 addresses the real friction: opening the app, navigating to the request, reading it, and responding — that\'s 5–7 steps. A one-tap response card collapses it to 2. If the primary cause of slow responses is friction rather than deliberate hesitation, this has significantly higher impact than reminders alone.\n\n**Experiment design:**\n- Treatment: rich push notifications with one-tap Accept / Decline / Question buttons\n- Control: existing notification (tap → app → respond flow)\n- Unit: booking request, randomized at the host level\n- Runtime: 3 weeks (enough to see full response-to-booking conversion)\n- Primary metric: guest booking conversion within 12 hours\n- Guardrail: post-booking host cancellation rate (must not increase >3% relative)\n\n**Biggest risk:** Hosts who previously read the full guest profile before deciding may now accept too quickly, leading to post-booking cancellations. This is why the guardrail on cancellation rate is critical.\n\n**V2 follow-up:**\nIf Option 2 succeeds, layer in Option 1 (contextual reminders) as a complement — the reminder encourages opening the rich notification. Then evaluate Option 3 (response time badge) as a long-term supply quality signal.',
       },
     ],
   },
@@ -324,9 +190,7 @@ If Option 2 succeeds, layer in Option 1 (contextual reminders) as a complement �
     category: 'B2B / Productivity',
     tags: ['notifications', 'productivity', 'B2B', 'retention'],
     isFree: false,
-    prompt: `You are a PM at Slack. Research shows that 42% of Slack users report feeling overwhelmed by notifications, and this correlates with users going into "Do Not Disturb" for extended periods or reducing app usage. Notification-overwhelmed users are 2.4x more likely to churn from paid plans within 6 months.
-
-Design a solution to reduce notification fatigue without reducing the quality of communication or causing users to miss important messages.`,
+    prompt: 'You are a PM at Slack. Research shows that 42% of Slack users report feeling overwhelmed by notifications, and this correlates with users going into "Do Not Disturb" for extended periods or reducing app usage. Notification-overwhelmed users are 2.4x more likely to churn from paid plans within 6 months.\n\nDesign a solution to reduce notification fatigue without reducing the quality of communication or causing users to miss important messages.',
     phases: [
       {
         id: 'clarify',
@@ -340,17 +204,7 @@ Design a solution to reduce notification fatigue without reducing the quality of
           'Asks about which user segments report highest fatigue',
           'Asks how "missing important messages" is currently defined or measured',
         ],
-        modelAnswer: `Key clarifying questions:
-
-1. **What notification types are driving fatigue?** Is it @channel/@here pings, DMs, channel message volume, or thread replies? These require different solutions.
-
-2. **What's the current configuration adoption?** Do users know they can mute channels, set keyword notifications, or schedule DND? If adoption of existing features is low, the problem may be UX discoverability rather than missing functionality.
-
-3. **Who controls notification defaults?** Individual users vs. workspace admins? For enterprise accounts, admins often set org-wide defaults. A solution that only works at the individual level may have limited reach.
-
-4. **Which user segments report the most fatigue?** Power users in large workspaces? People in 20+ channels? Cross-functional contributors in many teams? The solution should target the highest-volume segment first.
-
-5. **How do we define "missing important messages"?** Is this measured by response time on @mentions? Messages read within 24hrs? User-reported anxiety about missing things? The guardrail needs a measurable definition.`,
+        modelAnswer: 'Key clarifying questions:\n\n1. **What notification types are driving fatigue?** Is it @channel/@here pings, DMs, channel message volume, or thread replies? These require different solutions.\n\n2. **What\'s the current configuration adoption?** Do users know they can mute channels, set keyword notifications, or schedule DND? If adoption of existing features is low, the problem may be UX discoverability rather than missing functionality.\n\n3. **Who controls notification defaults?** Individual users vs. workspace admins? For enterprise accounts, admins often set org-wide defaults. A solution that only works at the individual level may have limited reach.\n\n4. **Which user segments report the most fatigue?** Power users in large workspaces? People in 20+ channels? Cross-functional contributors in many teams? The solution should target the highest-volume segment first.\n\n5. **How do we define "missing important messages"?** Is this measured by response time on @mentions? Messages read within 24hrs? User-reported anxiety about missing things? The guardrail needs a measurable definition.',
       },
       {
         id: 'users',
@@ -363,17 +217,7 @@ Design a solution to reduce notification fatigue without reducing the quality of
           'Considers workspace size and channel count as a segmentation dimension',
           'Makes a clear recommendation for which segment to prioritize',
         ],
-        modelAnswer: `**Segment 1: Cross-functional contributors in large workspaces**
-In 15+ channels, receiving @mentions from multiple teams. Notification volume is high and contextual — they need to stay responsive but can't distinguish signal from noise. Highest fatigue, clearest pain.
-
-**Segment 2: Managers and team leads**
-DM volume is high, thread participation is expected, they're often the escalation point. Their fatigue is driven by always-on expectations, not configuration problems.
-
-**Segment 3: Peripheral channel members**
-Added to channels they rarely read but that generate notification noise. "Channel hygiene" problem — they're in meetings they don't need to be in, channel equivalent.
-
-**Focus: Segment 1 (cross-functional contributors)**
-They have the most actionable problem (too many signals, unclear priority), they're in paid plans (churn risk is highest), and they're the users most likely to benefit from intelligent notification triage. Solutions here can scale to segments 2 and 3.`,
+        modelAnswer: '**Segment 1: Cross-functional contributors in large workspaces**\nIn 15+ channels, receiving @mentions from multiple teams. Notification volume is high and contextual — they need to stay responsive but can\'t distinguish signal from noise. Highest fatigue, clearest pain.\n\n**Segment 2: Managers and team leads**\nDM volume is high, thread participation is expected, they\'re often the escalation point. Their fatigue is driven by always-on expectations, not configuration problems.\n\n**Segment 3: Peripheral channel members**\nAdded to channels they rarely read but that generate notification noise. "Channel hygiene" problem — they\'re in meetings they don\'t need to be in, channel equivalent.\n\n**Focus: Segment 1 (cross-functional contributors)**\nThey have the most actionable problem (too many signals, unclear priority), they\'re in paid plans (churn risk is highest), and they\'re the users most likely to benefit from intelligent notification triage. Solutions here can scale to segments 2 and 3.',
       },
       {
         id: 'goals',
@@ -387,22 +231,7 @@ They have the most actionable problem (too many signals, unclear priority), they
           'Considers long-term retention metric as the ultimate outcome',
           'Distinguishes between notification volume and notification relevance',
         ],
-        modelAnswer: `**Primary metric: Notification-triggered app opens per active user (volume reduction)**
-We want to reduce low-value opens, not all opens. A user who opens Slack for a reason and finds something relevant is healthy. A user who opens 40 times and acts on 2 is fatigued.
-
-**Better primary: Ratio of acted-on notifications to total notifications delivered**
-Notification "precision" — what fraction of notifications lead to a read, reply, or reaction within 1 hour? Higher precision = less noise. Target: +15% improvement in precision.
-
-**Diagnostic metrics:**
-- DND activation rate and duration (fatigue proxy — going up means fatigue is worsening)
-- @mention response time (communication quality proxy — should not increase)
-- Channel mute rate (are users self-solving or suppressing signals?)
-
-**Guardrail:**
-- @mention response time for messages from direct manager or skip-level must not increase >10% relative (protecting critical communication chains)
-- Self-reported "missed important message" survey rate must not increase
-
-**Long-term outcome metric:** 6-month plan renewal rate for users who experienced the feature vs control.`,
+        modelAnswer: '**Primary metric: Notification-triggered app opens per active user (volume reduction)**\nWe want to reduce low-value opens, not all opens. A user who opens Slack for a reason and finds something relevant is healthy. A user who opens 40 times and acts on 2 is fatigued.\n\n**Better primary: Ratio of acted-on notifications to total notifications delivered**\nNotification "precision" — what fraction of notifications lead to a read, reply, or reaction within 1 hour? Higher precision = less noise. Target: +15% improvement in precision.\n\n**Diagnostic metrics:**\n- DND activation rate and duration (fatigue proxy — going up means fatigue is worsening)\n- @mention response time (communication quality proxy — should not increase)\n- Channel mute rate (are users self-solving or suppressing signals?)\n\n**Guardrail:**\n- @mention response time for messages from direct manager or skip-level must not increase >10% relative (protecting critical communication chains)\n- Self-reported "missed important message" survey rate must not increase\n\n**Long-term outcome metric:** 6-month plan renewal rate for users who experienced the feature vs control.',
       },
       {
         id: 'solutions',
@@ -415,17 +244,7 @@ Notification "precision" — what fraction of notifications lead to a read, repl
           'Solutions are specific — not just "AI-powered notifications"',
           'Each identifies the key assumption or risk',
         ],
-        modelAnswer: `**Option 1: Smart Notification Digest (Medium effort)**
-Instead of real-time pings for all channels, batch non-urgent notifications (channels without @mentions of the user) into a daily or morning digest. Direct @mentions and DMs are still real-time. Risk: some users want real-time awareness of channel activity even without @mention — "lurking" is a valid behavior.
-
-**Option 2: Intelligent Priority Ranking (High effort, ML)**
-Use ML to rank notifications by predicted importance: messages from your direct manager, direct reports, recent collaborators, and projects you've actively contributed to get elevated. Low-priority channel traffic is demoted. User sees a "Priority" view by default. Opt-out available. Risk: model accuracy — a misprioritized message from a manager is worse than the original problem.
-
-**Option 3: Notification Intent Labels (Low-medium effort)**
-Let senders mark messages as "FYI," "needs response," or "urgent" — visible in the notification. This shifts signal-creation to the sender, where it belongs. Slack already has emoji reactions; this extends intent signaling to the notification layer. Risk: requires sender behavior change; adoption is voluntary.
-
-**Option 4: Channel Noise Score + Auto-Suggest (Low effort)**
-Analyze each channel a user is in and show a monthly "Channel Noise Report": you've been in this channel for 90 days, read 3% of messages, and received 0 @mentions. "Want to mute or leave?" Nudge users toward better channel hygiene proactively. Risk: users may not act; channel membership decisions are often socially complex.`,
+        modelAnswer: '**Option 1: Smart Notification Digest (Medium effort)**\nInstead of real-time pings for all channels, batch non-urgent notifications (channels without @mentions of the user) into a daily or morning digest. Direct @mentions and DMs are still real-time. Risk: some users want real-time awareness of channel activity even without @mention — "lurking" is a valid behavior.\n\n**Option 2: Intelligent Priority Ranking (High effort, ML)**\nUse ML to rank notifications by predicted importance: messages from your direct manager, direct reports, recent collaborators, and projects you\'ve actively contributed to get elevated. Low-priority channel traffic is demoted. User sees a "Priority" view by default. Opt-out available. Risk: model accuracy — a misprioritized message from a manager is worse than the original problem.\n\n**Option 3: Notification Intent Labels (Low-medium effort)**\nLet senders mark messages as "FYI," "needs response," or "urgent" — visible in the notification. This shifts signal-creation to the sender, where it belongs. Slack already has emoji reactions; this extends intent signaling to the notification layer. Risk: requires sender behavior change; adoption is voluntary.\n\n**Option 4: Channel Noise Score + Auto-Suggest (Low effort)**\nAnalyze each channel a user is in and show a monthly "Channel Noise Report": you\'ve been in this channel for 90 days, read 3% of messages, and received 0 @mentions. "Want to mute or leave?" Nudge users toward better channel hygiene proactively. Risk: users may not act; channel membership decisions are often socially complex.',
       },
       {
         id: 'prioritize',
@@ -439,21 +258,7 @@ Analyze each channel a user is in and show a monthly "Channel Noise Report": you
           'Names the primary metric and guardrail for the test',
           'Honest about what v1 does NOT include',
         ],
-        modelAnswer: `**Recommendation: Option 4 (Channel Noise Score) first, then Option 1 (Smart Digest)**
-
-**Why Option 4 first:**
-It requires no ML, no sender behavior change, and it works with existing user preferences. It's essentially a UX nudge that improves channel hygiene — the root cause of notification fatigue for many users. V1 is a monthly in-app message surfacing the top 3 "noisy channels you barely read." Low risk, fast to ship.
-
-**V1 scope:**
-- Monthly in-app card for users in 10+ channels showing their 3 highest-noise, lowest-engagement channels
-- Simple action: Mute, Leave, or Dismiss
-- Available to individual users, not admin-configurable in v1
-
-**Measurement:**
-Not a traditional A/B test (this is a nudge, hard to hold back). Track cohort behavior: users who see the nudge vs prior period. Primary metric: notification-triggered open ratio (precision). Guardrail: @mention response time for manager-level messages.
-
-**V2:**
-Once channel hygiene improves, layer in Smart Digest (Option 1) to handle residual volume in channels users want to stay in but not be interrupted by. Option 2 (ML priority ranking) is the medium-term investment once we have clean engagement signal from channel hygiene improvements.`,
+        modelAnswer: '**Recommendation: Option 4 (Channel Noise Score) first, then Option 1 (Smart Digest)**\n\n**Why Option 4 first:**\nIt requires no ML, no sender behavior change, and it works with existing user preferences. It\'s essentially a UX nudge that improves channel hygiene — the root cause of notification fatigue for many users. V1 is a monthly in-app message surfacing the top 3 "noisy channels you barely read." Low risk, fast to ship.\n\n**V1 scope:**\n- Monthly in-app card for users in 10+ channels showing their 3 highest-noise, lowest-engagement channels\n- Simple action: Mute, Leave, or Dismiss\n- Available to individual users, not admin-configurable in v1\n\n**Measurement:**\nNot a traditional A/B test (this is a nudge, hard to hold back). Track cohort behavior: users who see the nudge vs prior period. Primary metric: notification-triggered open ratio (precision). Guardrail: @mention response time for manager-level messages.\n\n**V2:**\nOnce channel hygiene improves, layer in Smart Digest (Option 1) to handle residual volume in channels users want to stay in but not be interrupted by. Option 2 (ML priority ranking) is the medium-term investment once we have clean engagement signal from channel hygiene improvements.',
       },
     ],
   },
@@ -470,9 +275,7 @@ Once channel hygiene improves, layer in Smart Digest (Option 1) to handle residu
     category: 'Utility App',
     tags: ['utility', 'new user segment', 'navigation', 'infrastructure'],
     isFree: false,
-    prompt: `You are a PM at Google Maps. EV adoption is growing globally, and EV drivers have fundamentally different navigation needs than ICE vehicle drivers — primarily around range anxiety, charging infrastructure availability, and charging time planning.
-
-Google Maps currently shows EV charging stations as POIs, but has no integrated trip planning that accounts for vehicle range, charger compatibility, or charging time. Design a feature that makes Google Maps the best navigation experience for EV drivers.`,
+    prompt: 'You are a PM at Google Maps. EV adoption is growing globally, and EV drivers have fundamentally different navigation needs than ICE vehicle drivers — primarily around range anxiety, charging infrastructure availability, and charging time planning.\n\nGoogle Maps currently shows EV charging stations as POIs, but has no integrated trip planning that accounts for vehicle range, charger compatibility, or charging time. Design a feature that makes Google Maps the best navigation experience for EV drivers.',
     phases: [
       {
         id: 'clarify',
@@ -486,17 +289,7 @@ Google Maps currently shows EV charging stations as POIs, but has no integrated 
           'Asks about platform scope (mobile, CarPlay/Android Auto, built-in nav systems)',
           'Asks about the competitive context (Plugshare, A Better Routeplanner, Tesla Nav)',
         ],
-        modelAnswer: `Key questions before designing:
-
-1. **Do we have vehicle integration?** Does Google Maps currently receive real-time battery level, range estimate, or charging port type from connected vehicles? The feature scope changes dramatically with vs without this data.
-
-2. **What charging network data quality do we have?** Do we have real-time availability (charger occupied/free), reliability ratings, and compatibility metadata per station? Or just location and type?
-
-3. **Which EV driver scenarios are most underserved?** City/daily drivers rarely need trip planning (they charge at home). The gap is long-distance drivers and those in areas with sparse charging infrastructure.
-
-4. **What's the platform context?** Mobile navigation? CarPlay/Android Auto integration? These have different interaction constraints — you can't ask a driver to configure much while driving.
-
-5. **What's the competitive landscape?** Tesla's built-in navigation handles this well for Tesla owners. A Better Routeplanner exists for the data-savvy. Our opportunity is the mainstream EV driver who doesn't want to use a separate app.`,
+        modelAnswer: 'Key questions before designing:\n\n1. **Do we have vehicle integration?** Does Google Maps currently receive real-time battery level, range estimate, or charging port type from connected vehicles? The feature scope changes dramatically with vs without this data.\n\n2. **What charging network data quality do we have?** Do we have real-time availability (charger occupied/free), reliability ratings, and compatibility metadata per station? Or just location and type?\n\n3. **Which EV driver scenarios are most underserved?** City/daily drivers rarely need trip planning (they charge at home). The gap is long-distance drivers and those in areas with sparse charging infrastructure.\n\n4. **What\'s the platform context?** Mobile navigation? CarPlay/Android Auto integration? These have different interaction constraints — you can\'t ask a driver to configure much while driving.\n\n5. **What\'s the competitive landscape?** Tesla\'s built-in navigation handles this well for Tesla owners. A Better Routeplanner exists for the data-savvy. Our opportunity is the mainstream EV driver who doesn\'t want to use a separate app.',
       },
       {
         id: 'users',
@@ -509,18 +302,7 @@ Google Maps currently shows EV charging stations as POIs, but has no integrated 
           'Considers the anxiety dimension (range anxiety) as a distinct UX driver',
           'Makes a clear segment choice and justifies it with business/product logic',
         ],
-        modelAnswer: `**Segment 1: Daily city commuters**
-Charge at home or work, rarely need trip planning. Range is not an issue for normal use. Occasional need: finding chargers when routine is disrupted. Low urgency problem, but high volume.
-
-**Segment 2: Long-distance/road trip EV drivers**
-Traveling beyond single-charge range. Must plan charging stops. Anxiety is highest here — will they make it? Will the charger be working? How long will they wait? This is the highest-pain, most differentiated segment.
-
-**Segment 3: New EV owners with range anxiety**
-Recently switched from ICE. Unfamiliar with range and charging patterns. High anxiety disproportionate to actual risk. Need reassurance and clear information, even for shorter trips.
-
-**Focus: Segment 2 (long-distance drivers)**
-
-They have the clearest, most acute pain. A solution for them demonstrates Google Maps' unique value over competitors. Segment 3 is large but served by a simpler version of the same solution. Segment 1 can be served with a "find charger near me" feature that doesn't require the full trip planning investment.`,
+        modelAnswer: '**Segment 1: Daily city commuters**\nCharge at home or work, rarely need trip planning. Range is not an issue for normal use. Occasional need: finding chargers when routine is disrupted. Low urgency problem, but high volume.\n\n**Segment 2: Long-distance/road trip EV drivers**\nTraveling beyond single-charge range. Must plan charging stops. Anxiety is highest here — will they make it? Will the charger be working? How long will they wait? This is the highest-pain, most differentiated segment.\n\n**Segment 3: New EV owners with range anxiety**\nRecently switched from ICE. Unfamiliar with range and charging patterns. High anxiety disproportionate to actual risk. Need reassurance and clear information, even for shorter trips.\n\n**Focus: Segment 2 (long-distance drivers)**\n\nThey have the clearest, most acute pain. A solution for them demonstrates Google Maps\' unique value over competitors. Segment 3 is large but served by a simpler version of the same solution. Segment 1 can be served with a "find charger near me" feature that doesn\'t require the full trip planning investment.',
       },
       {
         id: 'goals',
@@ -533,20 +315,7 @@ They have the clearest, most acute pain. A solution for them demonstrates Google
           'Guardrail protects existing navigation experience for non-EV users',
           'Considers long-term retention (EV driver DAU) as a strategic metric',
         ],
-        modelAnswer: `**North star: EV long-trip navigation sessions completed without emergency route deviation**
-A "completed" session means: user started a multi-stop EV route, drove it, and didn't have to deviate to an unplanned charger. This directly measures whether we solved the core pain (range anxiety, unexpected stops).
-
-**Diagnostics:**
-- Charger stop adoption rate: % of planned stops actually visited (are our recommendations trusted?)
-- Replanning frequency: how often do users modify the route mid-trip (frequent replanning = bad plan quality)
-- Battery level at destination (estimated vs. actual — measures range prediction accuracy)
-- Charger availability complaints (user-reported or implicit from rerouting)
-
-**Guardrails:**
-- Non-EV navigation session quality must not degrade (app performance, route accuracy for the broader user base)
-- Charger stop ETAs must not add >10% to total trip time vs. manual planning (we shouldn't make efficient EV drivers less efficient)
-
-**Long-term:** DAU retention among EV driver cohorts 90 days after first EV trip navigation session.`,
+        modelAnswer: '**North star: EV long-trip navigation sessions completed without emergency route deviation**\nA "completed" session means: user started a multi-stop EV route, drove it, and didn\'t have to deviate to an unplanned charger. This directly measures whether we solved the core pain (range anxiety, unexpected stops).\n\n**Diagnostics:**\n- Charger stop adoption rate: % of planned stops actually visited (are our recommendations trusted?)\n- Replanning frequency: how often do users modify the route mid-trip (frequent replanning = bad plan quality)\n- Battery level at destination (estimated vs. actual — measures range prediction accuracy)\n- Charger availability complaints (user-reported or implicit from rerouting)\n\n**Guardrails:**\n- Non-EV navigation session quality must not degrade (app performance, route accuracy for the broader user base)\n- Charger stop ETAs must not add >10% to total trip time vs. manual planning (we shouldn\'t make efficient EV drivers less efficient)\n\n**Long-term:** DAU retention among EV driver cohorts 90 days after first EV trip navigation session.',
       },
       {
         id: 'solutions',
@@ -559,17 +328,7 @@ A "completed" session means: user started a multi-stop EV route, drove it, and d
           'Solutions address the "what if the charger is broken" anxiety specifically',
           'Each solution identifies the key data or infrastructure dependency',
         ],
-        modelAnswer: `**Option 1: EV Mode with Manual Range Input (Low effort, ships fast)**
-User sets their vehicle model and current battery % manually before a long trip. Maps uses public range data per model to plan charging stops and surface compatible chargers. No vehicle integration needed. Risk: manual entry is friction; stale battery data if users set it once and forget.
-
-**Option 2: Dynamic Charging Stop Planner (Medium effort)**
-Integrated multi-stop route planning that automatically inserts charging stops based on vehicle range. Shows: time to charge at each stop, charging cost estimate, compatibility flag (CCS/CHAdeMO/Tesla), and user ratings for the station. Uses crowdsourced data on charger reliability. Risk: data quality is uneven across networks and regions.
-
-**Option 3: Confidence Routing with Backup Chargers (Medium effort)**
-For each leg of a trip, show: primary charger stop + a backup charger 10 miles earlier in case the primary is occupied or out of service. Explicitly addresses the "what if it's broken" anxiety. Users see a route with built-in redundancy. Risk: adds visual complexity to the route; some users may find backup stops anxiety-inducing rather than reassuring.
-
-**Option 4: OEM Vehicle Integration (High effort, strategic)**
-Partner with major EV manufacturers (GM, Ford, Rivian, Hyundai) for real-time SOC (state of charge) data. Route planning automatically updates as battery degrades faster than predicted (hills, speed, HVAC load). This is the Tesla-Nav equivalent for non-Tesla vehicles. Risk: long partnership/integration timeline; data standards are fragmented across OEMs.`,
+        modelAnswer: '**Option 1: EV Mode with Manual Range Input (Low effort, ships fast)**\nUser sets their vehicle model and current battery % manually before a long trip. Maps uses public range data per model to plan charging stops and surface compatible chargers. No vehicle integration needed. Risk: manual entry is friction; stale battery data if users set it once and forget.\n\n**Option 2: Dynamic Charging Stop Planner (Medium effort)**\nIntegrated multi-stop route planning that automatically inserts charging stops based on vehicle range. Shows: time to charge at each stop, charging cost estimate, compatibility flag (CCS/CHAdeMO/Tesla), and user ratings for the station. Uses crowdsourced data on charger reliability. Risk: data quality is uneven across networks and regions.\n\n**Option 3: Confidence Routing with Backup Chargers (Medium effort)**\nFor each leg of a trip, show: primary charger stop + a backup charger 10 miles earlier in case the primary is occupied or out of service. Explicitly addresses the "what if it\'s broken" anxiety. Users see a route with built-in redundancy. Risk: adds visual complexity to the route; some users may find backup stops anxiety-inducing rather than reassuring.\n\n**Option 4: OEM Vehicle Integration (High effort, strategic)**\nPartner with major EV manufacturers (GM, Ford, Rivian, Hyundai) for real-time SOC (state of charge) data. Route planning automatically updates as battery degrades faster than predicted (hills, speed, HVAC load). This is the Tesla-Nav equivalent for non-Tesla vehicles. Risk: long partnership/integration timeline; data standards are fragmented across OEMs.',
       },
       {
         id: 'prioritize',
@@ -583,26 +342,7 @@ Partner with major EV manufacturers (GM, Ford, Rivian, Hyundai) for real-time SO
           'Addresses the "what if the charger is broken" problem in v1 or v2',
           'Honest about what the v1 does NOT solve',
         ],
-        modelAnswer: `**Recommendation: Ship Option 1 + Option 3 together as v1**
-
-Option 1 alone is too limited (no backup routing). Option 3 alone requires range-aware routing. Combined, they create a coherent "EV trip mode" with manual range input + confidence routing.
-
-**V1 scope:**
-- "EV Mode" toggle before starting a long-distance navigation session
-- User selects vehicle model from a list of 50 most common EVs (range data is public, no OEM integration needed)
-- User enters current battery % (one-time prompt)
-- Route automatically includes 2–3 charging stops with compatible chargers
-- Each stop shows: primary + one backup charger, current user rating, compatibility type, estimated charging time
-- Mobile only in v1 (CarPlay in v2)
-
-**What v1 does NOT solve:**
-- Real-time charger availability (we show ratings, not live occupancy — this requires charging network APIs)
-- Dynamic range updates based on actual driving (requires OEM integration or CarPlay energy data)
-
-**Measurement:**
-Cohort analysis of EV driver users who activate EV Mode vs. those who don't. Primary: multi-stop trip completion rate. Diagnostic: replanning frequency. This isn't a clean A/B test (users self-select into EV Mode), so we use cohort matching against similar distance/route non-EV-mode users as control.
-
-**V2:** Integrate with 3–5 major charging networks for real-time availability. This upgrades the biggest remaining anxiety in v1.`,
+        modelAnswer: '**Recommendation: Ship Option 1 + Option 3 together as v1**\n\nOption 1 alone is too limited (no backup routing). Option 3 alone requires range-aware routing. Combined, they create a coherent "EV trip mode" with manual range input + confidence routing.\n\n**V1 scope:**\n- "EV Mode" toggle before starting a long-distance navigation session\n- User selects vehicle model from a list of 50 most common EVs (range data is public, no OEM integration needed)\n- User enters current battery % (one-time prompt)\n- Route automatically includes 2–3 charging stops with compatible chargers\n- Each stop shows: primary + one backup charger, current user rating, compatibility type, estimated charging time\n- Mobile only in v1 (CarPlay in v2)\n\n**What v1 does NOT solve:**\n- Real-time charger availability (we show ratings, not live occupancy — this requires charging network APIs)\n- Dynamic range updates based on actual driving (requires OEM integration or CarPlay energy data)\n\n**Measurement:**\nCohort analysis of EV driver users who activate EV Mode vs. those who don\'t. Primary: multi-stop trip completion rate. Diagnostic: replanning frequency. This isn\'t a clean A/B test (users self-select into EV Mode), so we use cohort matching against similar distance/route non-EV-mode users as control.\n\n**V2:** Integrate with 3–5 major charging networks for real-time availability. This upgrades the biggest remaining anxiety in v1.',
       },
     ],
   },
@@ -619,11 +359,7 @@ Cohort analysis of EV driver users who activate EV Mode vs. those who don't. Pri
     category: 'B2B Platform',
     tags: ['marketplace', 'two-sided', 'B2B', 'hiring'],
     isFree: false,
-    prompt: `You are a PM at LinkedIn. Recruiters report that application quality has declined — they receive too many underqualified applications, and the signal-to-noise ratio in their inboxes has dropped significantly. 72% of recruiters say reviewing unqualified applications is their top pain point.
-
-Meanwhile, job seekers report applying to many jobs without hearing back, which is demoralizing and damages LinkedIn's brand with this audience.
-
-Design a solution that improves application quality — benefiting both recruiters (fewer unqualified applications) and job seekers (higher response rates).`,
+    prompt: 'You are a PM at LinkedIn. Recruiters report that application quality has declined — they receive too many underqualified applications, and the signal-to-noise ratio in their inboxes has dropped significantly. 72% of recruiters say reviewing unqualified applications is their top pain point.\n\nMeanwhile, job seekers report applying to many jobs without hearing back, which is demoralizing and damages LinkedIn\'s brand with this audience.\n\nDesign a solution that improves application quality — benefiting both recruiters (fewer unqualified applications) and job seekers (higher response rates).',
     phases: [
       {
         id: 'clarify',
@@ -637,17 +373,7 @@ Design a solution that improves application quality — benefiting both recruite
           'Asks about recruiter tools currently in place (filters, screening questions)',
           'Asks about LinkedIn\'s business model implications (job post revenue vs. premium subscriptions)',
         ],
-        modelAnswer: `Clarifying questions:
-
-1. **What defines "unqualified"?** Is this skills mismatch, experience mismatch, location mismatch, or something recruiters can't easily articulate? The solution changes based on the primary mismatch type.
-
-2. **What's the Easy Apply vs. full application split?** Easy Apply dramatically reduces friction for job seekers — is the quality problem primarily from Easy Apply applications?
-
-3. **What do job seekers know about their fit before applying?** Do they see qualification requirements? Do they understand how they compare? A transparency problem is different from a motivation problem.
-
-4. **What recruiter tools currently exist?** Screening questions, required fields, AI matching tools? Are recruiters using them? If not, why not?
-
-5. **What's the business model impact?** LinkedIn earns revenue from job post volume and application activity. Solutions that reduce application volume may reduce engagement metrics LinkedIn cares about commercially.`,
+        modelAnswer: 'Clarifying questions:\n\n1. **What defines "unqualified"?** Is this skills mismatch, experience mismatch, location mismatch, or something recruiters can\'t easily articulate? The solution changes based on the primary mismatch type.\n\n2. **What\'s the Easy Apply vs. full application split?** Easy Apply dramatically reduces friction for job seekers — is the quality problem primarily from Easy Apply applications?\n\n3. **What do job seekers know about their fit before applying?** Do they see qualification requirements? Do they understand how they compare? A transparency problem is different from a motivation problem.\n\n4. **What recruiter tools currently exist?** Screening questions, required fields, AI matching tools? Are recruiters using them? If not, why not?\n\n5. **What\'s the business model impact?** LinkedIn earns revenue from job post volume and application activity. Solutions that reduce application volume may reduce engagement metrics LinkedIn cares about commercially.',
       },
       {
         id: 'users',
@@ -660,19 +386,7 @@ Design a solution that improves application quality — benefiting both recruite
           'Identifies which segment drives most of the "quality problem"',
           'Makes a prioritization recommendation',
         ],
-        modelAnswer: `**Recruiter segments:**
-- Enterprise/corporate recruiters: High volume, need automated filtering, feel quality decline most acutely
-- Agency/boutique recruiters: Smaller volume but higher stakes per role; quality matters more per application
-- Small business owners: Post occasional jobs, no dedicated HR; overwhelmed by any significant volume
-
-**Job seeker segments:**
-- "Spray-and-pray" applicants: Apply to many roles regardless of fit, relying on volume for response. Often using Easy Apply.
-- Aspirational stretch applicants: Underqualified but trying. Not malicious, just uninformed about their competitiveness.
-- Qualified applicants being lost in noise: The segment LinkedIn most needs to protect — they're applying correctly but getting buried.
-
-**Primary drivers of the quality problem:** Spray-and-pray applicants enabled by low-friction Easy Apply, combined with job seekers who don't have visibility into their competitive position for each role.
-
-**Focus:** Reduce friction-less low-fit applications from spray-and-pray users, while protecting qualified applicants who might self-select out unfairly.`,
+        modelAnswer: '**Recruiter segments:**\n- Enterprise/corporate recruiters: High volume, need automated filtering, feel quality decline most acutely\n- Agency/boutique recruiters: Smaller volume but higher stakes per role; quality matters more per application\n- Small business owners: Post occasional jobs, no dedicated HR; overwhelmed by any significant volume\n\n**Job seeker segments:**\n- "Spray-and-pray" applicants: Apply to many roles regardless of fit, relying on volume for response. Often using Easy Apply.\n- Aspirational stretch applicants: Underqualified but trying. Not malicious, just uninformed about their competitiveness.\n- Qualified applicants being lost in noise: The segment LinkedIn most needs to protect — they\'re applying correctly but getting buried.\n\n**Primary drivers of the quality problem:** Spray-and-pray applicants enabled by low-friction Easy Apply, combined with job seekers who don\'t have visibility into their competitive position for each role.\n\n**Focus:** Reduce friction-less low-fit applications from spray-and-pray users, while protecting qualified applicants who might self-select out unfairly.',
       },
       {
         id: 'goals',
@@ -685,20 +399,7 @@ Design a solution that improves application quality — benefiting both recruite
           'Guardrail protects against unfair exclusion of qualified-but-unconventional applicants',
           'Considers LinkedIn revenue implications as a constraint',
         ],
-        modelAnswer: `**Primary metric (recruiter side): Recruiter interview-advance rate**
-% of applications that result in a recruiter-initiated next step (message, interview invite, reject notice). Higher means better quality filtering. Current baseline: likely very low for high-volume job posts.
-
-**Primary metric (job seeker side): Response rate for applications from qualified candidates**
-Segment applications by "LinkedIn-assessed fit" (skills, experience, location match) and measure response rate for high-fit applicants. If response rate for high-fit applicants improves, quality is improving. If it doesn't, we're just reducing volume, not improving quality.
-
-**Diagnostic:**
-- % of applications flagged as "strong fit" by LinkedIn's existing match algorithms
-- Time-to-screen per application for recruiters (are they spending less time on noise?)
-- Job seeker application-to-response time (are qualified seekers hearing back faster?)
-
-**Guardrail:**
-- % of final hires that came from non-traditional backgrounds or "unconventional" profiles must not decline (preventing systemic bias amplification)
-- Total application volume must not fall below a threshold that reduces LinkedIn's job activity revenue`,
+        modelAnswer: '**Primary metric (recruiter side): Recruiter interview-advance rate**\n% of applications that result in a recruiter-initiated next step (message, interview invite, reject notice). Higher means better quality filtering. Current baseline: likely very low for high-volume job posts.\n\n**Primary metric (job seeker side): Response rate for applications from qualified candidates**\nSegment applications by "LinkedIn-assessed fit" (skills, experience, location match) and measure response rate for high-fit applicants. If response rate for high-fit applicants improves, quality is improving. If it doesn\'t, we\'re just reducing volume, not improving quality.\n\n**Diagnostic:**\n- % of applications flagged as "strong fit" by LinkedIn\'s existing match algorithms\n- Time-to-screen per application for recruiters (are they spending less time on noise?)\n- Job seeker application-to-response time (are qualified seekers hearing back faster?)\n\n**Guardrail:**\n- % of final hires that came from non-traditional backgrounds or "unconventional" profiles must not decline (preventing systemic bias amplification)\n- Total application volume must not fall below a threshold that reduces LinkedIn\'s job activity revenue',
       },
       {
         id: 'solutions',
@@ -712,17 +413,7 @@ Segment applications by "LinkedIn-assessed fit" (skills, experience, location ma
           'Solutions acknowledge the bias/equity risk',
           'Each solution identifies its key assumption or risk',
         ],
-        modelAnswer: `**Option 1: Fit Score Transparency for Job Seekers (Low effort, job seeker side)**
-Show job seekers a "Your fit for this role" score before they apply — based on skills match, experience level, and location. Not a gate, but a signal. "You match 6 of 8 key requirements." Users can choose to apply anyway but with full information. Risk: score accuracy — a biased scoring model unfairly discourages underrepresented candidates. Requires careful audit.
-
-**Option 2: Application Quality Gates for Easy Apply (Medium effort)**
-Add 2–3 required screening questions to Easy Apply posts above a certain volume threshold. Recruiters define questions; applicants must answer. Raises friction meaningfully without removing access. Risk: adds friction for all applicants including qualified ones; may reduce LinkedIn's "applications sent" volume metric.
-
-**Option 3: AI-Powered Recruiter Inbox Ranking (Medium-high effort)**
-Rather than reducing incoming applications, rank them for recruiters by predicted fit. Recruiters see the top 20 applications first, with unranked applications available below the fold. No applicants are excluded, but noise is deprioritized. Risk: model bias; "predicted fit" may amplify historical hiring patterns.
-
-**Option 4: "Seriously Interested" Apply Mode (Medium effort)**
-A second apply path: "Standard Apply" (current) vs. "Seriously Interested" (requires a 3-sentence cover note and 2 work samples). Recruiters can filter to Seriously Interested only. Incentivizes high-quality applications while preserving access for all. Risk: disadvantages job seekers who write less well but are genuinely qualified; may require careful framing.`,
+        modelAnswer: '**Option 1: Fit Score Transparency for Job Seekers (Low effort, job seeker side)**\nShow job seekers a "Your fit for this role" score before they apply — based on skills match, experience level, and location. Not a gate, but a signal. "You match 6 of 8 key requirements." Users can choose to apply anyway but with full information. Risk: score accuracy — a biased scoring model unfairly discourages underrepresented candidates. Requires careful audit.\n\n**Option 2: Application Quality Gates for Easy Apply (Medium effort)**\nAdd 2–3 required screening questions to Easy Apply posts above a certain volume threshold. Recruiters define questions; applicants must answer. Raises friction meaningfully without removing access. Risk: adds friction for all applicants including qualified ones; may reduce LinkedIn\'s "applications sent" volume metric.\n\n**Option 3: AI-Powered Recruiter Inbox Ranking (Medium-high effort)**\nRather than reducing incoming applications, rank them for recruiters by predicted fit. Recruiters see the top 20 applications first, with unranked applications available below the fold. No applicants are excluded, but noise is deprioritized. Risk: model bias; "predicted fit" may amplify historical hiring patterns.\n\n**Option 4: "Seriously Interested" Apply Mode (Medium effort)**\nA second apply path: "Standard Apply" (current) vs. "Seriously Interested" (requires a 3-sentence cover note and 2 work samples). Recruiters can filter to Seriously Interested only. Incentivizes high-quality applications while preserving access for all. Risk: disadvantages job seekers who write less well but are genuinely qualified; may require careful framing.',
       },
       {
         id: 'prioritize',
@@ -736,27 +427,7 @@ A second apply path: "Standard Apply" (current) vs. "Seriously Interested" (requ
           'Doesn\'t pretend the bias risk doesn\'t exist or is trivial',
           'V1 scope is realistic and specific',
         ],
-        modelAnswer: `**Recommendation: Option 1 (Fit Score Transparency) as v1, with Option 3 (AI inbox ranking) as v2**
-
-**Reasoning:**
-Option 1 works on the job seeker side — it reduces noise by helping spray-and-pray applicants self-select out, rather than algorithmically excluding them. This preserves job seeker agency and reduces systemic bias risk because exclusion is never automatic.
-
-**V1 scope:**
-- Fit summary displayed on job post page before hitting Apply: "You match X of Y key requirements" with listed matched and unmatched skills
-- Available on all Easy Apply posts initially
-- No gating — this is informational only
-- Does NOT appear in the application itself (recruiter doesn't see it, avoiding feedback loop)
-
-**Measurement:**
-- Treatment: fit score shown; control: fit score hidden. A/B test.
-- Primary: recruiter interview-advance rate for treatment vs. control job posts
-- Secondary: self-reported job seeker satisfaction with the application process
-- Guardrail: application rate by candidate demographic profile (must not show disparate impact on protected groups)
-
-**Equity risk:**
-I'd require a fairness audit before launching: does the fit score have statistically different pass rates across demographic groups? If so, we delay launch and fix the model. This is non-negotiable — launching a biased filter at LinkedIn's scale would amplify hiring inequity across millions of applications.
-
-**V2:** Roll out Option 3 (AI inbox ranking) only after the fit score model has passed fairness review, using the same model as the foundation.`,
+        modelAnswer: '**Recommendation: Option 1 (Fit Score Transparency) as v1, with Option 3 (AI inbox ranking) as v2**\n\n**Reasoning:**\nOption 1 works on the job seeker side — it reduces noise by helping spray-and-pray applicants self-select out, rather than algorithmically excluding them. This preserves job seeker agency and reduces systemic bias risk because exclusion is never automatic.\n\n**V1 scope:**\n- Fit summary displayed on job post page before hitting Apply: "You match X of Y key requirements" with listed matched and unmatched skills\n- Available on all Easy Apply posts initially\n- No gating — this is informational only\n- Does NOT appear in the application itself (recruiter doesn\'t see it, avoiding feedback loop)\n\n**Measurement:**\n- Treatment: fit score shown; control: fit score hidden. A/B test.\n- Primary: recruiter interview-advance rate for treatment vs. control job posts\n- Secondary: self-reported job seeker satisfaction with the application process\n- Guardrail: application rate by candidate demographic profile (must not show disparate impact on protected groups)\n\n**Equity risk:**\nI\'d require a fairness audit before launching: does the fit score have statistically different pass rates across demographic groups? If so, we delay launch and fix the model. This is non-negotiable — launching a biased filter at LinkedIn\'s scale would amplify hiring inequity across millions of applications.\n\n**V2:** Roll out Option 3 (AI inbox ranking) only after the fit score model has passed fairness review, using the same model as the foundation.',
       },
     ],
   },
@@ -773,9 +444,7 @@ I'd require a fairness audit before launching: does the fit score have statistic
     category: 'Delivery Marketplace',
     tags: ['marketplace', 'delivery', 'retention', 'operations'],
     isFree: false,
-    prompt: `You are a PM at DoorDash. Data shows that 8.2% of orders placed are cancelled by the customer after placement — before the food is prepared. The most common cancellation window is 3–8 minutes post-order, and the most common reasons given are: "taking too long," "changed my mind," and "ordered by mistake."
-
-Cancellations cost DoorDash in operational complexity, merchant trust, and Dasher wasted trips. Design a solution to reduce post-order cancellations without adding friction to the order placement experience.`,
+    prompt: 'You are a PM at DoorDash. Data shows that 8.2% of orders placed are cancelled by the customer after placement — before the food is prepared. The most common cancellation window is 3–8 minutes post-order, and the most common reasons given are: "taking too long," "changed my mind," and "ordered by mistake."\n\nCancellations cost DoorDash in operational complexity, merchant trust, and Dasher wasted trips. Design a solution to reduce post-order cancellations without adding friction to the order placement experience.',
     phases: [
       {
         id: 'clarify',
@@ -789,17 +458,7 @@ Cancellations cost DoorDash in operational complexity, merchant trust, and Dashe
           'Asks about the merchant and Dasher experience of cancellations',
           'Asks about any known correlations (time of day, cuisine type, order size, new vs. returning customers)',
         ],
-        modelAnswer: `Key clarifying questions:
-
-1. **Which cancellation reason is most actionable vs. just a stated reason?** "Taking too long" may mask buyer\'s remorse or order mistakes. Do we have data on cancellations vs. actual ETA at the time?
-
-2. **When in the preparation process are cancellations happening?** Pre-accept (merchant hasn't started), post-accept but pre-start, or after preparation begins? The cost and solution change based on this.
-
-3. **How easy is it to cancel currently?** Is the cancel button prominent? If so, some friction reduction elsewhere might be creating a "too easy to cancel" problem.
-
-4. **Are certain order types more cancellation-prone?** Large orders, first-time users, late-night orders? The segment insight shapes targeting.
-
-5. **What's the Dasher and merchant impact?** If a Dasher is dispatched before cancellation, they've wasted a trip. If preparation started, the merchant has sunk cost. Understanding this shapes the urgency of different cancellation windows.`,
+        modelAnswer: 'Key clarifying questions:\n\n1. **Which cancellation reason is most actionable vs. just a stated reason?** "Taking too long" may mask buyer\'s remorse or order mistakes. Do we have data on cancellations vs. actual ETA at the time?\n\n2. **When in the preparation process are cancellations happening?** Pre-accept (merchant hasn\'t started), post-accept but pre-start, or after preparation begins? The cost and solution change based on this.\n\n3. **How easy is it to cancel currently?** Is the cancel button prominent? If so, some friction reduction elsewhere might be creating a "too easy to cancel" problem.\n\n4. **Are certain order types more cancellation-prone?** Large orders, first-time users, late-night orders? The segment insight shapes targeting.\n\n5. **What\'s the Dasher and merchant impact?** If a Dasher is dispatched before cancellation, they\'ve wasted a trip. If preparation started, the merchant has sunk cost. Understanding this shapes the urgency of different cancellation windows.',
       },
       {
         id: 'users',
@@ -811,17 +470,7 @@ Cancellations cost DoorDash in operational complexity, merchant trust, and Dashe
           'Distinguishes between "impatient" cancellers vs. "accidental" cancellers vs. "changed-mind" cancellers',
           'Makes a recommendation for which segment represents the most winnable cancellations',
         ],
-        modelAnswer: `**Segment 1: ETA-disappointed cancellers**
-Ordered expecting 25 minutes, ETA showed 45 minutes post-order. This is the most addressable — the gap between expected and actual ETA is the trigger. May have been shown an optimistic pre-order ETA that was updated after order confirmation.
-
-**Segment 2: Accidental/mistake orderers**
-Tapped wrong item, wrong address, wrong restaurant. These are low-intent cancellations that a quick review/confirm step before submission might prevent.
-
-**Segment 3: Changed-mind cancellers**
-True buyer's remorse. Food preference changed, decided to cook instead. Less preventable through product changes; these may require a different strategy (waiting window vs. cancel button).
-
-**Focus: Segment 1 (ETA-disappointed cancellers)**
-They have the clearest product lever: if we improve ETA accuracy or set better expectations pre-order, the trigger for cancellation disappears. This is the most preventable and likely the largest segment of the 8.2%.`,
+        modelAnswer: '**Segment 1: ETA-disappointed cancellers**\nOrdered expecting 25 minutes, ETA showed 45 minutes post-order. This is the most addressable — the gap between expected and actual ETA is the trigger. May have been shown an optimistic pre-order ETA that was updated after order confirmation.\n\n**Segment 2: Accidental/mistake orderers**\nTapped wrong item, wrong address, wrong restaurant. These are low-intent cancellations that a quick review/confirm step before submission might prevent.\n\n**Segment 3: Changed-mind cancellers**\nTrue buyer\'s remorse. Food preference changed, decided to cook instead. Less preventable through product changes; these may require a different strategy (waiting window vs. cancel button).\n\n**Focus: Segment 1 (ETA-disappointed cancellers)**\nThey have the clearest product lever: if we improve ETA accuracy or set better expectations pre-order, the trigger for cancellation disappears. This is the most preventable and likely the largest segment of the 8.2%.',
       },
       {
         id: 'goals',
@@ -834,21 +483,7 @@ They have the clearest product lever: if we improve ETA accuracy or set better e
           'Guardrail protects order placement conversion (don\'t fix cancellations by killing orders)',
           'Considers merchant and Dasher satisfaction as secondary outcomes',
         ],
-        modelAnswer: `**Primary metric: Post-order cancellation rate (cancellations / completed orders placed)**
-Current baseline: 8.2%. Target: reduce by 25% to ~6%.
-
-**Diagnostic metrics:**
-- ETA-triggered cancellation rate: cancellations where ETA at time of cancel > initial ETA shown by >10 minutes
-- Cancellation timing: % of cancellations within first 3 minutes (likely mistake/ETA mismatch) vs. 3–8 minutes (changed mind) vs. 8+ minutes (operational delay)
-- ETA accuracy: actual delivery time vs. ETA shown at order confirmation
-
-**Guardrail:**
-- Order placement conversion must not decrease (adding confirmation steps should not reduce completed orders)
-- Cancellation friction must not increase "silent abandonment" where users don't cancel but also don't reorder
-
-**Secondary outcome metrics:**
-- Merchant satisfaction with cancellation rates (reported monthly)
-- Dasher efficiency: wasted pickups per day`,
+        modelAnswer: '**Primary metric: Post-order cancellation rate (cancellations / completed orders placed)**\nCurrent baseline: 8.2%. Target: reduce by 25% to ~6%.\n\n**Diagnostic metrics:**\n- ETA-triggered cancellation rate: cancellations where ETA at time of cancel > initial ETA shown by >10 minutes\n- Cancellation timing: % of cancellations within first 3 minutes (likely mistake/ETA mismatch) vs. 3–8 minutes (changed mind) vs. 8+ minutes (operational delay)\n- ETA accuracy: actual delivery time vs. ETA shown at order confirmation\n\n**Guardrail:**\n- Order placement conversion must not decrease (adding confirmation steps should not reduce completed orders)\n- Cancellation friction must not increase "silent abandonment" where users don\'t cancel but also don\'t reorder\n\n**Secondary outcome metrics:**\n- Merchant satisfaction with cancellation rates (reported monthly)\n- Dasher efficiency: wasted pickups per day',
       },
       {
         id: 'solutions',
@@ -861,17 +496,7 @@ Current baseline: 8.2%. Target: reduce by 25% to ~6%.
           'Solutions address ETA accuracy, mistake prevention, and post-order engagement separately',
           'Each identifies its key assumption or risk',
         ],
-        modelAnswer: `**Option 1: Real-Time ETA Transparency (Low effort)**
-Show a live order tracker immediately after confirmation with: real-time ETA updates, current step (accepted / preparing / Dasher assigned / en route), and the message "Your order is being prepared — cancelling now will not refund your payment." The goal: reduce ETA anxiety by making progress visible. Risk: if the ETA is genuinely bad, transparency just makes the problem more visible.
-
-**Option 2: Pre-Order ETA Accuracy Improvement (Medium effort)**
-Fix the root cause: ETA shown pre-order is often too optimistic. Implement tighter ETA prediction using real-time restaurant busyness, Dasher proximity, and historical accuracy by restaurant/time-of-day. Show the realistic ETA before order placement. Users who are time-sensitive self-select out before ordering, rather than cancelling after. Risk: showing longer ETAs may reduce order conversion for time-sensitive users.
-
-**Option 3: Order Review Screen for Likely-Mistake Orders (Low effort)**
-For orders where signals suggest high mistake risk (new user, first order from this restaurant, order placed within 2 seconds of adding to cart), show a brief "Quick check before we send this" summary screen with item names, address, and estimated total. Adds 5 seconds for this user segment only. Risk: small friction for a segment that may not be the majority of cancellations.
-
-**Option 4: "Delay Gratification" Cancel Flow (Medium effort)**
-When a user taps Cancel, instead of immediate cancellation, show: "Your Dasher will be assigned in [X minutes]. Cancel anyway?" with a countdown. For ETA-anxious users, seeing the progress may be enough to keep them. The cancel is still available — this is not blocking it. Risk: perceived as manipulative if the countdown is shown falsely or extends artificially.`,
+        modelAnswer: '**Option 1: Real-Time ETA Transparency (Low effort)**\nShow a live order tracker immediately after confirmation with: real-time ETA updates, current step (accepted / preparing / Dasher assigned / en route), and the message "Your order is being prepared — cancelling now will not refund your payment." The goal: reduce ETA anxiety by making progress visible. Risk: if the ETA is genuinely bad, transparency just makes the problem more visible.\n\n**Option 2: Pre-Order ETA Accuracy Improvement (Medium effort)**\nFix the root cause: ETA shown pre-order is often too optimistic. Implement tighter ETA prediction using real-time restaurant busyness, Dasher proximity, and historical accuracy by restaurant/time-of-day. Show the realistic ETA before order placement. Users who are time-sensitive self-select out before ordering, rather than cancelling after. Risk: showing longer ETAs may reduce order conversion for time-sensitive users.\n\n**Option 3: Order Review Screen for Likely-Mistake Orders (Low effort)**\nFor orders where signals suggest high mistake risk (new user, first order from this restaurant, order placed within 2 seconds of adding to cart), show a brief "Quick check before we send this" summary screen with item names, address, and estimated total. Adds 5 seconds for this user segment only. Risk: small friction for a segment that may not be the majority of cancellations.\n\n**Option 4: "Delay Gratification" Cancel Flow (Medium effort)**\nWhen a user taps Cancel, instead of immediate cancellation, show: "Your Dasher will be assigned in [X minutes]. Cancel anyway?" with a countdown. For ETA-anxious users, seeing the progress may be enough to keep them. The cancel is still available — this is not blocking it. Risk: perceived as manipulative if the countdown is shown falsely or extends artificially.',
       },
       {
         id: 'prioritize',
@@ -884,28 +509,7 @@ When a user taps Cancel, instead of immediate cancellation, show: "Your Dasher w
           'Calls out which cancellation driver the v1 solution addresses',
           'Honest about what v1 does NOT solve',
         ],
-        modelAnswer: `**Recommendation: Option 2 (ETA accuracy improvement) + Option 1 (live tracker) together as v1**
-
-Option 2 prevents the trigger (unrealistic pre-order ETA). Option 1 reduces anxiety for users who placed despite good ETA but get anxious while waiting. They address complementary cancellation drivers.
-
-**V1 scope:**
-- Tighter ETA model using real-time restaurant load + Dasher proximity (this is a model improvement, no UI change needed for users)
-- Live order status tracker on the post-order confirmation screen with 4-step progress indicator
-- No changes to the cancellation flow itself (Option 4 is v2 if needed)
-
-**Experiment:**
-- Treatment: accurate ETA model + live tracker
-- Control: current experience
-- Unit: order, randomized at user level
-- Runtime: 3 weeks
-- Primary metric: post-order cancellation rate
-- Guardrail: order placement conversion rate (ensure new ETA model doesn't kill orders by showing longer ETAs)
-
-**What v1 doesn't solve:**
-- Accidental/mistake cancellations (that's Option 3, a separate v2 sprint)
-- True changed-mind cancellations (those are the non-addressable baseline)
-
-**Success:** If cancellation rate drops to ≤6% and order placement conversion is stable, v1 is a success. We'd then layer in Option 3 for the mistake segment in v2.`,
+        modelAnswer: '**Recommendation: Option 2 (ETA accuracy improvement) + Option 1 (live tracker) together as v1**\n\nOption 2 prevents the trigger (unrealistic pre-order ETA). Option 1 reduces anxiety for users who placed despite good ETA but get anxious while waiting. They address complementary cancellation drivers.\n\n**V1 scope:**\n- Tighter ETA model using real-time restaurant load + Dasher proximity (this is a model improvement, no UI change needed for users)\n- Live order status tracker on the post-order confirmation screen with 4-step progress indicator\n- No changes to the cancellation flow itself (Option 4 is v2 if needed)\n\n**Experiment:**\n- Treatment: accurate ETA model + live tracker\n- Control: current experience\n- Unit: order, randomized at user level\n- Runtime: 3 weeks\n- Primary metric: post-order cancellation rate\n- Guardrail: order placement conversion rate (ensure new ETA model doesn\'t kill orders by showing longer ETAs)\n\n**What v1 doesn\'t solve:**\n- Accidental/mistake cancellations (that\'s Option 3, a separate v2 sprint)\n- True changed-mind cancellations (those are the non-addressable baseline)\n\n**Success:** If cancellation rate drops to ≤6% and order placement conversion is stable, v1 is a success. We\'d then layer in Option 3 for the mistake segment in v2.',
       },
     ],
   },
@@ -922,9 +526,7 @@ Option 2 prevents the trigger (unrealistic pre-order ETA). Option 1 reduces anxi
     category: 'Fintech / B2B',
     tags: ['fintech', 'B2B', 'data literacy', 'dashboard'],
     isFree: false,
-    prompt: `You are a PM on Stripe's Dashboard team. Small business owners (SMBs) — restaurants, freelancers, boutique retailers — represent a large and growing portion of Stripe's customer base. Many of them use Stripe's dashboard daily to check revenue, but qualitative research shows they feel confused by the data and often can't answer basic questions like "Is my business doing better or worse than last month?" without manual calculation.
-
-Design a feature that helps small business owners better understand their revenue performance without requiring them to be data-savvy.`,
+    prompt: 'You are a PM on Stripe\'s Dashboard team. Small business owners (SMBs) — restaurants, freelancers, boutique retailers — represent a large and growing portion of Stripe\'s customer base. Many of them use Stripe\'s dashboard daily to check revenue, but qualitative research shows they feel confused by the data and often can\'t answer basic questions like "Is my business doing better or worse than last month?" without manual calculation.\n\nDesign a feature that helps small business owners better understand their revenue performance without requiring them to be data-savvy.',
     phases: [
       {
         id: 'clarify',
@@ -938,17 +540,7 @@ Design a feature that helps small business owners better understand their revenu
           'Asks about the business types within SMB (subscription vs transaction-based)',
           'Asks about existing integrations (accounting software, POS)',
         ],
-        modelAnswer: `Clarifying questions:
-
-1. **What questions do SMBs most commonly ask when they open the dashboard?** "How much did I make today?" vs. "Am I on track this month?" vs. "What's my best-selling product?" Each implies a different solution.
-
-2. **What's the current dashboard showing?** Total volume, transaction count, net revenue? Is the issue that the right data isn't shown, or that it's shown in a format SMBs can't interpret?
-
-3. **What's the usage pattern?** Are SMBs checking daily (like checking a cash register) or weekly/monthly (like reviewing books)? The interaction design differs significantly.
-
-4. **What are the most common SMB business types in this segment?** Subscription businesses, one-time transaction businesses, and recurring service businesses have different revenue patterns and therefore different meaningful metrics.
-
-5. **Do SMBs currently integrate with accounting tools (QuickBooks, FreshBooks)?** If so, we may be able to surface more meaningful context. If not, Stripe is the only data source.`,
+        modelAnswer: 'Clarifying questions:\n\n1. **What questions do SMBs most commonly ask when they open the dashboard?** "How much did I make today?" vs. "Am I on track this month?" vs. "What\'s my best-selling product?" Each implies a different solution.\n\n2. **What\'s the current dashboard showing?** Total volume, transaction count, net revenue? Is the issue that the right data isn\'t shown, or that it\'s shown in a format SMBs can\'t interpret?\n\n3. **What\'s the usage pattern?** Are SMBs checking daily (like checking a cash register) or weekly/monthly (like reviewing books)? The interaction design differs significantly.\n\n4. **What are the most common SMB business types in this segment?** Subscription businesses, one-time transaction businesses, and recurring service businesses have different revenue patterns and therefore different meaningful metrics.\n\n5. **Do SMBs currently integrate with accounting tools (QuickBooks, FreshBooks)?** If so, we may be able to surface more meaningful context. If not, Stripe is the only data source.',
       },
       {
         id: 'users',
@@ -960,17 +552,7 @@ Design a feature that helps small business owners better understand their revenu
           'Considers the difference between transaction-heavy vs. service-based businesses',
           'Makes a clear focus recommendation based on urgency and size of segment',
         ],
-        modelAnswer: `**Segment 1: Freelancers and service providers**
-Low transaction volume, high per-transaction value. Primarily care about: have I been paid? When's my next payment coming? Not primarily "revenue trends" — they need invoice tracking and cash flow visibility. Different core need.
-
-**Segment 2: Brick-and-mortar retail and restaurants**
-High transaction volume, daily-active dashboard users. They check total daily revenue like a cash register reading. They need: today vs. yesterday vs. same day last week. This is the most common mental model.
-
-**Segment 3: E-commerce/Shopify businesses**
-Transaction-heavy but less daily-active. They care about trends, best-selling products, and cohort-level insight. More data-savvy than Segment 2 but still overwhelmed by raw tables.
-
-**Focus: Segment 2 (retail/restaurant owners)**
-Highest daily engagement, clearest mental model of what they want ("is today good or bad?"), and the least served by a traditional chart-heavy dashboard. Their need is comparison, not raw numbers.`,
+        modelAnswer: '**Segment 1: Freelancers and service providers**\nLow transaction volume, high per-transaction value. Primarily care about: have I been paid? When\'s my next payment coming? Not primarily "revenue trends" — they need invoice tracking and cash flow visibility. Different core need.\n\n**Segment 2: Brick-and-mortar retail and restaurants**\nHigh transaction volume, daily-active dashboard users. They check total daily revenue like a cash register reading. They need: today vs. yesterday vs. same day last week. This is the most common mental model.\n\n**Segment 3: E-commerce/Shopify businesses**\nTransaction-heavy but less daily-active. They care about trends, best-selling products, and cohort-level insight. More data-savvy than Segment 2 but still overwhelmed by raw tables.\n\n**Focus: Segment 2 (retail/restaurant owners)**\nHighest daily engagement, clearest mental model of what they want ("is today good or bad?"), and the least served by a traditional chart-heavy dashboard. Their need is comparison, not raw numbers.',
       },
       {
         id: 'goals',
@@ -983,19 +565,7 @@ Highest daily engagement, clearest mental model of what they want ("is today goo
           'Primary metric is engagement or retention, not just feature clicks',
           'Guardrail protects against oversimplification (hiding data that power users need)',
         ],
-        modelAnswer: `**Primary metric: Dashboard return visit rate among SMB users**
-If users understand what they're seeing and find value in it, they return. A dashboard that confuses people gets checked once and abandoned. Target: increase 7-day active usage among SMB cohort.
-
-**A better proxy for "understanding":** Reduction in support tickets tagged "how do I read my dashboard?" and "what does X metric mean?" This is a direct signal that the dashboard is communicable.
-
-**Diagnostic:**
-- Time spent on dashboard per visit (longer isn't necessarily better — ideally shorter time to answer their question, not longer exploration)
-- Feature adoption: % of users who access the new comparison view vs. raw transaction table
-- NPS or "did you find what you were looking for?" prompt satisfaction score
-
-**Guardrail:**
-- Power user access to raw data must not be reduced (SMBs graduating to more sophisticated analysis should not hit a wall)
-- Dashboard load time must not increase (these are mobile users checking quickly)`,
+        modelAnswer: '**Primary metric: Dashboard return visit rate among SMB users**\nIf users understand what they\'re seeing and find value in it, they return. A dashboard that confuses people gets checked once and abandoned. Target: increase 7-day active usage among SMB cohort.\n\n**A better proxy for "understanding":** Reduction in support tickets tagged "how do I read my dashboard?" and "what does X metric mean?" This is a direct signal that the dashboard is communicable.\n\n**Diagnostic:**\n- Time spent on dashboard per visit (longer isn\'t necessarily better — ideally shorter time to answer their question, not longer exploration)\n- Feature adoption: % of users who access the new comparison view vs. raw transaction table\n- NPS or "did you find what you were looking for?" prompt satisfaction score\n\n**Guardrail:**\n- Power user access to raw data must not be reduced (SMBs graduating to more sophisticated analysis should not hit a wall)\n- Dashboard load time must not increase (these are mobile users checking quickly)',
       },
       {
         id: 'solutions',
@@ -1008,17 +578,7 @@ If users understand what they're seeing and find value in it, they return. A das
           'At least one solution uses natural language or plain English interpretation',
           'Solutions consider mobile-first design (many SMBs check on phone)',
         ],
-        modelAnswer: `**Option 1: Revenue Snapshot Card (Low effort)**
-A prominent card at the top of the dashboard showing: today's revenue vs. same day last week vs. same day last month — with a clear up/down indicator. No percentages (too abstract), just dollar amounts and colored arrows. "Today: $1,247 ↑ $340 vs. last Tuesday." SMBs understand this intuitively — it mirrors how they think about a "good day."
-
-**Option 2: Plain-English Revenue Digest (Medium effort)**
-A weekly email or in-app card that describes performance in sentences: "Your best week this month. Top category: Lunch items. Revenue: $8,430 (+12% vs. last week). Your busiest day was Saturday." No charts, no tables. Just business-owner-readable prose. Can be generated with a simple template system (no LLM required initially).
-
-**Option 3: Trend Explanation Feature (Medium-high effort)**
-When a metric changes significantly, surface a one-line explanation: "Revenue is up 18% this week — 7 more transactions than usual, average transaction size was flat." Moves from "what happened" to "why it happened" at a level SMBs can act on. More complex to build (requires anomaly detection + causal decomposition), but directly addresses the "why" question they can't currently answer.
-
-**Option 4: Goal-Setting Mode (Medium effort)**
-Let SMBs set a monthly revenue goal during onboarding. The dashboard shows progress toward that goal: a simple bar with "$4,200 of $8,000 goal — 52% of the way through the month." Personalized framing of performance against their own expectations. Low data-literacy required.`,
+        modelAnswer: '**Option 1: Revenue Snapshot Card (Low effort)**\nA prominent card at the top of the dashboard showing: today\'s revenue vs. same day last week vs. same day last month — with a clear up/down indicator. No percentages (too abstract), just dollar amounts and colored arrows. "Today: $1,247 ↑ $340 vs. last Tuesday." SMBs understand this intuitively — it mirrors how they think about a "good day."\n\n**Option 2: Plain-English Revenue Digest (Medium effort)**\nA weekly email or in-app card that describes performance in sentences: "Your best week this month. Top category: Lunch items. Revenue: $8,430 (+12% vs. last week). Your busiest day was Saturday." No charts, no tables. Just business-owner-readable prose. Can be generated with a simple template system (no LLM required initially).\n\n**Option 3: Trend Explanation Feature (Medium-high effort)**\nWhen a metric changes significantly, surface a one-line explanation: "Revenue is up 18% this week — 7 more transactions than usual, average transaction size was flat." Moves from "what happened" to "why it happened" at a level SMBs can act on. More complex to build (requires anomaly detection + causal decomposition), but directly addresses the "why" question they can\'t currently answer.\n\n**Option 4: Goal-Setting Mode (Medium effort)**\nLet SMBs set a monthly revenue goal during onboarding. The dashboard shows progress toward that goal: a simple bar with "$4,200 of $8,000 goal — 52% of the way through the month." Personalized framing of performance against their own expectations. Low data-literacy required.',
       },
       {
         id: 'prioritize',
@@ -1031,27 +591,7 @@ Let SMBs set a monthly revenue goal during onboarding. The dashboard shows progr
           'Calls out what "success at 90 days" means specifically',
           'V1 scope is mobile-friendly and fast to build',
         ],
-        modelAnswer: `**Recommendation: Ship Option 1 (Revenue Snapshot Card) + Option 4 (Goal-Setting Mode) as v1**
-
-Option 1 is the fastest to build and directly addresses the "am I having a good day?" mental model. Option 4 (goal-setting) adds personal context that makes the snapshot meaningful — knowing $1,200 is 15% of your goal vs. knowing $1,200 in isolation are very different insights.
-
-**V1 scope:**
-- Prominent revenue snapshot card at top of dashboard (Today / This Week / This Month, each vs. prior period same timeframe)
-- Optional goal-setting prompt during onboarding for new users, retroactively available for existing users
-- Mobile-optimized (cards, not charts)
-- No changes to existing charts/tables below the fold (power users unaffected)
-
-**Measurement:**
-- 7-day and 30-day active usage rates for the SMB cohort (treatment: new dashboard; control: old dashboard)
-- Support ticket volume for "how do I read my dashboard" category
-- NPS survey for SMB segment at 30 days
-
-**Success at 90 days:**
-- 7-day active usage rate improves by ≥15% for SMB cohort
-- "How do I read my dashboard" support tickets down ≥20%
-- Goal-setting adoption ≥40% of new users
-
-**V2:** Plain-English Weekly Digest (Option 2) — low-effort content layer on top of the data we're now surfacing, delivered as a Monday morning email.`,
+        modelAnswer: '**Recommendation: Ship Option 1 (Revenue Snapshot Card) + Option 4 (Goal-Setting Mode) as v1**\n\nOption 1 is the fastest to build and directly addresses the "am I having a good day?" mental model. Option 4 (goal-setting) adds personal context that makes the snapshot meaningful — knowing $1,200 is 15% of your goal vs. knowing $1,200 in isolation are very different insights.\n\n**V1 scope:**\n- Prominent revenue snapshot card at top of dashboard (Today / This Week / This Month, each vs. prior period same timeframe)\n- Optional goal-setting prompt during onboarding for new users, retroactively available for existing users\n- Mobile-optimized (cards, not charts)\n- No changes to existing charts/tables below the fold (power users unaffected)\n\n**Measurement:**\n- 7-day and 30-day active usage rates for the SMB cohort (treatment: new dashboard; control: old dashboard)\n- Support ticket volume for "how do I read my dashboard" category\n- NPS survey for SMB segment at 30 days\n\n**Success at 90 days:**\n- 7-day active usage rate improves by ≥15% for SMB cohort\n- "How do I read my dashboard" support tickets down ≥20%\n- Goal-setting adoption ≥40% of new users\n\n**V2:** Plain-English Weekly Digest (Option 2) — low-effort content layer on top of the data we\'re now surfacing, delivered as a Monday morning email.',
       },
     ],
   },
@@ -1068,9 +608,7 @@ Option 1 is the fastest to build and directly addresses the "am I having a good 
     category: 'Social Platform',
     tags: ['creator economy', 'social', 'growth', 'retention'],
     isFree: false,
-    prompt: `You are a PM at Instagram. The creator economy is central to Instagram's strategy — creators drive content quality, user engagement, and advertiser value. However, data shows that 68% of creators with under 10K followers report feeling "stuck" — they're posting regularly but not growing. Creators who stagnate for 60 days are significantly more likely to reduce posting frequency or churn entirely.
-
-Design a feature to help small creators (under 10K followers) understand why they're not growing and take concrete actions to change that.`,
+    prompt: 'You are a PM at Instagram. The creator economy is central to Instagram\'s strategy — creators drive content quality, user engagement, and advertiser value. However, data shows that 68% of creators with under 10K followers report feeling "stuck" — they\'re posting regularly but not growing. Creators who stagnate for 60 days are significantly more likely to reduce posting frequency or churn entirely.\n\nDesign a feature to help small creators (under 10K followers) understand why they\'re not growing and take concrete actions to change that.',
     phases: [
       {
         id: 'clarify',
@@ -1084,17 +622,7 @@ Design a feature to help small creators (under 10K followers) understand why the
           'Asks about the current Insights product and where it falls short',
           'Asks about competitive context (YouTube Studio, TikTok creator tools)',
         ],
-        modelAnswer: `Clarifying questions:
-
-1. **What does "growing" mean to small creators?** Follower count, reach, engagement rate, DM connections, collaborations? The definition shapes what we build.
-
-2. **What does the current Instagram Insights product show?** If creators have reach and engagement data, is the problem that they can't interpret it, or that the insights don't tell them what to do differently?
-
-3. **Which content formats are most stagnation-prone?** Photo-only creators may be algorithmically disadvantaged vs. Reels creators. If distribution is the core issue, analytics alone won't solve it.
-
-4. **Is this a feedback problem or a distribution problem?** Knowing WHY you're not growing (feedback) is different from being more visible to new audiences (distribution). Both are valid but require very different solutions.
-
-5. **What's the competitive context?** YouTube Studio and TikTok's Creator Portal offer richer creator analytics. Are Instagram creators comparing features?`,
+        modelAnswer: 'Clarifying questions:\n\n1. **What does "growing" mean to small creators?** Follower count, reach, engagement rate, DM connections, collaborations? The definition shapes what we build.\n\n2. **What does the current Instagram Insights product show?** If creators have reach and engagement data, is the problem that they can\'t interpret it, or that the insights don\'t tell them what to do differently?\n\n3. **Which content formats are most stagnation-prone?** Photo-only creators may be algorithmically disadvantaged vs. Reels creators. If distribution is the core issue, analytics alone won\'t solve it.\n\n4. **Is this a feedback problem or a distribution problem?** Knowing WHY you\'re not growing (feedback) is different from being more visible to new audiences (distribution). Both are valid but require very different solutions.\n\n5. **What\'s the competitive context?** YouTube Studio and TikTok\'s Creator Portal offer richer creator analytics. Are Instagram creators comparing features?',
       },
       {
         id: 'users',
@@ -1106,17 +634,7 @@ Design a feature to help small creators (under 10K followers) understand why the
           'Considers posting frequency and format as segment dimensions',
           'Makes a prioritization recommendation with reasoning',
         ],
-        modelAnswer: `**Segment 1: Consistent posters with declining reach**
-Post regularly but engagement and reach is declining. Often happens when a creator's format becomes less algorithmically favored (e.g., static photos in a Reels-first era) or when their audience stops engaging. They're working hard but the feedback loop is broken.
-
-**Segment 2: Irregular posters who are waiting for traction**
-Post occasionally, hoping something goes viral. Low strategic intent. The problem here is behavioral: they need a feedback loop that rewards consistent posting, not just lucky posts.
-
-**Segment 3: Niche/topic-specific creators with small but engaged communities**
-May have high engagement rates but low absolute growth. Their followers love them but they can't break out of their niche. Discovery is the problem.
-
-**Focus: Segment 1 (consistent posters with declining reach)**
-They're the most motivated, most at-risk of frustrated churn (they're putting in effort without results), and they have enough data to give them actionable feedback. Solving for them also builds infrastructure (content performance diagnosis) that benefits other segments.`,
+        modelAnswer: '**Segment 1: Consistent posters with declining reach**\nPost regularly but engagement and reach is declining. Often happens when a creator\'s format becomes less algorithmically favored (e.g., static photos in a Reels-first era) or when their audience stops engaging. They\'re working hard but the feedback loop is broken.\n\n**Segment 2: Irregular posters who are waiting for traction**\nPost occasionally, hoping something goes viral. Low strategic intent. The problem here is behavioral: they need a feedback loop that rewards consistent posting, not just lucky posts.\n\n**Segment 3: Niche/topic-specific creators with small but engaged communities**\nMay have high engagement rates but low absolute growth. Their followers love them but they can\'t break out of their niche. Discovery is the problem.\n\n**Focus: Segment 1 (consistent posters with declining reach)**\nThey\'re the most motivated, most at-risk of frustrated churn (they\'re putting in effort without results), and they have enough data to give them actionable feedback. Solving for them also builds infrastructure (content performance diagnosis) that benefits other segments.',
       },
       {
         id: 'goals',
@@ -1129,21 +647,7 @@ They're the most motivated, most at-risk of frustrated churn (they're putting in
           'Guardrail protects against "vanity features" that feel helpful but don\'t produce growth',
           'Considers time-to-stagnation as a leading indicator',
         ],
-        modelAnswer: `**Primary metric: Creator posting continuation rate at 90 days (for stagnation-risk creators)**
-If the feature works, small creators who engage with it should post more consistently and for longer. A creator who posts for 90+ days after engaging with the feature is the success story.
-
-**Downstream outcome metric (lags 60–90 days):**
-- Average follower growth rate for creators who engage with the feature vs. matched control cohort
-- Reach per post trend for the feature-engaged cohort
-
-**Diagnostic:**
-- Feature adoption: % of stagnation-risk creators who engage with the new tool
-- Action completion: % of creators who take a recommended action (try a Reel, post at a new time, engage with a hashtag suggestion) within 7 days of seeing the recommendation
-- Creator-reported "I understand why I'm not growing" NPS item
-
-**Guardrail:**
-- Content quality on the platform must not degrade (we don't want creators gaming metrics by posting low-quality content more frequently)
-- Time creators spend on analytics must not cannibalize time they spend creating (we want to reduce friction, not create an analytics addiction)`,
+        modelAnswer: '**Primary metric: Creator posting continuation rate at 90 days (for stagnation-risk creators)**\nIf the feature works, small creators who engage with it should post more consistently and for longer. A creator who posts for 90+ days after engaging with the feature is the success story.\n\n**Downstream outcome metric (lags 60–90 days):**\n- Average follower growth rate for creators who engage with the feature vs. matched control cohort\n- Reach per post trend for the feature-engaged cohort\n\n**Diagnostic:**\n- Feature adoption: % of stagnation-risk creators who engage with the new tool\n- Action completion: % of creators who take a recommended action (try a Reel, post at a new time, engage with a hashtag suggestion) within 7 days of seeing the recommendation\n- Creator-reported "I understand why I\'m not growing" NPS item\n\n**Guardrail:**\n- Content quality on the platform must not degrade (we don\'t want creators gaming metrics by posting low-quality content more frequently)\n- Time creators spend on analytics must not cannibalize time they spend creating (we want to reduce friction, not create an analytics addiction)',
       },
       {
         id: 'solutions',
@@ -1156,17 +660,7 @@ If the feature works, small creators who engage with it should post more consist
           'Solutions consider the emotional dimension of creator stagnation — this is personal',
           'Each solution identifies its key assumption or risk',
         ],
-        modelAnswer: `**Option 1: Content Performance Diagnostic (Medium effort)**
-A weekly "what's working" summary: shows creators which posts had the highest reach, which had the best engagement-to-reach ratio, and which drove the most new follows. Surfaces patterns: "Your posts with X type of caption get 2x engagement." Goes beyond raw numbers to "your Reels outperformed your photos 4:1 this month." Risk: correlation, not causation — formats that work for one creator may not generalize; we must be careful not to create prescriptive patterns.
-
-**Option 2: Creator Growth Roadmap (Medium-high effort)**
-Personalized next-step cards: based on a creator's profile (content type, posting frequency, follower count, engagement rate), surface 3 specific actions: "You haven't tried Reels yet — creators like you who start posting Reels 2x/week see 40% more reach on average." "Your bio doesn't have a clear niche — add a niche keyword and we estimate 15% more follows." Risk: promises that don't pan out damage trust; recommendations must be well-calibrated.
-
-**Option 3: Creator Cohort Benchmarking (Low-medium effort)**
-Show creators how they compare to similar creators by niche, account age, and content type: "You're in the top 30% of home decor creators at your stage." Human tendency to benchmark against peers is powerful. Provides context for stagnation: "Most home decor accounts at your size grow 5–8 followers/week — you're at 3." Risk: comparison can be demoralizing if framed poorly; must be encouraging, not shaming.
-
-**Option 4: Audience Insight Map (Medium effort)**
-Show creators WHO is engaging with them: age, location, interest clusters. Help them understand if their intended audience is their actual audience. A fitness creator whose audience is 65% over-45 may be producing content misaligned with their perception of their audience. This helps reframe or sharpen content strategy. Risk: privacy constraints; this data may be aggregated in ways that limit actionability.`,
+        modelAnswer: '**Option 1: Content Performance Diagnostic (Medium effort)**\nA weekly "what\'s working" summary: shows creators which posts had the highest reach, which had the best engagement-to-reach ratio, and which drove the most new follows. Surfaces patterns: "Your posts with X type of caption get 2x engagement." Goes beyond raw numbers to "your Reels outperformed your photos 4:1 this month." Risk: correlation, not causation — formats that work for one creator may not generalize; we must be careful not to create prescriptive patterns.\n\n**Option 2: Creator Growth Roadmap (Medium-high effort)**\nPersonalized next-step cards: based on a creator\'s profile (content type, posting frequency, follower count, engagement rate), surface 3 specific actions: "You haven\'t tried Reels yet — creators like you who start posting Reels 2x/week see 40% more reach on average." "Your bio doesn\'t have a clear niche — add a niche keyword and we estimate 15% more follows." Risk: promises that don\'t pan out damage trust; recommendations must be well-calibrated.\n\n**Option 3: Creator Cohort Benchmarking (Low-medium effort)**\nShow creators how they compare to similar creators by niche, account age, and content type: "You\'re in the top 30% of home decor creators at your stage." Human tendency to benchmark against peers is powerful. Provides context for stagnation: "Most home decor accounts at your size grow 5–8 followers/week — you\'re at 3." Risk: comparison can be demoralizing if framed poorly; must be encouraging, not shaming.\n\n**Option 4: Audience Insight Map (Medium effort)**\nShow creators WHO is engaging with them: age, location, interest clusters. Help them understand if their intended audience is their actual audience. A fitness creator whose audience is 65% over-45 may be producing content misaligned with their perception of their audience. This helps reframe or sharpen content strategy. Risk: privacy constraints; this data may be aggregated in ways that limit actionability.',
       },
       {
         id: 'prioritize',
@@ -1179,26 +673,7 @@ Show creators WHO is engaging with them: age, location, interest clusters. Help 
           'V2 roadmap is logical',
           'Measurement approach is honest about the lag between action and outcome',
         ],
-        modelAnswer: `**Recommendation: Option 1 (Content Performance Diagnostic) as v1**
-
-**Reasoning:**
-It builds trust before making recommendations. Creators need to believe the data before they act on it. Option 2 (Growth Roadmap) is more powerful but requires credibility first — if creators don't trust the performance data, they won't trust the recommendations. Option 1 earns the trust; Option 2 spends it.
-
-**V1 scope:**
-- Weekly "Creator Insights Card" for accounts with ≥5 posts in the last 30 days
-- Shows: top 3 posts by reach, top 3 by engagement rate, and a simple comparison ("Your Reels got 2x more reach than your photos this month")
-- Framing is encouraging, not prescriptive: "Here's what's resonating" not "here's what you're doing wrong"
-- No recommendations in v1 — pure signal, not prescription
-
-**Measurement:**
-- Primary: 90-day posting continuation rate for creators who engage with the card vs. matched non-engaging cohort
-- Secondary: self-reported "do you feel you understand what's working?" (monthly pulse survey)
-- Lag warning: follower growth changes will take 60+ days to appear — don't measure this in the first sprint readout
-
-**Trust framing:**
-The copy matters enormously here. "Your top-performing posts" feels celebratory. "Your underperforming posts" would feel like criticism. Every element of v1 should read as a coach pointing to strengths, not a system diagnosing failures.
-
-**V2:** Layer in Option 2 (Growth Roadmap) — once creators have been using the diagnostic for 4+ weeks and trust the data, introduce 1–2 specific actionable suggestions per week, individually calibrated, with realistic expectations set upfront.`,
+        modelAnswer: '**Recommendation: Option 1 (Content Performance Diagnostic) as v1**\n\n**Reasoning:**\nIt builds trust before making recommendations. Creators need to believe the data before they act on it. Option 2 (Growth Roadmap) is more powerful but requires credibility first — if creators don\'t trust the performance data, they won\'t trust the recommendations. Option 1 earns the trust; Option 2 spends it.\n\n**V1 scope:**\n- Weekly "Creator Insights Card" for accounts with ≥5 posts in the last 30 days\n- Shows: top 3 posts by reach, top 3 by engagement rate, and a simple comparison ("Your Reels got 2x more reach than your photos this month")\n- Framing is encouraging, not prescriptive: "Here\'s what\'s resonating" not "here\'s what you\'re doing wrong"\n- No recommendations in v1 — pure signal, not prescription\n\n**Measurement:**\n- Primary: 90-day posting continuation rate for creators who engage with the card vs. matched non-engaging cohort\n- Secondary: self-reported "do you feel you understand what\'s working?" (monthly pulse survey)\n- Lag warning: follower growth changes will take 60+ days to appear — don\'t measure this in the first sprint readout\n\n**Trust framing:**\nThe copy matters enormously here. "Your top-performing posts" feels celebratory. "Your underperforming posts" would feel like criticism. Every element of v1 should read as a coach pointing to strengths, not a system diagnosing failures.\n\n**V2:** Layer in Option 2 (Growth Roadmap) — once creators have been using the diagnostic for 4+ weeks and trust the data, introduce 1–2 specific actionable suggestions per week, individually calibrated, with realistic expectations set upfront.',
       },
     ],
   },
@@ -1216,11 +691,7 @@ The copy matters enormously here. "Your top-performing posts" feels celebratory.
     category: 'B2B / Productivity',
     tags: ['enterprise', 'knowledge management', 'search', 'B2B'],
     isFree: false,
-    prompt: `You are a PM at Slack. Enterprise customers (500+ seat companies) increasingly use Slack as the primary repository of institutional knowledge — decisions, project context, and expertise all live in Slack messages and threads. However, research shows that 61% of knowledge workers report spending 30+ minutes per day searching for information they know exists in Slack but can't find.
-
-Current search returns message-level results but doesn't understand context, intent, or the difference between a decision and a casual comment. As a result, users often find many results but can't identify the authoritative answer.
-
-Design a feature that transforms Slack's search into a true knowledge management tool for enterprise teams.`,
+    prompt: 'You are a PM at Slack. Enterprise customers (500+ seat companies) increasingly use Slack as the primary repository of institutional knowledge — decisions, project context, and expertise all live in Slack messages and threads. However, research shows that 61% of knowledge workers report spending 30+ minutes per day searching for information they know exists in Slack but can\'t find.\n\nCurrent search returns message-level results but doesn\'t understand context, intent, or the difference between a decision and a casual comment. As a result, users often find many results but can\'t identify the authoritative answer.\n\nDesign a feature that transforms Slack\'s search into a true knowledge management tool for enterprise teams.',
     phases: [
       {
         id: 'clarify',
@@ -1235,19 +706,7 @@ Design a feature that transforms Slack's search into a true knowledge management
           'Asks about user role differences (knowledge producers vs. knowledge consumers)',
           'Asks about the timeline and whether this is a single workspace improvement or a platform-level product shift',
         ],
-        modelAnswer: `Before designing, I'd clarify several dimensions:
-
-1. **What is the primary failure mode of current search?** Are users finding too many irrelevant results, finding results but unable to identify the authoritative one, or failing to find anything at all? Each maps to a different solution: relevance tuning, result ranking/context, or index coverage.
-
-2. **Is this reactive search or proactive knowledge surfacing?** "I need to find X" (reactive) is a different UX than "here's relevant context you should know" (proactive). Proactive surfacing requires understanding work context, which is a heavier product bet.
-
-3. **What's the enterprise admin angle?** Large enterprises often have compliance constraints — certain conversations should or shouldn't be searchable across the org. Is admin-controlled knowledge governance in scope?
-
-4. **Are other tools in scope?** Slack often co-exists with Confluence, Notion, and Google Drive. Does a real solution need to search across all of these, or just Slack-native content?
-
-5. **Who are the primary users?** Individual contributors looking for past decisions vs. managers trying to onboard new hires vs. compliance officers archiving decisions — each has a different primary need.
-
-6. **Timeline?** A quick win might be better search ranking; a platform-level play might be a dedicated "knowledge base" layer on top of Slack. These have very different build timelines.`,
+        modelAnswer: 'Before designing, I\'d clarify several dimensions:\n\n1. **What is the primary failure mode of current search?** Are users finding too many irrelevant results, finding results but unable to identify the authoritative one, or failing to find anything at all? Each maps to a different solution: relevance tuning, result ranking/context, or index coverage.\n\n2. **Is this reactive search or proactive knowledge surfacing?** "I need to find X" (reactive) is a different UX than "here\'s relevant context you should know" (proactive). Proactive surfacing requires understanding work context, which is a heavier product bet.\n\n3. **What\'s the enterprise admin angle?** Large enterprises often have compliance constraints — certain conversations should or shouldn\'t be searchable across the org. Is admin-controlled knowledge governance in scope?\n\n4. **Are other tools in scope?** Slack often co-exists with Confluence, Notion, and Google Drive. Does a real solution need to search across all of these, or just Slack-native content?\n\n5. **Who are the primary users?** Individual contributors looking for past decisions vs. managers trying to onboard new hires vs. compliance officers archiving decisions — each has a different primary need.\n\n6. **Timeline?** A quick win might be better search ranking; a platform-level play might be a dedicated "knowledge base" layer on top of Slack. These have very different build timelines.',
       },
       {
         id: 'users',
@@ -1261,19 +720,7 @@ Design a feature that transforms Slack's search into a true knowledge management
           'Makes a clear prioritization recommendation tied to business impact and segment size',
           'Considers the cost of poor knowledge findability per segment (wasted time, bad decisions, rework)',
         ],
-        modelAnswer: `Three primary segments with distinct knowledge needs:
-
-**1. New hires and onboarding employees**
-They need to rapidly absorb context that exists in historical Slack conversations — why a decision was made, what was tried before, who the go-to people are. Poor search means slower ramp time, repeated questions, and frustration. High volume of need, concentrated in the first 90 days.
-
-**2. Cross-functional contributors working across teams**
-Engineers who need to understand product decisions, designers who need engineering constraints, marketers who need context from sales. They search frequently for decisions and rationale from channels they're not in. This is arguably the highest-frequency use case and the most common source of "30 minutes looking for something."
-
-**3. Team leads and managers compiling context**
-Writing quarterly reviews, project retrospectives, or briefing executives. They need to surface past decisions, outcomes, and commitments quickly. Infrequent but high-stakes searches; failed searches here have outsized cost.
-
-**Focus: Segment 2 (cross-functional contributors)**
-Largest active user population, highest search frequency, and clearest pain. Solving for them also benefits segments 1 and 3. Their searches are primarily about decisions, commitments, and project context — structured enough to build useful features around.`,
+        modelAnswer: 'Three primary segments with distinct knowledge needs:\n\n**1. New hires and onboarding employees**\nThey need to rapidly absorb context that exists in historical Slack conversations — why a decision was made, what was tried before, who the go-to people are. Poor search means slower ramp time, repeated questions, and frustration. High volume of need, concentrated in the first 90 days.\n\n**2. Cross-functional contributors working across teams**\nEngineers who need to understand product decisions, designers who need engineering constraints, marketers who need context from sales. They search frequently for decisions and rationale from channels they\'re not in. This is arguably the highest-frequency use case and the most common source of "30 minutes looking for something."\n\n**3. Team leads and managers compiling context**\nWriting quarterly reviews, project retrospectives, or briefing executives. They need to surface past decisions, outcomes, and commitments quickly. Infrequent but high-stakes searches; failed searches here have outsized cost.\n\n**Focus: Segment 2 (cross-functional contributors)**\nLargest active user population, highest search frequency, and clearest pain. Solving for them also benefits segments 1 and 3. Their searches are primarily about decisions, commitments, and project context — structured enough to build useful features around.',
       },
       {
         id: 'goals',
@@ -1288,22 +735,7 @@ Largest active user population, highest search frequency, and clearest pain. Sol
           'Considers enterprise account retention as the strategic business metric',
           'Avoids activity metrics (searches/day) as the primary measure',
         ],
-        modelAnswer: `**North star: Search session success rate — % of search sessions where the user takes a meaningful action within 2 minutes (copy, share, react, reply to a result)**
-
-This captures whether users find what they need, not just whether they search. A user who searches, gets 47 results, and closes the panel has not been served. A user who searches and shares or replies to a result has found something useful.
-
-**Diagnostic metrics:**
-- Median time from search query to first result interaction (lower is better — currently high due to poor relevance)
-- Search result click-through rate by result position (are the top results actually the best ones?)
-- Zero-result searches: % of queries that return no relevant results
-- Repeated search rate: % of users who search the same query >2 times in a week (proxy for failed search)
-
-**Guardrail metrics:**
-- False authority rate: % of surfaced "authoritative" answers that are flagged by users as outdated or incorrect (requires a thumbs-down signal on results)
-- Admin policy compliance: search results must respect channel membership and permission settings (critical for enterprise trust)
-- Knowledge producer engagement: users who create authoritative content must not be discouraged from creating (watch for any signs the system is being gamed)
-
-**Strategic outcome metric:** Enterprise account 12-month retention rate, measured for accounts with high adoption of the new search feature vs. matched control accounts. This is the ultimate business case — Slack becomes harder to replace if institutional knowledge lives and surfaces well within it.`,
+        modelAnswer: '**North star: Search session success rate — % of search sessions where the user takes a meaningful action within 2 minutes (copy, share, react, reply to a result)**\n\nThis captures whether users find what they need, not just whether they search. A user who searches, gets 47 results, and closes the panel has not been served. A user who searches and shares or replies to a result has found something useful.\n\n**Diagnostic metrics:**\n- Median time from search query to first result interaction (lower is better — currently high due to poor relevance)\n- Search result click-through rate by result position (are the top results actually the best ones?)\n- Zero-result searches: % of queries that return no relevant results\n- Repeated search rate: % of users who search the same query >2 times in a week (proxy for failed search)\n\n**Guardrail metrics:**\n- False authority rate: % of surfaced "authoritative" answers that are flagged by users as outdated or incorrect (requires a thumbs-down signal on results)\n- Admin policy compliance: search results must respect channel membership and permission settings (critical for enterprise trust)\n- Knowledge producer engagement: users who create authoritative content must not be discouraged from creating (watch for any signs the system is being gamed)\n\n**Strategic outcome metric:** Enterprise account 12-month retention rate, measured for accounts with high adoption of the new search feature vs. matched control accounts. This is the ultimate business case — Slack becomes harder to replace if institutional knowledge lives and surfaces well within it.',
       },
       {
         id: 'solutions',
@@ -1317,17 +749,7 @@ This captures whether users find what they need, not just whether they search. A
           'At least one solution creates a structural layer for knowledge capture at creation time',
           'Each solution identifies its key enterprise-specific assumption or risk',
         ],
-        modelAnswer: `**Option 1: Contextual Search Ranking Upgrade (Medium effort, high leverage)**
-Re-rank search results using signals beyond recency: message reactions (high-reaction messages are more likely to be authoritative), thread depth (replied-to messages have more signal), bookmarks by other users, and the original poster's expertise signal (senior engineers' technical posts ranked higher for technical queries). No new UI, significant relevance improvement. Risk: engagement signals can be gamed; a popular but wrong answer still gets surfaced highly.
-
-**Option 2: Decision/Commitment Tagging with Slash Command (Low effort, human-in-the-loop)**
-Introduce /decision, /action-item, and /context commands that tag a message as a structured knowledge artifact. Tagged messages are indexed in a separate "Knowledge" search lane. This creates a lightweight human-curated knowledge layer within normal conversation. Risk: requires behavior change from message senders; adoption may be low without org-level encouragement. Works best when managers model the behavior.
-
-**Option 3: AI-Powered Answer Synthesis (High effort, strategic)**
-For queries that look like knowledge questions ("What did we decide about X?", "What's our policy on Y?"), Slack synthesizes an answer from the top-ranked messages, cites the source threads, and shows a confidence signal. User sees: a 2-sentence answer + "from these 3 threads" with links. This is the Slack equivalent of a knowledge base auto-response. Risk: synthesis errors presented with false confidence are damaging in an enterprise context; requires robust citation and an easy "this is wrong" feedback loop.
-
-**Option 4: Evergreen Message Pinning + Knowledge Channels (Low effort)**
-Redesign "Pinned messages" into a persistent, searchable "Channel Knowledge" panel. Each channel can have up to 20 pinned knowledge items, tagged by topic, with an owner and a "last verified" date. Admin can configure which channels are "knowledge channels" and search surfaces them with priority. This is lightweight, requires no ML, and creates a culture of knowledge curation without forcing a behavior change on every message sender. Risk: maintenance burden — knowledge items go stale if owners don't maintain them.`,
+        modelAnswer: '**Option 1: Contextual Search Ranking Upgrade (Medium effort, high leverage)**\nRe-rank search results using signals beyond recency: message reactions (high-reaction messages are more likely to be authoritative), thread depth (replied-to messages have more signal), bookmarks by other users, and the original poster\'s expertise signal (senior engineers\' technical posts ranked higher for technical queries). No new UI, significant relevance improvement. Risk: engagement signals can be gamed; a popular but wrong answer still gets surfaced highly.\n\n**Option 2: Decision/Commitment Tagging with Slash Command (Low effort, human-in-the-loop)**\nIntroduce /decision, /action-item, and /context commands that tag a message as a structured knowledge artifact. Tagged messages are indexed in a separate "Knowledge" search lane. This creates a lightweight human-curated knowledge layer within normal conversation. Risk: requires behavior change from message senders; adoption may be low without org-level encouragement. Works best when managers model the behavior.\n\n**Option 3: AI-Powered Answer Synthesis (High effort, strategic)**\nFor queries that look like knowledge questions ("What did we decide about X?", "What\'s our policy on Y?"), Slack synthesizes an answer from the top-ranked messages, cites the source threads, and shows a confidence signal. User sees: a 2-sentence answer + "from these 3 threads" with links. This is the Slack equivalent of a knowledge base auto-response. Risk: synthesis errors presented with false confidence are damaging in an enterprise context; requires robust citation and an easy "this is wrong" feedback loop.\n\n**Option 4: Evergreen Message Pinning + Knowledge Channels (Low effort)**\nRedesign "Pinned messages" into a persistent, searchable "Channel Knowledge" panel. Each channel can have up to 20 pinned knowledge items, tagged by topic, with an owner and a "last verified" date. Admin can configure which channels are "knowledge channels" and search surfaces them with priority. This is lightweight, requires no ML, and creates a culture of knowledge curation without forcing a behavior change on every message sender. Risk: maintenance burden — knowledge items go stale if owners don\'t maintain them.',
       },
       {
         id: 'prioritize',
@@ -1342,29 +764,7 @@ Redesign "Pinned messages" into a persistent, searchable "Channel Knowledge" pan
           'V1 scope is achievable and clearly bounded',
           'Honest about what v1 does NOT solve and what the v2 investments look like',
         ],
-        modelAnswer: `**Recommendation: Option 2 (/decision tagging) + Option 4 (Knowledge Channels) as the v1 package**
-
-**Reasoning:**
-Both are low-risk, immediately useful, and create a foundation for Option 3 (AI synthesis) by generating a labeled training set of high-quality knowledge artifacts. Option 3 without Options 2 and 4 would have to infer what's authoritative from noisy signals. Starting with human curation is the right epistemological foundation for an enterprise product — enterprise customers trust structured human judgment over opaque AI more readily than consumer products.
-
-**V1 scope:**
-- /decision and /action-item slash commands that tag messages, with a dedicated "Decisions" search filter lane
-- Redesigned "Pins" into "Channel Knowledge" with topic tags, owner field, and last-verified date
-- Admin panel: workspace admins can designate "Knowledge Channels" that are prioritized in search
-- No AI synthesis in v1 — search results show tagged artifacts prominently with clear attribution
-
-**Enterprise rollout strategy:**
-- Don't do a broad rollout first — identify 5–10 enterprise champion accounts (high-engagement, tech-forward) and do a private beta
-- Work with their IT/workspace admins to configure Knowledge Channels for their most important team channels
-- Provide a "Slack Knowledge Adoption" guide for admins to share with team leads
-- Measure champion account engagement before scaling
-
-**Measurement:**
-- Cohort analysis: enterprise accounts with high /decision and Knowledge Channel adoption vs. matched accounts without it
-- Primary metric: search session success rate (defined in goals phase) for power-user cohorts
-- Leading indicator in first 30 days: /decision command usage per active workspace (adoption rate)
-
-**V2:** Once we have 6 months of tagged decisions as training data, layer in Option 3 (AI synthesis) starting with high-confidence, frequently-cited knowledge artifacts. This earns user trust incrementally rather than all at once.`,
+        modelAnswer: '**Recommendation: Option 2 (/decision tagging) + Option 4 (Knowledge Channels) as the v1 package**\n\n**Reasoning:**\nBoth are low-risk, immediately useful, and create a foundation for Option 3 (AI synthesis) by generating a labeled training set of high-quality knowledge artifacts. Option 3 without Options 2 and 4 would have to infer what\'s authoritative from noisy signals. Starting with human curation is the right epistemological foundation for an enterprise product — enterprise customers trust structured human judgment over opaque AI more readily than consumer products.\n\n**V1 scope:**\n- /decision and /action-item slash commands that tag messages, with a dedicated "Decisions" search filter lane\n- Redesigned "Pins" into "Channel Knowledge" with topic tags, owner field, and last-verified date\n- Admin panel: workspace admins can designate "Knowledge Channels" that are prioritized in search\n- No AI synthesis in v1 — search results show tagged artifacts prominently with clear attribution\n\n**Enterprise rollout strategy:**\n- Don\'t do a broad rollout first — identify 5–10 enterprise champion accounts (high-engagement, tech-forward) and do a private beta\n- Work with their IT/workspace admins to configure Knowledge Channels for their most important team channels\n- Provide a "Slack Knowledge Adoption" guide for admins to share with team leads\n- Measure champion account engagement before scaling\n\n**Measurement:**\n- Cohort analysis: enterprise accounts with high /decision and Knowledge Channel adoption vs. matched accounts without it\n- Primary metric: search session success rate (defined in goals phase) for power-user cohorts\n- Leading indicator in first 30 days: /decision command usage per active workspace (adoption rate)\n\n**V2:** Once we have 6 months of tagged decisions as training data, layer in Option 3 (AI synthesis) starting with high-confidence, frequently-cited knowledge artifacts. This earns user trust incrementally rather than all at once.',
       },
     ],
   },
@@ -1381,11 +781,7 @@ Both are low-risk, immediately useful, and create a foundation for Option 3 (AI 
     category: 'Marketplace',
     tags: ['two-sided marketplace', 'retention', 'supply-side', 'rewards'],
     isFree: false,
-    prompt: `You are a PM at Airbnb. Superhosts — hosts who meet Airbnb's criteria for response rate, rating quality, and booking volume — represent only 20% of hosts but drive 55% of total booking revenue. Superhost churn is critically expensive: when a Superhost deactivates their listing, Airbnb loses not just the revenue but also the quality signal that made guests trust the platform.
-
-Currently, Superhost status comes with a badge, a 20% coupon on the annual service fee, and a priority support line. Research shows that Superhosts feel underappreciated and that the current benefits feel "transactional" — they want recognition that reflects their contribution to the Airbnb community, not just discounts.
-
-Design a Superhost recognition and rewards program that meaningfully improves Superhost retention and satisfaction.`,
+    prompt: 'You are a PM at Airbnb. Superhosts — hosts who meet Airbnb\'s criteria for response rate, rating quality, and booking volume — represent only 20% of hosts but drive 55% of total booking revenue. Superhost churn is critically expensive: when a Superhost deactivates their listing, Airbnb loses not just the revenue but also the quality signal that made guests trust the platform.\n\nCurrently, Superhost status comes with a badge, a 20% coupon on the annual service fee, and a priority support line. Research shows that Superhosts feel underappreciated and that the current benefits feel "transactional" — they want recognition that reflects their contribution to the Airbnb community, not just discounts.\n\nDesign a Superhost recognition and rewards program that meaningfully improves Superhost retention and satisfaction.',
     phases: [
       {
         id: 'clarify',
@@ -1400,19 +796,7 @@ Design a Superhost recognition and rewards program that meaningfully improves Su
           'Asks about the guest impact — do guests actually care about Superhost status?',
           'Asks about Superhost distribution — are there tiers within Superhost (casual vs. professional property managers)?',
         ],
-        modelAnswer: `Key clarifying questions:
-
-1. **What does "underappreciated" actually mean to Superhosts in qualitative research?** Financial value, community standing, creative control, or feeling like Airbnb doesn't listen to them? The answer shapes whether we solve for monetary rewards, community recognition, or platform power.
-
-2. **Why are Superhosts churning?** Are they leaving Airbnb entirely (going to VRBO, direct booking), reducing listing frequency, or going inactive due to burnout? The churn driver changes what retention lever to pull.
-
-3. **What's the current Superhost program cost?** The 20% service fee coupon represents real revenue. How much is Airbnb prepared to invest in the new program, and what's the ROI threshold (Superhost LTV × acceptable retention improvement)?
-
-4. **Do guests differentiate Superhosts?** Do bookings actually convert at higher rates from Superhost listings? If the Superhost badge drives meaningful demand, that's a retention lever: showing Superhosts how much incremental revenue the badge generates for them.
-
-5. **Are there tiers within Superhost?** A host with 10 listings in Paris is different from a host with one room in Austin. Do rewards need to scale with contribution, or is a flat Superhost program acceptable?
-
-6. **What has been tried and failed?** Before designing, I'd want to know if previous reward experiments existed and what we learned.`,
+        modelAnswer: 'Key clarifying questions:\n\n1. **What does "underappreciated" actually mean to Superhosts in qualitative research?** Financial value, community standing, creative control, or feeling like Airbnb doesn\'t listen to them? The answer shapes whether we solve for monetary rewards, community recognition, or platform power.\n\n2. **Why are Superhosts churning?** Are they leaving Airbnb entirely (going to VRBO, direct booking), reducing listing frequency, or going inactive due to burnout? The churn driver changes what retention lever to pull.\n\n3. **What\'s the current Superhost program cost?** The 20% service fee coupon represents real revenue. How much is Airbnb prepared to invest in the new program, and what\'s the ROI threshold (Superhost LTV × acceptable retention improvement)?\n\n4. **Do guests differentiate Superhosts?** Do bookings actually convert at higher rates from Superhost listings? If the Superhost badge drives meaningful demand, that\'s a retention lever: showing Superhosts how much incremental revenue the badge generates for them.\n\n5. **Are there tiers within Superhost?** A host with 10 listings in Paris is different from a host with one room in Austin. Do rewards need to scale with contribution, or is a flat Superhost program acceptable?\n\n6. **What has been tried and failed?** Before designing, I\'d want to know if previous reward experiments existed and what we learned.',
       },
       {
         id: 'users',
@@ -1426,17 +810,7 @@ Design a Superhost recognition and rewards program that meaningfully improves Su
           'Makes a prioritization recommendation with clear reasoning',
           'Considers the guest impact of losing each segment',
         ],
-        modelAnswer: `**Segment 1: Passionate home-sharers (1–2 listings, high personal investment)**
-Host because they love meeting travelers and take pride in the guest experience. They're not primarily financially motivated — they want to feel valued and part of a community. Most likely to feel underappreciated when Airbnb seems impersonal or corporate. Their churn is often burnout-related: one bad guest experience + feeling unsupported = deactivation.
-
-**Segment 2: Part-time investment property hosts (2–5 listings, financially motivated)**
-Hosting is supplemental income. They stay because the ROI is good. Their retention is driven primarily by platform economics — fee levels, demand volume, and competitive platforms. Less emotionally invested in "community recognition" and more in tangible financial benefits and reduced friction.
-
-**Segment 3: Professional property managers (5+ listings, volume operators)**
-Treat Airbnb as a channel in a multi-platform strategy. May already list on VRBO and Booking.com. Less loyal to Airbnb specifically — they go where the bookings are. Their retention is about platform economics and management tools, not recognition.
-
-**Focus: Segment 1 (passionate home-sharers)**
-They have the highest identity investment in Superhost status, are most responsive to community/recognition-based rewards, and represent the quality signal guests trust most. Their churn is the most preventable — it's often triggered by feeling unseen rather than economics. Segment 2's retention is better addressed through pricing tools; Segment 3 through B2B partnership programs.`,
+        modelAnswer: '**Segment 1: Passionate home-sharers (1–2 listings, high personal investment)**\nHost because they love meeting travelers and take pride in the guest experience. They\'re not primarily financially motivated — they want to feel valued and part of a community. Most likely to feel underappreciated when Airbnb seems impersonal or corporate. Their churn is often burnout-related: one bad guest experience + feeling unsupported = deactivation.\n\n**Segment 2: Part-time investment property hosts (2–5 listings, financially motivated)**\nHosting is supplemental income. They stay because the ROI is good. Their retention is driven primarily by platform economics — fee levels, demand volume, and competitive platforms. Less emotionally invested in "community recognition" and more in tangible financial benefits and reduced friction.\n\n**Segment 3: Professional property managers (5+ listings, volume operators)**\nTreat Airbnb as a channel in a multi-platform strategy. May already list on VRBO and Booking.com. Less loyal to Airbnb specifically — they go where the bookings are. Their retention is about platform economics and management tools, not recognition.\n\n**Focus: Segment 1 (passionate home-sharers)**\nThey have the highest identity investment in Superhost status, are most responsive to community/recognition-based rewards, and represent the quality signal guests trust most. Their churn is the most preventable — it\'s often triggered by feeling unseen rather than economics. Segment 2\'s retention is better addressed through pricing tools; Segment 3 through B2B partnership programs.',
       },
       {
         id: 'goals',
@@ -1450,23 +824,7 @@ They have the highest identity investment in Superhost status, are most responsi
           'Considers program cost as a constraint metric',
           'Distinguishes between retention and reactivation as separate goals',
         ],
-        modelAnswer: `**Primary metric: 12-month Superhost retention rate (% of Superhosts who maintain active listings and Superhost status year-over-year)**
-
-Current baseline and target improvement to be established, but this directly measures the business outcome. A Superhost who renews their listing and maintains standards is the success state.
-
-**Leading indicators (diagnostic metrics):**
-- Superhost NPS (quarterly) — leading indicator of retention risk. Superhosts with NPS < 6 are high churn risk.
-- Program benefit redemption rate: % of Superhosts who engage with new program benefits within 30 days of eligibility
-- Support contact rate: Superhosts reaching out to support are often experiencing friction that precedes churn
-
-**Downstream impact metrics:**
-- Booking revenue from Superhost listings (platform-level, to validate the investment is ROI-positive)
-- Guest satisfaction scores on Superhost listings vs. non-Superhost listings (ensures we're retaining quality, not just volume)
-
-**Guardrail metrics:**
-- Program cost per retained Superhost must not exceed a defined LTV-based threshold
-- Superhost standards must not dilute — new program must not create perverse incentives where hosts game metrics at the expense of guest quality
-- New host pipeline must not be affected — perceived exclusivity of Superhost must motivate aspiring hosts, not discourage new ones`,
+        modelAnswer: '**Primary metric: 12-month Superhost retention rate (% of Superhosts who maintain active listings and Superhost status year-over-year)**\n\nCurrent baseline and target improvement to be established, but this directly measures the business outcome. A Superhost who renews their listing and maintains standards is the success state.\n\n**Leading indicators (diagnostic metrics):**\n- Superhost NPS (quarterly) — leading indicator of retention risk. Superhosts with NPS < 6 are high churn risk.\n- Program benefit redemption rate: % of Superhosts who engage with new program benefits within 30 days of eligibility\n- Support contact rate: Superhosts reaching out to support are often experiencing friction that precedes churn\n\n**Downstream impact metrics:**\n- Booking revenue from Superhost listings (platform-level, to validate the investment is ROI-positive)\n- Guest satisfaction scores on Superhost listings vs. non-Superhost listings (ensures we\'re retaining quality, not just volume)\n\n**Guardrail metrics:**\n- Program cost per retained Superhost must not exceed a defined LTV-based threshold\n- Superhost standards must not dilute — new program must not create perverse incentives where hosts game metrics at the expense of guest quality\n- New host pipeline must not be affected — perceived exclusivity of Superhost must motivate aspiring hosts, not discourage new ones',
       },
       {
         id: 'solutions',
@@ -1480,17 +838,7 @@ Current baseline and target improvement to be established, but this directly mea
           'At least one solution gives Superhosts more platform power or influence',
           'Each solution identifies its key risk or assumption',
         ],
-        modelAnswer: `**Option 1: Superhost Tier System (Medium effort, status/recognition focus)**
-Create three Superhost tiers — Silver, Gold, and Elite — based on cumulative contribution: booking volume, years as Superhost, and guest review quality. Each tier unlocks escalating benefits: Silver gets the current badge; Gold gets priority placement in search results and a dedicated host success manager; Elite gets early access to new Airbnb features, an invitation to annual host summits, and public recognition on the platform as a "founding community member." Risk: tier fragmentation may feel divisive among Superhosts; the majority at Silver may feel the new tiers devalue their status.
-
-**Option 2: Superhost Community Platform (High effort, community/belonging focus)**
-Build a Superhost-only community space — either within Airbnb or as a companion platform — where Superhosts can share advice, vote on platform feedback, access exclusive hosting guides, and be featured in Airbnb's editorial content. The key psychological insight: passionate home-sharers don't want discounts, they want to feel like insiders who help shape the platform. Airbnb benefits from structured host feedback. Risk: building and moderating a community is expensive; low-quality community engagement is worse than no community.
-
-**Option 3: Revenue Transparency + Superhost ROI Dashboard (Low-medium effort, financial empowerment)**
-Show Superhosts exactly how much incremental revenue the Superhost badge has driven — estimated bookings that selected their listing over a non-Superhost listing. "Your Superhost status contributed an estimated $4,200 in bookings this year." This turns invisible financial value into a visible retention argument. Pair with a referral program where Superhosts who recruit new hosts get escalating benefits. Risk: revenue attribution estimates are inherently imprecise; a bad estimate damages trust more than no estimate.
-
-**Option 4: Superhost Autonomy Package (Low effort, immediate impact)**
-Give Superhosts meaningful product control: custom cancellation policies beyond the current presets, ability to offer longer-term stays with custom pricing structures, and priority for new Airbnb Experiences programs. The message: "Because you've proven you can be trusted, you get more control." Addresses the "I feel like Airbnb doesn't trust me" churn driver directly. Risk: expanded flexibility may create inconsistent guest experiences; requires guardrails on what autonomy expands are safe.`,
+        modelAnswer: '**Option 1: Superhost Tier System (Medium effort, status/recognition focus)**\nCreate three Superhost tiers — Silver, Gold, and Elite — based on cumulative contribution: booking volume, years as Superhost, and guest review quality. Each tier unlocks escalating benefits: Silver gets the current badge; Gold gets priority placement in search results and a dedicated host success manager; Elite gets early access to new Airbnb features, an invitation to annual host summits, and public recognition on the platform as a "founding community member." Risk: tier fragmentation may feel divisive among Superhosts; the majority at Silver may feel the new tiers devalue their status.\n\n**Option 2: Superhost Community Platform (High effort, community/belonging focus)**\nBuild a Superhost-only community space — either within Airbnb or as a companion platform — where Superhosts can share advice, vote on platform feedback, access exclusive hosting guides, and be featured in Airbnb\'s editorial content. The key psychological insight: passionate home-sharers don\'t want discounts, they want to feel like insiders who help shape the platform. Airbnb benefits from structured host feedback. Risk: building and moderating a community is expensive; low-quality community engagement is worse than no community.\n\n**Option 3: Revenue Transparency + Superhost ROI Dashboard (Low-medium effort, financial empowerment)**\nShow Superhosts exactly how much incremental revenue the Superhost badge has driven — estimated bookings that selected their listing over a non-Superhost listing. "Your Superhost status contributed an estimated $4,200 in bookings this year." This turns invisible financial value into a visible retention argument. Pair with a referral program where Superhosts who recruit new hosts get escalating benefits. Risk: revenue attribution estimates are inherently imprecise; a bad estimate damages trust more than no estimate.\n\n**Option 4: Superhost Autonomy Package (Low effort, immediate impact)**\nGive Superhosts meaningful product control: custom cancellation policies beyond the current presets, ability to offer longer-term stays with custom pricing structures, and priority for new Airbnb Experiences programs. The message: "Because you\'ve proven you can be trusted, you get more control." Addresses the "I feel like Airbnb doesn\'t trust me" churn driver directly. Risk: expanded flexibility may create inconsistent guest experiences; requires guardrails on what autonomy expands are safe.',
       },
       {
         id: 'prioritize',
@@ -1504,25 +852,7 @@ Give Superhosts meaningful product control: custom cancellation policies beyond 
           'Names the key risk and how to monitor it in the first 90 days',
           'Describes how you\'d iterate on the program based on early data',
         ],
-        modelAnswer: `**Recommendation: Option 4 (Superhost Autonomy Package) as the immediate v1, with Option 1 (Tier System) as the 6-month investment**
-
-**Reasoning:**
-Option 4 addresses the most frequently cited retention driver — Superhosts feeling controlled and not trusted — and requires no new infrastructure. It can ship within one quarter. Option 3 (revenue transparency) is a great companion feature but requires careful attribution modeling before it's credible. Option 2 (community platform) is the right long-term vision but has a 12–18 month build horizon and operational risk.
-
-**V1 scope (Autonomy Package):**
-- Custom cancellation policy presets beyond Strict/Moderate/Flexible (e.g., a "Superhost Flexible" tier with more guest-friendly options Superhosts can configure)
-- Long-stay pricing controls: ability to set weekly/monthly discount curves with custom minimums
-- Early access beta program for new Airbnb features: Superhosts get 30-day early access and provide structured feedback
-
-**Causal impact measurement:**
-Traditional A/B test doesn't work (can't randomly assign Superhost status). Instead: difference-in-differences using the program launch date — compare 12-month retention of Superhosts before vs. after the program launch, controlling for macro market conditions using non-Superhost hosts as the control group. Supplement with a voluntary "did this benefit influence your decision to continue hosting?" exit survey for Superhosts who churn.
-
-**90-day early signals:**
-- Autonomy feature adoption rate (are Superhosts using the new controls?)
-- NPS delta vs. baseline (is sentiment improving?)
-- Churn rate vs. same cohort prior year (early retention signal)
-
-**V2 (6 months):** Launch the Tier System with Silver/Gold/Elite to create ongoing achievement motivation and a long-term loyalty arc for the program.`,
+        modelAnswer: '**Recommendation: Option 4 (Superhost Autonomy Package) as the immediate v1, with Option 1 (Tier System) as the 6-month investment**\n\n**Reasoning:**\nOption 4 addresses the most frequently cited retention driver — Superhosts feeling controlled and not trusted — and requires no new infrastructure. It can ship within one quarter. Option 3 (revenue transparency) is a great companion feature but requires careful attribution modeling before it\'s credible. Option 2 (community platform) is the right long-term vision but has a 12–18 month build horizon and operational risk.\n\n**V1 scope (Autonomy Package):**\n- Custom cancellation policy presets beyond Strict/Moderate/Flexible (e.g., a "Superhost Flexible" tier with more guest-friendly options Superhosts can configure)\n- Long-stay pricing controls: ability to set weekly/monthly discount curves with custom minimums\n- Early access beta program for new Airbnb features: Superhosts get 30-day early access and provide structured feedback\n\n**Causal impact measurement:**\nTraditional A/B test doesn\'t work (can\'t randomly assign Superhost status). Instead: difference-in-differences using the program launch date — compare 12-month retention of Superhosts before vs. after the program launch, controlling for macro market conditions using non-Superhost hosts as the control group. Supplement with a voluntary "did this benefit influence your decision to continue hosting?" exit survey for Superhosts who churn.\n\n**90-day early signals:**\n- Autonomy feature adoption rate (are Superhosts using the new controls?)\n- NPS delta vs. baseline (is sentiment improving?)\n- Churn rate vs. same cohort prior year (early retention signal)\n\n**V2 (6 months):** Launch the Tier System with Silver/Gold/Elite to create ongoing achievement motivation and a long-term loyalty arc for the program.',
       },
     ],
   },
@@ -1539,11 +869,7 @@ Traditional A/B test doesn't work (can't randomly assign Superhost status). Inst
     category: 'Creator Economy',
     tags: ['monetization', 'creator economy', 'consumer', 'revenue'],
     isFree: false,
-    prompt: `You are a PM at YouTube. The YouTube Partner Program (YPP) requires creators to reach 1,000 subscribers and 4,000 watch hours before earning any ad revenue. This threshold means the majority of creators — those with under 100K subscribers — earn little to no income from their content.
-
-Research shows that creators who cross the YPP threshold retain at high rates, but creators who are "stuck" under the threshold and can't monetize churn significantly. TikTok's Creator Fund and Patreon have attracted creators who feel YouTube doesn't support early-stage creators financially.
-
-Design a monetization strategy for small and mid-tier creators (under 100K subscribers) that meaningfully improves creator retention and income without cannibalizing YouTube's core ad revenue model.`,
+    prompt: 'You are a PM at YouTube. The YouTube Partner Program (YPP) requires creators to reach 1,000 subscribers and 4,000 watch hours before earning any ad revenue. This threshold means the majority of creators — those with under 100K subscribers — earn little to no income from their content.\n\nResearch shows that creators who cross the YPP threshold retain at high rates, but creators who are "stuck" under the threshold and can\'t monetize churn significantly. TikTok\'s Creator Fund and Patreon have attracted creators who feel YouTube doesn\'t support early-stage creators financially.\n\nDesign a monetization strategy for small and mid-tier creators (under 100K subscribers) that meaningfully improves creator retention and income without cannibalizing YouTube\'s core ad revenue model.',
     phases: [
       {
         id: 'clarify',
@@ -1558,19 +884,7 @@ Design a monetization strategy for small and mid-tier creators (under 100K subsc
           'Asks about YouTube\'s revenue model — what % of ad revenue goes to creators vs. YouTube?',
           'Asks about the definition of "mid-tier" — is 10K–100K a single segment or multiple?',
         ],
-        modelAnswer: `Before designing, I'd clarify:
-
-1. **What type of monetization are we targeting?** Ad revenue sharing, fan-funded mechanisms (memberships, Super Thanks), merchandise integration, or a new fund model like TikTok's Creator Fund? Each has very different implications for YouTube's P&L.
-
-2. **Why does the YPP threshold exist where it does?** Is it a brand safety threshold (unproven creators may produce unsafe content), an advertiser demand threshold (advertisers won't pay for small channels), or a fraud prevention measure? Understanding the constraint helps identify what can flex.
-
-3. **What does TikTok's Creator Fund actually look like in practice?** The fund is often criticized for paying fractions of a cent per view and declining payout over time. Is the competitive threat real, or is creator sentiment driving the comparison?
-
-4. **What's YouTube's current rev share structure?** YPP pays creators 55% of ad revenue on their content. Lowering the threshold means lower CPM channels get the same rate — does this change advertiser appeal?
-
-5. **What does "mid-tier" mean in practice?** A channel with 10K highly engaged subscribers in a niche monetizable topic (finance, tech) may be more valuable than 90K subscribers in a low-CPM topic (entertainment). Blanket thresholds miss this nuance.
-
-6. **What's our creator churn definition?** Stopping uploads for 90 days? Deleting the channel? Migrating to TikTok/Instagram? The severity and reversibility of churn matters for solution design.`,
+        modelAnswer: 'Before designing, I\'d clarify:\n\n1. **What type of monetization are we targeting?** Ad revenue sharing, fan-funded mechanisms (memberships, Super Thanks), merchandise integration, or a new fund model like TikTok\'s Creator Fund? Each has very different implications for YouTube\'s P&L.\n\n2. **Why does the YPP threshold exist where it does?** Is it a brand safety threshold (unproven creators may produce unsafe content), an advertiser demand threshold (advertisers won\'t pay for small channels), or a fraud prevention measure? Understanding the constraint helps identify what can flex.\n\n3. **What does TikTok\'s Creator Fund actually look like in practice?** The fund is often criticized for paying fractions of a cent per view and declining payout over time. Is the competitive threat real, or is creator sentiment driving the comparison?\n\n4. **What\'s YouTube\'s current rev share structure?** YPP pays creators 55% of ad revenue on their content. Lowering the threshold means lower CPM channels get the same rate — does this change advertiser appeal?\n\n5. **What does "mid-tier" mean in practice?** A channel with 10K highly engaged subscribers in a niche monetizable topic (finance, tech) may be more valuable than 90K subscribers in a low-CPM topic (entertainment). Blanket thresholds miss this nuance.\n\n6. **What\'s our creator churn definition?** Stopping uploads for 90 days? Deleting the channel? Migrating to TikTok/Instagram? The severity and reversibility of churn matters for solution design.',
       },
       {
         id: 'users',
@@ -1584,17 +898,7 @@ Design a monetization strategy for small and mid-tier creators (under 100K subsc
           'Identifies the segment with the most monetization potential (i.e., where YouTube investment has the highest ROI)',
           'Makes a clear prioritization recommendation',
         ],
-        modelAnswer: `**Segment 1: Sub-1K creators (pre-threshold)**
-Numerous but high-churn, low monetization potential. Many are hobbyists who won't monetize regardless. The ones who will go professional need growth support more than monetization tools. Not the primary focus for monetization design — growth tools matter more here.
-
-**Segment 2: 1K–10K creators ("the long middle")**
-Have crossed or are near the YPP threshold. If they've qualified for YPP, their ad earnings are negligible (often $5–$50/month). High frustration: they've done the work to qualify but can't generate meaningful income. High churn risk — this is the cohort most likely to migrate to TikTok or stop creating. Large in volume; collectively represents significant future YPP revenue if retained.
-
-**Segment 3: 10K–100K creators (emerging mid-tier)**
-Have real audiences but haven't hit critical mass for advertiser interest. Many are full-time or semi-full-time creators. They have established engagement and are more sophisticated about monetization — they may be using Patreon or merchandise. They churn less to TikTok and more to burnout or feeling unsupported by the platform.
-
-**Focus: Segment 2 (1K–10K creators)**
-This is the leaky funnel. If a creator makes it to 10K and gets monetized, they're likely to stay and grow to 100K. If they earn nothing meaningful between 1K and 10K, they stop. Fixing monetization in this window has the highest retention ROI and the largest volume of at-risk creators.`,
+        modelAnswer: '**Segment 1: Sub-1K creators (pre-threshold)**\nNumerous but high-churn, low monetization potential. Many are hobbyists who won\'t monetize regardless. The ones who will go professional need growth support more than monetization tools. Not the primary focus for monetization design — growth tools matter more here.\n\n**Segment 2: 1K–10K creators ("the long middle")**\nHave crossed or are near the YPP threshold. If they\'ve qualified for YPP, their ad earnings are negligible (often $5–$50/month). High frustration: they\'ve done the work to qualify but can\'t generate meaningful income. High churn risk — this is the cohort most likely to migrate to TikTok or stop creating. Large in volume; collectively represents significant future YPP revenue if retained.\n\n**Segment 3: 10K–100K creators (emerging mid-tier)**\nHave real audiences but haven\'t hit critical mass for advertiser interest. Many are full-time or semi-full-time creators. They have established engagement and are more sophisticated about monetization — they may be using Patreon or merchandise. They churn less to TikTok and more to burnout or feeling unsupported by the platform.\n\n**Focus: Segment 2 (1K–10K creators)**\nThis is the leaky funnel. If a creator makes it to 10K and gets monetized, they\'re likely to stay and grow to 100K. If they earn nothing meaningful between 1K and 10K, they stop. Fixing monetization in this window has the highest retention ROI and the largest volume of at-risk creators.',
       },
       {
         id: 'goals',
@@ -1608,21 +912,7 @@ This is the leaky funnel. If a creator makes it to 10K and gets monetized, they'
           'Guardrail also protects against fraud (fake views, channel inflation to hit thresholds)',
           'Considers YouTube\'s net revenue impact as a constraint',
         ],
-        modelAnswer: `**Primary metric: Median monthly creator earnings for the 1K–10K cohort**
-This directly measures whether the initiative achieves its goal. Baseline: currently near $0 for most in this range. Success: median creator in this cohort earning $50+/month from platform-native monetization within 12 months of feature launch.
-
-**Retention metric (12-month cohort):**
-% of creators in the 1K–10K range who upload at least 2 videos per month 12 months after the new monetization program launches vs. a pre-program baseline cohort. This is the retention goal.
-
-**Diagnostic metrics:**
-- Adoption rate of new monetization mechanisms by eligible creators
-- Viewer conversion rate for fan-funded features (memberships, Super Thanks) as a proportion of unique viewers
-- % of 1K–10K creators who graduate to 10K–100K within 18 months (graduation rate as a downstream outcome)
-
-**Guardrail metrics:**
-- CPM for ads on sub-10K channels (advertiser quality signal — must not decline materially if ads are expanded)
-- Brand safety incident rate on newly monetized channels (this was a concern with the original YPP threshold)
-- Fraud/gaming rate: % of new monetization participants flagged for artificial view inflation or subscriber fraud`,
+        modelAnswer: '**Primary metric: Median monthly creator earnings for the 1K–10K cohort**\nThis directly measures whether the initiative achieves its goal. Baseline: currently near $0 for most in this range. Success: median creator in this cohort earning $50+/month from platform-native monetization within 12 months of feature launch.\n\n**Retention metric (12-month cohort):**\n% of creators in the 1K–10K range who upload at least 2 videos per month 12 months after the new monetization program launches vs. a pre-program baseline cohort. This is the retention goal.\n\n**Diagnostic metrics:**\n- Adoption rate of new monetization mechanisms by eligible creators\n- Viewer conversion rate for fan-funded features (memberships, Super Thanks) as a proportion of unique viewers\n- % of 1K–10K creators who graduate to 10K–100K within 18 months (graduation rate as a downstream outcome)\n\n**Guardrail metrics:**\n- CPM for ads on sub-10K channels (advertiser quality signal — must not decline materially if ads are expanded)\n- Brand safety incident rate on newly monetized channels (this was a concern with the original YPP threshold)\n- Fraud/gaming rate: % of new monetization participants flagged for artificial view inflation or subscriber fraud',
       },
       {
         id: 'solutions',
@@ -1636,17 +926,7 @@ This directly measures whether the initiative achieves its goal. Baseline: curre
           'Solutions are specific about the revenue share model or cost structure',
           'Each solution identifies the risk to advertiser quality or brand safety',
         ],
-        modelAnswer: `**Option 1: Lower YPP Threshold with Tiered Ad Revenue (Medium effort)**
-Reduce the subscriber threshold for ad revenue eligibility to 500 subscribers and 2,000 watch hours, but with a tiered CPM rate — small channels receive a smaller percentage of ad revenue because they command lower advertiser CPMs anyway. This makes the program economically self-consistent while opening the funnel. Risk: brand safety — channels with 500 subscribers are less vetted; require stricter content guidelines with automated enforcement before enabling ads.
-
-**Option 2: Fan Membership Tiers for All Creators (Low-medium effort)**
-Currently, channel memberships require 1K subscribers. Lower the threshold to 100 subscribers and expand the membership tier options (current: up to 5 tiers at preset price points). Add a lightweight "Support Creator" button for viewers who don't want to commit to a recurring membership — a one-time payment similar to Super Thanks but more prominent. Revenue share: 70% to creator, 30% to YouTube. Risk: small-channel memberships may see low conversion; creators may feel they've built an infrastructure that earns them nothing.
-
-**Option 3: Creator Fund for Emerging Categories (Medium effort)**
-A YouTube-administered fund that pays eligible 1K–10K creators in underrepresented content categories based on watch time and engagement quality. Not a flat per-view payment (TikTok's problem), but a category-adjusted quality bonus. Creators in high-value categories (personal finance, education, health) earn more per qualified watch minute than in lower-value categories. Funded from YouTube's existing margins. Risk: fund size is finite and payout per creator may still feel trivial; category classification is subjective.
-
-**Option 4: Creator Commerce Integration (Medium-high effort)**
-Enable sub-10K creators to integrate product recommendations with affiliate revenue splits, or to sell digital goods (courses, presets, templates) directly through YouTube. YouTube takes 15% of digital goods sales. This allows creators who have real audiences but low ad CPMs to monetize through commerce rather than ads. Creator economics are decoupled from view count. Risk: product quality on small-channel commerce is harder to govern; fraud risk from fake products.`,
+        modelAnswer: '**Option 1: Lower YPP Threshold with Tiered Ad Revenue (Medium effort)**\nReduce the subscriber threshold for ad revenue eligibility to 500 subscribers and 2,000 watch hours, but with a tiered CPM rate — small channels receive a smaller percentage of ad revenue because they command lower advertiser CPMs anyway. This makes the program economically self-consistent while opening the funnel. Risk: brand safety — channels with 500 subscribers are less vetted; require stricter content guidelines with automated enforcement before enabling ads.\n\n**Option 2: Fan Membership Tiers for All Creators (Low-medium effort)**\nCurrently, channel memberships require 1K subscribers. Lower the threshold to 100 subscribers and expand the membership tier options (current: up to 5 tiers at preset price points). Add a lightweight "Support Creator" button for viewers who don\'t want to commit to a recurring membership — a one-time payment similar to Super Thanks but more prominent. Revenue share: 70% to creator, 30% to YouTube. Risk: small-channel memberships may see low conversion; creators may feel they\'ve built an infrastructure that earns them nothing.\n\n**Option 3: Creator Fund for Emerging Categories (Medium effort)**\nA YouTube-administered fund that pays eligible 1K–10K creators in underrepresented content categories based on watch time and engagement quality. Not a flat per-view payment (TikTok\'s problem), but a category-adjusted quality bonus. Creators in high-value categories (personal finance, education, health) earn more per qualified watch minute than in lower-value categories. Funded from YouTube\'s existing margins. Risk: fund size is finite and payout per creator may still feel trivial; category classification is subjective.\n\n**Option 4: Creator Commerce Integration (Medium-high effort)**\nEnable sub-10K creators to integrate product recommendations with affiliate revenue splits, or to sell digital goods (courses, presets, templates) directly through YouTube. YouTube takes 15% of digital goods sales. This allows creators who have real audiences but low ad CPMs to monetize through commerce rather than ads. Creator economics are decoupled from view count. Risk: product quality on small-channel commerce is harder to govern; fraud risk from fake products.',
       },
       {
         id: 'prioritize',
@@ -1660,28 +940,7 @@ Enable sub-10K creators to integrate product recommendations with affiliate reve
           'Measurement plan covers both creator earnings improvement and advertiser quality guardrails',
           'Honest about what the v1 does NOT solve (e.g., true competitor parity with TikTok Creator Fund)',
         ],
-        modelAnswer: `**Recommendation: Option 2 (Fan Membership expansion) + Option 4 (Creator Commerce) as v1**
-
-**Three-way tension resolution:**
-- Creators: fan-funded and commerce mechanisms give them real income that doesn't depend on ad CPM volume
-- Advertisers: this approach doesn't expand ad inventory to unvetted small channels — advertiser brand safety is completely preserved
-- YouTube: 30% of membership revenue and 15% of commerce revenue are incremental to the current model; no existing ad revenue is cannibalized
-
-This is the only combination that improves creator income without touching the ad system at all. Options 1 and 3 both require ad inventory or fund decisions that have longer approval cycles, advertiser sensitivity reviews, and P&L impact analysis.
-
-**V1 scope:**
-- Lower Fan Membership threshold from 1K subscribers to 250 subscribers
-- Add a "Support Creator" one-time donation button to all channels with 100+ subscribers (no threshold)
-- Enable digital goods sales (e-books, presets, templates only — no physical goods in v1) via YouTube Studio for all channels 500+ subscribers
-- 70/30 rev share on memberships, 85/15 on digital goods (matching industry standard)
-
-**Measurement:**
-- Primary: median monthly creator earnings for 500–10K subscriber cohort at 90 days
-- Secondary: 12-month active creator retention in the cohort vs. pre-program baseline
-- Guardrail: CPM and brand safety metrics on ad inventory are not affected (this is easy to verify since we're not touching ads)
-
-**What v1 does NOT solve:**
-TikTok's Creator Fund creates a perception of YouTube paying creators for views. This solution doesn't replicate that. It's a superior business model (fan-funded > fund-funded) but harder to market as a headline number. We'd need a communications strategy to reframe "YouTube pays creators" from "per-view" to "sustainable income."`,
+        modelAnswer: '**Recommendation: Option 2 (Fan Membership expansion) + Option 4 (Creator Commerce) as v1**\n\n**Three-way tension resolution:**\n- Creators: fan-funded and commerce mechanisms give them real income that doesn\'t depend on ad CPM volume\n- Advertisers: this approach doesn\'t expand ad inventory to unvetted small channels — advertiser brand safety is completely preserved\n- YouTube: 30% of membership revenue and 15% of commerce revenue are incremental to the current model; no existing ad revenue is cannibalized\n\nThis is the only combination that improves creator income without touching the ad system at all. Options 1 and 3 both require ad inventory or fund decisions that have longer approval cycles, advertiser sensitivity reviews, and P&L impact analysis.\n\n**V1 scope:**\n- Lower Fan Membership threshold from 1K subscribers to 250 subscribers\n- Add a "Support Creator" one-time donation button to all channels with 100+ subscribers (no threshold)\n- Enable digital goods sales (e-books, presets, templates only — no physical goods in v1) via YouTube Studio for all channels 500+ subscribers\n- 70/30 rev share on memberships, 85/15 on digital goods (matching industry standard)\n\n**Measurement:**\n- Primary: median monthly creator earnings for 500–10K subscriber cohort at 90 days\n- Secondary: 12-month active creator retention in the cohort vs. pre-program baseline\n- Guardrail: CPM and brand safety metrics on ad inventory are not affected (this is easy to verify since we\'re not touching ads)\n\n**What v1 does NOT solve:**\nTikTok\'s Creator Fund creates a perception of YouTube paying creators for views. This solution doesn\'t replicate that. It\'s a superior business model (fan-funded > fund-funded) but harder to market as a headline number. We\'d need a communications strategy to reframe "YouTube pays creators" from "per-view" to "sustainable income."',
       },
     ],
   },
@@ -1698,11 +957,7 @@ TikTok's Creator Fund creates a perception of YouTube paying creators for views.
     category: 'B2B Platform',
     tags: ['trust', 'credentialing', 'B2B', 'hiring'],
     isFree: false,
-    prompt: `You are a PM at LinkedIn. Currently, LinkedIn's Skills section is entirely self-reported — anyone can claim any skill, and there is no mechanism for verifying whether the skill is real. LinkedIn Skills Assessments (multiple-choice quizzes) exist but are rarely requested by recruiters and are seen by users as low-value.
-
-Recruiters report that 43% of applications they review have skill claims that appear inflated or unverifiable, which reduces trust in LinkedIn profile quality and leads recruiters to increasingly rely on referrals over platform-sourced applications.
-
-Design a credible skills verification feature that improves recruiter trust in skill claims without creating barriers that exclude legitimate candidates.`,
+    prompt: 'You are a PM at LinkedIn. Currently, LinkedIn\'s Skills section is entirely self-reported — anyone can claim any skill, and there is no mechanism for verifying whether the skill is real. LinkedIn Skills Assessments (multiple-choice quizzes) exist but are rarely requested by recruiters and are seen by users as low-value.\n\nRecruiters report that 43% of applications they review have skill claims that appear inflated or unverifiable, which reduces trust in LinkedIn profile quality and leads recruiters to increasingly rely on referrals over platform-sourced applications.\n\nDesign a credible skills verification feature that improves recruiter trust in skill claims without creating barriers that exclude legitimate candidates.',
     phases: [
       {
         id: 'clarify',
@@ -1717,17 +972,7 @@ Design a credible skills verification feature that improves recruiter trust in s
           'Asks about the integration opportunity — GitHub for engineers, Behance for designers, Coursera for credentials',
           'Asks about LinkedIn\'s monetization angle — would this be a premium feature for candidates or recruiters?',
         ],
-        modelAnswer: `Before designing, I'd ask:
-
-1. **What does "verified" need to mean to earn recruiter trust?** A third-party certification (Coursera, AWS), demonstrated output (GitHub commits, portfolio), peer confirmation from colleagues, or a LinkedIn-administered test? Recruiter trust requires a credible verification source, not just a blue checkmark.
-
-2. **Why don't recruiters use Skills Assessments today?** Is it the format (multiple-choice is a weak proxy for real skill), lack of awareness, or low trust in LinkedIn as an assessment authority? Understanding the failure of the current product shapes the new one.
-
-3. **Who is the verification authority?** For technical skills, GitHub is authoritative. For soft skills, there is no external authority. For certifications, the awarding institution is authoritative. The solution may need different mechanisms for different skill types.
-
-4. **What's the equity risk?** Skill verification mechanisms that favor formal education, credentialed workers, or specific platforms may systematically disadvantage self-taught engineers, international candidates, or career changers. This must be designed against explicitly.
-
-5. **Is this a premium feature?** LinkedIn Premium exists for candidates; Recruiter subscriptions exist for employers. Would verified skill access be a premium signal for candidates or a premium filter for recruiters? The monetization model shapes how it's rolled out.`,
+        modelAnswer: 'Before designing, I\'d ask:\n\n1. **What does "verified" need to mean to earn recruiter trust?** A third-party certification (Coursera, AWS), demonstrated output (GitHub commits, portfolio), peer confirmation from colleagues, or a LinkedIn-administered test? Recruiter trust requires a credible verification source, not just a blue checkmark.\n\n2. **Why don\'t recruiters use Skills Assessments today?** Is it the format (multiple-choice is a weak proxy for real skill), lack of awareness, or low trust in LinkedIn as an assessment authority? Understanding the failure of the current product shapes the new one.\n\n3. **Who is the verification authority?** For technical skills, GitHub is authoritative. For soft skills, there is no external authority. For certifications, the awarding institution is authoritative. The solution may need different mechanisms for different skill types.\n\n4. **What\'s the equity risk?** Skill verification mechanisms that favor formal education, credentialed workers, or specific platforms may systematically disadvantage self-taught engineers, international candidates, or career changers. This must be designed against explicitly.\n\n5. **Is this a premium feature?** LinkedIn Premium exists for candidates; Recruiter subscriptions exist for employers. Would verified skill access be a premium signal for candidates or a premium filter for recruiters? The monetization model shapes how it\'s rolled out.',
       },
       {
         id: 'users',
@@ -1741,20 +986,7 @@ Design a credible skills verification feature that improves recruiter trust in s
           'Makes a prioritization recommendation that accounts for the equity dimension',
           'Considers the LinkedIn business incentive (premium candidates) alongside the equity risk',
         ],
-        modelAnswer: `**Recruiter segments:**
-- Technical recruiters (engineering, data science): Highest demand for skill verification. "Can they actually code Python?" is a literal, testable question. Most receptive to GitHub integration or coding assessment verification.
-- Non-technical recruiters (marketing, operations, design): Skills are harder to verify objectively. They rely more on portfolio and peer signals than formal tests.
-- Volume recruiters filling high-turnover roles: Less interested in skill verification — speed matters more than signal quality.
-
-**Candidate segments:**
-- Formally credentialed candidates: Have degrees, certifications, and employer history that verifies skills indirectly. Already advantaged; skill verification primarily formalizes what's already visible.
-- Self-taught engineers and designers: Verified through work output (GitHub repos, portfolio links) not formal credentials. A verification system that ignores output-based evidence disadvantages this high-quality but non-traditional segment.
-- Career changers: Mid-career professionals with transferable skills but no formal credential in the new field. Most vulnerable to a verification system that only recognizes domain-specific credentials.
-- International candidates: May hold credentials not recognized by Western verification systems. Cross-border credentialing is a real gap.
-
-**Equity risk call-out:** Any verification system that equates "credentialed" with "verified" will systematically exclude self-taught engineers who are often the most capable. The design must include output-based verification (GitHub, portfolio) as a first-class path alongside credential-based verification.
-
-**Prioritization:** Start with technical skills for technical roles — highest recruiter demand, most objectively verifiable, and GitHub-based output verification reduces the equity gap for self-taught engineers.`,
+        modelAnswer: '**Recruiter segments:**\n- Technical recruiters (engineering, data science): Highest demand for skill verification. "Can they actually code Python?" is a literal, testable question. Most receptive to GitHub integration or coding assessment verification.\n- Non-technical recruiters (marketing, operations, design): Skills are harder to verify objectively. They rely more on portfolio and peer signals than formal tests.\n- Volume recruiters filling high-turnover roles: Less interested in skill verification — speed matters more than signal quality.\n\n**Candidate segments:**\n- Formally credentialed candidates: Have degrees, certifications, and employer history that verifies skills indirectly. Already advantaged; skill verification primarily formalizes what\'s already visible.\n- Self-taught engineers and designers: Verified through work output (GitHub repos, portfolio links) not formal credentials. A verification system that ignores output-based evidence disadvantages this high-quality but non-traditional segment.\n- Career changers: Mid-career professionals with transferable skills but no formal credential in the new field. Most vulnerable to a verification system that only recognizes domain-specific credentials.\n- International candidates: May hold credentials not recognized by Western verification systems. Cross-border credentialing is a real gap.\n\n**Equity risk call-out:** Any verification system that equates "credentialed" with "verified" will systematically exclude self-taught engineers who are often the most capable. The design must include output-based verification (GitHub, portfolio) as a first-class path alongside credential-based verification.\n\n**Prioritization:** Start with technical skills for technical roles — highest recruiter demand, most objectively verifiable, and GitHub-based output verification reduces the equity gap for self-taught engineers.',
       },
       {
         id: 'goals',
@@ -1768,21 +1000,7 @@ Design a credible skills verification feature that improves recruiter trust in s
           'Business metric: impact on LinkedIn Premium and Recruiter subscription value',
           'Guardrail against credentialism: non-credentialed verification pathways must be available and used',
         ],
-        modelAnswer: `**Primary metric: Recruiter-reported skill confidence rate**
-% of recruiters who say they "trust" the skill claims on profiles they review, measured via quarterly survey. Currently baseline in the 40–50% range given the 43% inflated-skill stat. Target: 70%+ of recruiters trust verified skill claims within 12 months of launch.
-
-**Secondary candidate metric: Verification adoption rate by eligible skill type**
-% of users who have at least one verified skill on their profile. Target varies by skill type — technical skills (where GitHub/test verification exists) should see higher adoption than soft skills.
-
-**Business metric:**
-Application-to-interview conversion rate for verified skill profiles vs. unverified profiles (if verified skills make candidates more hireable, this validates the business case for LinkedIn Premium to include verification tools).
-
-**Equity guardrail metrics — non-negotiable:**
-- Verification pathway adoption rate must be measured by educational background segment: verified skill rate among self-taught users must be within 15% of formally educated users (parity test)
-- Interview conversion rate for verified profiles must not show statistically significant disparities by gender, race, or educational background
-- Output-based verification paths (GitHub, portfolio) must account for ≥30% of total verified skills (ensuring credentialism doesn't dominate)
-
-These equity metrics must be reviewed quarterly by a dedicated fairness team before the feature is expanded or commercialized.`,
+        modelAnswer: '**Primary metric: Recruiter-reported skill confidence rate**\n% of recruiters who say they "trust" the skill claims on profiles they review, measured via quarterly survey. Currently baseline in the 40–50% range given the 43% inflated-skill stat. Target: 70%+ of recruiters trust verified skill claims within 12 months of launch.\n\n**Secondary candidate metric: Verification adoption rate by eligible skill type**\n% of users who have at least one verified skill on their profile. Target varies by skill type — technical skills (where GitHub/test verification exists) should see higher adoption than soft skills.\n\n**Business metric:**\nApplication-to-interview conversion rate for verified skill profiles vs. unverified profiles (if verified skills make candidates more hireable, this validates the business case for LinkedIn Premium to include verification tools).\n\n**Equity guardrail metrics — non-negotiable:**\n- Verification pathway adoption rate must be measured by educational background segment: verified skill rate among self-taught users must be within 15% of formally educated users (parity test)\n- Interview conversion rate for verified profiles must not show statistically significant disparities by gender, race, or educational background\n- Output-based verification paths (GitHub, portfolio) must account for ≥30% of total verified skills (ensuring credentialism doesn\'t dominate)\n\nThese equity metrics must be reviewed quarterly by a dedicated fairness team before the feature is expanded or commercialized.',
       },
       {
         id: 'solutions',
@@ -1796,17 +1014,7 @@ These equity metrics must be reviewed quarterly by a dedicated fairness team bef
           'Each mechanism identifies its key equity risk or assumption',
           'Solutions consider the verification "badge" design — how it is displayed on a profile',
         ],
-        modelAnswer: `**Option 1: Third-Party Credential Verification (Low effort, high credibility for formal skills)**
-Partner with major credential issuers — Coursera, Udemy, AWS, Google, Salesforce — to allow direct credential import via API. When a user completes a verified course or certification, a "Verified Credential" badge appears on the corresponding skill. Recruiters see: "Python — AWS Certified Data Analytics, 2024." High credibility because the verification source is the awarding institution. Risk: only serves formally credentialed users; self-taught engineers without certifications receive no benefit.
-
-**Option 2: Demonstrated Work Integration (Medium effort, serves non-traditional candidates)**
-For technical skills, integrate with GitHub (code), Figma (design), Canva (visual), Tableau (analytics), and Kaggle (data science) to automatically surface public work as a skill verification signal. "Python — 340 public GitHub commits, 15 repositories" appears as a verified activity signal. Recruiters can click through to the actual work. This is the most credible verification for self-taught practitioners and requires no formal credential. Risk: only works for skills with digital output artifacts; doesn't extend to soft skills or non-digital roles.
-
-**Option 3: Colleague Verification with Reciprocity Constraint (Low effort, social proof)**
-Redesign LinkedIn endorsements with a higher bar: to verify a colleague's skill, you must have worked with them (mutual connections who co-appear in the same company's employee history) and you must provide a one-sentence context ("I worked with [name] on X project where they demonstrated Y"). Verification requires 3+ such contextual endorsements from colleagues at the same company. Reciprocal endorsements are flagged and discounted. Risk: endorsement networks can still be gamed; requires algorithm to detect endorsement rings.
-
-**Option 4: Verified Skills Assessment 2.0 (High effort, replaces current assessments)**
-Replace multiple-choice assessments with practical, scenario-based tasks. For SQL: a small dataset to query. For Python: a debug-the-code challenge. For project management: a scenario judgment task. Third-party assessment partner (HackerRank, Codility) administers. Pass score tied to recruiter-calibrated benchmarks. LinkedIn displays: "SQL — top 25% on LinkedIn Practical Assessment." Risk: assessment bias; practical tasks can still have cultural or linguistic elements that disadvantage non-native speakers or certain backgrounds.`,
+        modelAnswer: '**Option 1: Third-Party Credential Verification (Low effort, high credibility for formal skills)**\nPartner with major credential issuers — Coursera, Udemy, AWS, Google, Salesforce — to allow direct credential import via API. When a user completes a verified course or certification, a "Verified Credential" badge appears on the corresponding skill. Recruiters see: "Python — AWS Certified Data Analytics, 2024." High credibility because the verification source is the awarding institution. Risk: only serves formally credentialed users; self-taught engineers without certifications receive no benefit.\n\n**Option 2: Demonstrated Work Integration (Medium effort, serves non-traditional candidates)**\nFor technical skills, integrate with GitHub (code), Figma (design), Canva (visual), Tableau (analytics), and Kaggle (data science) to automatically surface public work as a skill verification signal. "Python — 340 public GitHub commits, 15 repositories" appears as a verified activity signal. Recruiters can click through to the actual work. This is the most credible verification for self-taught practitioners and requires no formal credential. Risk: only works for skills with digital output artifacts; doesn\'t extend to soft skills or non-digital roles.\n\n**Option 3: Colleague Verification with Reciprocity Constraint (Low effort, social proof)**\nRedesign LinkedIn endorsements with a higher bar: to verify a colleague\'s skill, you must have worked with them (mutual connections who co-appear in the same company\'s employee history) and you must provide a one-sentence context ("I worked with [name] on X project where they demonstrated Y"). Verification requires 3+ such contextual endorsements from colleagues at the same company. Reciprocal endorsements are flagged and discounted. Risk: endorsement networks can still be gamed; requires algorithm to detect endorsement rings.\n\n**Option 4: Verified Skills Assessment 2.0 (High effort, replaces current assessments)**\nReplace multiple-choice assessments with practical, scenario-based tasks. For SQL: a small dataset to query. For Python: a debug-the-code challenge. For project management: a scenario judgment task. Third-party assessment partner (HackerRank, Codility) administers. Pass score tied to recruiter-calibrated benchmarks. LinkedIn displays: "SQL — top 25% on LinkedIn Practical Assessment." Risk: assessment bias; practical tasks can still have cultural or linguistic elements that disadvantage non-native speakers or certain backgrounds.',
       },
       {
         id: 'prioritize',
@@ -1820,28 +1028,7 @@ Replace multiple-choice assessments with practical, scenario-based tasks. For SQ
           'Measurement plan includes both recruiter trust and equity metrics from day one',
           'Honest about what verified skills do NOT mean (they don\'t guarantee competence, only evidence)',
         ],
-        modelAnswer: `**Recommendation: Option 1 (Credential Verification) + Option 2 (Demonstrated Work Integration) launched simultaneously as v1**
-
-**Rationale for shipping both together:**
-Shipping credential verification alone would replicate the existing credentialism bias at a higher trust level. Shipping output-based verification alone would leave out the majority of LinkedIn users who have traditional credentials. Together, they create a multi-path system that serves both traditionally credentialed and self-taught users from day one. Shipping them simultaneously also prevents a narrative of "LinkedIn only trusts formal credentials."
-
-**V1 scope:**
-- Credential import via Coursera, AWS, and Google Cloud API (top 3 credential volume on LinkedIn)
-- GitHub public commit integration for software-related skills (Python, JavaScript, SQL, TypeScript)
-- Figma public file integration for design skills (UI Design, Prototyping)
-- Profile display: a "Verified" icon with source type visible on hover: "Verified via AWS Certification" or "Verified via GitHub Activity"
-- No Skills Assessment changes in v1 (that's a separate track)
-
-**Equity commitment in v1:**
-Both pathways must launch together. If credential API delays occur, the output-based path ships first — not the reverse. Verify before launch that GitHub verification adoption rates are modeled to be at parity with credential verification within 2 quarters.
-
-**Measurement:**
-- Recruiter trust survey at 30 and 90 days
-- Adoption rate by pathway type (credential vs. output) segmented by educational background
-- Interview conversion rate for verified vs. unverified profiles (must not show demographic disparities)
-
-**Important caveats to communicate internally:**
-Verified skills are evidence of exposure or demonstrated activity — they are not guarantees of current competence level. Recruiters should be educated that a verified skill is a better signal than a self-reported one, but still requires evaluation in context.`,
+        modelAnswer: '**Recommendation: Option 1 (Credential Verification) + Option 2 (Demonstrated Work Integration) launched simultaneously as v1**\n\n**Rationale for shipping both together:**\nShipping credential verification alone would replicate the existing credentialism bias at a higher trust level. Shipping output-based verification alone would leave out the majority of LinkedIn users who have traditional credentials. Together, they create a multi-path system that serves both traditionally credentialed and self-taught users from day one. Shipping them simultaneously also prevents a narrative of "LinkedIn only trusts formal credentials."\n\n**V1 scope:**\n- Credential import via Coursera, AWS, and Google Cloud API (top 3 credential volume on LinkedIn)\n- GitHub public commit integration for software-related skills (Python, JavaScript, SQL, TypeScript)\n- Figma public file integration for design skills (UI Design, Prototyping)\n- Profile display: a "Verified" icon with source type visible on hover: "Verified via AWS Certification" or "Verified via GitHub Activity"\n- No Skills Assessment changes in v1 (that\'s a separate track)\n\n**Equity commitment in v1:**\nBoth pathways must launch together. If credential API delays occur, the output-based path ships first — not the reverse. Verify before launch that GitHub verification adoption rates are modeled to be at parity with credential verification within 2 quarters.\n\n**Measurement:**\n- Recruiter trust survey at 30 and 90 days\n- Adoption rate by pathway type (credential vs. output) segmented by educational background\n- Interview conversion rate for verified vs. unverified profiles (must not show demographic disparities)\n\n**Important caveats to communicate internally:**\nVerified skills are evidence of exposure or demonstrated activity — they are not guarantees of current competence level. Recruiters should be educated that a verified skill is a better signal than a self-reported one, but still requires evaluation in context.',
       },
     ],
   },
@@ -1858,11 +1045,7 @@ Verified skills are evidence of exposure or demonstrated activity — they are n
     category: 'Consumer App',
     tags: ['gamification', 'social', 'growth loops', 'consumer'],
     isFree: false,
-    prompt: `You are a PM at Duolingo. Duolingo's core growth loop is individual — users practice alone, earn streaks, and compete in leaderboards. However, research shows that 74% of language learners are more motivated when learning with others, and social motivation is one of the strongest predictors of long-term language retention.
-
-Duolingo has a Friends tab and weekly leaderboards, but these are passive social features — users see each other's scores but don't interact in real time. The leaderboard creates some competition, but no collaboration, and doesn't replicate the energy of learning with a partner.
-
-Design a social or multiplayer learning mode that meaningfully increases daily active engagement and long-term retention, without fragmenting the core individual learning experience.`,
+    prompt: 'You are a PM at Duolingo. Duolingo\'s core growth loop is individual — users practice alone, earn streaks, and compete in leaderboards. However, research shows that 74% of language learners are more motivated when learning with others, and social motivation is one of the strongest predictors of long-term language retention.\n\nDuolingo has a Friends tab and weekly leaderboards, but these are passive social features — users see each other\'s scores but don\'t interact in real time. The leaderboard creates some competition, but no collaboration, and doesn\'t replicate the energy of learning with a partner.\n\nDesign a social or multiplayer learning mode that meaningfully increases daily active engagement and long-term retention, without fragmenting the core individual learning experience.',
     phases: [
       {
         id: 'clarify',
@@ -1877,17 +1060,7 @@ Design a social or multiplayer learning mode that meaningfully increases daily a
           'Asks about moderation requirements — real-time communication between strangers requires content moderation investment',
           'Asks about platform constraints (real-time features have different infrastructure costs)',
         ],
-        modelAnswer: `Before designing, I'd clarify:
-
-1. **What kind of social interaction do language learners want?** Accountability (knowing someone is watching your streak), competitive challenge (head-to-head), collaborative practice (learning together), or conversation practice (speaking with native speakers)? These are four different features with different build costs.
-
-2. **What does the current leaderboard data show?** Is it driving DAU and retention meaningfully, or do most users ignore it after a few weeks? Understanding whether passive social works informs the investment case for active social.
-
-3. **What's the language overlap in Duolingo's user base?** A social feature that pairs people learning the same language and at similar levels is very different from a general multiplayer feature. How much of the user base is learning Spanish vs. Japanese vs. Swahili?
-
-4. **When do users churn and does isolation predict churn?** If churn spikes at week 4 and correlates with users who have no friends on the platform, social features are causally relevant. If churn is about content difficulty, social features are a distraction.
-
-5. **What's the content moderation requirement?** Any real-time interaction between strangers requires moderation infrastructure. What is Duolingo's current moderation capacity, and is real-time content moderation in scope?`,
+        modelAnswer: 'Before designing, I\'d clarify:\n\n1. **What kind of social interaction do language learners want?** Accountability (knowing someone is watching your streak), competitive challenge (head-to-head), collaborative practice (learning together), or conversation practice (speaking with native speakers)? These are four different features with different build costs.\n\n2. **What does the current leaderboard data show?** Is it driving DAU and retention meaningfully, or do most users ignore it after a few weeks? Understanding whether passive social works informs the investment case for active social.\n\n3. **What\'s the language overlap in Duolingo\'s user base?** A social feature that pairs people learning the same language and at similar levels is very different from a general multiplayer feature. How much of the user base is learning Spanish vs. Japanese vs. Swahili?\n\n4. **When do users churn and does isolation predict churn?** If churn spikes at week 4 and correlates with users who have no friends on the platform, social features are causally relevant. If churn is about content difficulty, social features are a distraction.\n\n5. **What\'s the content moderation requirement?** Any real-time interaction between strangers requires moderation infrastructure. What is Duolingo\'s current moderation capacity, and is real-time content moderation in scope?',
       },
       {
         id: 'users',
@@ -1901,18 +1074,7 @@ Design a social or multiplayer learning mode that meaningfully increases daily a
           'Makes a clear prioritization recommendation tied to retention impact',
           'Identifies which segment has the highest risk of churn from isolation',
         ],
-        modelAnswer: `**Segment 1: Casual streak-maintainers (5–10 min/day, habit-focused)**
-Large in volume. Their primary motivation is maintaining the streak. Social features that add competitive pressure might increase their engagement, but they're unlikely to commit to scheduled multiplayer sessions. Leaderboard already exists for them. Incremental retention gain from deeper social features is limited.
-
-**Segment 2: Motivated goal-learners (preparing for a trip, career, exam)**
-They have a specific reason to learn and are committed for a defined period. Social features that create accountability partners could extend their engagement beyond the specific goal. They're more likely to commit to a recurring social practice session. High churn risk post-goal achievement.
-
-**Segment 3: Returning/reactivated learners with social connection**
-Users who've come back after a churn event. Research shows that users who connect with at least one friend in the first week of return are significantly less likely to re-churn. Social onboarding for this segment has clear retention value.
-
-**Focus: Segment 2 (motivated goal-learners), with Segment 3 as a secondary unlock**
-
-Goal-learners are the most engaged and most likely to actually use a social feature. If the feature works for them, it creates a social graph that benefits Segment 3 (re-engagers join an existing friend network). Segment 1 (casual users) will benefit from the ambient social pressure of seeing goal-learner friends active, even if they don't engage with the feature directly.`,
+        modelAnswer: '**Segment 1: Casual streak-maintainers (5–10 min/day, habit-focused)**\nLarge in volume. Their primary motivation is maintaining the streak. Social features that add competitive pressure might increase their engagement, but they\'re unlikely to commit to scheduled multiplayer sessions. Leaderboard already exists for them. Incremental retention gain from deeper social features is limited.\n\n**Segment 2: Motivated goal-learners (preparing for a trip, career, exam)**\nThey have a specific reason to learn and are committed for a defined period. Social features that create accountability partners could extend their engagement beyond the specific goal. They\'re more likely to commit to a recurring social practice session. High churn risk post-goal achievement.\n\n**Segment 3: Returning/reactivated learners with social connection**\nUsers who\'ve come back after a churn event. Research shows that users who connect with at least one friend in the first week of return are significantly less likely to re-churn. Social onboarding for this segment has clear retention value.\n\n**Focus: Segment 2 (motivated goal-learners), with Segment 3 as a secondary unlock**\n\nGoal-learners are the most engaged and most likely to actually use a social feature. If the feature works for them, it creates a social graph that benefits Segment 3 (re-engagers join an existing friend network). Segment 1 (casual users) will benefit from the ambient social pressure of seeing goal-learner friends active, even if they don\'t engage with the feature directly.',
       },
       {
         id: 'goals',
@@ -1926,23 +1088,7 @@ Goal-learners are the most engaged and most likely to actually use a social feat
           'Considers social graph density as a leading indicator of social feature health',
           'Identifies the confound risk and how to control for it in measurement',
         ],
-        modelAnswer: `**Primary metric: 90-day retention rate for users who engage with at least one social learning session in their first 30 days vs. matched users who don't**
-
-This directly tests the hypothesis that social learning improves retention. 90 days is long enough to see a real retention signal — DAU spikes from novelty typically flatten by day 30.
-
-**Confound control:** Social users may be more motivated in general (selection bias). Match the treatment and control cohorts on engagement level at day 7 to control for this — only compare users with similar early engagement profiles.
-
-**Secondary metric: XP earned per session in social vs. solo mode**
-If social sessions produce equivalent learning output (XP as a proxy, acknowledging its limitations), then social is an engagement additive rather than a quality substitute. If social sessions produce significantly less XP, users may be having fun but not learning — and the feature may not sustain long-term.
-
-**Diagnostic metrics:**
-- Social session initiation rate: % of eligible users who start at least one social session per week
-- Friend invitation acceptance rate: for every invite sent, how many result in an active social pairing?
-- Social session completion rate: do users finish multiplayer sessions or abandon them mid-way?
-
-**Guardrails:**
-- Solo session frequency must not decline significantly for social users (social should add time, not replace individual practice)
-- Language learning accuracy on assessments must not be lower for heavy social users than matched solo users`,
+        modelAnswer: '**Primary metric: 90-day retention rate for users who engage with at least one social learning session in their first 30 days vs. matched users who don\'t**\n\nThis directly tests the hypothesis that social learning improves retention. 90 days is long enough to see a real retention signal — DAU spikes from novelty typically flatten by day 30.\n\n**Confound control:** Social users may be more motivated in general (selection bias). Match the treatment and control cohorts on engagement level at day 7 to control for this — only compare users with similar early engagement profiles.\n\n**Secondary metric: XP earned per session in social vs. solo mode**\nIf social sessions produce equivalent learning output (XP as a proxy, acknowledging its limitations), then social is an engagement additive rather than a quality substitute. If social sessions produce significantly less XP, users may be having fun but not learning — and the feature may not sustain long-term.\n\n**Diagnostic metrics:**\n- Social session initiation rate: % of eligible users who start at least one social session per week\n- Friend invitation acceptance rate: for every invite sent, how many result in an active social pairing?\n- Social session completion rate: do users finish multiplayer sessions or abandon them mid-way?\n\n**Guardrails:**\n- Solo session frequency must not decline significantly for social users (social should add time, not replace individual practice)\n- Language learning accuracy on assessments must not be lower for heavy social users than matched solo users',
       },
       {
         id: 'solutions',
@@ -1956,17 +1102,7 @@ If social sessions produce equivalent learning output (XP as a proxy, acknowledg
           'Each solution has a specific virality or growth loop mechanism',
           'Each solution identifies the primary risk (cold start, moderation, engagement inflation)',
         ],
-        modelAnswer: `**Option 1: Duo Challenge — Real-time head-to-head (Medium effort)**
-Two users who are both online complete the same lesson simultaneously. At the end, scores are compared. Think: Words With Friends but for language exercises. Matchmaking can pair friends OR random users learning the same language at the same level (removing the cold-start problem). After the match, both users see each other's answer history for the session — a subtle learning reflection mechanic. Risk: requires both users to be online simultaneously; matching latency and dropout before session ends need careful handling.
-
-**Option 2: Streak Shields and Streak Saves — Asynchronous friend safety net (Low effort)**
-A friend can "save your streak" if you forget a day — but only if they have their own streak to "spend." This creates a mutual obligation mechanic: you want friends on Duolingo who are active, because they're your insurance. You're also motivated to stay active to be someone else's insurance. Completely asynchronous — no real-time coordination needed. Viral: "I need a Duolingo friend to save my streak" is a shareable moment. Risk: the mechanic may feel extractive if over-used; needs a daily limit on saves.
-
-**Option 3: Collaborative Story Mode (High effort, narrative-driven)**
-Two learners build a story together — one person writes a sentence in the target language, the other adds the next, and the app provides grammar/vocabulary scaffolding in real time. The collaborative story is saved and shareable. Learning motivation comes from not wanting to let your partner down by writing a grammatically bad sentence. Asynchronous: each player has 24 hours to respond (like turn-based games). Risk: content moderation of user-generated sentences is expensive; requires careful scaffolding design so learners at different levels can still collaborate.
-
-**Option 4: Social Streaks — Group Accountability Pods (Low effort)**
-A group of 3–5 friends can form a "learning pod." If 4 out of 5 members complete their daily lesson, the whole pod gets a "pod streak" bonus and a shared reward. Individual streaks remain; pod streaks are additive. This creates social accountability without real-time synchronization — you check whether your pod friends completed their lessons, not whether they're online right now. Growth mechanic: pod invitations sent via iMessage/WhatsApp are the primary acquisition channel. Risk: pod dynamics can feel like obligation rather than motivation; needs an easy exit mechanism.`,
+        modelAnswer: '**Option 1: Duo Challenge — Real-time head-to-head (Medium effort)**\nTwo users who are both online complete the same lesson simultaneously. At the end, scores are compared. Think: Words With Friends but for language exercises. Matchmaking can pair friends OR random users learning the same language at the same level (removing the cold-start problem). After the match, both users see each other\'s answer history for the session — a subtle learning reflection mechanic. Risk: requires both users to be online simultaneously; matching latency and dropout before session ends need careful handling.\n\n**Option 2: Streak Shields and Streak Saves — Asynchronous friend safety net (Low effort)**\nA friend can "save your streak" if you forget a day — but only if they have their own streak to "spend." This creates a mutual obligation mechanic: you want friends on Duolingo who are active, because they\'re your insurance. You\'re also motivated to stay active to be someone else\'s insurance. Completely asynchronous — no real-time coordination needed. Viral: "I need a Duolingo friend to save my streak" is a shareable moment. Risk: the mechanic may feel extractive if over-used; needs a daily limit on saves.\n\n**Option 3: Collaborative Story Mode (High effort, narrative-driven)**\nTwo learners build a story together — one person writes a sentence in the target language, the other adds the next, and the app provides grammar/vocabulary scaffolding in real time. The collaborative story is saved and shareable. Learning motivation comes from not wanting to let your partner down by writing a grammatically bad sentence. Asynchronous: each player has 24 hours to respond (like turn-based games). Risk: content moderation of user-generated sentences is expensive; requires careful scaffolding design so learners at different levels can still collaborate.\n\n**Option 4: Social Streaks — Group Accountability Pods (Low effort)**\nA group of 3–5 friends can form a "learning pod." If 4 out of 5 members complete their daily lesson, the whole pod gets a "pod streak" bonus and a shared reward. Individual streaks remain; pod streaks are additive. This creates social accountability without real-time synchronization — you check whether your pod friends completed their lessons, not whether they\'re online right now. Growth mechanic: pod invitations sent via iMessage/WhatsApp are the primary acquisition channel. Risk: pod dynamics can feel like obligation rather than motivation; needs an easy exit mechanism.',
       },
       {
         id: 'prioritize',
@@ -1980,27 +1116,7 @@ A group of 3–5 friends can form a "learning pod." If 4 out of 5 members comple
           'Measurement plan distinguishes between engagement lift and retention lift',
           'Timeline for measuring 90-day retention is acknowledged (this takes time to measure)',
         ],
-        modelAnswer: `**Recommendation: Option 4 (Social Streaks / Accountability Pods) as v1**
-
-**Cold-start strategy:**
-Pods don't require friends to already be on Duolingo. The invitation mechanic is the growth engine: "Join my Duolingo language pod" sent via SMS or iMessage works even for users who are inviting non-Duolingo friends. This turns pod creation into a viral acquisition loop. Cold-start for existing users: at pod creation, Duolingo can suggest matches from users' existing contact list who are already on Duolingo, similar language, similar level.
-
-**Why Option 4 over Option 1:**
-Option 1 (real-time head-to-head) requires both infrastructure investment and real-time matching — both of which have long lead times and failure modes (empty match queues). Option 4 works entirely asynchronously and can be shipped in 6–8 weeks. The viral growth mechanic is also stronger.
-
-**V1 scope:**
-- Pod creation: invite 2–4 friends or get matched with similar-level learners in same language
-- Pod streak: if ≥80% of pod completes their daily lesson, all members earn a "Group Fire" bonus XP (50 XP)
-- Pod member status visible on home screen: small avatars showing who's completed today
-- Exit mechanic: any user can leave a pod with one tap, no friction
-- Mobile only; no desktop pod features in v1
-
-**Measurement plan:**
-- 30-day: pod adoption rate, session completion rate for pod vs. non-pod users
-- 90-day: retention rate comparison (treatment vs. matched control — acknowledge this takes time and flag it in readouts)
-- Leading indicator at day 7: are pod users completing their lessons more consistently in week 1 than non-pod matched users?
-
-**V2:** Once pods establish social graph density, layer in Option 2 (Streak Shields) as an asynchronous cooperation mechanic on top of the existing pod relationships.`,
+        modelAnswer: '**Recommendation: Option 4 (Social Streaks / Accountability Pods) as v1**\n\n**Cold-start strategy:**\nPods don\'t require friends to already be on Duolingo. The invitation mechanic is the growth engine: "Join my Duolingo language pod" sent via SMS or iMessage works even for users who are inviting non-Duolingo friends. This turns pod creation into a viral acquisition loop. Cold-start for existing users: at pod creation, Duolingo can suggest matches from users\' existing contact list who are already on Duolingo, similar language, similar level.\n\n**Why Option 4 over Option 1:**\nOption 1 (real-time head-to-head) requires both infrastructure investment and real-time matching — both of which have long lead times and failure modes (empty match queues). Option 4 works entirely asynchronously and can be shipped in 6–8 weeks. The viral growth mechanic is also stronger.\n\n**V1 scope:**\n- Pod creation: invite 2–4 friends or get matched with similar-level learners in same language\n- Pod streak: if ≥80% of pod completes their daily lesson, all members earn a "Group Fire" bonus XP (50 XP)\n- Pod member status visible on home screen: small avatars showing who\'s completed today\n- Exit mechanic: any user can leave a pod with one tap, no friction\n- Mobile only; no desktop pod features in v1\n\n**Measurement plan:**\n- 30-day: pod adoption rate, session completion rate for pod vs. non-pod users\n- 90-day: retention rate comparison (treatment vs. matched control — acknowledge this takes time and flag it in readouts)\n- Leading indicator at day 7: are pod users completing their lessons more consistently in week 1 than non-pod matched users?\n\n**V2:** Once pods establish social graph density, layer in Option 2 (Streak Shields) as an asynchronous cooperation mechanic on top of the existing pod relationships.',
       },
     ],
   },
@@ -2017,13 +1133,7 @@ Option 1 (real-time head-to-head) requires both infrastructure investment and re
     category: 'Developer Tools',
     tags: ['developer tools', 'activation', 'onboarding', 'B2B'],
     isFree: false,
-    prompt: `You are a PM on Stripe's Developer Experience team. Stripe is trusted by developers globally for its API quality and documentation, but data shows a significant drop-off in the developer onboarding funnel:
-
-- 60% of developers who sign up never make their first successful API call in test mode
-- Of those who make a test-mode call, only 35% complete the transition to live mode within 30 days
-- Average time from signup to first live transaction is 9 days — too long for developers who are evaluating payment providers
-
-Competitors like Braintree, Adyen, and Square have been investing in "get to hello world in 5 minutes" developer experiences. Redesign Stripe's developer onboarding to improve activation rates and reduce time to first live transaction.`,
+    prompt: 'You are a PM on Stripe\'s Developer Experience team. Stripe is trusted by developers globally for its API quality and documentation, but data shows a significant drop-off in the developer onboarding funnel:\n\n- 60% of developers who sign up never make their first successful API call in test mode\n- Of those who make a test-mode call, only 35% complete the transition to live mode within 30 days\n- Average time from signup to first live transaction is 9 days — too long for developers who are evaluating payment providers\n\nCompetitors like Braintree, Adyen, and Square have been investing in "get to hello world in 5 minutes" developer experiences. Redesign Stripe\'s developer onboarding to improve activation rates and reduce time to first live transaction.',
     phases: [
       {
         id: 'clarify',
@@ -2038,19 +1148,7 @@ Competitors like Braintree, Adyen, and Square have been investing in "get to hel
           'Asks about the competitive benchmark — what does "5 minutes to hello world" actually look like for competitors?',
           'Asks about team context — are developers integrating solo or as part of a team with a technical lead?',
         ],
-        modelAnswer: `Before designing, I'd want to clarify:
-
-1. **Where exactly does the 60% drop-off occur?** Is it between sign-up and reading the docs, between reading docs and attempting the first API call, or during the first API call itself? Funnel analytics should tell us this — and it changes everything about the solution.
-
-2. **What is the developer persona?** A backend engineer with 10 years of experience vs. a startup founder who is also the CTO vs. a junior developer on their first payments integration — these have wildly different documentation needs and integration patterns.
-
-3. **What does the current onboarding flow look like step by step?** Is there an interactive quickstart? Does the dashboard show me my API key immediately? Are there pre-built code samples for common languages/frameworks?
-
-4. **Why is the test-to-live transition a 35% drop-off?** Is it a documentation gap (developers don't know what changes from test to live), a compliance/business information gate (KYC requirements before live), or a confidence gap (they don't feel sure it will work in production)?
-
-5. **What do competitors do specifically?** Not just "better onboarding" generally — what is the specific interaction pattern that makes Braintree or Square faster for a first call?
-
-6. **Is this a first-party developer (building their own product on Stripe) or a third-party integrator (building a Stripe integration into someone else's stack)?** The latter has different complexity and knowledge requirements.`,
+        modelAnswer: 'Before designing, I\'d want to clarify:\n\n1. **Where exactly does the 60% drop-off occur?** Is it between sign-up and reading the docs, between reading docs and attempting the first API call, or during the first API call itself? Funnel analytics should tell us this — and it changes everything about the solution.\n\n2. **What is the developer persona?** A backend engineer with 10 years of experience vs. a startup founder who is also the CTO vs. a junior developer on their first payments integration — these have wildly different documentation needs and integration patterns.\n\n3. **What does the current onboarding flow look like step by step?** Is there an interactive quickstart? Does the dashboard show me my API key immediately? Are there pre-built code samples for common languages/frameworks?\n\n4. **Why is the test-to-live transition a 35% drop-off?** Is it a documentation gap (developers don\'t know what changes from test to live), a compliance/business information gate (KYC requirements before live), or a confidence gap (they don\'t feel sure it will work in production)?\n\n5. **What do competitors do specifically?** Not just "better onboarding" generally — what is the specific interaction pattern that makes Braintree or Square faster for a first call?\n\n6. **Is this a first-party developer (building their own product on Stripe) or a third-party integrator (building a Stripe integration into someone else\'s stack)?** The latter has different complexity and knowledge requirements.',
       },
       {
         id: 'users',
@@ -2064,17 +1162,7 @@ Competitors like Braintree, Adyen, and Square have been investing in "get to hel
           'Considers the business value of each segment (enterprise developer vs. indie developer)',
           'Makes a clear prioritization recommendation with reasoning',
         ],
-        modelAnswer: `**Segment 1: Solo founders / non-specialists (fastest growing segment)**
-Building their first or second product. May be more comfortable with JavaScript/Python but not with payments-specific concepts (webhooks, idempotency, PCI compliance). High volume. They get lost in the documentation because it's written for engineers who know what they don't know. They need "here's how to do the most common thing" more than comprehensive API reference.
-
-**Segment 2: Mid-level full-stack engineers at small companies**
-Competent developers but new to Stripe. They want to go fast. They'll find the docs but they struggle with the test-to-live transition because there are compliance and business verification steps they weren't expecting, and they're blocked waiting on non-technical stakeholders (finance, legal).
-
-**Segment 3: Senior engineers evaluating Stripe for enterprise adoption**
-Deliberate evaluation mode. They're not just integrating — they're deciding whether to commit their company to Stripe. Their drop-off happens not at the API call stage but at the architectural questions: how does Stripe handle refunds at scale, what are the webhook reliability SLAs, how does this work with my existing auth system?
-
-**Focus: Segment 2 (mid-level full-stack engineers)**
-Highest volume of the activation drop-off, most actionable with documentation and flow improvements, and representative of the standard Stripe customer. Solving for them also catches the lower-complexity Segment 1 needs. Segment 3 (enterprise evaluation) needs a different product motion (solution engineering, dedicated support) rather than onboarding UX.`,
+        modelAnswer: '**Segment 1: Solo founders / non-specialists (fastest growing segment)**\nBuilding their first or second product. May be more comfortable with JavaScript/Python but not with payments-specific concepts (webhooks, idempotency, PCI compliance). High volume. They get lost in the documentation because it\'s written for engineers who know what they don\'t know. They need "here\'s how to do the most common thing" more than comprehensive API reference.\n\n**Segment 2: Mid-level full-stack engineers at small companies**\nCompetent developers but new to Stripe. They want to go fast. They\'ll find the docs but they struggle with the test-to-live transition because there are compliance and business verification steps they weren\'t expecting, and they\'re blocked waiting on non-technical stakeholders (finance, legal).\n\n**Segment 3: Senior engineers evaluating Stripe for enterprise adoption**\nDeliberate evaluation mode. They\'re not just integrating — they\'re deciding whether to commit their company to Stripe. Their drop-off happens not at the API call stage but at the architectural questions: how does Stripe handle refunds at scale, what are the webhook reliability SLAs, how does this work with my existing auth system?\n\n**Focus: Segment 2 (mid-level full-stack engineers)**\nHighest volume of the activation drop-off, most actionable with documentation and flow improvements, and representative of the standard Stripe customer. Solving for them also catches the lower-complexity Segment 1 needs. Segment 3 (enterprise evaluation) needs a different product motion (solution engineering, dedicated support) rather than onboarding UX.',
       },
       {
         id: 'goals',
@@ -2088,25 +1176,7 @@ Highest volume of the activation drop-off, most actionable with documentation an
           'Guardrail protects against activation at the cost of quality (bad integrations that fail later)',
           'Considers developer satisfaction (NPS/CSAT) as a secondary metric',
         ],
-        modelAnswer: `**Primary metric: % of signups who complete a first live transaction within 7 days**
-Current baseline: very low (9-day average means distribution is wide). Target: 50% of signups making a live transaction within 7 days, up from current baseline.
-
-**Funnel breakdown metrics (diagnostics):**
-- Signup → first docs page visited: are developers engaging with documentation at all?
-- Docs visit → first test-mode API call: where in the docs do developers exit without completing the call?
-- First test-mode call → 10 test-mode calls: do developers stay or make one call and leave?
-- Test-mode → live-mode transition rate: what % of active test-mode developers activate live mode within 7 days?
-- Live activation → first real transaction: once live is enabled, how quickly does a transaction happen?
-
-Each stage in the funnel is a potential intervention point. We should measure improvement at each stage, not just the final outcome.
-
-**Guardrail metric:**
-- Integration error rate in production at 30 days (are developers who activate faster making more mistakes in production?)
-- Churn at 60 days (fast activation should correlate with lasting engagement, not trial-and-abandon)
-
-**Developer satisfaction:**
-- In-product NPS prompt at "first live transaction" milestone
-- Qualitative user research with 5–10 developers per sprint to catch friction that metrics miss`,
+        modelAnswer: '**Primary metric: % of signups who complete a first live transaction within 7 days**\nCurrent baseline: very low (9-day average means distribution is wide). Target: 50% of signups making a live transaction within 7 days, up from current baseline.\n\n**Funnel breakdown metrics (diagnostics):**\n- Signup → first docs page visited: are developers engaging with documentation at all?\n- Docs visit → first test-mode API call: where in the docs do developers exit without completing the call?\n- First test-mode call → 10 test-mode calls: do developers stay or make one call and leave?\n- Test-mode → live-mode transition rate: what % of active test-mode developers activate live mode within 7 days?\n- Live activation → first real transaction: once live is enabled, how quickly does a transaction happen?\n\nEach stage in the funnel is a potential intervention point. We should measure improvement at each stage, not just the final outcome.\n\n**Guardrail metric:**\n- Integration error rate in production at 30 days (are developers who activate faster making more mistakes in production?)\n- Churn at 60 days (fast activation should correlate with lasting engagement, not trial-and-abandon)\n\n**Developer satisfaction:**\n- In-product NPS prompt at "first live transaction" milestone\n- Qualitative user research with 5–10 developers per sprint to catch friction that metrics miss',
       },
       {
         id: 'solutions',
@@ -2120,17 +1190,7 @@ Each stage in the funnel is a potential intervention point. We should measure im
           'At least one solution addresses the test-to-live transition specifically',
           'Each solution identifies its key assumption or technical dependency',
         ],
-        modelAnswer: `**Option 1: Framework-Aware Interactive Quickstart (Medium effort)**
-Instead of a single generic quickstart guide, detect or let developers choose their stack on first login (Next.js, Rails, Django, Laravel, etc.) and show a framework-specific 3-step quickstart with copy-pasteable code that actually runs without modification. Pair with an in-browser test environment that can verify their first API call succeeded without leaving the dashboard. The key insight: the current quickstart assumes developers will modify generic cURL examples — many can't do this quickly under time pressure.
-
-**Option 2: Pre-populated Test Environment with Live Data Simulator (Medium-high effort)**
-On signup, provision every new developer account with a pre-built demo environment: test API keys already inserted into sample code, a simulated customer and product already in test mode, a pre-written webhook endpoint they can immediately trigger. The developer's first experience is seeing something that already works, not building from scratch. This is the "see it work before you build it" pattern. Risk: sophisticated developers may find the pre-populated environment confusing or patronizing; needs an easy way to switch to a blank canvas.
-
-**Option 3: Guided Live Activation Checklist (Low effort, addresses test-to-live gap)**
-The current test-to-live transition involves 8+ undiscovered steps (business verification, bank account link, webhook configuration, error handling). Create a mandatory but transparent "activation checklist" shown after 5 test-mode API calls, showing exactly what's needed for live mode and who needs to do what. For steps requiring non-developer action (finance adding bank account), provide a pre-written email template the developer can send to their CFO. This addresses the cross-functional blocking problem that delays the 35% who do test-mode but don't transition.
-
-**Option 4: Stripe Developer CLI Enhancement (Low effort for core, builds on existing tool)**
-Stripe already has a CLI for local development. Enhance it with a stripe onboard command that: sets up a local webhook listener automatically, runs through a 3-step integration verification sequence, and prints a "You're ready for live mode" confirmation once all checks pass. Developers who use the CLI convert at significantly higher rates — making the CLI the default for new signups rather than the docs is a forcing function for a more reliable activation path.`,
+        modelAnswer: '**Option 1: Framework-Aware Interactive Quickstart (Medium effort)**\nInstead of a single generic quickstart guide, detect or let developers choose their stack on first login (Next.js, Rails, Django, Laravel, etc.) and show a framework-specific 3-step quickstart with copy-pasteable code that actually runs without modification. Pair with an in-browser test environment that can verify their first API call succeeded without leaving the dashboard. The key insight: the current quickstart assumes developers will modify generic cURL examples — many can\'t do this quickly under time pressure.\n\n**Option 2: Pre-populated Test Environment with Live Data Simulator (Medium-high effort)**\nOn signup, provision every new developer account with a pre-built demo environment: test API keys already inserted into sample code, a simulated customer and product already in test mode, a pre-written webhook endpoint they can immediately trigger. The developer\'s first experience is seeing something that already works, not building from scratch. This is the "see it work before you build it" pattern. Risk: sophisticated developers may find the pre-populated environment confusing or patronizing; needs an easy way to switch to a blank canvas.\n\n**Option 3: Guided Live Activation Checklist (Low effort, addresses test-to-live gap)**\nThe current test-to-live transition involves 8+ undiscovered steps (business verification, bank account link, webhook configuration, error handling). Create a mandatory but transparent "activation checklist" shown after 5 test-mode API calls, showing exactly what\'s needed for live mode and who needs to do what. For steps requiring non-developer action (finance adding bank account), provide a pre-written email template the developer can send to their CFO. This addresses the cross-functional blocking problem that delays the 35% who do test-mode but don\'t transition.\n\n**Option 4: Stripe Developer CLI Enhancement (Low effort for core, builds on existing tool)**\nStripe already has a CLI for local development. Enhance it with a stripe onboard command that: sets up a local webhook listener automatically, runs through a 3-step integration verification sequence, and prints a "You\'re ready for live mode" confirmation once all checks pass. Developers who use the CLI convert at significantly higher rates — making the CLI the default for new signups rather than the docs is a forcing function for a more reliable activation path.',
       },
       {
         id: 'prioritize',
@@ -2144,28 +1204,7 @@ Stripe already has a CLI for local development. Enhance it with a stripe onboard
           'Measurement plan uses funnel stage metrics to isolate where improvement is occurring',
           'Honest about the timeline to see live-transaction outcomes (lagged metric)',
         ],
-        modelAnswer: `**Recommendation: Option 1 (Framework-Aware Quickstart) as v1, followed immediately by Option 3 (Live Activation Checklist)**
-
-**Funnel logic:**
-The 60% drop-off before first test-mode call is the biggest leak. Fix it first. Option 1 addresses the "I don't know how to make the first call with my stack" barrier for the largest volume of developers. Without fixing this stage, improving the test-to-live transition (Option 3) benefits only a small fraction of signups.
-
-Once the first-stage activation rate improves (more developers reaching test mode), Option 3 immediately converts more of them to live mode — these two solutions work sequentially in the funnel.
-
-**V1 scope (Option 1):**
-- Stack selector on the post-signup dashboard (Next.js, React + Node, Python/Django, Rails, PHP/Laravel, plain Node.js — covering ~80% of signups)
-- 3-step copy-pasteable quickstart with zero modification required for each stack
-- Inline API call simulator that verifies the first API response was successful (green check in the dashboard)
-- No changes to the existing full docs (this is a parallel quickstart path, not a replacement)
-
-**V2 (2–4 weeks later): Option 3**
-- Live activation checklist appears after 10 successful test-mode calls
-- Pre-written email template for non-developer stakeholder actions
-- Estimated time to complete each checklist item
-
-**Measurement:**
-Track the full funnel weekly: signup → first test call → 10 test calls → live mode → first live transaction. Report at each stage. Expected sequence: Option 1 moves the signup → first test call metric within 2 weeks. Option 3 moves the test-mode → live-mode metric 4–6 weeks after Option 1 ships (because Option 1 fills the top of funnel that Option 3 acts on).
-
-**Risk to name explicitly:** Framework-specific quickstarts require ongoing maintenance as frameworks update. Assign a DX (developer experience) engineer to own the quickstart update cadence — otherwise the code samples go stale and trust erodes.`,
+        modelAnswer: '**Recommendation: Option 1 (Framework-Aware Quickstart) as v1, followed immediately by Option 3 (Live Activation Checklist)**\n\n**Funnel logic:**\nThe 60% drop-off before first test-mode call is the biggest leak. Fix it first. Option 1 addresses the "I don\'t know how to make the first call with my stack" barrier for the largest volume of developers. Without fixing this stage, improving the test-to-live transition (Option 3) benefits only a small fraction of signups.\n\nOnce the first-stage activation rate improves (more developers reaching test mode), Option 3 immediately converts more of them to live mode — these two solutions work sequentially in the funnel.\n\n**V1 scope (Option 1):**\n- Stack selector on the post-signup dashboard (Next.js, React + Node, Python/Django, Rails, PHP/Laravel, plain Node.js — covering ~80% of signups)\n- 3-step copy-pasteable quickstart with zero modification required for each stack\n- Inline API call simulator that verifies the first API response was successful (green check in the dashboard)\n- No changes to the existing full docs (this is a parallel quickstart path, not a replacement)\n\n**V2 (2–4 weeks later): Option 3**\n- Live activation checklist appears after 10 successful test-mode calls\n- Pre-written email template for non-developer stakeholder actions\n- Estimated time to complete each checklist item\n\n**Measurement:**\nTrack the full funnel weekly: signup → first test call → 10 test calls → live mode → first live transaction. Report at each stage. Expected sequence: Option 1 moves the signup → first test call metric within 2 weeks. Option 3 moves the test-mode → live-mode metric 4–6 weeks after Option 1 ships (because Option 1 fills the top of funnel that Option 3 acts on).\n\n**Risk to name explicitly:** Framework-specific quickstarts require ongoing maintenance as frameworks update. Assign a DX (developer experience) engineer to own the quickstart update cadence — otherwise the code samples go stale and trust erodes.',
       },
     ],
   },
@@ -2182,11 +1221,7 @@ Track the full funnel weekly: signup → first test call → 10 test calls → l
     category: 'Social Platform',
     tags: ['trust & safety', 'real-time', 'social', 'moderation'],
     isFree: false,
-    prompt: `You are a PM at Twitter/X. During breaking news events — natural disasters, elections, mass casualty events, geopolitical crises — Twitter/X is often the first source of information for millions of users. It is also the fastest-spreading vector for misinformation during these same events.
-
-Current tools include Community Notes (crowdsourced fact-checking) and content labels applied by the Trust & Safety team. However, Community Notes has a significant lag (hours to days before consensus forms), and manual labels can't scale to the volume of breaking news content. Meanwhile, false information can reach millions of users in minutes.
-
-Design a feature that reduces the spread of misinformation during breaking news events, without suppressing legitimate breaking news or creating a tool that can be politically weaponized.`,
+    prompt: 'You are a PM at Twitter/X. During breaking news events — natural disasters, elections, mass casualty events, geopolitical crises — Twitter/X is often the first source of information for millions of users. It is also the fastest-spreading vector for misinformation during these same events.\n\nCurrent tools include Community Notes (crowdsourced fact-checking) and content labels applied by the Trust & Safety team. However, Community Notes has a significant lag (hours to days before consensus forms), and manual labels can\'t scale to the volume of breaking news content. Meanwhile, false information can reach millions of users in minutes.\n\nDesign a feature that reduces the spread of misinformation during breaking news events, without suppressing legitimate breaking news or creating a tool that can be politically weaponized.',
     phases: [
       {
         id: 'clarify',
@@ -2201,19 +1236,7 @@ Design a feature that reduces the spread of misinformation during breaking news 
           'Asks about the scope of "breaking news" — is this defined by trending topics, declared emergencies, or user reporting?',
           'Asks about the interaction with Community Notes and existing moderation systems',
         ],
-        modelAnswer: `Before designing, I'd clarify several difficult questions:
-
-1. **Who determines what is "misinformation"?** This is the hardest question. Options range from AI pattern detection, external accredited fact-checkers, user consensus (Community Notes model), to a Twitter/X internal policy team. Each has different error rates and political vulnerability. I need to understand what authority Twitter/X is willing to claim here.
-
-2. **What is the real intervention window?** If false content goes viral in 12 minutes but a response takes 3 hours, what's the realistic mitigation strategy? We might be designing to reduce downstream spread rather than stop initial spread.
-
-3. **What is the acceptable false positive rate?** If we label 1,000 breaking news posts, how many can be legitimate content labeled as potential misinformation before we cause significant harm? This threshold shapes the entire design.
-
-4. **How do we define "breaking news" for this feature?** Based on Twitter/X's trending algorithm, manually declared by a T&S team, or triggered by external signals (emergency alert systems, FEMA, etc.)? The trigger mechanism determines how the feature activates.
-
-5. **What is the explicit safeguard against political weaponization?** Any feature that can slow the spread of content can be used to slow the spread of politically inconvenient content. This is a design constraint, not an afterthought.
-
-6. **What are the current failure modes of Community Notes specifically?** Understanding why it's slow informs whether the solution is to speed up Community Notes or to build a parallel system.`,
+        modelAnswer: 'Before designing, I\'d clarify several difficult questions:\n\n1. **Who determines what is "misinformation"?** This is the hardest question. Options range from AI pattern detection, external accredited fact-checkers, user consensus (Community Notes model), to a Twitter/X internal policy team. Each has different error rates and political vulnerability. I need to understand what authority Twitter/X is willing to claim here.\n\n2. **What is the real intervention window?** If false content goes viral in 12 minutes but a response takes 3 hours, what\'s the realistic mitigation strategy? We might be designing to reduce downstream spread rather than stop initial spread.\n\n3. **What is the acceptable false positive rate?** If we label 1,000 breaking news posts, how many can be legitimate content labeled as potential misinformation before we cause significant harm? This threshold shapes the entire design.\n\n4. **How do we define "breaking news" for this feature?** Based on Twitter/X\'s trending algorithm, manually declared by a T&S team, or triggered by external signals (emergency alert systems, FEMA, etc.)? The trigger mechanism determines how the feature activates.\n\n5. **What is the explicit safeguard against political weaponization?** Any feature that can slow the spread of content can be used to slow the spread of politically inconvenient content. This is a design constraint, not an afterthought.\n\n6. **What are the current failure modes of Community Notes specifically?** Understanding why it\'s slow informs whether the solution is to speed up Community Notes or to build a parallel system.',
       },
       {
         id: 'users',
@@ -2227,18 +1250,7 @@ Design a feature that reduces the spread of misinformation during breaking news 
           'Acknowledges that the same feature that protects some users could harm others (false positives)',
           'Makes a prioritization recommendation that names the tension explicitly',
         ],
-        modelAnswer: `**Segment 1: General news consumers (largest segment)**
-People who come to Twitter/X during breaking events to find out what is happening. They are the primary victims of misinformation spread — they may make decisions based on false content (evacuate or not, panic or not, believe a public figure said something they didn't). High volume; heterogeneous in media literacy.
-
-**Segment 2: Journalists, first responders, and local sources**
-They are often the primary sources of legitimate breaking news on Twitter/X — eyewitnesses, beat reporters, local emergency services. If a misinformation detection system has false positives, this segment is most at risk of being wrongly labeled. Relatively small but extremely high-stakes: a false label on a journalist covering an active event is a serious harm.
-
-**Segment 3: Politically motivated or ideologically engaged accounts**
-Both creators of deliberate misinformation AND vocal opponents of any content moderation (who will claim suppression). Their behavior drives much of the viral spread of false content. Any feature that acts on this segment will face the most public opposition and political scrutiny.
-
-**Tension call-out:** The feature's primary beneficiary is Segment 1 (general consumers protected from false content). Its primary risk is Segment 2 (legitimate sources wrongly labeled). Any design must optimize for Segment 1 protection while minimizing Segment 2 false positives — and must have a clear, fast appeals process for Segment 2.
-
-**Prioritization:** Design for Segment 1 (maximum reach of protection) with Segment 2 safeguards as non-negotiable constraints.`,
+        modelAnswer: '**Segment 1: General news consumers (largest segment)**\nPeople who come to Twitter/X during breaking events to find out what is happening. They are the primary victims of misinformation spread — they may make decisions based on false content (evacuate or not, panic or not, believe a public figure said something they didn\'t). High volume; heterogeneous in media literacy.\n\n**Segment 2: Journalists, first responders, and local sources**\nThey are often the primary sources of legitimate breaking news on Twitter/X — eyewitnesses, beat reporters, local emergency services. If a misinformation detection system has false positives, this segment is most at risk of being wrongly labeled. Relatively small but extremely high-stakes: a false label on a journalist covering an active event is a serious harm.\n\n**Segment 3: Politically motivated or ideologically engaged accounts**\nBoth creators of deliberate misinformation AND vocal opponents of any content moderation (who will claim suppression). Their behavior drives much of the viral spread of false content. Any feature that acts on this segment will face the most public opposition and political scrutiny.\n\n**Tension call-out:** The feature\'s primary beneficiary is Segment 1 (general consumers protected from false content). Its primary risk is Segment 2 (legitimate sources wrongly labeled). Any design must optimize for Segment 1 protection while minimizing Segment 2 false positives — and must have a clear, fast appeals process for Segment 2.\n\n**Prioritization:** Design for Segment 1 (maximum reach of protection) with Segment 2 safeguards as non-negotiable constraints.',
       },
       {
         id: 'goals',
@@ -2252,19 +1264,7 @@ Both creators of deliberate misinformation AND vocal opponents of any content mo
           'Considers ex-post accuracy evaluation (ground truth emerges later) as part of the measurement framework',
           'Guardrail explicitly protects against politically asymmetric application',
         ],
-        modelAnswer: `**The measurement challenge:** You cannot fully measure misinformation reduction in real time because "ground truth" (what was false) is often only established days or weeks after the event. This is the fundamental tension — the feature must act quickly but accuracy is only knowable slowly.
-
-**Primary metric: Correction adoption rate**
-% of content that initially carried a "breaking news context" label and was later confirmed as misinformation, where downstream shares (after the label was applied) were significantly lower than comparable content without the label. This measures whether the label actually changed behavior, not just whether labels were applied.
-
-**False positive metric (first-class, not guardrail):**
-% of labeled content that is retroactively confirmed as accurate within 72 hours. This MUST be measured and reported publicly. Target: <5% false positive rate on content labeled as "potentially unverified." A 10% false positive rate means 1 in 10 labels is wrong — unacceptable for a platform of Twitter/X's scale.
-
-**Politically asymmetric application guardrail:**
-Label application rate must be measured by political topic and source type quarterly. If labels are applied to conservative content at a statistically different rate than liberal content (or vice versa), that is a failure mode that requires immediate review and a public audit.
-
-**Long-term outcome metric:**
-User trust survey: "Do you trust that breaking news content on Twitter/X is reliable?" Baseline + 12-month trend. This is slow to move but is the ultimate measure of whether the feature builds platform trust.`,
+        modelAnswer: '**The measurement challenge:** You cannot fully measure misinformation reduction in real time because "ground truth" (what was false) is often only established days or weeks after the event. This is the fundamental tension — the feature must act quickly but accuracy is only knowable slowly.\n\n**Primary metric: Correction adoption rate**\n% of content that initially carried a "breaking news context" label and was later confirmed as misinformation, where downstream shares (after the label was applied) were significantly lower than comparable content without the label. This measures whether the label actually changed behavior, not just whether labels were applied.\n\n**False positive metric (first-class, not guardrail):**\n% of labeled content that is retroactively confirmed as accurate within 72 hours. This MUST be measured and reported publicly. Target: <5% false positive rate on content labeled as "potentially unverified." A 10% false positive rate means 1 in 10 labels is wrong — unacceptable for a platform of Twitter/X\'s scale.\n\n**Politically asymmetric application guardrail:**\nLabel application rate must be measured by political topic and source type quarterly. If labels are applied to conservative content at a statistically different rate than liberal content (or vice versa), that is a failure mode that requires immediate review and a public audit.\n\n**Long-term outcome metric:**\nUser trust survey: "Do you trust that breaking news content on Twitter/X is reliable?" Baseline + 12-month trend. This is slow to move but is the ultimate measure of whether the feature builds platform trust.',
       },
       {
         id: 'solutions',
@@ -2278,17 +1278,7 @@ User trust survey: "Do you trust that breaking news content on Twitter/X is reli
           'Each solution explicitly names the political weaponization risk and how the design mitigates it',
           'Solutions consider the interplay with Community Notes',
         ],
-        modelAnswer: `**Option 1: Breaking News Context Mode — Temporary Amplification Reduction (Low effort, no truth judgment)**
-During declared breaking news events (triggered by trending + emergency signal threshold), automatically reduce the viral amplification of posts containing unverified claim patterns — without labeling them as false. Retweet/repost of content from accounts with <30 days history or <500 followers gets a 2-hour "pending verification" delay before appearing in recommendations. The delay is not removal — the content still exists and can be found. This slows spread without making a truth determination. Risk: sophisticated bad actors can use older accounts; the delay threshold requires careful calibration.
-
-**Option 2: Community Notes Acceleration — Prioritized Fact-Check Queue (Medium effort)**
-During declared breaking news events, algorithmically surface the 100 most-shared posts in the topic to Community Notes contributors for prioritized review. Community Notes contributors get a "Breaking News Alert" with a 4-hour response incentive (gamified contribution credit). This speeds up the existing system rather than building a new one, preserving Community Notes' decentralized legitimacy. Risk: Community Notes contributors have their own political biases; a breaking news queue may amplify those biases under time pressure.
-
-**Option 3: Source Credibility Signal — Contextual Badge System (Medium effort)**
-Rather than labeling individual posts as misinformation, surface a "source context" badge on posts from accounts that are verified as major news organizations, government agencies, or accredited fact-checkers — giving readers a positive signal rather than a negative one. "This post is from [Verified News Org]" is less politically contentious than "This post may be false." The absence of a badge is a signal to readers without Twitter/X making a determination. Risk: verification status itself becomes politicized (which orgs are "verified"?); requires transparent, rule-based accreditation criteria.
-
-**Option 4: Share Friction Prompt for High-Velocity Unverified Content (Low effort)**
-When a user is about to repost content that is spreading rapidly but has not yet been corroborated by a verified source, show a prompt: "This is spreading fast. No major news organizations have confirmed this yet. Share anyway?" Users who see this prompt before sharing dramatically reduce repost rates in research studies. No truth determination — just a pause and context. Risk: users may become desensitized ("prompt blindness") if this fires too frequently; must reserve for genuine breaking news velocity signals.`,
+        modelAnswer: '**Option 1: Breaking News Context Mode — Temporary Amplification Reduction (Low effort, no truth judgment)**\nDuring declared breaking news events (triggered by trending + emergency signal threshold), automatically reduce the viral amplification of posts containing unverified claim patterns — without labeling them as false. Retweet/repost of content from accounts with <30 days history or <500 followers gets a 2-hour "pending verification" delay before appearing in recommendations. The delay is not removal — the content still exists and can be found. This slows spread without making a truth determination. Risk: sophisticated bad actors can use older accounts; the delay threshold requires careful calibration.\n\n**Option 2: Community Notes Acceleration — Prioritized Fact-Check Queue (Medium effort)**\nDuring declared breaking news events, algorithmically surface the 100 most-shared posts in the topic to Community Notes contributors for prioritized review. Community Notes contributors get a "Breaking News Alert" with a 4-hour response incentive (gamified contribution credit). This speeds up the existing system rather than building a new one, preserving Community Notes\' decentralized legitimacy. Risk: Community Notes contributors have their own political biases; a breaking news queue may amplify those biases under time pressure.\n\n**Option 3: Source Credibility Signal — Contextual Badge System (Medium effort)**\nRather than labeling individual posts as misinformation, surface a "source context" badge on posts from accounts that are verified as major news organizations, government agencies, or accredited fact-checkers — giving readers a positive signal rather than a negative one. "This post is from [Verified News Org]" is less politically contentious than "This post may be false." The absence of a badge is a signal to readers without Twitter/X making a determination. Risk: verification status itself becomes politicized (which orgs are "verified"?); requires transparent, rule-based accreditation criteria.\n\n**Option 4: Share Friction Prompt for High-Velocity Unverified Content (Low effort)**\nWhen a user is about to repost content that is spreading rapidly but has not yet been corroborated by a verified source, show a prompt: "This is spreading fast. No major news organizations have confirmed this yet. Share anyway?" Users who see this prompt before sharing dramatically reduce repost rates in research studies. No truth determination — just a pause and context. Risk: users may become desensitized ("prompt blindness") if this fires too frequently; must reserve for genuine breaking news velocity signals.',
       },
       {
         id: 'prioritize',
@@ -2302,25 +1292,7 @@ When a user is about to repost content that is spreading rapidly but has not yet
           'Measurement plan includes an external audit mechanism, not just internal metrics',
           'Acknowledges the first-mover risk: any feature will be criticized by someone',
         ],
-        modelAnswer: `**Recommendation: Option 4 (Share Friction Prompt) + Option 2 (Community Notes Acceleration) as v1**
-
-**Rationale:**
-Option 4 requires no truth determination, has precedent in research (Facebook's similar prompt reduced false share rates by 20%+), and is philosophically defensible: we're adding a pause, not a judgment. Option 2 speeds up Community Notes — which already has a legitimate, decentralized governance model. Together they address the velocity problem without Twitter/X claiming the authority to determine truth.
-
-**What v1 does NOT include:**
-No automatic labeling, no algorithmic suppression, and no content removal. These have higher political weaponization risk and lower defensibility. Start with friction and crowdsourced context.
-
-**Organizational navigation — this is as important as the product:**
-- Legal review: any breaking news signal (what triggers "breaking news mode") must be transparently documented and resistant to discretionary application
-- Policy: the triggering criteria for breaking news mode must be published — otherwise it looks like an arbitrary kill switch
-- Communications: the launch must be accompanied by a public explanation of exactly how the system works, what its error rate is, and how it is audited
-- External audit: commit to quarterly third-party audit of label application rates by topic and source type. Publish the results. This is the primary political weaponization safeguard.
-
-**Launch strategy:**
-Do not quietly ship this. Partner with 3–5 accredited academic researchers in platform trust before launch. Brief journalists who cover trust & safety at major outlets. Publish a detailed technical explainer on the day of launch. Controversy is inevitable — transparency is the best mitigation.
-
-**Measurement commitment:**
-Publish quarterly public transparency reports on: prompt activation frequency, false positive rate on Community Notes reviews, and label application rate by political topic category. Make the accountability mechanism public from day one.`,
+        modelAnswer: '**Recommendation: Option 4 (Share Friction Prompt) + Option 2 (Community Notes Acceleration) as v1**\n\n**Rationale:**\nOption 4 requires no truth determination, has precedent in research (Facebook\'s similar prompt reduced false share rates by 20%+), and is philosophically defensible: we\'re adding a pause, not a judgment. Option 2 speeds up Community Notes — which already has a legitimate, decentralized governance model. Together they address the velocity problem without Twitter/X claiming the authority to determine truth.\n\n**What v1 does NOT include:**\nNo automatic labeling, no algorithmic suppression, and no content removal. These have higher political weaponization risk and lower defensibility. Start with friction and crowdsourced context.\n\n**Organizational navigation — this is as important as the product:**\n- Legal review: any breaking news signal (what triggers "breaking news mode") must be transparently documented and resistant to discretionary application\n- Policy: the triggering criteria for breaking news mode must be published — otherwise it looks like an arbitrary kill switch\n- Communications: the launch must be accompanied by a public explanation of exactly how the system works, what its error rate is, and how it is audited\n- External audit: commit to quarterly third-party audit of label application rates by topic and source type. Publish the results. This is the primary political weaponization safeguard.\n\n**Launch strategy:**\nDo not quietly ship this. Partner with 3–5 accredited academic researchers in platform trust before launch. Brief journalists who cover trust & safety at major outlets. Publish a detailed technical explainer on the day of launch. Controversy is inevitable — transparency is the best mitigation.\n\n**Measurement commitment:**\nPublish quarterly public transparency reports on: prompt activation frequency, false positive rate on Community Notes reviews, and label application rate by political topic category. Make the accountability mechanism public from day one.',
       },
     ],
   },
@@ -2337,11 +1309,7 @@ Publish quarterly public transparency reports on: prompt activation frequency, f
     category: 'Utility App',
     tags: ['internationalization', 'accessibility', 'navigation', 'emerging markets'],
     isFree: false,
-    prompt: `You are a PM at Google Maps. In many high-growth markets — India, Southeast Asia, Sub-Saharan Africa, Latin America — users frequently navigate in areas with poor or no cellular data connectivity. Google Maps has an "Offline Maps" feature that allows users to download a region for offline use, but usage data shows it is underused: only 9% of users in high-connectivity-gap regions have ever downloaded an offline map, and those who do often download the wrong area or outdated maps.
-
-Meanwhile, these users need navigation support the most — they are often in unfamiliar areas (as economic migrants, first-time urban commuters, or travelers) and lack the local knowledge to navigate without digital help.
-
-Redesign the offline navigation experience for users in low-connectivity regions to meaningfully increase their navigation success rate.`,
+    prompt: 'You are a PM at Google Maps. In many high-growth markets — India, Southeast Asia, Sub-Saharan Africa, Latin America — users frequently navigate in areas with poor or no cellular data connectivity. Google Maps has an "Offline Maps" feature that allows users to download a region for offline use, but usage data shows it is underused: only 9% of users in high-connectivity-gap regions have ever downloaded an offline map, and those who do often download the wrong area or outdated maps.\n\nMeanwhile, these users need navigation support the most — they are often in unfamiliar areas (as economic migrants, first-time urban commuters, or travelers) and lack the local knowledge to navigate without digital help.\n\nRedesign the offline navigation experience for users in low-connectivity regions to meaningfully increase their navigation success rate.',
     phases: [
       {
         id: 'clarify',
@@ -2356,19 +1324,7 @@ Redesign the offline navigation experience for users in low-connectivity regions
           'Asks about local map data quality in these regions — offline navigation is useless if the underlying map is wrong',
           'Asks about the connectivity pattern — is connectivity absent entirely or intermittent?',
         ],
-        modelAnswer: `Before designing, I'd clarify:
-
-1. **Why is offline maps underused at 9%?** Is it a feature discovery problem (users don't know it exists), a complexity problem (downloading a region is non-trivial), a storage problem (low-end devices have limited space), or a catch-22 problem (you need good connectivity to download the offline maps you need when you don't have connectivity)?
-
-2. **What device profile do these users have?** In India and Sub-Saharan Africa, a significant portion of users are on 2–3 year old Android devices with 16–32GB storage, some running Android Go. Solutions that work on a flagship Pixel won't work here.
-
-3. **What's the nature of connectivity in these regions?** Is it that connectivity is absent for hours at a time, or that it's 2G-level slow (technically connected but data-constrained)? The solutions differ significantly.
-
-4. **What are users doing when navigation fails?** Do they ask locals? Use another app? Give up on the destination? Knowing the fallback behavior tells us how critical the failure is and what the alternative our feature is competing against.
-
-5. **How is the local map data quality in these regions?** Navigation accuracy in low-connectivity regions is only as good as the underlying map. Are roads, businesses, and addresses in these markets well-mapped in Google Maps?
-
-6. **Is this primarily a new-to-city use case or a daily commute use case?** Someone navigating a new city once needs different features than a daily commuter navigating a fixed route in low-connectivity conditions.`,
+        modelAnswer: 'Before designing, I\'d clarify:\n\n1. **Why is offline maps underused at 9%?** Is it a feature discovery problem (users don\'t know it exists), a complexity problem (downloading a region is non-trivial), a storage problem (low-end devices have limited space), or a catch-22 problem (you need good connectivity to download the offline maps you need when you don\'t have connectivity)?\n\n2. **What device profile do these users have?** In India and Sub-Saharan Africa, a significant portion of users are on 2–3 year old Android devices with 16–32GB storage, some running Android Go. Solutions that work on a flagship Pixel won\'t work here.\n\n3. **What\'s the nature of connectivity in these regions?** Is it that connectivity is absent for hours at a time, or that it\'s 2G-level slow (technically connected but data-constrained)? The solutions differ significantly.\n\n4. **What are users doing when navigation fails?** Do they ask locals? Use another app? Give up on the destination? Knowing the fallback behavior tells us how critical the failure is and what the alternative our feature is competing against.\n\n5. **How is the local map data quality in these regions?** Navigation accuracy in low-connectivity regions is only as good as the underlying map. Are roads, businesses, and addresses in these markets well-mapped in Google Maps?\n\n6. **Is this primarily a new-to-city use case or a daily commute use case?** Someone navigating a new city once needs different features than a daily commuter navigating a fixed route in low-connectivity conditions.',
       },
       {
         id: 'users',
@@ -2382,17 +1338,7 @@ Redesign the offline navigation experience for users in low-connectivity regions
           'Makes a clear prioritization recommendation with reasoning about urgency and size of need',
           'Identifies which segment currently has the worst navigation success rate',
         ],
-        modelAnswer: `**Segment 1: First-time urban migrants and economic migrants**
-Moving from rural to urban areas — often navigating a major city for the first time. They are likely to navigate entirely unfamiliar areas, have low local knowledge, and be on budget devices with limited data plans. Navigation failure for this segment is high-stakes: they may miss job interviews, get lost in unsafe areas, or simply give up on accessing services. Highest urgency and highest failure rate.
-
-**Segment 2: Daily commuters in low-connectivity transit corridors**
-Know their general route but rely on Maps for transit timing, alternate routes, or traffic updates. They have connectivity intermittently (when above ground, near Wi-Fi) but lose it on subway, rural roads, or low-cell-coverage areas. Lower navigation failure rate than Segment 1, but higher frequency of use.
-
-**Segment 3: Occasional travelers and tourists in emerging markets**
-Visiting from higher-connectivity regions. May have roaming data restrictions. Higher device capability but unfamiliar local geography. More likely to plan ahead (download offline maps before the trip) if the UX makes it easy.
-
-**Focus: Segment 1 (first-time urban migrants)**
-They have the highest failure rate, the most acute need, the least technical ability to configure offline maps manually, and the lowest-end devices. Solutions designed for them must be simple, low-storage, and proactively available — not requiring the user to understand and configure an offline maps feature in advance.`,
+        modelAnswer: '**Segment 1: First-time urban migrants and economic migrants**\nMoving from rural to urban areas — often navigating a major city for the first time. They are likely to navigate entirely unfamiliar areas, have low local knowledge, and be on budget devices with limited data plans. Navigation failure for this segment is high-stakes: they may miss job interviews, get lost in unsafe areas, or simply give up on accessing services. Highest urgency and highest failure rate.\n\n**Segment 2: Daily commuters in low-connectivity transit corridors**\nKnow their general route but rely on Maps for transit timing, alternate routes, or traffic updates. They have connectivity intermittently (when above ground, near Wi-Fi) but lose it on subway, rural roads, or low-cell-coverage areas. Lower navigation failure rate than Segment 1, but higher frequency of use.\n\n**Segment 3: Occasional travelers and tourists in emerging markets**\nVisiting from higher-connectivity regions. May have roaming data restrictions. Higher device capability but unfamiliar local geography. More likely to plan ahead (download offline maps before the trip) if the UX makes it easy.\n\n**Focus: Segment 1 (first-time urban migrants)**\nThey have the highest failure rate, the most acute need, the least technical ability to configure offline maps manually, and the lowest-end devices. Solutions designed for them must be simple, low-storage, and proactively available — not requiring the user to understand and configure an offline maps feature in advance.',
       },
       {
         id: 'goals',
@@ -2406,21 +1352,7 @@ They have the highest failure rate, the most acute need, the least technical abi
           'Guardrail protects against over-caching (storage on low-end devices is a real constraint)',
           'Considers map data freshness as a metric (stale offline data causes navigation failures even when the offline feature works)',
         ],
-        modelAnswer: `**Primary metric: Navigation session completion rate in low-connectivity markets**
-% of navigation sessions that reach a "destination arrived" or "route completed" state, measured in markets with identified connectivity gaps. Baseline: likely lower than high-connectivity markets due to session drop-off when connectivity is lost. Target: bring completion rate to within 15% of high-connectivity market equivalent.
-
-**Proxy metric for offline coverage:**
-% of navigation sessions in low-connectivity markets where the required map data was available locally (either pre-cached or previously downloaded) at session start. This measures whether the offline solution is covering the actual use cases.
-
-**Diagnostic metrics:**
-- Offline map download rate in target markets (adoption of the improved offline flow)
-- Navigation sessions that fail due to connectivity loss vs. sessions that succeed despite connectivity loss (offline cache hit rate)
-- Time from app open to first route displayed (low-connectivity users shouldn't wait for network round-trips to start navigating)
-
-**Guardrail metrics:**
-- Device storage consumed by Google Maps on low-end devices (must not exceed reasonable thresholds — monitor for user storage complaints)
-- Map data age for cached content: offline maps >90 days old cause navigation errors (track and proactively refresh)
-- Navigation accuracy for offline-only sessions: do routes from cached data have higher "wrong turn" events than online sessions?`,
+        modelAnswer: '**Primary metric: Navigation session completion rate in low-connectivity markets**\n% of navigation sessions that reach a "destination arrived" or "route completed" state, measured in markets with identified connectivity gaps. Baseline: likely lower than high-connectivity markets due to session drop-off when connectivity is lost. Target: bring completion rate to within 15% of high-connectivity market equivalent.\n\n**Proxy metric for offline coverage:**\n% of navigation sessions in low-connectivity markets where the required map data was available locally (either pre-cached or previously downloaded) at session start. This measures whether the offline solution is covering the actual use cases.\n\n**Diagnostic metrics:**\n- Offline map download rate in target markets (adoption of the improved offline flow)\n- Navigation sessions that fail due to connectivity loss vs. sessions that succeed despite connectivity loss (offline cache hit rate)\n- Time from app open to first route displayed (low-connectivity users shouldn\'t wait for network round-trips to start navigating)\n\n**Guardrail metrics:**\n- Device storage consumed by Google Maps on low-end devices (must not exceed reasonable thresholds — monitor for user storage complaints)\n- Map data age for cached content: offline maps >90 days old cause navigation errors (track and proactively refresh)\n- Navigation accuracy for offline-only sessions: do routes from cached data have higher "wrong turn" events than online sessions?',
       },
       {
         id: 'solutions',
@@ -2434,17 +1366,7 @@ They have the highest failure rate, the most acute need, the least technical abi
           'At least one solution improves the offline map download UX specifically',
           'Each solution identifies its technical dependency or key assumption',
         ],
-        modelAnswer: `**Option 1: Predictive Neighborhood Caching (Medium-high effort, zero user action)**
-Using pattern analysis of a user's past navigation behavior (home area, work area, frequently visited areas), automatically pre-cache the map data for these zones when the user is on Wi-Fi. No user action required. The app quietly builds an offline map of the areas the user actually uses. Storage is managed by evicting least-recently-used areas when storage is low. On low-end devices (Android Go), pre-cache only the 5km radius most frequently navigated. Risk: privacy sensitivity — this requires observing location patterns; must have clear user-facing explanation and opt-out.
-
-**Option 2: Route-Level On-Demand Caching (Low effort, connectivity-aware)**
-When a user plots a route while connected, automatically cache the specific map tiles, street data, and turn-by-turn instructions for that route and a 500m buffer. If connectivity is lost mid-navigation, the route continues offline seamlessly without any user action. This is narrower than pre-downloading an entire region — it caches only what's needed for this specific journey. Risk: if the user deviates from the route, the cached area may not cover the new path; need a fallback "data needed for this area, searching for Wi-Fi" message.
-
-**Option 3: Simplified Offline Maps Wizard with Connectivity-Opportunistic Download (Low effort UX, medium effort infrastructure)**
-Replace the current offline maps flow (requires finding the feature, drawing a region, waiting for download) with a proactive prompt: "You navigate in [area name] often. Download this area for offline use? It takes 45MB and will work without internet." Shown when the user is on Wi-Fi with >200MB free storage. Single tap to confirm. Download runs in the background. For very-low-storage devices, offer a "Lite" map (roads and major POIs only, 15MB) vs. a "Full" map. Risk: prompt frequency must be carefully calibrated — notification fatigue if shown too often.
-
-**Option 4: Offline-First Navigation Mode with Graceful Degradation (Medium effort, architecture change)**
-Switch the navigation rendering to load from local cache first, network second — rather than network first with a local fallback. For the vast majority of navigating (straight roads, known routes), local cache is sufficient. Network is used only for live traffic, POI updates, and re-routing. This means navigation starts in <1 second regardless of connectivity, and the experience degrades gracefully rather than failing entirely. Displays a small "limited connectivity" indicator rather than an error state. Risk: requires significant re-architecture of the Maps navigation pipeline; higher engineering lift than the other options.`,
+        modelAnswer: '**Option 1: Predictive Neighborhood Caching (Medium-high effort, zero user action)**\nUsing pattern analysis of a user\'s past navigation behavior (home area, work area, frequently visited areas), automatically pre-cache the map data for these zones when the user is on Wi-Fi. No user action required. The app quietly builds an offline map of the areas the user actually uses. Storage is managed by evicting least-recently-used areas when storage is low. On low-end devices (Android Go), pre-cache only the 5km radius most frequently navigated. Risk: privacy sensitivity — this requires observing location patterns; must have clear user-facing explanation and opt-out.\n\n**Option 2: Route-Level On-Demand Caching (Low effort, connectivity-aware)**\nWhen a user plots a route while connected, automatically cache the specific map tiles, street data, and turn-by-turn instructions for that route and a 500m buffer. If connectivity is lost mid-navigation, the route continues offline seamlessly without any user action. This is narrower than pre-downloading an entire region — it caches only what\'s needed for this specific journey. Risk: if the user deviates from the route, the cached area may not cover the new path; need a fallback "data needed for this area, searching for Wi-Fi" message.\n\n**Option 3: Simplified Offline Maps Wizard with Connectivity-Opportunistic Download (Low effort UX, medium effort infrastructure)**\nReplace the current offline maps flow (requires finding the feature, drawing a region, waiting for download) with a proactive prompt: "You navigate in [area name] often. Download this area for offline use? It takes 45MB and will work without internet." Shown when the user is on Wi-Fi with >200MB free storage. Single tap to confirm. Download runs in the background. For very-low-storage devices, offer a "Lite" map (roads and major POIs only, 15MB) vs. a "Full" map. Risk: prompt frequency must be carefully calibrated — notification fatigue if shown too often.\n\n**Option 4: Offline-First Navigation Mode with Graceful Degradation (Medium effort, architecture change)**\nSwitch the navigation rendering to load from local cache first, network second — rather than network first with a local fallback. For the vast majority of navigating (straight roads, known routes), local cache is sufficient. Network is used only for live traffic, POI updates, and re-routing. This means navigation starts in <1 second regardless of connectivity, and the experience degrades gracefully rather than failing entirely. Displays a small "limited connectivity" indicator rather than an error state. Risk: requires significant re-architecture of the Maps navigation pipeline; higher engineering lift than the other options.',
       },
       {
         id: 'prioritize',
@@ -2458,29 +1380,7 @@ Switch the navigation rendering to load from local cache first, network second �
           'V1 scope is achievable without a full architectural rewrite',
           'V2 roadmap builds naturally from v1 foundations',
         ],
-        modelAnswer: `**Recommendation: Option 2 (Route-Level On-Demand Caching) as v1, with Option 1 (Predictive Neighborhood Caching) as v2**
-
-**Reasoning:**
-Option 2 requires zero user setup and works within the storage constraints of low-end devices — it only caches the specific route being navigated, not an entire region. This means even a 16GB device with Maps can benefit. It addresses the most acute use case (navigation loses connectivity mid-route and fails) for the most at-risk user (first-time urban migrants who have just plotted an unfamiliar route).
-
-Option 4 (offline-first architecture) is the right long-term direction but requires a full pipeline re-architecture — a 12–18 month investment. Option 3 (download wizard) still requires user action and planning ahead, which the target segment won't reliably do.
-
-**V1 scope:**
-- Automatic route tile caching when a route is calculated and the user has any connectivity (even 2G)
-- Cache covers the plotted route + 500m buffer + alternate route tiles if available
-- If connectivity is lost mid-navigation, app continues from cache with a "Navigating offline" indicator
-- Storage managed: route cache auto-cleared 48 hours after navigation completion
-- No new UI for users — this is purely a backend navigation behavior change
-
-**Low-end device accommodation:**
-- Cache only the primary route on devices with <32GB total storage (no buffer or alternate route tiles)
-- Do not cache if available storage is <500MB (user must clear space first — show gentle prompt)
-
-**Measurement in low-connectivity markets:**
-Use deferred logging: navigation session data queued locally and synced when Wi-Fi is available. This allows us to measure session completion rates even for users who never have sustained data connectivity. Tag "offline navigation" sessions separately in analytics.
-
-**V2 (Predictive Neighborhood Caching):**
-Once route-level caching validates that offline-capable navigation improves completion rates, expand to predictive caching for high-frequency navigation areas — leveraging the behavioral data we're now collecting from V1 sessions to determine which areas to pre-cache per user.`,
+        modelAnswer: '**Recommendation: Option 2 (Route-Level On-Demand Caching) as v1, with Option 1 (Predictive Neighborhood Caching) as v2**\n\n**Reasoning:**\nOption 2 requires zero user setup and works within the storage constraints of low-end devices — it only caches the specific route being navigated, not an entire region. This means even a 16GB device with Maps can benefit. It addresses the most acute use case (navigation loses connectivity mid-route and fails) for the most at-risk user (first-time urban migrants who have just plotted an unfamiliar route).\n\nOption 4 (offline-first architecture) is the right long-term direction but requires a full pipeline re-architecture — a 12–18 month investment. Option 3 (download wizard) still requires user action and planning ahead, which the target segment won\'t reliably do.\n\n**V1 scope:**\n- Automatic route tile caching when a route is calculated and the user has any connectivity (even 2G)\n- Cache covers the plotted route + 500m buffer + alternate route tiles if available\n- If connectivity is lost mid-navigation, app continues from cache with a "Navigating offline" indicator\n- Storage managed: route cache auto-cleared 48 hours after navigation completion\n- No new UI for users — this is purely a backend navigation behavior change\n\n**Low-end device accommodation:**\n- Cache only the primary route on devices with <32GB total storage (no buffer or alternate route tiles)\n- Do not cache if available storage is <500MB (user must clear space first — show gentle prompt)\n\n**Measurement in low-connectivity markets:**\nUse deferred logging: navigation session data queued locally and synced when Wi-Fi is available. This allows us to measure session completion rates even for users who never have sustained data connectivity. Tag "offline navigation" sessions separately in analytics.\n\n**V2 (Predictive Neighborhood Caching):**\nOnce route-level caching validates that offline-capable navigation improves completion rates, expand to predictive caching for high-frequency navigation areas — leveraging the behavioral data we\'re now collecting from V1 sessions to determine which areas to pre-cache per user.',
       },
     ],
   },

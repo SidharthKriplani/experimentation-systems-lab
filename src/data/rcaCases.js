@@ -175,55 +175,15 @@ export const rcaCases = [
       }
     ],
     sqlStep: {
-      prompt: `You've confirmed the hypothesis: Visa payment failures spiked on web immediately after the new payment provider was deployed Tuesday afternoon.\n\nWrite a SQL query that validates this by comparing the Visa payment success rate on web versus app, before and after the 3pm deployment window — segmented by card network and platform.`,
+      prompt: 'You\'ve confirmed the hypothesis: Visa payment failures spiked on web immediately after the new payment provider was deployed Tuesday afternoon.\n\nWrite a SQL query that validates this by comparing the Visa payment success rate on web versus app, before and after the 3pm deployment window — segmented by card network and platform.',
       hints: [
         'Use a CASE WHEN to create a pre/post deployment flag around the Tuesday 3pm cutoff',
         'Segment by platform (web vs. app) AND card_network (Visa vs. others) — the bug is specific to both dimensions',
         'Your success rate = successful_payments / total_payment_attempts, not total orders',
         'Include a row count per bucket so you can confirm statistical significance of the drop'
       ],
-      modelQuery: `SELECT
-  -- Deployment window: before vs. after Tuesday 3pm
-  CASE
-    WHEN attempted_at < '2024-01-16 15:00:00' THEN 'pre_deploy'
-    ELSE 'post_deploy'
-  END AS deploy_window,
-
-  platform,          -- 'web' | 'app'
-  card_network,      -- 'visa' | 'mastercard' | 'amex' | 'other'
-
-  COUNT(*)                                          AS total_attempts,
-  SUM(CASE WHEN status = 'success' THEN 1 ELSE 0 END) AS successful_payments,
-
-  -- Success rate as percentage
-  ROUND(
-    100.0 * SUM(CASE WHEN status = 'success' THEN 1 ELSE 0 END)
-    / NULLIF(COUNT(*), 0),
-    2
-  ) AS success_rate_pct,
-
-  -- Error breakdown for diagnostics
-  SUM(CASE WHEN error_code = 'invalid_card' THEN 1 ELSE 0 END) AS invalid_card_errors
-
-FROM payments
-WHERE attempted_at BETWEEN '2024-01-16 12:00:00' AND '2024-01-17 12:00:00'
-  -- 12-hour window bracketing the deployment for clean pre/post comparison
-
-GROUP BY 1, 2, 3
-ORDER BY deploy_window, platform, card_network;`,
-      annotation: `Line-by-line explanation:
-
-CASE WHEN attempted_at < Tuesday 3pm → creates a clean pre/post deployment flag. The 12-hour window (noon-to-noon) avoids mixing previous-day traffic into "pre" while giving enough pre-deploy volume for comparison.
-
-platform + card_network → the two segmentation dimensions where the bug is known to be concentrated. Without both, you'd see the Visa drop diluted by app traffic (where Visa works fine).
-
-success_rate_pct → the key metric: you expect to see ~62% pre-deploy dropping to ~45-50% post-deploy, but ONLY in the web × Visa cell.
-
-invalid_card_errors → the specific error code from the known facts. If your hypothesis is correct, this count spikes sharply in the post-deploy × web × Visa row.
-
-NULLIF(COUNT(*), 0) → prevents division-by-zero if a bucket has no rows (e.g., no Amex attempts on app in that window).
-
-Expected output: post_deploy / web / visa row will show significantly lower success_rate_pct and much higher invalid_card_errors compared to all other rows — that's your confirmation.`
+      modelQuery: 'SELECT\n  -- Deployment window: before vs. after Tuesday 3pm\n  CASE\n    WHEN attempted_at < \'2024-01-16 15:00:00\' THEN \'pre_deploy\'\n    ELSE \'post_deploy\'\n  END AS deploy_window,\n\n  platform,          -- \'web\' | \'app\'\n  card_network,      -- \'visa\' | \'mastercard\' | \'amex\' | \'other\'\n\n  COUNT(*)                                          AS total_attempts,\n  SUM(CASE WHEN status = \'success\' THEN 1 ELSE 0 END) AS successful_payments,\n\n  -- Success rate as percentage\n  ROUND(\n    100.0 * SUM(CASE WHEN status = \'success\' THEN 1 ELSE 0 END)\n    / NULLIF(COUNT(*), 0),\n    2\n  ) AS success_rate_pct,\n\n  -- Error breakdown for diagnostics\n  SUM(CASE WHEN error_code = \'invalid_card\' THEN 1 ELSE 0 END) AS invalid_card_errors\n\nFROM payments\nWHERE attempted_at BETWEEN \'2024-01-16 12:00:00\' AND \'2024-01-17 12:00:00\'\n  -- 12-hour window bracketing the deployment for clean pre/post comparison\n\nGROUP BY 1, 2, 3\nORDER BY deploy_window, platform, card_network;',
+      annotation: 'Line-by-line explanation:\n\nCASE WHEN attempted_at < Tuesday 3pm → creates a clean pre/post deployment flag. The 12-hour window (noon-to-noon) avoids mixing previous-day traffic into "pre" while giving enough pre-deploy volume for comparison.\n\nplatform + card_network → the two segmentation dimensions where the bug is known to be concentrated. Without both, you\'d see the Visa drop diluted by app traffic (where Visa works fine).\n\nsuccess_rate_pct → the key metric: you expect to see ~62% pre-deploy dropping to ~45-50% post-deploy, but ONLY in the web × Visa cell.\n\ninvalid_card_errors → the specific error code from the known facts. If your hypothesis is correct, this count spikes sharply in the post-deploy × web × Visa row.\n\nNULLIF(COUNT(*), 0) → prevents division-by-zero if a bucket has no rows (e.g., no Amex attempts on app in that window).\n\nExpected output: post_deploy / web / visa row will show significantly lower success_rate_pct and much higher invalid_card_errors compared to all other rows — that\'s your confirmation.'
     },
     seniorDiagnosis: {
       likelyCause: 'Payment provider integration bug causing Visa card failures on web',
@@ -420,64 +380,15 @@ Expected output: post_deploy / web / visa row will show significantly lower succ
       }
     ],
     sqlStep: {
-      prompt: `You've identified the hypothesis: the catalog re-ingestion added new subcategory terms in Home & Garden and Electronics, but synonym mappings for those terms were never created — so user queries return zero results.\n\nWrite a SQL query that extracts the top zero-result query strings from those two categories since the pipeline ran, so you can cross-reference them against the synonym table and confirm the missing mappings.`,
+      prompt: 'You\'ve identified the hypothesis: the catalog re-ingestion added new subcategory terms in Home & Garden and Electronics, but synonym mappings for those terms were never created — so user queries return zero results.\n\nWrite a SQL query that extracts the top zero-result query strings from those two categories since the pipeline ran, so you can cross-reference them against the synonym table and confirm the missing mappings.',
       hints: [
         'Filter to searches with result_count = 0 and only after the 2am pipeline run timestamp',
         'Limit to the two affected categories: Home & Garden and Electronics',
         'Group by search_query to find the most frequently searched zero-result terms',
         'Order by frequency descending — the highest-volume zero-result queries are the ones to fix first'
       ],
-      modelQuery: `SELECT
-  sq.search_query,
-  sq.category,
-  COUNT(*)                        AS zero_result_count,
-  COUNT(DISTINCT sq.user_id)      AS unique_users_affected,
-
-  -- Check if this term exists anywhere in the synonym table
-  CASE
-    WHEN st.canonical_term IS NOT NULL THEN 'has_synonym'
-    ELSE 'NO SYNONYM — MISSING'
-  END AS synonym_status,
-
-  -- Check if the term was added in the catalog update
-  CASE
-    WHEN ct.term IS NOT NULL THEN 'new_catalog_term'
-    ELSE 'pre-existing_term'
-  END AS catalog_status
-
-FROM search_queries sq
-
--- Left join to synonym table to identify gaps
-LEFT JOIN synonym_table st
-  ON LOWER(sq.search_query) = LOWER(st.user_query)
-
--- Left join to new catalog terms added in the 2am pipeline
-LEFT JOIN catalog_terms ct
-  ON LOWER(sq.search_query) = LOWER(ct.term)
-  AND ct.ingested_at >= '2024-01-17 02:00:00'  -- Only terms from today's run
-
-WHERE sq.result_count = 0
-  AND sq.searched_at >= '2024-01-17 02:00:00'  -- After the pipeline ran
-  AND sq.category IN ('Home & Garden', 'Electronics')
-
-GROUP BY 1, 2, 5, 6
-ORDER BY zero_result_count DESC
-LIMIT 50;`,
-      annotation: `Line-by-line explanation:
-
-result_count = 0 → filters to only zero-result searches. This is the population we're investigating.
-
-searched_at >= 2am pipeline run → ensures we're only looking at queries that happened after the catalog update, not pre-existing zero-result terms.
-
-category IN ('Home & Garden', 'Electronics') → scopes to the two affected categories from the known facts, keeping the result set focused.
-
-LEFT JOIN synonym_table → if synonym_status = 'NO SYNONYM — MISSING', this row is a confirmed gap. The JOIN maps user query terms against the canonical synonym entries.
-
-LEFT JOIN catalog_terms → the 'new_catalog_term' flag confirms which zero-result queries correspond to terms literally added in the 2am pipeline. The most actionable rows are: zero_result_count HIGH + synonym_status 'NO SYNONYM' + catalog_status 'new_catalog_term'.
-
-COUNT(DISTINCT user_id) → shows how many unique users were affected, not just query count. A term searched by 500 different users is higher priority than one searched 500 times by the same user.
-
-Expected output: top rows will show new catalog terms with 'NO SYNONYM — MISSING' status and high unique user counts. Hand this list to engineering — each row is a synonym entry that needs to be created.`
+      modelQuery: 'SELECT\n  sq.search_query,\n  sq.category,\n  COUNT(*)                        AS zero_result_count,\n  COUNT(DISTINCT sq.user_id)      AS unique_users_affected,\n\n  -- Check if this term exists anywhere in the synonym table\n  CASE\n    WHEN st.canonical_term IS NOT NULL THEN \'has_synonym\'\n    ELSE \'NO SYNONYM — MISSING\'\n  END AS synonym_status,\n\n  -- Check if the term was added in the catalog update\n  CASE\n    WHEN ct.term IS NOT NULL THEN \'new_catalog_term\'\n    ELSE \'pre-existing_term\'\n  END AS catalog_status\n\nFROM search_queries sq\n\n-- Left join to synonym table to identify gaps\nLEFT JOIN synonym_table st\n  ON LOWER(sq.search_query) = LOWER(st.user_query)\n\n-- Left join to new catalog terms added in the 2am pipeline\nLEFT JOIN catalog_terms ct\n  ON LOWER(sq.search_query) = LOWER(ct.term)\n  AND ct.ingested_at >= \'2024-01-17 02:00:00\'  -- Only terms from today\'s run\n\nWHERE sq.result_count = 0\n  AND sq.searched_at >= \'2024-01-17 02:00:00\'  -- After the pipeline ran\n  AND sq.category IN (\'Home & Garden\', \'Electronics\')\n\nGROUP BY 1, 2, 5, 6\nORDER BY zero_result_count DESC\nLIMIT 50;',
+      annotation: 'Line-by-line explanation:\n\nresult_count = 0 → filters to only zero-result searches. This is the population we\'re investigating.\n\nsearched_at >= 2am pipeline run → ensures we\'re only looking at queries that happened after the catalog update, not pre-existing zero-result terms.\n\ncategory IN (\'Home & Garden\', \'Electronics\') → scopes to the two affected categories from the known facts, keeping the result set focused.\n\nLEFT JOIN synonym_table → if synonym_status = \'NO SYNONYM — MISSING\', this row is a confirmed gap. The JOIN maps user query terms against the canonical synonym entries.\n\nLEFT JOIN catalog_terms → the \'new_catalog_term\' flag confirms which zero-result queries correspond to terms literally added in the 2am pipeline. The most actionable rows are: zero_result_count HIGH + synonym_status \'NO SYNONYM\' + catalog_status \'new_catalog_term\'.\n\nCOUNT(DISTINCT user_id) → shows how many unique users were affected, not just query count. A term searched by 500 different users is higher priority than one searched 500 times by the same user.\n\nExpected output: top rows will show new catalog terms with \'NO SYNONYM — MISSING\' status and high unique user counts. Hand this list to engineering — each row is a synonym entry that needs to be created.'
     },
     seniorDiagnosis: {
       likelyCause: 'Missing synonym mappings for new subcategory terms added in the catalog re-ingestion',
@@ -674,72 +585,15 @@ Expected output: top rows will show new catalog terms with 'NO SYNONYM — MISSI
       }
     ],
     sqlStep: {
-      prompt: `You've hypothesized that the new seller onboarding cohort (380 sellers activated 10 days ago) has lower listing quality and slower response times, causing the buyer cancellation spike in NYC, Chicago, and LA.\n\nWrite a SQL query that compares cancellation rates between the new seller cohort and established sellers in those three cities, broken out by cancellation reason code — to confirm the cohort is the driver and quantify the quality gap.`,
+      prompt: 'You\'ve hypothesized that the new seller onboarding cohort (380 sellers activated 10 days ago) has lower listing quality and slower response times, causing the buyer cancellation spike in NYC, Chicago, and LA.\n\nWrite a SQL query that compares cancellation rates between the new seller cohort and established sellers in those three cities, broken out by cancellation reason code — to confirm the cohort is the driver and quantify the quality gap.',
       hints: [
         'Join orders to sellers to get the seller cohort (activated_at date for new vs. established)',
         'Filter geography to NYC, Chicago, LA using a city column or zip-to-city mapping',
         'Break out cancellation reason codes: group by reason_code to compare "item_not_as_described" and "seller_unresponsive" specifically',
         'Calculate cancellation rate as cancelled_orders / total_orders per cohort to normalize for different cohort sizes'
       ],
-      modelQuery: `WITH seller_cohorts AS (
-  -- Label sellers as new (activated in last 14 days) vs. established
-  SELECT
-    seller_id,
-    city,
-    average_rating,
-    CASE
-      WHEN activated_at >= CURRENT_DATE - INTERVAL '14 days' THEN 'new_cohort'
-      ELSE 'established'
-    END AS seller_cohort
-  FROM sellers
-  WHERE city IN ('New York', 'Chicago', 'Los Angeles')
-),
-
-order_outcomes AS (
-  SELECT
-    o.order_id,
-    o.seller_id,
-    o.city,
-    o.status,
-    o.cancellation_reason,   -- 'item_not_as_described' | 'seller_unresponsive' | 'buyer_changed_mind' | etc.
-    sc.seller_cohort,
-    sc.average_rating
-  FROM orders o
-  INNER JOIN seller_cohorts sc ON o.seller_id = sc.seller_id
-  WHERE o.created_at >= CURRENT_DATE - INTERVAL '14 days'
-)
-
-SELECT
-  seller_cohort,
-  cancellation_reason,
-
-  COUNT(*)                                          AS total_orders,
-  SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled_orders,
-
-  ROUND(
-    100.0 * SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END)
-    / NULLIF(COUNT(*), 0),
-    2
-  ) AS cancellation_rate_pct,
-
-  ROUND(AVG(average_rating), 2)                    AS avg_seller_rating
-
-FROM order_outcomes
-GROUP BY 1, 2
-ORDER BY seller_cohort, cancellation_rate_pct DESC;`,
-      annotation: `Line-by-line explanation:
-
-seller_cohorts CTE → separates sellers into new (activated in last 14 days, matching the onboarding batch) vs. established. The 14-day window captures the batch activated "10 days ago" with some buffer.
-
-city IN ('New York', 'Chicago', 'Los Angeles') → scopes to the three geographies where the cancellation spike is confirmed.
-
-order_outcomes CTE → joins orders to sellers, pulling cancellation_reason. This is the key field — we need to see "item_not_as_described" and "seller_unresponsive" broken out by cohort.
-
-cancellation_rate_pct → normalizes by total orders so you're comparing rates, not raw counts. New sellers may have fewer total orders, making raw count comparison misleading.
-
-avg_seller_rating → included per row to confirm the 3.8 vs. 4.6 rating gap alongside the cancellation rate gap.
-
-Expected output: new_cohort rows will show significantly higher cancellation_rate_pct on "item_not_as_described" and "seller_unresponsive" reason codes specifically (3x and 2x respectively per the known facts), while the established seller rows will show lower rates on the same reasons. This is your definitive confirmation.`
+      modelQuery: 'WITH seller_cohorts AS (\n  -- Label sellers as new (activated in last 14 days) vs. established\n  SELECT\n    seller_id,\n    city,\n    average_rating,\n    CASE\n      WHEN activated_at >= CURRENT_DATE - INTERVAL \'14 days\' THEN \'new_cohort\'\n      ELSE \'established\'\n    END AS seller_cohort\n  FROM sellers\n  WHERE city IN (\'New York\', \'Chicago\', \'Los Angeles\')\n),\n\norder_outcomes AS (\n  SELECT\n    o.order_id,\n    o.seller_id,\n    o.city,\n    o.status,\n    o.cancellation_reason,   -- \'item_not_as_described\' | \'seller_unresponsive\' | \'buyer_changed_mind\' | etc.\n    sc.seller_cohort,\n    sc.average_rating\n  FROM orders o\n  INNER JOIN seller_cohorts sc ON o.seller_id = sc.seller_id\n  WHERE o.created_at >= CURRENT_DATE - INTERVAL \'14 days\'\n)\n\nSELECT\n  seller_cohort,\n  cancellation_reason,\n\n  COUNT(*)                                          AS total_orders,\n  SUM(CASE WHEN status = \'cancelled\' THEN 1 ELSE 0 END) AS cancelled_orders,\n\n  ROUND(\n    100.0 * SUM(CASE WHEN status = \'cancelled\' THEN 1 ELSE 0 END)\n    / NULLIF(COUNT(*), 0),\n    2\n  ) AS cancellation_rate_pct,\n\n  ROUND(AVG(average_rating), 2)                    AS avg_seller_rating\n\nFROM order_outcomes\nGROUP BY 1, 2\nORDER BY seller_cohort, cancellation_rate_pct DESC;',
+      annotation: 'Line-by-line explanation:\n\nseller_cohorts CTE → separates sellers into new (activated in last 14 days, matching the onboarding batch) vs. established. The 14-day window captures the batch activated "10 days ago" with some buffer.\n\ncity IN (\'New York\', \'Chicago\', \'Los Angeles\') → scopes to the three geographies where the cancellation spike is confirmed.\n\norder_outcomes CTE → joins orders to sellers, pulling cancellation_reason. This is the key field — we need to see "item_not_as_described" and "seller_unresponsive" broken out by cohort.\n\ncancellation_rate_pct → normalizes by total orders so you\'re comparing rates, not raw counts. New sellers may have fewer total orders, making raw count comparison misleading.\n\navg_seller_rating → included per row to confirm the 3.8 vs. 4.6 rating gap alongside the cancellation rate gap.\n\nExpected output: new_cohort rows will show significantly higher cancellation_rate_pct on "item_not_as_described" and "seller_unresponsive" reason codes specifically (3x and 2x respectively per the known facts), while the established seller rows will show lower rates on the same reasons. This is your definitive confirmation.'
     },
     seniorDiagnosis: {
       likelyCause: 'New seller onboarding cohort has lower listing quality and slower response times, driving cancellations in concentrated cities',
@@ -936,85 +790,15 @@ Expected output: new_cohort rows will show significantly higher cancellation_rat
       }
     ],
     sqlStep: {
-      prompt: `You've hypothesized notification fatigue: the 4x frequency increase (from 1 to 4 pushes/day) is annoying users into opting out and uninstalling, which directly suppresses D7 retention. The high open rate is a misleading proxy — it conflates genuine engagement with reactive phone pickups.\n\nWrite a SQL query that shows D7 retention by notification frequency bucket, so you can confirm the dose-response relationship: the more notifications a user received per day, the lower their D7 retention.`,
+      prompt: 'You\'ve hypothesized notification fatigue: the 4x frequency increase (from 1 to 4 pushes/day) is annoying users into opting out and uninstalling, which directly suppresses D7 retention. The high open rate is a misleading proxy — it conflates genuine engagement with reactive phone pickups.\n\nWrite a SQL query that shows D7 retention by notification frequency bucket, so you can confirm the dose-response relationship: the more notifications a user received per day, the lower their D7 retention.',
       hints: [
         'Create frequency buckets: 1/day, 2/day, 3/day, 4/day (or use ranges like 1-2 vs. 3-4)',
         'D7 retention = users who had any app session on day 7 after install / total users in that cohort',
         'Only include users from cohorts acquired since the campaign launched (3 weeks ago)',
         'Include opt_out_rate and uninstall_rate per bucket to confirm the fatigue mechanism alongside retention'
       ],
-      modelQuery: `WITH user_notification_exposure AS (
-  -- Calculate average daily push notifications received per user
-  -- for the first 7 days after install
-  SELECT
-    u.user_id,
-    u.install_date,
-    u.cohort_type,   -- 'campaign' | 'control'
-    COUNT(n.notification_id) / 7.0  AS avg_daily_notifications,
-
-    -- Bucket users by frequency received
-    CASE
-      WHEN COUNT(n.notification_id) / 7.0 < 1.5  THEN '1/day'
-      WHEN COUNT(n.notification_id) / 7.0 < 2.5  THEN '2/day'
-      WHEN COUNT(n.notification_id) / 7.0 < 3.5  THEN '3/day'
-      ELSE '4/day'
-    END AS frequency_bucket,
-
-    MAX(CASE WHEN n.event_type = 'opt_out'   THEN 1 ELSE 0 END) AS did_opt_out,
-    MAX(CASE WHEN n.event_type = 'uninstall' THEN 1 ELSE 0 END) AS did_uninstall
-
-  FROM users u
-  LEFT JOIN notification_events n
-    ON u.user_id = n.user_id
-    AND n.event_date BETWEEN u.install_date AND u.install_date + INTERVAL '7 days'
-  WHERE u.install_date >= CURRENT_DATE - INTERVAL '21 days'  -- Last 3 weeks (campaign period)
-  GROUP BY 1, 2, 3
-),
-
-d7_sessions AS (
-  -- Flag users who had any session on day 7 (D7 = retained)
-  SELECT DISTINCT user_id
-  FROM app_sessions
-  WHERE DATE(session_start) = (
-    SELECT install_date + INTERVAL '7 days'
-    FROM users u2
-    WHERE u2.user_id = app_sessions.user_id
-    LIMIT 1
-  )
-)
-
-SELECT
-  une.frequency_bucket,
-  une.cohort_type,
-  COUNT(*)                                                  AS total_users,
-  SUM(CASE WHEN ds.user_id IS NOT NULL THEN 1 ELSE 0 END)  AS d7_retained_users,
-
-  ROUND(
-    100.0 * SUM(CASE WHEN ds.user_id IS NOT NULL THEN 1 ELSE 0 END)
-    / NULLIF(COUNT(*), 0), 2
-  )                                                         AS d7_retention_pct,
-
-  ROUND(100.0 * AVG(une.did_opt_out),    2)                AS opt_out_rate_pct,
-  ROUND(100.0 * AVG(une.did_uninstall),  2)                AS uninstall_rate_pct
-
-FROM user_notification_exposure une
-LEFT JOIN d7_sessions ds ON une.user_id = ds.user_id
-
-GROUP BY 1, 2
-ORDER BY frequency_bucket, cohort_type;`,
-      annotation: `Line-by-line explanation:
-
-avg_daily_notifications = COUNT / 7.0 → normalizes to a daily rate. Some users may have received the campaign for fewer than 7 days depending on install timing.
-
-frequency_bucket CASE WHEN → groups users into 4 buckets matching the frequency levels. This creates the dose-response variable.
-
-did_opt_out / did_uninstall MAX flags → captures whether each user opted out or uninstalled at any point in days 1-7. These are the behavioral mechanisms driving retention suppression.
-
-install_date >= CURRENT_DATE - 21 days → scopes to campaign-period cohorts only, so you're not mixing in pre-campaign users who had different notification exposure.
-
-d7_sessions CTE → defines D7 retention as "had any app session exactly on day 7." Some teams use "within day 7" — adjust based on your company's retention definition.
-
-Expected output: D7 retention_pct should decrease monotonically as frequency_bucket increases (1/day highest retention → 4/day lowest), while opt_out_rate_pct and uninstall_rate_pct increase in the same direction. That monotonic relationship is your dose-response confirmation of the fatigue mechanism.`
+      modelQuery: 'WITH user_notification_exposure AS (\n  -- Calculate average daily push notifications received per user\n  -- for the first 7 days after install\n  SELECT\n    u.user_id,\n    u.install_date,\n    u.cohort_type,   -- \'campaign\' | \'control\'\n    COUNT(n.notification_id) / 7.0  AS avg_daily_notifications,\n\n    -- Bucket users by frequency received\n    CASE\n      WHEN COUNT(n.notification_id) / 7.0 < 1.5  THEN \'1/day\'\n      WHEN COUNT(n.notification_id) / 7.0 < 2.5  THEN \'2/day\'\n      WHEN COUNT(n.notification_id) / 7.0 < 3.5  THEN \'3/day\'\n      ELSE \'4/day\'\n    END AS frequency_bucket,\n\n    MAX(CASE WHEN n.event_type = \'opt_out\'   THEN 1 ELSE 0 END) AS did_opt_out,\n    MAX(CASE WHEN n.event_type = \'uninstall\' THEN 1 ELSE 0 END) AS did_uninstall\n\n  FROM users u\n  LEFT JOIN notification_events n\n    ON u.user_id = n.user_id\n    AND n.event_date BETWEEN u.install_date AND u.install_date + INTERVAL \'7 days\'\n  WHERE u.install_date >= CURRENT_DATE - INTERVAL \'21 days\'  -- Last 3 weeks (campaign period)\n  GROUP BY 1, 2, 3\n),\n\nd7_sessions AS (\n  -- Flag users who had any session on day 7 (D7 = retained)\n  SELECT DISTINCT user_id\n  FROM app_sessions\n  WHERE DATE(session_start) = (\n    SELECT install_date + INTERVAL \'7 days\'\n    FROM users u2\n    WHERE u2.user_id = app_sessions.user_id\n    LIMIT 1\n  )\n)\n\nSELECT\n  une.frequency_bucket,\n  une.cohort_type,\n  COUNT(*)                                                  AS total_users,\n  SUM(CASE WHEN ds.user_id IS NOT NULL THEN 1 ELSE 0 END)  AS d7_retained_users,\n\n  ROUND(\n    100.0 * SUM(CASE WHEN ds.user_id IS NOT NULL THEN 1 ELSE 0 END)\n    / NULLIF(COUNT(*), 0), 2\n  )                                                         AS d7_retention_pct,\n\n  ROUND(100.0 * AVG(une.did_opt_out),    2)                AS opt_out_rate_pct,\n  ROUND(100.0 * AVG(une.did_uninstall),  2)                AS uninstall_rate_pct\n\nFROM user_notification_exposure une\nLEFT JOIN d7_sessions ds ON une.user_id = ds.user_id\n\nGROUP BY 1, 2\nORDER BY frequency_bucket, cohort_type;',
+      annotation: 'Line-by-line explanation:\n\navg_daily_notifications = COUNT / 7.0 → normalizes to a daily rate. Some users may have received the campaign for fewer than 7 days depending on install timing.\n\nfrequency_bucket CASE WHEN → groups users into 4 buckets matching the frequency levels. This creates the dose-response variable.\n\ndid_opt_out / did_uninstall MAX flags → captures whether each user opted out or uninstalled at any point in days 1-7. These are the behavioral mechanisms driving retention suppression.\n\ninstall_date >= CURRENT_DATE - 21 days → scopes to campaign-period cohorts only, so you\'re not mixing in pre-campaign users who had different notification exposure.\n\nd7_sessions CTE → defines D7 retention as "had any app session exactly on day 7." Some teams use "within day 7" — adjust based on your company\'s retention definition.\n\nExpected output: D7 retention_pct should decrease monotonically as frequency_bucket increases (1/day highest retention → 4/day lowest), while opt_out_rate_pct and uninstall_rate_pct increase in the same direction. That monotonic relationship is your dose-response confirmation of the fatigue mechanism.'
     },
     seniorDiagnosis: {
       likelyCause: 'Notification fatigue from 4x frequency increase driving opt-outs and uninstalls that suppress D7 retention',
@@ -1211,105 +995,15 @@ Expected output: D7 retention_pct should decrease monotonically as frequency_buc
       }
     ],
     sqlStep: {
-      prompt: `You've identified three compounding factors behind the margin compression: (a) SMB mix shift brings lower ACV and higher cost-to-serve, (b) the volume discount program eroded per-seat revenue, (c) infrastructure costs grew 28% vs. 18% revenue growth.\n\nWrite a SQL query that builds a per-segment cohort P&L — enterprise vs. SMB — showing gross margin per account alongside hosting cost, professional services cost, and revenue per seat. This is the analysis you'd present to the CFO.`,
+      prompt: 'You\'ve identified three compounding factors behind the margin compression: (a) SMB mix shift brings lower ACV and higher cost-to-serve, (b) the volume discount program eroded per-seat revenue, (c) infrastructure costs grew 28% vs. 18% revenue growth.\n\nWrite a SQL query that builds a per-segment cohort P&L — enterprise vs. SMB — showing gross margin per account alongside hosting cost, professional services cost, and revenue per seat. This is the analysis you\'d present to the CFO.',
       hints: [
         'Join contracts to accounts to get segment (enterprise vs. SMB) and contract_value',
         'Join to hosting_costs and ps_costs tables to get cost per account (not per user)',
         'Gross margin = (revenue - hosting_cost - ps_cost) / revenue × 100',
         'Include NRR or churn flag per segment to extend the story to LTV, not just quarterly margin'
       ],
-      modelQuery: `WITH account_revenue AS (
-  SELECT
-    a.account_id,
-    a.segment,            -- 'enterprise' | 'smb'
-    a.acquisition_quarter,
-    c.contract_value_arr,
-    c.seat_count,
-    c.has_volume_discount,
-    c.discounted_seat_price,
-    c.list_seat_price,
-
-    -- Effective revenue per seat (reflects discount impact)
-    ROUND(c.contract_value_arr / NULLIF(c.seat_count, 0), 2) AS revenue_per_seat,
-
-    -- Discount erosion: revenue lost per seat due to volume discount
-    ROUND(c.list_seat_price - c.discounted_seat_price, 2)    AS discount_erosion_per_seat
-
-  FROM accounts a
-  INNER JOIN contracts c ON a.account_id = c.account_id
-  WHERE c.contract_start_date >= DATE_TRUNC('quarter', CURRENT_DATE - INTERVAL '3 months')
-    AND c.status = 'active'
-),
-
-account_costs AS (
-  SELECT
-    account_id,
-    SUM(monthly_hosting_cost) * 3    AS quarterly_hosting_cost,  -- 3 months
-    SUM(ps_hours * ps_hourly_rate)   AS quarterly_ps_cost
-  FROM (
-    SELECT account_id, monthly_hosting_cost, 0 AS ps_hours, 0 AS ps_hourly_rate
-    FROM infrastructure_costs
-    WHERE month >= DATE_TRUNC('quarter', CURRENT_DATE - INTERVAL '3 months')
-    UNION ALL
-    SELECT account_id, 0, hours_logged, hourly_rate
-    FROM professional_services_engagements
-    WHERE engagement_date >= DATE_TRUNC('quarter', CURRENT_DATE - INTERVAL '3 months')
-  ) costs
-  GROUP BY 1
-),
-
-retention_flags AS (
-  -- NRR proxy: did the account expand, renew flat, or churn/contract this quarter?
-  SELECT
-    account_id,
-    CASE
-      WHEN arr_change_pct > 0.05  THEN 'expansion'
-      WHEN arr_change_pct > -0.05 THEN 'flat_renewal'
-      ELSE 'contraction_or_churn'
-    END AS nrr_bucket
-  FROM account_arr_changes
-  WHERE quarter = DATE_TRUNC('quarter', CURRENT_DATE - INTERVAL '3 months')
-)
-
-SELECT
-  ar.segment,
-  ar.has_volume_discount,
-  rf.nrr_bucket,
-
-  COUNT(*)                                        AS account_count,
-  ROUND(AVG(ar.contract_value_arr), 0)            AS avg_arr,
-  ROUND(AVG(ar.revenue_per_seat), 2)              AS avg_revenue_per_seat,
-  ROUND(AVG(ar.discount_erosion_per_seat), 2)     AS avg_discount_erosion_per_seat,
-  ROUND(AVG(ac.quarterly_hosting_cost), 0)        AS avg_quarterly_hosting_cost,
-  ROUND(AVG(ac.quarterly_ps_cost), 0)             AS avg_quarterly_ps_cost,
-
-  -- Gross margin per account: (revenue - COGS) / revenue
-  ROUND(
-    100.0 * (
-      AVG(ar.contract_value_arr / 4.0)   -- Quarterly ARR
-      - AVG(ac.quarterly_hosting_cost)
-      - AVG(ac.quarterly_ps_cost)
-    ) / NULLIF(AVG(ar.contract_value_arr / 4.0), 0),
-    1
-  ) AS gross_margin_pct
-
-FROM account_revenue ar
-LEFT JOIN account_costs ac ON ar.account_id = ac.account_id
-LEFT JOIN retention_flags rf ON ar.account_id = rf.account_id
-
-GROUP BY 1, 2, 3
-ORDER BY segment, has_volume_discount, nrr_bucket;`,
-      annotation: `Line-by-line explanation:
-
-account_revenue CTE → pulls contract-level data including the discounted vs. list price per seat. The discount_erosion_per_seat column quantifies how much revenue the volume discount is removing per seat — if this is $50/seat × 10,000 seats, you have the dollar impact.
-
-account_costs CTE → UNION ALL pattern merges hosting and professional services into a single cost per account. This is critical because PS cost is often excluded from gross margin calculations that focus only on infrastructure.
-
-quarterly_hosting_cost = monthly × 3 → annualizes to quarterly for apples-to-apples comparison with ARR.
-
-retention_flags CTE → proxies NRR by looking at ARR change direction. Not a true NRR calculation (which would need prior-period comparison) but sufficient to confirm the enterprise expansion vs. SMB contraction pattern.
-
-gross_margin_pct → the headline metric. Expected output: enterprise / no_discount rows will show ~71% gross margin (matching pre-compression baseline), while smb / has_discount rows will show significantly lower margins — likely 55-60% range — directly decomposing where the 7pp compression is coming from.`
+      modelQuery: 'WITH account_revenue AS (\n  SELECT\n    a.account_id,\n    a.segment,            -- \'enterprise\' | \'smb\'\n    a.acquisition_quarter,\n    c.contract_value_arr,\n    c.seat_count,\n    c.has_volume_discount,\n    c.discounted_seat_price,\n    c.list_seat_price,\n\n    -- Effective revenue per seat (reflects discount impact)\n    ROUND(c.contract_value_arr / NULLIF(c.seat_count, 0), 2) AS revenue_per_seat,\n\n    -- Discount erosion: revenue lost per seat due to volume discount\n    ROUND(c.list_seat_price - c.discounted_seat_price, 2)    AS discount_erosion_per_seat\n\n  FROM accounts a\n  INNER JOIN contracts c ON a.account_id = c.account_id\n  WHERE c.contract_start_date >= DATE_TRUNC(\'quarter\', CURRENT_DATE - INTERVAL \'3 months\')\n    AND c.status = \'active\'\n),\n\naccount_costs AS (\n  SELECT\n    account_id,\n    SUM(monthly_hosting_cost) * 3    AS quarterly_hosting_cost,  -- 3 months\n    SUM(ps_hours * ps_hourly_rate)   AS quarterly_ps_cost\n  FROM (\n    SELECT account_id, monthly_hosting_cost, 0 AS ps_hours, 0 AS ps_hourly_rate\n    FROM infrastructure_costs\n    WHERE month >= DATE_TRUNC(\'quarter\', CURRENT_DATE - INTERVAL \'3 months\')\n    UNION ALL\n    SELECT account_id, 0, hours_logged, hourly_rate\n    FROM professional_services_engagements\n    WHERE engagement_date >= DATE_TRUNC(\'quarter\', CURRENT_DATE - INTERVAL \'3 months\')\n  ) costs\n  GROUP BY 1\n),\n\nretention_flags AS (\n  -- NRR proxy: did the account expand, renew flat, or churn/contract this quarter?\n  SELECT\n    account_id,\n    CASE\n      WHEN arr_change_pct > 0.05  THEN \'expansion\'\n      WHEN arr_change_pct > -0.05 THEN \'flat_renewal\'\n      ELSE \'contraction_or_churn\'\n    END AS nrr_bucket\n  FROM account_arr_changes\n  WHERE quarter = DATE_TRUNC(\'quarter\', CURRENT_DATE - INTERVAL \'3 months\')\n)\n\nSELECT\n  ar.segment,\n  ar.has_volume_discount,\n  rf.nrr_bucket,\n\n  COUNT(*)                                        AS account_count,\n  ROUND(AVG(ar.contract_value_arr), 0)            AS avg_arr,\n  ROUND(AVG(ar.revenue_per_seat), 2)              AS avg_revenue_per_seat,\n  ROUND(AVG(ar.discount_erosion_per_seat), 2)     AS avg_discount_erosion_per_seat,\n  ROUND(AVG(ac.quarterly_hosting_cost), 0)        AS avg_quarterly_hosting_cost,\n  ROUND(AVG(ac.quarterly_ps_cost), 0)             AS avg_quarterly_ps_cost,\n\n  -- Gross margin per account: (revenue - COGS) / revenue\n  ROUND(\n    100.0 * (\n      AVG(ar.contract_value_arr / 4.0)   -- Quarterly ARR\n      - AVG(ac.quarterly_hosting_cost)\n      - AVG(ac.quarterly_ps_cost)\n    ) / NULLIF(AVG(ar.contract_value_arr / 4.0), 0),\n    1\n  ) AS gross_margin_pct\n\nFROM account_revenue ar\nLEFT JOIN account_costs ac ON ar.account_id = ac.account_id\nLEFT JOIN retention_flags rf ON ar.account_id = rf.account_id\n\nGROUP BY 1, 2, 3\nORDER BY segment, has_volume_discount, nrr_bucket;',
+      annotation: 'Line-by-line explanation:\n\naccount_revenue CTE → pulls contract-level data including the discounted vs. list price per seat. The discount_erosion_per_seat column quantifies how much revenue the volume discount is removing per seat — if this is $50/seat × 10,000 seats, you have the dollar impact.\n\naccount_costs CTE → UNION ALL pattern merges hosting and professional services into a single cost per account. This is critical because PS cost is often excluded from gross margin calculations that focus only on infrastructure.\n\nquarterly_hosting_cost = monthly × 3 → annualizes to quarterly for apples-to-apples comparison with ARR.\n\nretention_flags CTE → proxies NRR by looking at ARR change direction. Not a true NRR calculation (which would need prior-period comparison) but sufficient to confirm the enterprise expansion vs. SMB contraction pattern.\n\ngross_margin_pct → the headline metric. Expected output: enterprise / no_discount rows will show ~71% gross margin (matching pre-compression baseline), while smb / has_discount rows will show significantly lower margins — likely 55-60% range — directly decomposing where the 7pp compression is coming from.'
     },
     seniorDiagnosis: {
       likelyCause: 'Three compounding factors: SMB mix shift, volume discount margin erosion, and infrastructure cost outpacing revenue growth',
@@ -1507,87 +1201,15 @@ gross_margin_pct → the headline metric. Expected output: enterprise / no_disco
       }
     ],
     sqlStep: {
-      prompt: `You've confirmed the core issue: the bot's deflection metric measures "ticket closed without escalation," not "issue resolved." The 19% repeat contact rate proves that nearly 1 in 5 deflected contacts returns within 7 days — meaning the bot closed the ticket but didn't solve the problem.\n\nWrite a SQL query that calculates the true resolution rate: deflected tickets that did NOT result in a re-contact within 7 days. Then break it by intent category and bot confidence score to show where the failure is concentrated.`,
+      prompt: 'You\'ve confirmed the core issue: the bot\'s deflection metric measures "ticket closed without escalation," not "issue resolved." The 19% repeat contact rate proves that nearly 1 in 5 deflected contacts returns within 7 days — meaning the bot closed the ticket but didn\'t solve the problem.\n\nWrite a SQL query that calculates the true resolution rate: deflected tickets that did NOT result in a re-contact within 7 days. Then break it by intent category and bot confidence score to show where the failure is concentrated.',
       hints: [
         'A "true resolution" = ticket was deflected (not escalated) AND no re-open or new ticket from same user within 7 days',
         'Use a LEFT JOIN to re_contacts table on user_id and ticket_open_date to flag re-contacts',
         'Break out by intent_category (billing, feature, account, bug) to find where hallucinations are concentrated',
         'Include bot_confidence_score bucket (high/medium/low) to show whether the bot knows when it\'s unsure'
       ],
-      modelQuery: `WITH deflected_tickets AS (
-  -- All tickets that were closed without human escalation
-  SELECT
-    t.ticket_id,
-    t.user_id,
-    t.opened_at,
-    t.closed_at,
-    t.intent_category,           -- 'billing' | 'feature' | 'account' | 'bug'
-    t.bot_confidence_score,      -- 0.0 to 1.0
-    t.csat_score,                -- 1-5 post-resolution survey (nullable)
-    t.hallucination_flagged,     -- Boolean: flagged in QA review
-
-    -- Confidence bucket
-    CASE
-      WHEN t.bot_confidence_score >= 0.80 THEN 'high_confidence'
-      WHEN t.bot_confidence_score >= 0.50 THEN 'medium_confidence'
-      ELSE 'low_confidence'
-    END AS confidence_bucket
-
-  FROM support_tickets t
-  WHERE t.resolution_type = 'deflected'   -- Bot handled, not escalated
-    AND t.opened_at >= CURRENT_DATE - INTERVAL '42 days'  -- 6-week bot rollout period
-),
-
-re_contacts AS (
-  -- Tickets re-opened or new tickets from same user within 7 days
-  SELECT DISTINCT dt.ticket_id AS original_ticket_id
-  FROM deflected_tickets dt
-  INNER JOIN support_tickets follow_up
-    ON follow_up.user_id = dt.user_id
-    AND follow_up.ticket_id != dt.ticket_id
-    AND follow_up.opened_at BETWEEN dt.opened_at AND dt.opened_at + INTERVAL '7 days'
-)
-
-SELECT
-  dt.intent_category,
-  dt.confidence_bucket,
-
-  COUNT(*)                                                        AS deflected_tickets,
-
-  -- True resolutions: no re-contact within 7 days
-  SUM(CASE WHEN rc.original_ticket_id IS NULL THEN 1 ELSE 0 END) AS truly_resolved,
-  SUM(CASE WHEN rc.original_ticket_id IS NOT NULL THEN 1 ELSE 0 END) AS re_contacted,
-
-  ROUND(
-    100.0 * SUM(CASE WHEN rc.original_ticket_id IS NULL THEN 1 ELSE 0 END)
-    / NULLIF(COUNT(*), 0), 1
-  )                                                               AS true_resolution_rate_pct,
-
-  ROUND(
-    100.0 * SUM(CASE WHEN rc.original_ticket_id IS NOT NULL THEN 1 ELSE 0 END)
-    / NULLIF(COUNT(*), 0), 1
-  )                                                               AS repeat_contact_rate_pct,
-
-  -- Quality signals
-  ROUND(AVG(dt.csat_score), 2)                                    AS avg_csat,
-  ROUND(100.0 * AVG(dt.hallucination_flagged::int), 1)            AS hallucination_rate_pct
-
-FROM deflected_tickets dt
-LEFT JOIN re_contacts rc ON dt.ticket_id = rc.original_ticket_id
-
-GROUP BY 1, 2
-ORDER BY intent_category, confidence_bucket;`,
-      annotation: `Line-by-line explanation:
-
-deflected_tickets CTE → scopes to only bot-handled tickets (resolution_type = 'deflected'), filtering to the 6-week rollout period. Confidence bucket divides bot answers into high/medium/low to test whether the bot escalates appropriately when uncertain.
-
-re_contacts CTE → the critical definition: any ticket from the same user within 7 days of the original deflected ticket. This flags re-contacts whether the user re-opened the original ticket or opened a new one for the same unresolved issue.
-
-LEFT JOIN re_contacts → NULL on the right side means no re-contact → "truly resolved." Not NULL means re-contact → resolution failure.
-
-true_resolution_rate_pct → this is the metric that should replace (or complement) deflection rate. Expected value: overall ~81% (since we know 19% re-contact within 7 days).
-
-hallucination_rate_pct broken by intent_category + confidence_bucket → expected to show: billing and feature questions have the highest hallucination rates (they require account-specific or recently-updated information the bot may not have), and low_confidence answers have the highest re-contact rates. These two patterns together tell engineering exactly where to focus retraining.`
+      modelQuery: 'WITH deflected_tickets AS (\n  -- All tickets that were closed without human escalation\n  SELECT\n    t.ticket_id,\n    t.user_id,\n    t.opened_at,\n    t.closed_at,\n    t.intent_category,           -- \'billing\' | \'feature\' | \'account\' | \'bug\'\n    t.bot_confidence_score,      -- 0.0 to 1.0\n    t.csat_score,                -- 1-5 post-resolution survey (nullable)\n    t.hallucination_flagged,     -- Boolean: flagged in QA review\n\n    -- Confidence bucket\n    CASE\n      WHEN t.bot_confidence_score >= 0.80 THEN \'high_confidence\'\n      WHEN t.bot_confidence_score >= 0.50 THEN \'medium_confidence\'\n      ELSE \'low_confidence\'\n    END AS confidence_bucket\n\n  FROM support_tickets t\n  WHERE t.resolution_type = \'deflected\'   -- Bot handled, not escalated\n    AND t.opened_at >= CURRENT_DATE - INTERVAL \'42 days\'  -- 6-week bot rollout period\n),\n\nre_contacts AS (\n  -- Tickets re-opened or new tickets from same user within 7 days\n  SELECT DISTINCT dt.ticket_id AS original_ticket_id\n  FROM deflected_tickets dt\n  INNER JOIN support_tickets follow_up\n    ON follow_up.user_id = dt.user_id\n    AND follow_up.ticket_id != dt.ticket_id\n    AND follow_up.opened_at BETWEEN dt.opened_at AND dt.opened_at + INTERVAL \'7 days\'\n)\n\nSELECT\n  dt.intent_category,\n  dt.confidence_bucket,\n\n  COUNT(*)                                                        AS deflected_tickets,\n\n  -- True resolutions: no re-contact within 7 days\n  SUM(CASE WHEN rc.original_ticket_id IS NULL THEN 1 ELSE 0 END) AS truly_resolved,\n  SUM(CASE WHEN rc.original_ticket_id IS NOT NULL THEN 1 ELSE 0 END) AS re_contacted,\n\n  ROUND(\n    100.0 * SUM(CASE WHEN rc.original_ticket_id IS NULL THEN 1 ELSE 0 END)\n    / NULLIF(COUNT(*), 0), 1\n  )                                                               AS true_resolution_rate_pct,\n\n  ROUND(\n    100.0 * SUM(CASE WHEN rc.original_ticket_id IS NOT NULL THEN 1 ELSE 0 END)\n    / NULLIF(COUNT(*), 0), 1\n  )                                                               AS repeat_contact_rate_pct,\n\n  -- Quality signals\n  ROUND(AVG(dt.csat_score), 2)                                    AS avg_csat,\n  ROUND(100.0 * AVG(dt.hallucination_flagged::int), 1)            AS hallucination_rate_pct\n\nFROM deflected_tickets dt\nLEFT JOIN re_contacts rc ON dt.ticket_id = rc.original_ticket_id\n\nGROUP BY 1, 2\nORDER BY intent_category, confidence_bucket;',
+      annotation: 'Line-by-line explanation:\n\ndeflected_tickets CTE → scopes to only bot-handled tickets (resolution_type = \'deflected\'), filtering to the 6-week rollout period. Confidence bucket divides bot answers into high/medium/low to test whether the bot escalates appropriately when uncertain.\n\nre_contacts CTE → the critical definition: any ticket from the same user within 7 days of the original deflected ticket. This flags re-contacts whether the user re-opened the original ticket or opened a new one for the same unresolved issue.\n\nLEFT JOIN re_contacts → NULL on the right side means no re-contact → "truly resolved." Not NULL means re-contact → resolution failure.\n\ntrue_resolution_rate_pct → this is the metric that should replace (or complement) deflection rate. Expected value: overall ~81% (since we know 19% re-contact within 7 days).\n\nhallucination_rate_pct broken by intent_category + confidence_bucket → expected to show: billing and feature questions have the highest hallucination rates (they require account-specific or recently-updated information the bot may not have), and low_confidence answers have the highest re-contact rates. These two patterns together tell engineering exactly where to focus retraining.'
     },
     seniorDiagnosis: {
       likelyCause: 'GenAI bot is deflecting (closing) tickets without resolving them — deflection metric measures non-escalation, not resolution quality',
@@ -1784,84 +1406,15 @@ hallucination_rate_pct broken by intent_category + confidence_bucket → expecte
       },
     ],
     sqlStep: {
-      prompt: `You've confirmed that 89% of fraudulent orders come from Express Seller accounts created in the last 5 days, concentrated in Electronics and Collectibles, with buyer accounts under 3 days old.\n\nWrite a SQL query that compares fraud rates by seller onboarding tier and seller account age bucket, cross-referenced with buyer account age, to quantify the full scope of the coordinated fraud and identify which seller cohorts need immediate action.`,
+      prompt: 'You\'ve confirmed that 89% of fraudulent orders come from Express Seller accounts created in the last 5 days, concentrated in Electronics and Collectibles, with buyer accounts under 3 days old.\n\nWrite a SQL query that compares fraud rates by seller onboarding tier and seller account age bucket, cross-referenced with buyer account age, to quantify the full scope of the coordinated fraud and identify which seller cohorts need immediate action.',
       hints: [
         'Bucket seller account age into: 0-5 days, 6-14 days, 15-30 days, 30+ days',
         'Join orders to sellers and buyers tables to get account creation dates for both sides',
         'Calculate fraud rate as fraudulent_orders / total_orders per bucket',
         'Include avg_order_value per bucket — high-value orders in new-account buckets strengthen the coordinated fraud signal',
       ],
-      modelQuery: `WITH seller_cohorts AS (
-  -- Classify each seller by onboarding tier and account age at time of order
-  SELECT
-    s.seller_id,
-    s.onboarding_tier,          -- 'express' | 'standard'
-    s.created_at                AS seller_created_at,
-
-    CASE
-      WHEN CURRENT_DATE - s.created_at::date <= 5  THEN '0-5_days'
-      WHEN CURRENT_DATE - s.created_at::date <= 14 THEN '6-14_days'
-      WHEN CURRENT_DATE - s.created_at::date <= 30 THEN '15-30_days'
-      ELSE '30plus_days'
-    END AS seller_age_bucket
-
-  FROM sellers s
-),
-
-order_fraud_flags AS (
-  -- Join orders with seller and buyer account metadata
-  SELECT
-    o.order_id,
-    o.seller_id,
-    o.buyer_id,
-    o.order_value,
-    o.product_category,
-    o.is_fraud_flagged,         -- Boolean from payment processor
-
-    sc.onboarding_tier,
-    sc.seller_age_bucket,
-
-    -- Buyer account age at time of order
-    CASE
-      WHEN o.created_at - b.created_at <= INTERVAL '3 days'  THEN '0-3_days'
-      WHEN o.created_at - b.created_at <= INTERVAL '7 days'  THEN '4-7_days'
-      ELSE '7plus_days'
-    END AS buyer_age_at_order
-
-  FROM orders o
-  INNER JOIN seller_cohorts sc  ON o.seller_id = sc.seller_id
-  INNER JOIN buyers b           ON o.buyer_id  = b.buyer_id
-  WHERE o.created_at >= CURRENT_DATE - INTERVAL '10 days'  -- Window spanning pre/post Express launch
-)
-
-SELECT
-  onboarding_tier,
-  seller_age_bucket,
-  buyer_age_at_order,
-
-  COUNT(*)                                                          AS total_orders,
-  SUM(is_fraud_flagged::int)                                        AS fraud_flagged_orders,
-
-  ROUND(
-    100.0 * SUM(is_fraud_flagged::int) / NULLIF(COUNT(*), 0), 2
-  )                                                                 AS fraud_rate_pct,
-
-  ROUND(AVG(order_value), 2)                                        AS avg_order_value,
-
-  -- High-value fraud concentration
-  SUM(CASE WHEN is_fraud_flagged AND order_value > 200 THEN 1 ELSE 0 END) AS high_value_fraud_orders
-
-FROM order_fraud_flags
-
-GROUP BY 1, 2, 3
-ORDER BY onboarding_tier, seller_age_bucket, buyer_age_at_order;`,
-      annotation: `seller_cohorts CTE bucktes each seller by account age and onboarding tier, creating the primary segmentation variable that connects to the Express Seller launch.
-
-order_fraud_flags CTE computes buyer account age at the exact time of the order — this is the right calculation, not buyer account age today. A buyer who created their account 2 days ago and ordered immediately is the synthetic buyer pattern; a buyer who created their account 2 days ago but ordered last week is a coincidence.
-
-fraud_rate_pct is the headline metric per cell. Expected output: the express / 0-5_days / 0-3_days row should show a dramatically elevated fraud rate (10-20%+) vs. the baseline standard / 30plus_days / 7plus_days row at ~0.8%.
-
-high_value_fraud_orders confirms the category concentration signal without requiring a category join — high ACV fraud in new-account cells is the fingerprint of a deliberate high-value-category targeting strategy by the fraud ring.`,
+      modelQuery: 'WITH seller_cohorts AS (\n  -- Classify each seller by onboarding tier and account age at time of order\n  SELECT\n    s.seller_id,\n    s.onboarding_tier,          -- \'express\' | \'standard\'\n    s.created_at                AS seller_created_at,\n\n    CASE\n      WHEN CURRENT_DATE - s.created_at::date <= 5  THEN \'0-5_days\'\n      WHEN CURRENT_DATE - s.created_at::date <= 14 THEN \'6-14_days\'\n      WHEN CURRENT_DATE - s.created_at::date <= 30 THEN \'15-30_days\'\n      ELSE \'30plus_days\'\n    END AS seller_age_bucket\n\n  FROM sellers s\n),\n\norder_fraud_flags AS (\n  -- Join orders with seller and buyer account metadata\n  SELECT\n    o.order_id,\n    o.seller_id,\n    o.buyer_id,\n    o.order_value,\n    o.product_category,\n    o.is_fraud_flagged,         -- Boolean from payment processor\n\n    sc.onboarding_tier,\n    sc.seller_age_bucket,\n\n    -- Buyer account age at time of order\n    CASE\n      WHEN o.created_at - b.created_at <= INTERVAL \'3 days\'  THEN \'0-3_days\'\n      WHEN o.created_at - b.created_at <= INTERVAL \'7 days\'  THEN \'4-7_days\'\n      ELSE \'7plus_days\'\n    END AS buyer_age_at_order\n\n  FROM orders o\n  INNER JOIN seller_cohorts sc  ON o.seller_id = sc.seller_id\n  INNER JOIN buyers b           ON o.buyer_id  = b.buyer_id\n  WHERE o.created_at >= CURRENT_DATE - INTERVAL \'10 days\'  -- Window spanning pre/post Express launch\n)\n\nSELECT\n  onboarding_tier,\n  seller_age_bucket,\n  buyer_age_at_order,\n\n  COUNT(*)                                                          AS total_orders,\n  SUM(is_fraud_flagged::int)                                        AS fraud_flagged_orders,\n\n  ROUND(\n    100.0 * SUM(is_fraud_flagged::int) / NULLIF(COUNT(*), 0), 2\n  )                                                                 AS fraud_rate_pct,\n\n  ROUND(AVG(order_value), 2)                                        AS avg_order_value,\n\n  -- High-value fraud concentration\n  SUM(CASE WHEN is_fraud_flagged AND order_value > 200 THEN 1 ELSE 0 END) AS high_value_fraud_orders\n\nFROM order_fraud_flags\n\nGROUP BY 1, 2, 3\nORDER BY onboarding_tier, seller_age_bucket, buyer_age_at_order;',
+      annotation: 'seller_cohorts CTE bucktes each seller by account age and onboarding tier, creating the primary segmentation variable that connects to the Express Seller launch.\n\norder_fraud_flags CTE computes buyer account age at the exact time of the order — this is the right calculation, not buyer account age today. A buyer who created their account 2 days ago and ordered immediately is the synthetic buyer pattern; a buyer who created their account 2 days ago but ordered last week is a coincidence.\n\nfraud_rate_pct is the headline metric per cell. Expected output: the express / 0-5_days / 0-3_days row should show a dramatically elevated fraud rate (10-20%+) vs. the baseline standard / 30plus_days / 7plus_days row at ~0.8%.\n\nhigh_value_fraud_orders confirms the category concentration signal without requiring a category join — high ACV fraud in new-account cells is the fingerprint of a deliberate high-value-category targeting strategy by the fraud ring.',
     },
     seniorDiagnosis: {
       likelyCause: 'Coordinated fraud ring exploiting Express Seller reduced-verification onboarding by creating synthetic seller and buyer account pairs for high-value category fraud',
@@ -2058,89 +1611,15 @@ high_value_fraud_orders confirms the category concentration signal without requi
       },
     ],
     sqlStep: {
-      prompt: `Your hypothesis is session exhaustion: Auto-Play Series creates longer sessions per visit but damages the habitual daily return loop, suppressing DAU.\n\nWrite a SQL query that compares D1 and D7 retention for user cohorts acquired before the Auto-Play launch vs. after, and also shows the relationship between auto-play session completion count and retention — to confirm both the pre/post retention drop and the depth-vs.-frequency trade-off.`,
+      prompt: 'Your hypothesis is session exhaustion: Auto-Play Series creates longer sessions per visit but damages the habitual daily return loop, suppressing DAU.\n\nWrite a SQL query that compares D1 and D7 retention for user cohorts acquired before the Auto-Play launch vs. after, and also shows the relationship between auto-play session completion count and retention — to confirm both the pre/post retention drop and the depth-vs.-frequency trade-off.',
       hints: [
         'Use install_date to separate pre-launch cohorts (before launch_date) from post-launch cohorts',
         'D1 retention = user had a session on day 1 after install; D7 = session on day 7',
         'Count auto_play_completions per user in their first 7 days and bucket (0, 1-2, 3+)',
         'Control for day-of-week by grouping cohorts by install_week, not install_day',
       ],
-      modelQuery: `WITH user_cohorts AS (
-  -- Classify users as pre-launch or post-launch based on install date
-  SELECT
-    u.user_id,
-    u.install_date,
-    DATE_TRUNC('week', u.install_date)  AS install_week,
-
-    CASE
-      WHEN u.install_date < '2024-03-15'  THEN 'pre_launch'   -- Auto-Play launch date
-      ELSE 'post_launch'
-    END AS cohort_group
-
-  FROM users u
-  WHERE u.install_date >= '2024-03-01'  -- 2 weeks pre-launch + post-launch period
-),
-
-auto_play_usage AS (
-  -- Count auto-play series completions per user in first 7 days
-  SELECT
-    e.user_id,
-    COUNT(CASE WHEN e.event_type = 'autoplay_series_completed' THEN 1 END) AS autoplay_completions,
-
-    CASE
-      WHEN COUNT(CASE WHEN e.event_type = 'autoplay_series_completed' THEN 1 END) = 0  THEN '0_completions'
-      WHEN COUNT(CASE WHEN e.event_type = 'autoplay_series_completed' THEN 1 END) <= 2 THEN '1-2_completions'
-      ELSE '3plus_completions'
-    END AS autoplay_bucket
-
-  FROM events e
-  INNER JOIN user_cohorts uc ON e.user_id = uc.user_id
-  WHERE e.event_date BETWEEN uc.install_date AND uc.install_date + INTERVAL '7 days'
-  GROUP BY 1
-),
-
-retention_flags AS (
-  -- Flag D1 and D7 sessions for each user
-  SELECT
-    uc.user_id,
-    uc.cohort_group,
-    uc.install_week,
-
-    MAX(CASE
-      WHEN DATE(s.session_start) = uc.install_date + INTERVAL '1 day' THEN 1 ELSE 0
-    END) AS retained_d1,
-
-    MAX(CASE
-      WHEN DATE(s.session_start) = uc.install_date + INTERVAL '7 days' THEN 1 ELSE 0
-    END) AS retained_d7
-
-  FROM user_cohorts uc
-  LEFT JOIN app_sessions s ON uc.user_id = s.user_id
-  GROUP BY 1, 2, 3
-)
-
-SELECT
-  rf.cohort_group,
-  rf.install_week,
-  COALESCE(ap.autoplay_bucket, '0_completions')  AS autoplay_bucket,
-
-  COUNT(*)                                        AS users,
-
-  ROUND(100.0 * AVG(rf.retained_d1), 1)          AS d1_retention_pct,
-  ROUND(100.0 * AVG(rf.retained_d7), 1)          AS d7_retention_pct
-
-FROM retention_flags rf
-LEFT JOIN auto_play_usage ap ON rf.user_id = ap.user_id
-
-GROUP BY 1, 2, 3
-ORDER BY cohort_group, install_week, autoplay_bucket;`,
-      annotation: `user_cohorts CTE creates the quasi-experimental comparison groups using install_date relative to the Auto-Play launch date. install_week grouping controls for day-of-week seasonality in new user acquisition and retention patterns.
-
-auto_play_usage CTE counts completions per user within their first 7 days — this is the depth metric. The bucket creates the dose-response variable: does more auto-play completion predict higher or lower retention?
-
-retention_flags CTE defines D1 and D7 as sessions on the exact day (not "within" the day range) — adjust to your team's retention definition if you use a different window.
-
-Expected output: the pre_launch rows should show D1 ~41% and D7 higher; post_launch rows should show D1 ~36% and D7 lower — confirming the retention regression. Within post-launch, the 3plus_completions bucket should show higher D7 retention than 0_completions, confirming that deep auto-play engagement is a positive signal, but the product is not getting most users into that state.`,
+      modelQuery: 'WITH user_cohorts AS (\n  -- Classify users as pre-launch or post-launch based on install date\n  SELECT\n    u.user_id,\n    u.install_date,\n    DATE_TRUNC(\'week\', u.install_date)  AS install_week,\n\n    CASE\n      WHEN u.install_date < \'2024-03-15\'  THEN \'pre_launch\'   -- Auto-Play launch date\n      ELSE \'post_launch\'\n    END AS cohort_group\n\n  FROM users u\n  WHERE u.install_date >= \'2024-03-01\'  -- 2 weeks pre-launch + post-launch period\n),\n\nauto_play_usage AS (\n  -- Count auto-play series completions per user in first 7 days\n  SELECT\n    e.user_id,\n    COUNT(CASE WHEN e.event_type = \'autoplay_series_completed\' THEN 1 END) AS autoplay_completions,\n\n    CASE\n      WHEN COUNT(CASE WHEN e.event_type = \'autoplay_series_completed\' THEN 1 END) = 0  THEN \'0_completions\'\n      WHEN COUNT(CASE WHEN e.event_type = \'autoplay_series_completed\' THEN 1 END) <= 2 THEN \'1-2_completions\'\n      ELSE \'3plus_completions\'\n    END AS autoplay_bucket\n\n  FROM events e\n  INNER JOIN user_cohorts uc ON e.user_id = uc.user_id\n  WHERE e.event_date BETWEEN uc.install_date AND uc.install_date + INTERVAL \'7 days\'\n  GROUP BY 1\n),\n\nretention_flags AS (\n  -- Flag D1 and D7 sessions for each user\n  SELECT\n    uc.user_id,\n    uc.cohort_group,\n    uc.install_week,\n\n    MAX(CASE\n      WHEN DATE(s.session_start) = uc.install_date + INTERVAL \'1 day\' THEN 1 ELSE 0\n    END) AS retained_d1,\n\n    MAX(CASE\n      WHEN DATE(s.session_start) = uc.install_date + INTERVAL \'7 days\' THEN 1 ELSE 0\n    END) AS retained_d7\n\n  FROM user_cohorts uc\n  LEFT JOIN app_sessions s ON uc.user_id = s.user_id\n  GROUP BY 1, 2, 3\n)\n\nSELECT\n  rf.cohort_group,\n  rf.install_week,\n  COALESCE(ap.autoplay_bucket, \'0_completions\')  AS autoplay_bucket,\n\n  COUNT(*)                                        AS users,\n\n  ROUND(100.0 * AVG(rf.retained_d1), 1)          AS d1_retention_pct,\n  ROUND(100.0 * AVG(rf.retained_d7), 1)          AS d7_retention_pct\n\nFROM retention_flags rf\nLEFT JOIN auto_play_usage ap ON rf.user_id = ap.user_id\n\nGROUP BY 1, 2, 3\nORDER BY cohort_group, install_week, autoplay_bucket;',
+      annotation: 'user_cohorts CTE creates the quasi-experimental comparison groups using install_date relative to the Auto-Play launch date. install_week grouping controls for day-of-week seasonality in new user acquisition and retention patterns.\n\nauto_play_usage CTE counts completions per user within their first 7 days — this is the depth metric. The bucket creates the dose-response variable: does more auto-play completion predict higher or lower retention?\n\nretention_flags CTE defines D1 and D7 as sessions on the exact day (not "within" the day range) — adjust to your team\'s retention definition if you use a different window.\n\nExpected output: the pre_launch rows should show D1 ~41% and D7 higher; post_launch rows should show D1 ~36% and D7 lower — confirming the retention regression. Within post-launch, the 3plus_completions bucket should show higher D7 retention than 0_completions, confirming that deep auto-play engagement is a positive signal, but the product is not getting most users into that state.',
     },
     seniorDiagnosis: {
       likelyCause: 'Auto-Play Series damages the habitual daily return loop by creating session exhaustion — users watch more per visit but return less the next day, suppressing DAU',
@@ -2337,94 +1816,15 @@ Expected output: the pre_launch rows should show D1 ~41% and D7 higher; post_lau
       },
     ],
     sqlStep: {
-      prompt: `You've confirmed SMB NRR is 82% and is driving the MRR growth collapse through expansion collapse and contraction increases.\n\nWrite a SQL query that builds a monthly MRR waterfall by segment (SMB vs. enterprise), showing new MRR, expansion MRR, contraction MRR, churn MRR, and net MRR change for each segment over the past 3 months.`,
+      prompt: 'You\'ve confirmed SMB NRR is 82% and is driving the MRR growth collapse through expansion collapse and contraction increases.\n\nWrite a SQL query that builds a monthly MRR waterfall by segment (SMB vs. enterprise), showing new MRR, expansion MRR, contraction MRR, churn MRR, and net MRR change for each segment over the past 3 months.',
       hints: [
         'Compare each account\'s MRR in month M vs. month M-1 to classify the movement type',
         'New = account did not exist in M-1; Expansion = MRR increased; Contraction = MRR decreased but still active; Churn = account gone in M',
         'Segment by account_size (enterprise: ACV > $20k, SMB: ACV <= $20k)',
         'Use a LAG window function or self-join to get prior month MRR per account',
       ],
-      modelQuery: `WITH monthly_mrr AS (
-  -- Get each account's MRR for each month in the past 4 months
-  -- (4 months to enable 3-month MoM comparison)
-  SELECT
-    a.account_id,
-    a.segment,                  -- 'enterprise' | 'smb'
-    DATE_TRUNC('month', m.month_date)   AS mrr_month,
-    m.mrr_amount
-
-  FROM accounts a
-  INNER JOIN account_mrr_monthly m ON a.account_id = m.account_id
-  WHERE m.month_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '4 months')
-),
-
-mrr_with_prior AS (
-  -- Attach prior month MRR to each account-month
-  SELECT
-    curr.account_id,
-    curr.segment,
-    curr.mrr_month,
-    curr.mrr_amount                                         AS current_mrr,
-    LAG(curr.mrr_amount) OVER (
-      PARTITION BY curr.account_id ORDER BY curr.mrr_month
-    )                                                       AS prior_mrr
-
-  FROM monthly_mrr curr
-),
-
-mrr_waterfall AS (
-  -- Classify each account-month into a MRR movement bucket
-  SELECT
-    account_id,
-    segment,
-    mrr_month,
-    current_mrr,
-    prior_mrr,
-
-    CASE
-      WHEN prior_mrr IS NULL                         THEN 'new'
-      WHEN current_mrr IS NULL AND prior_mrr > 0     THEN 'churn'
-      WHEN current_mrr > prior_mrr                   THEN 'expansion'
-      WHEN current_mrr < prior_mrr AND current_mrr > 0 THEN 'contraction'
-      ELSE 'flat'
-    END AS mrr_movement_type,
-
-    -- Dollar contribution to net MRR change
-    CASE
-      WHEN prior_mrr IS NULL                           THEN current_mrr
-      WHEN current_mrr IS NULL AND prior_mrr > 0       THEN -prior_mrr
-      WHEN current_mrr IS NOT NULL AND prior_mrr IS NOT NULL THEN current_mrr - prior_mrr
-      ELSE 0
-    END AS mrr_delta
-
-  FROM mrr_with_prior
-  -- Exclude accounts that were flat or absent in both months
-  WHERE NOT (current_mrr = prior_mrr AND current_mrr IS NOT NULL)
-)
-
-SELECT
-  segment,
-  mrr_month,
-  mrr_movement_type,
-
-  COUNT(DISTINCT account_id)      AS account_count,
-  ROUND(SUM(mrr_delta), 0)        AS mrr_contribution
-
-FROM mrr_waterfall
-WHERE mrr_month >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '3 months')
-  AND mrr_movement_type != 'flat'
-
-GROUP BY 1, 2, 3
-ORDER BY segment, mrr_month, mrr_movement_type;`,
-      annotation: `monthly_mrr CTE pulls MRR per account per month for a 4-month window. The extra month (4 vs. 3) is needed so LAG() has a prior-period value for the first month you want to report.
-
-LAG() window function in mrr_with_prior attaches the prior month's MRR to each row. PARTITION BY account_id ensures the lag is within each account's own time series, not across accounts.
-
-mrr_movement_type CASE WHEN is the waterfall classification logic. The churn case handles accounts that appear in prior months but not in the current month (current_mrr IS NULL after a LEFT JOIN or when an account closes).
-
-mrr_delta calculates each account-month's dollar contribution to net MRR change. Summing this by segment × movement_type gives you the exact dollar contribution of SMB contraction vs. enterprise expansion.
-
-Expected output: the SMB / contraction rows will show large negative mrr_contribution ($20-28k/month) while the enterprise / expansion rows will show strong positive contributions. The net SMB MRR movement will visibly be negative or near-zero, directly explaining the overall growth deceleration.`,
+      modelQuery: 'WITH monthly_mrr AS (\n  -- Get each account\'s MRR for each month in the past 4 months\n  -- (4 months to enable 3-month MoM comparison)\n  SELECT\n    a.account_id,\n    a.segment,                  -- \'enterprise\' | \'smb\'\n    DATE_TRUNC(\'month\', m.month_date)   AS mrr_month,\n    m.mrr_amount\n\n  FROM accounts a\n  INNER JOIN account_mrr_monthly m ON a.account_id = m.account_id\n  WHERE m.month_date >= DATE_TRUNC(\'month\', CURRENT_DATE - INTERVAL \'4 months\')\n),\n\nmrr_with_prior AS (\n  -- Attach prior month MRR to each account-month\n  SELECT\n    curr.account_id,\n    curr.segment,\n    curr.mrr_month,\n    curr.mrr_amount                                         AS current_mrr,\n    LAG(curr.mrr_amount) OVER (\n      PARTITION BY curr.account_id ORDER BY curr.mrr_month\n    )                                                       AS prior_mrr\n\n  FROM monthly_mrr curr\n),\n\nmrr_waterfall AS (\n  -- Classify each account-month into a MRR movement bucket\n  SELECT\n    account_id,\n    segment,\n    mrr_month,\n    current_mrr,\n    prior_mrr,\n\n    CASE\n      WHEN prior_mrr IS NULL                         THEN \'new\'\n      WHEN current_mrr IS NULL AND prior_mrr > 0     THEN \'churn\'\n      WHEN current_mrr > prior_mrr                   THEN \'expansion\'\n      WHEN current_mrr < prior_mrr AND current_mrr > 0 THEN \'contraction\'\n      ELSE \'flat\'\n    END AS mrr_movement_type,\n\n    -- Dollar contribution to net MRR change\n    CASE\n      WHEN prior_mrr IS NULL                           THEN current_mrr\n      WHEN current_mrr IS NULL AND prior_mrr > 0       THEN -prior_mrr\n      WHEN current_mrr IS NOT NULL AND prior_mrr IS NOT NULL THEN current_mrr - prior_mrr\n      ELSE 0\n    END AS mrr_delta\n\n  FROM mrr_with_prior\n  -- Exclude accounts that were flat or absent in both months\n  WHERE NOT (current_mrr = prior_mrr AND current_mrr IS NOT NULL)\n)\n\nSELECT\n  segment,\n  mrr_month,\n  mrr_movement_type,\n\n  COUNT(DISTINCT account_id)      AS account_count,\n  ROUND(SUM(mrr_delta), 0)        AS mrr_contribution\n\nFROM mrr_waterfall\nWHERE mrr_month >= DATE_TRUNC(\'month\', CURRENT_DATE - INTERVAL \'3 months\')\n  AND mrr_movement_type != \'flat\'\n\nGROUP BY 1, 2, 3\nORDER BY segment, mrr_month, mrr_movement_type;',
+      annotation: 'monthly_mrr CTE pulls MRR per account per month for a 4-month window. The extra month (4 vs. 3) is needed so LAG() has a prior-period value for the first month you want to report.\n\nLAG() window function in mrr_with_prior attaches the prior month\'s MRR to each row. PARTITION BY account_id ensures the lag is within each account\'s own time series, not across accounts.\n\nmrr_movement_type CASE WHEN is the waterfall classification logic. The churn case handles accounts that appear in prior months but not in the current month (current_mrr IS NULL after a LEFT JOIN or when an account closes).\n\nmrr_delta calculates each account-month\'s dollar contribution to net MRR change. Summing this by segment × movement_type gives you the exact dollar contribution of SMB contraction vs. enterprise expansion.\n\nExpected output: the SMB / contraction rows will show large negative mrr_contribution ($20-28k/month) while the enterprise / expansion rows will show strong positive contributions. The net SMB MRR movement will visibly be negative or near-zero, directly explaining the overall growth deceleration.',
     },
     seniorDiagnosis: {
       likelyCause: 'SMB segment NRR failure: expansion MRR collapsed and contraction MRR doubled among SMB accounts, overwhelming the flat new-customer acquisition engine',
@@ -2620,79 +2020,15 @@ Expected output: the SMB / contraction rows will show large negative mrr_contrib
       },
     ],
     sqlStep: {
-      prompt: `You've confirmed that the 25% month-to-month price increase directly triggered the churn spike, concentrated among short-to-mid tenure SMB accounts.\n\nWrite a SQL query that shows churn rate by billing_type × account_tenure_bucket in 30-day windows before and after the pricing change, so you can present the clean before/after price elasticity evidence.`,
+      prompt: 'You\'ve confirmed that the 25% month-to-month price increase directly triggered the churn spike, concentrated among short-to-mid tenure SMB accounts.\n\nWrite a SQL query that shows churn rate by billing_type × account_tenure_bucket in 30-day windows before and after the pricing change, so you can present the clean before/after price elasticity evidence.',
       hints: [
         'Define tenure buckets: 0-3 months, 4-9 months, 10-18 months, 18+ months at time of churn',
         'Pricing change date: 6 weeks ago — create a pre/post flag based on cancellation_date',
         'Churn rate = accounts_churned / accounts_active_at_start_of_window per bucket',
         'Include avg_acv per bucket to show the revenue composition of the churn',
       ],
-      modelQuery: `WITH account_windows AS (
-  -- Classify each account into its billing type and tenure bucket
-  -- as of the start of each 30-day window
-  SELECT
-    a.account_id,
-    a.billing_type,             -- 'monthly' | 'annual'
-    a.acv,
-
-    -- Tenure at the time of each window start
-    CASE
-      WHEN DATEDIFF('month', a.created_at, w.window_start) <= 3   THEN '0-3_months'
-      WHEN DATEDIFF('month', a.created_at, w.window_start) <= 9   THEN '4-9_months'
-      WHEN DATEDIFF('month', a.created_at, w.window_start) <= 18  THEN '10-18_months'
-      ELSE '18plus_months'
-    END AS tenure_bucket,
-
-    w.window_start,
-    w.period_label,             -- 'pre_pricing_change' | 'post_pricing_change'
-
-    -- Was this account active at the start of the window?
-    CASE WHEN a.cancelled_at IS NULL OR a.cancelled_at > w.window_start THEN 1 ELSE 0 END AS active_at_window_start,
-
-    -- Did this account churn within this 30-day window?
-    CASE
-      WHEN a.cancelled_at >= w.window_start
-       AND a.cancelled_at  < w.window_start + INTERVAL '30 days' THEN 1 ELSE 0
-    END AS churned_in_window
-
-  FROM accounts a
-  CROSS JOIN (
-    -- Two 30-day windows: one pre and one post pricing change
-    SELECT DATE('2024-01-01') AS window_start, 'pre_pricing_change'  AS period_label
-    UNION ALL
-    SELECT DATE('2024-02-12') AS window_start, 'post_pricing_change' AS period_label
-    -- Pricing change implemented 6 weeks ago; post window starts at that point
-  ) w
-  WHERE a.created_at < w.window_start  -- Account must predate the window
-)
-
-SELECT
-  period_label,
-  billing_type,
-  tenure_bucket,
-
-  SUM(active_at_window_start)                                      AS accounts_at_risk,
-  SUM(churned_in_window)                                           AS churned_accounts,
-
-  ROUND(
-    100.0 * SUM(churned_in_window) / NULLIF(SUM(active_at_window_start), 0),
-    2
-  )                                                                AS churn_rate_pct,
-
-  ROUND(AVG(CASE WHEN churned_in_window = 1 THEN acv END), 0)     AS avg_churned_acv,
-  ROUND(SUM(CASE WHEN churned_in_window = 1 THEN acv ELSE 0 END), 0) AS total_arr_lost
-
-FROM account_windows
-
-GROUP BY 1, 2, 3
-ORDER BY period_label DESC, billing_type, tenure_bucket;`,
-      annotation: `CROSS JOIN to a two-row windows subquery is an efficient pattern for creating before/after comparisons without duplicating query logic. Each account appears once per window — once in the pre period and once in the post period.
-
-active_at_window_start determines the denominator for churn rate: accounts that were still active when each window opened. This is the correct churn rate calculation — accounts that had already churned before the window should not inflate the denominator.
-
-churned_in_window flags cancellations within the specific 30-day window, enabling the apples-to-apples comparison of churn rates in the same calendar-month-length window before and after the pricing change.
-
-Expected output: the post_pricing_change / monthly / 4-9_months row should show dramatically higher churn_rate_pct than its pre_pricing_change counterpart. Annual accounts should show minimal change in both windows, confirming the price elasticity is specific to month-to-month billing. The total_arr_lost column quantifies the revenue cost of the price increase by segment.`,
+      modelQuery: 'WITH account_windows AS (\n  -- Classify each account into its billing type and tenure bucket\n  -- as of the start of each 30-day window\n  SELECT\n    a.account_id,\n    a.billing_type,             -- \'monthly\' | \'annual\'\n    a.acv,\n\n    -- Tenure at the time of each window start\n    CASE\n      WHEN DATEDIFF(\'month\', a.created_at, w.window_start) <= 3   THEN \'0-3_months\'\n      WHEN DATEDIFF(\'month\', a.created_at, w.window_start) <= 9   THEN \'4-9_months\'\n      WHEN DATEDIFF(\'month\', a.created_at, w.window_start) <= 18  THEN \'10-18_months\'\n      ELSE \'18plus_months\'\n    END AS tenure_bucket,\n\n    w.window_start,\n    w.period_label,             -- \'pre_pricing_change\' | \'post_pricing_change\'\n\n    -- Was this account active at the start of the window?\n    CASE WHEN a.cancelled_at IS NULL OR a.cancelled_at > w.window_start THEN 1 ELSE 0 END AS active_at_window_start,\n\n    -- Did this account churn within this 30-day window?\n    CASE\n      WHEN a.cancelled_at >= w.window_start\n       AND a.cancelled_at  < w.window_start + INTERVAL \'30 days\' THEN 1 ELSE 0\n    END AS churned_in_window\n\n  FROM accounts a\n  CROSS JOIN (\n    -- Two 30-day windows: one pre and one post pricing change\n    SELECT DATE(\'2024-01-01\') AS window_start, \'pre_pricing_change\'  AS period_label\n    UNION ALL\n    SELECT DATE(\'2024-02-12\') AS window_start, \'post_pricing_change\' AS period_label\n    -- Pricing change implemented 6 weeks ago; post window starts at that point\n  ) w\n  WHERE a.created_at < w.window_start  -- Account must predate the window\n)\n\nSELECT\n  period_label,\n  billing_type,\n  tenure_bucket,\n\n  SUM(active_at_window_start)                                      AS accounts_at_risk,\n  SUM(churned_in_window)                                           AS churned_accounts,\n\n  ROUND(\n    100.0 * SUM(churned_in_window) / NULLIF(SUM(active_at_window_start), 0),\n    2\n  )                                                                AS churn_rate_pct,\n\n  ROUND(AVG(CASE WHEN churned_in_window = 1 THEN acv END), 0)     AS avg_churned_acv,\n  ROUND(SUM(CASE WHEN churned_in_window = 1 THEN acv ELSE 0 END), 0) AS total_arr_lost\n\nFROM account_windows\n\nGROUP BY 1, 2, 3\nORDER BY period_label DESC, billing_type, tenure_bucket;',
+      annotation: 'CROSS JOIN to a two-row windows subquery is an efficient pattern for creating before/after comparisons without duplicating query logic. Each account appears once per window — once in the pre period and once in the post period.\n\nactive_at_window_start determines the denominator for churn rate: accounts that were still active when each window opened. This is the correct churn rate calculation — accounts that had already churned before the window should not inflate the denominator.\n\nchurned_in_window flags cancellations within the specific 30-day window, enabling the apples-to-apples comparison of churn rates in the same calendar-month-length window before and after the pricing change.\n\nExpected output: the post_pricing_change / monthly / 4-9_months row should show dramatically higher churn_rate_pct than its pre_pricing_change counterpart. Annual accounts should show minimal change in both windows, confirming the price elasticity is specific to month-to-month billing. The total_arr_lost column quantifies the revenue cost of the price increase by segment.',
     },
     seniorDiagnosis: {
       likelyCause: 'The 25% month-to-month price increase directly triggered churn among price-elastic, shorter-tenure SMB accounts who had low switching costs and were already paying a flexibility premium',
@@ -2887,76 +2223,15 @@ Expected output: the post_pricing_change / monthly / 4-9_months row should show 
       },
     ],
     sqlStep: {
-      prompt: `You've confirmed the content safety filter is over-triggering, suppressing ads on 19% of feed impressions — 7-8x the expected 2-3% rate — and disproportionately affecting high-engagement, high-CPM content categories.\n\nWrite a SQL query that shows fill rate and CPM by content_safety_flag status and content_category for the 3 weeks before and after filter deployment, so you can quantify the revenue suppression per category.`,
+      prompt: 'You\'ve confirmed the content safety filter is over-triggering, suppressing ads on 19% of feed impressions — 7-8x the expected 2-3% rate — and disproportionately affecting high-engagement, high-CPM content categories.\n\nWrite a SQL query that shows fill rate and CPM by content_safety_flag status and content_category for the 3 weeks before and after filter deployment, so you can quantify the revenue suppression per category.',
       hints: [
         'Create a pre/post flag based on the filter deployment date (3 weeks ago)',
         'Fill rate = filled_impressions / total_impressions per content_category × flag_status bucket',
         'Include avg_cpm for filled impressions to confirm the CPM premium on high-engagement categories',
         'Calculate estimated_revenue_lost = suppressed_impressions × expected_fill_rate × avg_cpm',
       ],
-      modelQuery: `WITH impression_data AS (
-  -- Join feed impressions to content safety flag status and category
-  SELECT
-    i.impression_id,
-    i.post_id,
-    i.impression_date,
-    i.ad_filled,                      -- Boolean: was an ad served on this impression?
-    i.revenue_earned,                  -- Revenue from this impression (0 if not filled)
-    i.cpm_if_filled,                   -- CPM at which the ad was sold (null if not filled)
-
-    p.content_category,               -- 'creator_challenge' | 'reaction' | 'trending_sound' | 'other'
-    p.content_safety_flagged,         -- Boolean: flagged by new content safety filter
-
-    -- Pre/post filter deployment window
-    CASE
-      WHEN i.impression_date < '2024-02-20' THEN 'pre_filter'   -- Filter deployed 3 weeks ago
-      ELSE 'post_filter'
-    END AS deployment_window
-
-  FROM feed_impressions i
-  INNER JOIN posts p ON i.post_id = p.post_id
-  WHERE i.impression_date >= '2024-01-27'   -- 3 weeks pre-deployment for comparison
-    AND i.impression_date <= CURRENT_DATE
-)
-
-SELECT
-  deployment_window,
-  content_safety_flagged,
-  content_category,
-
-  COUNT(*)                                                       AS total_impressions,
-  SUM(ad_filled::int)                                            AS filled_impressions,
-
-  ROUND(
-    100.0 * SUM(ad_filled::int) / NULLIF(COUNT(*), 0), 1
-  )                                                              AS fill_rate_pct,
-
-  ROUND(AVG(CASE WHEN ad_filled THEN cpm_if_filled END), 2)     AS avg_cpm_filled,
-
-  ROUND(SUM(revenue_earned), 0)                                  AS total_revenue,
-
-  -- Estimated revenue suppressed by the filter (post-deployment, flagged content only)
-  -- Assumes pre-deployment fill rate as the expected fill rate
-  ROUND(
-    SUM(CASE WHEN deployment_window = 'post_filter' AND content_safety_flagged THEN 1 ELSE 0 END)
-    * 0.91   -- Pre-filter fill rate baseline
-    * AVG(CASE WHEN ad_filled THEN cpm_if_filled END) / 1000.0,  -- CPM to per-impression revenue
-    0
-  )                                                              AS est_suppressed_revenue
-
-FROM impression_data
-
-GROUP BY 1, 2, 3
-ORDER BY deployment_window DESC, content_safety_flagged DESC, content_category;`,
-      annotation: `impression_data CTE joins feed impressions to post metadata to get the content_safety_flagged flag and content_category for each impression. The pre/post window is defined relative to the filter deployment date.
-
-fill_rate_pct is the core metric: the post_filter / flagged rows will show near-0% fill rate (ads suppressed on flagged content), while the pre_filter rows show 91% historical fill rate for all categories.
-
-avg_cpm_filled for flagged categories will likely show that creator challenges, reaction content, and trending sounds had above-average CPMs pre-filter, confirming that the filter is suppressing the most valuable inventory on the platform.
-
-est_suppressed_revenue applies the pre-filter fill rate (0.91) to post-filter flagged impressions, then multiplies by avg CPM to estimate the dollar value being lost per category per day. Annualizing this figure gives the $175M impact estimate.
-
-Expected key finding: the post_filter / flagged / creator_challenge and post_filter / flagged / reaction rows will have fill_rate_pct near 0% with the highest avg_cpm_filled values — confirming the filter is removing the highest-value inventory from the auction.`,
+      modelQuery: 'WITH impression_data AS (\n  -- Join feed impressions to content safety flag status and category\n  SELECT\n    i.impression_id,\n    i.post_id,\n    i.impression_date,\n    i.ad_filled,                      -- Boolean: was an ad served on this impression?\n    i.revenue_earned,                  -- Revenue from this impression (0 if not filled)\n    i.cpm_if_filled,                   -- CPM at which the ad was sold (null if not filled)\n\n    p.content_category,               -- \'creator_challenge\' | \'reaction\' | \'trending_sound\' | \'other\'\n    p.content_safety_flagged,         -- Boolean: flagged by new content safety filter\n\n    -- Pre/post filter deployment window\n    CASE\n      WHEN i.impression_date < \'2024-02-20\' THEN \'pre_filter\'   -- Filter deployed 3 weeks ago\n      ELSE \'post_filter\'\n    END AS deployment_window\n\n  FROM feed_impressions i\n  INNER JOIN posts p ON i.post_id = p.post_id\n  WHERE i.impression_date >= \'2024-01-27\'   -- 3 weeks pre-deployment for comparison\n    AND i.impression_date <= CURRENT_DATE\n)\n\nSELECT\n  deployment_window,\n  content_safety_flagged,\n  content_category,\n\n  COUNT(*)                                                       AS total_impressions,\n  SUM(ad_filled::int)                                            AS filled_impressions,\n\n  ROUND(\n    100.0 * SUM(ad_filled::int) / NULLIF(COUNT(*), 0), 1\n  )                                                              AS fill_rate_pct,\n\n  ROUND(AVG(CASE WHEN ad_filled THEN cpm_if_filled END), 2)     AS avg_cpm_filled,\n\n  ROUND(SUM(revenue_earned), 0)                                  AS total_revenue,\n\n  -- Estimated revenue suppressed by the filter (post-deployment, flagged content only)\n  -- Assumes pre-deployment fill rate as the expected fill rate\n  ROUND(\n    SUM(CASE WHEN deployment_window = \'post_filter\' AND content_safety_flagged THEN 1 ELSE 0 END)\n    * 0.91   -- Pre-filter fill rate baseline\n    * AVG(CASE WHEN ad_filled THEN cpm_if_filled END) / 1000.0,  -- CPM to per-impression revenue\n    0\n  )                                                              AS est_suppressed_revenue\n\nFROM impression_data\n\nGROUP BY 1, 2, 3\nORDER BY deployment_window DESC, content_safety_flagged DESC, content_category;',
+      annotation: 'impression_data CTE joins feed impressions to post metadata to get the content_safety_flagged flag and content_category for each impression. The pre/post window is defined relative to the filter deployment date.\n\nfill_rate_pct is the core metric: the post_filter / flagged rows will show near-0% fill rate (ads suppressed on flagged content), while the pre_filter rows show 91% historical fill rate for all categories.\n\navg_cpm_filled for flagged categories will likely show that creator challenges, reaction content, and trending sounds had above-average CPMs pre-filter, confirming that the filter is suppressing the most valuable inventory on the platform.\n\nest_suppressed_revenue applies the pre-filter fill rate (0.91) to post-filter flagged impressions, then multiplies by avg CPM to estimate the dollar value being lost per category per day. Annualizing this figure gives the $175M impact estimate.\n\nExpected key finding: the post_filter / flagged / creator_challenge and post_filter / flagged / reaction rows will have fill_rate_pct near 0% with the highest avg_cpm_filled values — confirming the filter is removing the highest-value inventory from the auction.',
     },
     seniorDiagnosis: {
       likelyCause: 'Content safety filter is over-triggering at 7-8x the expected rate, incorrectly flagging high-engagement, high-CPM content and suppressing it from the ad auction — causing a 17pp fill rate decline',
@@ -3151,97 +2426,15 @@ Expected key finding: the post_filter / flagged / creator_challenge and post_fil
       },
     ],
     sqlStep: {
-      prompt: `You've confirmed the algorithm cold-start hypothesis: the completion-rate ranking signal systematically suppresses new creator week-1 impressions, breaking the feedback loop needed for new creators to learn and stay.\n\nWrite a SQL query that compares new creator week-1 impression volume and week-2 posting rate by cohort (pre vs. post algorithm change), split by creator account age bucket, to confirm the dose-response relationship between impressions and retention.`,
+      prompt: 'You\'ve confirmed the algorithm cold-start hypothesis: the completion-rate ranking signal systematically suppresses new creator week-1 impressions, breaking the feedback loop needed for new creators to learn and stay.\n\nWrite a SQL query that compares new creator week-1 impression volume and week-2 posting rate by cohort (pre vs. post algorithm change), split by creator account age bucket, to confirm the dose-response relationship between impressions and retention.',
       hints: [
         'Define new creator as a creator whose first post was within 7 days of the analysis window start',
         'Week-1 impressions = total impressions on the creator\'s posts in days 1-7 after first post',
         'Week-2 posting = did the creator post at least once in days 8-14 after first post (retention flag)',
         'Bucket creators by W1 impression volume quintile to show the dose-response relationship',
       ],
-      modelQuery: `WITH new_creator_cohorts AS (
-  -- Identify new creators by first_post_date and classify by algorithm era
-  SELECT
-    c.creator_id,
-    c.first_post_date,
-
-    CASE
-      WHEN c.first_post_date < '2024-01-22' THEN 'pre_algorithm'   -- Algorithm launched 7 weeks ago
-      ELSE 'post_algorithm'
-    END AS algorithm_cohort
-
-  FROM creators c
-  WHERE c.first_post_date >= '2024-01-01'   -- Covers pre and post algorithm window
-    AND c.first_post_date <= CURRENT_DATE - INTERVAL '14 days'  -- Need 14 days to measure W2
-),
-
-week1_impressions AS (
-  -- Total impressions on creator's content in days 1-7 after first post
-  SELECT
-    ncc.creator_id,
-    ncc.algorithm_cohort,
-    ncc.first_post_date,
-    COALESCE(SUM(i.impression_count), 0)  AS w1_total_impressions
-
-  FROM new_creator_cohorts ncc
-  LEFT JOIN post_impressions i
-    ON i.creator_id = ncc.creator_id
-    AND i.impression_date BETWEEN ncc.first_post_date
-                               AND ncc.first_post_date + INTERVAL '6 days'
-  GROUP BY 1, 2, 3
-),
-
-week2_retention AS (
-  -- Flag: did creator post at least once in days 8-14 after first post?
-  SELECT
-    ncc.creator_id,
-    MAX(CASE
-      WHEN p.post_date BETWEEN ncc.first_post_date + INTERVAL '7 days'
-                           AND ncc.first_post_date + INTERVAL '13 days' THEN 1 ELSE 0
-    END) AS posted_in_week2
-
-  FROM new_creator_cohorts ncc
-  LEFT JOIN posts p ON p.creator_id = ncc.creator_id
-  GROUP BY 1
-),
-
-impression_quintiles AS (
-  -- Assign W1 impression quintile within each algorithm cohort
-  SELECT
-    wi.creator_id,
-    wi.algorithm_cohort,
-    wi.w1_total_impressions,
-    NTILE(5) OVER (
-      PARTITION BY wi.algorithm_cohort
-      ORDER BY wi.w1_total_impressions
-    ) AS impression_quintile   -- 1 = lowest impressions, 5 = highest
-
-  FROM week1_impressions wi
-)
-
-SELECT
-  iq.algorithm_cohort,
-  iq.impression_quintile,
-
-  COUNT(*)                                        AS creator_count,
-  ROUND(AVG(iq.w1_total_impressions), 0)          AS avg_w1_impressions,
-
-  SUM(wr.posted_in_week2)                         AS w2_retained_creators,
-  ROUND(
-    100.0 * SUM(wr.posted_in_week2) / NULLIF(COUNT(*), 0), 1
-  )                                               AS w2_retention_rate_pct
-
-FROM impression_quintiles iq
-INNER JOIN week2_retention wr ON iq.creator_id = wr.creator_id
-
-GROUP BY 1, 2
-ORDER BY algorithm_cohort, impression_quintile;`,
-      annotation: `new_creator_cohorts CTE identifies creators by first_post_date and applies the pre/post algorithm label. The 14-day lookback ensures all creators in the analysis have had time to either post or not post in week 2.
-
-week1_impressions uses a date range join (LEFT JOIN to avoid dropping creators who received zero impressions) to count impressions in days 1-7. COALESCE ensures creators who received zero impressions appear with 0 rather than NULL.
-
-NTILE(5) in impression_quintiles partitions creators within each algorithm cohort into 5 equal groups by impression volume. Partitioning by cohort ensures pre and post quintiles are comparable within each era rather than mixing impression distributions across algorithm regimes.
-
-Expected output: for post_algorithm cohorts, quintile 1 (fewest impressions) should show dramatically lower w2_retention_rate_pct than quintile 5 (most impressions), confirming the dose-response relationship. Comparing the same quintile pattern for pre_algorithm cohorts vs. post_algorithm cohorts will show that the bottom quintile got much worse after the algorithm change — confirming that the algorithm compressed new creator impression distribution downward.`,
+      modelQuery: 'WITH new_creator_cohorts AS (\n  -- Identify new creators by first_post_date and classify by algorithm era\n  SELECT\n    c.creator_id,\n    c.first_post_date,\n\n    CASE\n      WHEN c.first_post_date < \'2024-01-22\' THEN \'pre_algorithm\'   -- Algorithm launched 7 weeks ago\n      ELSE \'post_algorithm\'\n    END AS algorithm_cohort\n\n  FROM creators c\n  WHERE c.first_post_date >= \'2024-01-01\'   -- Covers pre and post algorithm window\n    AND c.first_post_date <= CURRENT_DATE - INTERVAL \'14 days\'  -- Need 14 days to measure W2\n),\n\nweek1_impressions AS (\n  -- Total impressions on creator\'s content in days 1-7 after first post\n  SELECT\n    ncc.creator_id,\n    ncc.algorithm_cohort,\n    ncc.first_post_date,\n    COALESCE(SUM(i.impression_count), 0)  AS w1_total_impressions\n\n  FROM new_creator_cohorts ncc\n  LEFT JOIN post_impressions i\n    ON i.creator_id = ncc.creator_id\n    AND i.impression_date BETWEEN ncc.first_post_date\n                               AND ncc.first_post_date + INTERVAL \'6 days\'\n  GROUP BY 1, 2, 3\n),\n\nweek2_retention AS (\n  -- Flag: did creator post at least once in days 8-14 after first post?\n  SELECT\n    ncc.creator_id,\n    MAX(CASE\n      WHEN p.post_date BETWEEN ncc.first_post_date + INTERVAL \'7 days\'\n                           AND ncc.first_post_date + INTERVAL \'13 days\' THEN 1 ELSE 0\n    END) AS posted_in_week2\n\n  FROM new_creator_cohorts ncc\n  LEFT JOIN posts p ON p.creator_id = ncc.creator_id\n  GROUP BY 1\n),\n\nimpression_quintiles AS (\n  -- Assign W1 impression quintile within each algorithm cohort\n  SELECT\n    wi.creator_id,\n    wi.algorithm_cohort,\n    wi.w1_total_impressions,\n    NTILE(5) OVER (\n      PARTITION BY wi.algorithm_cohort\n      ORDER BY wi.w1_total_impressions\n    ) AS impression_quintile   -- 1 = lowest impressions, 5 = highest\n\n  FROM week1_impressions wi\n)\n\nSELECT\n  iq.algorithm_cohort,\n  iq.impression_quintile,\n\n  COUNT(*)                                        AS creator_count,\n  ROUND(AVG(iq.w1_total_impressions), 0)          AS avg_w1_impressions,\n\n  SUM(wr.posted_in_week2)                         AS w2_retained_creators,\n  ROUND(\n    100.0 * SUM(wr.posted_in_week2) / NULLIF(COUNT(*), 0), 1\n  )                                               AS w2_retention_rate_pct\n\nFROM impression_quintiles iq\nINNER JOIN week2_retention wr ON iq.creator_id = wr.creator_id\n\nGROUP BY 1, 2\nORDER BY algorithm_cohort, impression_quintile;',
+      annotation: 'new_creator_cohorts CTE identifies creators by first_post_date and applies the pre/post algorithm label. The 14-day lookback ensures all creators in the analysis have had time to either post or not post in week 2.\n\nweek1_impressions uses a date range join (LEFT JOIN to avoid dropping creators who received zero impressions) to count impressions in days 1-7. COALESCE ensures creators who received zero impressions appear with 0 rather than NULL.\n\nNTILE(5) in impression_quintiles partitions creators within each algorithm cohort into 5 equal groups by impression volume. Partitioning by cohort ensures pre and post quintiles are comparable within each era rather than mixing impression distributions across algorithm regimes.\n\nExpected output: for post_algorithm cohorts, quintile 1 (fewest impressions) should show dramatically lower w2_retention_rate_pct than quintile 5 (most impressions), confirming the dose-response relationship. Comparing the same quintile pattern for pre_algorithm cohorts vs. post_algorithm cohorts will show that the bottom quintile got much worse after the algorithm change — confirming that the algorithm compressed new creator impression distribution downward.',
     },
     seniorDiagnosis: {
       likelyCause: 'Algorithm cold-start failure: the completion-rate ranking signal structurally disadvantages new creators whose early content is down-ranked, suppressing week-1 impressions and eliminating the feedback loop that motivates continued posting',

@@ -27,21 +27,7 @@ export const estimationProblems = [
     ],
 
     modelAnswer: {
-      walkthrough: `Start with the NYC addressable population. NYC has ~8.5M residents plus an average of ~180k tourists at any given time (65M annual visits ÷ 365), giving ~8.68M people in the city.
-
-Uber penetration: In NYC the subway is dominant, so not everyone Ubers. Estimate ~28% of the population as regular Uber users → 8.68M × 0.28 ≈ 2.43M Uber users.
-
-Rides per user per day: A typical NYC Uber user might take 2 rides per week (airport, late nights, rain days, convenience trips). That's 2 ÷ 7 ≈ 0.29 rides/user/day. Total daily rides: 2.43M × 0.29 ≈ 704k rides/day.
-
-Convert to per-hour average: 704k ÷ 24h ≈ 29,300 rides/hour on average.
-
-Apply peak multiplier: At 9am on a weekday, rideshare demand is ~2.2x the hourly average (morning commute surge). Rides in progress at any given moment of a 9am-hour window: ~29,300 × 2.2 ≈ 64,500 rides/hour.
-
-But "right now" means simultaneous rides in progress, not rides started per hour. Average Uber trip in NYC is about 15 minutes (0.25 hours). Rides in flight at one instant = 64,500 × 0.25 ≈ 16,000 concurrent rides.
-
-Range: 10,000–25,000 concurrent rides, with a point estimate of ~16,000.
-
-Sanity check via global data: Uber reported ~18M daily rides globally. NYC represents roughly 5% of global rideshare volume → 18M × 0.05 = 900k rides/day in NYC. This is slightly higher than our 704k bottom-up — suggesting our Uber penetration estimate is conservative. Adjusting to 900k/day: peak hour = 900k/24 × 2.2 = 82,500 rides/hour × 0.25h average trip = ~20,600 concurrent rides. Consistent with the 10k–25k range.`,
+      walkthrough: 'Start with the NYC addressable population. NYC has ~8.5M residents plus an average of ~180k tourists at any given time (65M annual visits ÷ 365), giving ~8.68M people in the city.\n\nUber penetration: In NYC the subway is dominant, so not everyone Ubers. Estimate ~28% of the population as regular Uber users → 8.68M × 0.28 ≈ 2.43M Uber users.\n\nRides per user per day: A typical NYC Uber user might take 2 rides per week (airport, late nights, rain days, convenience trips). That\'s 2 ÷ 7 ≈ 0.29 rides/user/day. Total daily rides: 2.43M × 0.29 ≈ 704k rides/day.\n\nConvert to per-hour average: 704k ÷ 24h ≈ 29,300 rides/hour on average.\n\nApply peak multiplier: At 9am on a weekday, rideshare demand is ~2.2x the hourly average (morning commute surge). Rides in progress at any given moment of a 9am-hour window: ~29,300 × 2.2 ≈ 64,500 rides/hour.\n\nBut "right now" means simultaneous rides in progress, not rides started per hour. Average Uber trip in NYC is about 15 minutes (0.25 hours). Rides in flight at one instant = 64,500 × 0.25 ≈ 16,000 concurrent rides.\n\nRange: 10,000–25,000 concurrent rides, with a point estimate of ~16,000.\n\nSanity check via global data: Uber reported ~18M daily rides globally. NYC represents roughly 5% of global rideshare volume → 18M × 0.05 = 900k rides/day in NYC. This is slightly higher than our 704k bottom-up — suggesting our Uber penetration estimate is conservative. Adjusting to 900k/day: peak hour = 900k/24 × 2.2 = 82,500 rides/hour × 0.25h average trip = ~20,600 concurrent rides. Consistent with the 10k–25k range.',
       keyAssumptions: [
         '28% of NYC residents/visitors are regular Uber users — lower than other US cities due to NYC subway coverage',
         '2 rides/week per user — reflects occasional-to-moderate usage in a transit-heavy city',
@@ -103,21 +89,7 @@ Sanity check via global data: Uber reported ~18M daily rides globally. NYC repre
     ],
 
     modelAnswer: {
-      walkthrough: `Start with upload volume. YouTube has stated ~500 hours of video are uploaded per minute. Scale that up:
-500 hours/minute × 60 minutes/hour × 24 hours/day × 365 days/year = 500 × 525,600 = 262.8M hours uploaded per year.
-
-Raw storage per hour: A blended average across all quality levels of uploads (many are short, low-res user videos; some are professional 4K). Estimate ~1 GB per hour of raw video on average. Raw storage: 262.8M hours × 1 GB = 262.8M GB ≈ 263 petabytes (PB) of raw uploads/year.
-
-Transcoding multiplier: YouTube stores each video in approximately 5 quality tiers (240p, 360p, 480p, 720p, 1080p) plus original. The transcoded versions combined are roughly 4× the original size. Total stored per year: 263 PB × 4 = 1,052 PB ≈ 1 exabyte of new storage added per year.
-
-Storage cost: Google's internal storage at hyperscale is far cheaper than public cloud. Use ~$3/TB/month as an estimate for Google's internal cost (vs. $20-23/TB/month on AWS/GCS public pricing). 1,052 PB = 1,052,000 TB. Annual cost for just the first year's data (12 months average across the year, since uploads are spread over the year):
-- If all 1 exabyte were stored from Jan 1, cost = 1,052,000 TB × $3/TB/month × 12 months = $37.9B/year — that's way too high. The error: not all of this year's uploads arrived on Jan 1.
-- Correct annualization: Average TB-months for new 2024 uploads = 1,052,000 TB × 6.5 average months stored in first year ≈ 6.8M TB-months × $3 = ~$20.5M for the first year's storage of new uploads.
-- Ongoing: This ~1 exabyte of new uploads then costs $3M/month ($36M/year) every subsequent year.
-
-Summary: New uploads in year 1 cost ~$20M in storage for that year (partial-year basis). Ongoing annual storage cost for that cohort = ~$36M/year in perpetuity.
-
-For a simpler framing the interviewer likely wants: Total cloud-equivalent cost for new uploads' first year = ~$60-120M if using public cloud pricing ($20/TB/month): 1,052,000 TB × $20/TB/month × 6.5 months = ~$137M. Range: $20M-$140M depending on Google's internal pricing advantage.`,
+      walkthrough: 'Start with upload volume. YouTube has stated ~500 hours of video are uploaded per minute. Scale that up:\n500 hours/minute × 60 minutes/hour × 24 hours/day × 365 days/year = 500 × 525,600 = 262.8M hours uploaded per year.\n\nRaw storage per hour: A blended average across all quality levels of uploads (many are short, low-res user videos; some are professional 4K). Estimate ~1 GB per hour of raw video on average. Raw storage: 262.8M hours × 1 GB = 262.8M GB ≈ 263 petabytes (PB) of raw uploads/year.\n\nTranscoding multiplier: YouTube stores each video in approximately 5 quality tiers (240p, 360p, 480p, 720p, 1080p) plus original. The transcoded versions combined are roughly 4× the original size. Total stored per year: 263 PB × 4 = 1,052 PB ≈ 1 exabyte of new storage added per year.\n\nStorage cost: Google\'s internal storage at hyperscale is far cheaper than public cloud. Use ~$3/TB/month as an estimate for Google\'s internal cost (vs. $20-23/TB/month on AWS/GCS public pricing). 1,052 PB = 1,052,000 TB. Annual cost for just the first year\'s data (12 months average across the year, since uploads are spread over the year):\n- If all 1 exabyte were stored from Jan 1, cost = 1,052,000 TB × $3/TB/month × 12 months = $37.9B/year — that\'s way too high. The error: not all of this year\'s uploads arrived on Jan 1.\n- Correct annualization: Average TB-months for new 2024 uploads = 1,052,000 TB × 6.5 average months stored in first year ≈ 6.8M TB-months × $3 = ~$20.5M for the first year\'s storage of new uploads.\n- Ongoing: This ~1 exabyte of new uploads then costs $3M/month ($36M/year) every subsequent year.\n\nSummary: New uploads in year 1 cost ~$20M in storage for that year (partial-year basis). Ongoing annual storage cost for that cohort = ~$36M/year in perpetuity.\n\nFor a simpler framing the interviewer likely wants: Total cloud-equivalent cost for new uploads\' first year = ~$60-120M if using public cloud pricing ($20/TB/month): 1,052,000 TB × $20/TB/month × 6.5 months = ~$137M. Range: $20M-$140M depending on Google\'s internal pricing advantage.',
       keyAssumptions: [
         '500 hours uploaded per minute — widely published stat, though it has grown over time',
         '1 GB/hour blended average raw size — conservative estimate across all quality levels',
@@ -178,22 +150,7 @@ For a simpler framing the interviewer likely wants: Total cloud-equivalent cost 
     ],
 
     modelAnswer: {
-      walkthrough: `India population: ~1.4 billion people.
-
-Smartphone penetration: ~55% of the population owns a smartphone → 1.4B × 0.55 = 770M smartphone users.
-
-WhatsApp adoption rate in India: WhatsApp is the near-universal messaging app in India, effectively replacing SMS. Penetration among smartphone owners is ~85-90%. Use 88%: 770M × 0.88 = 678M WhatsApp installs/MAU-eligible users.
-
-Monthly Active Users: Not every install is active monthly. Some users have WhatsApp but rarely open it. Estimate ~90% of installs are monthly active (very high because WhatsApp groups for family, work, community are pervasive): 678M × 0.90 = 610M MAU.
-
-Daily Active Users: For a messaging app this integrated into daily communication, DAU/MAU is ~70-75%. Use 72%: 610M × 0.72 = 439M DAU.
-
-Range: 400M–470M DAU in India.
-
-Sanity check: WhatsApp publicly stated ~500M users in India (this appears to be MAU). Our MAU estimate is 610M — about 20% higher. The slight overestimate likely comes from:
-1. Smartphone penetration may be closer to 50% (not 55%) in 2024, especially in rural areas.
-2. Some dual-SIM users may show as 2 accounts.
-Adjusting smartphone penetration to 50%: 1.4B × 0.50 = 700M × 0.88 = 616M installs × 0.90 MAU = 554M MAU × 0.72 = 399M DAU. Still in the right ballpark.`,
+      walkthrough: 'India population: ~1.4 billion people.\n\nSmartphone penetration: ~55% of the population owns a smartphone → 1.4B × 0.55 = 770M smartphone users.\n\nWhatsApp adoption rate in India: WhatsApp is the near-universal messaging app in India, effectively replacing SMS. Penetration among smartphone owners is ~85-90%. Use 88%: 770M × 0.88 = 678M WhatsApp installs/MAU-eligible users.\n\nMonthly Active Users: Not every install is active monthly. Some users have WhatsApp but rarely open it. Estimate ~90% of installs are monthly active (very high because WhatsApp groups for family, work, community are pervasive): 678M × 0.90 = 610M MAU.\n\nDaily Active Users: For a messaging app this integrated into daily communication, DAU/MAU is ~70-75%. Use 72%: 610M × 0.72 = 439M DAU.\n\nRange: 400M–470M DAU in India.\n\nSanity check: WhatsApp publicly stated ~500M users in India (this appears to be MAU). Our MAU estimate is 610M — about 20% higher. The slight overestimate likely comes from:\n1. Smartphone penetration may be closer to 50% (not 55%) in 2024, especially in rural areas.\n2. Some dual-SIM users may show as 2 accounts.\nAdjusting smartphone penetration to 50%: 1.4B × 0.50 = 700M × 0.88 = 616M installs × 0.90 MAU = 554M MAU × 0.72 = 399M DAU. Still in the right ballpark.',
       keyAssumptions: [
         '55% smartphone penetration in India — this is the midpoint; rural penetration is lower (~35%) while urban is 75%+',
         '88% WhatsApp penetration among smartphone users — conservative given some users are iOS on iMessage or corporate MDM',
@@ -253,25 +210,7 @@ Adjusting smartphone penetration to 50%: 1.4B × 0.50 = 700M × 0.88 = 616M inst
     ],
 
     modelAnswer: {
-      walkthrough: `Build from household dining behavior.
-
-US population: 330M people, ~2.5 people per household → 132M households.
-
-Dining-out frequency: Average US household eats out or orders from a restaurant about 3 times per week (mix of dine-in, takeout, delivery). Total restaurant visits per week: 132M × 3 = 396M visits/week.
-
-Restaurant capacity: A typical US restaurant serves about 200 diners per day (lunch + dinner + takeout), 7 days/week = 1,400 covers/week. Number of restaurants needed to serve demand: 396M ÷ 1,400 = ~283k restaurants.
-
-But wait — 200 covers/day is for a mid-size sit-down restaurant. Many US restaurants are much smaller (food stalls, small diners at 50 covers/day) or much larger (chains at 500+/day). Using a blended average of 150 covers/day × 7 days = 1,050/week: 396M ÷ 1,050 = ~377k restaurants. Still feels low.
-
-The issue: we're undercounting meal occasions. Many Americans eat fast food (McDonald's alone serves ~69M customers/day globally, ~40M in the US). Including QSR, fast casual, and delivery-only restaurants: total US foodservice units is about 1M per the NRA. Our demand-side estimate of 300-400k represents sit-down and independent restaurants; the other 600k are fast food chains and franchise units.
-
-Revised estimate for total US restaurants (all types): ~1M.
-
-Yelp coverage: Yelp has been around since 2004 and has strong penetration in urban/suburban areas. Coverage for sit-down restaurants: ~75-80%. Coverage for fast food chains (McDonald's, Starbucks): ~90%+ (auto-listed). Coverage for very small, cash-only local spots: ~30-40%. Blended coverage: ~60%.
-
-Yelp restaurant listings: 1M × 60% = 600k restaurant-category listings.
-
-But Yelp also lists bars, cafes, food trucks. Total food/drink = ~600k / 0.55 = ~1.09M total food/drink listings (if restaurants are 55% of that category). The question asks specifically for restaurants: ~600k.`,
+      walkthrough: 'Build from household dining behavior.\n\nUS population: 330M people, ~2.5 people per household → 132M households.\n\nDining-out frequency: Average US household eats out or orders from a restaurant about 3 times per week (mix of dine-in, takeout, delivery). Total restaurant visits per week: 132M × 3 = 396M visits/week.\n\nRestaurant capacity: A typical US restaurant serves about 200 diners per day (lunch + dinner + takeout), 7 days/week = 1,400 covers/week. Number of restaurants needed to serve demand: 396M ÷ 1,400 = ~283k restaurants.\n\nBut wait — 200 covers/day is for a mid-size sit-down restaurant. Many US restaurants are much smaller (food stalls, small diners at 50 covers/day) or much larger (chains at 500+/day). Using a blended average of 150 covers/day × 7 days = 1,050/week: 396M ÷ 1,050 = ~377k restaurants. Still feels low.\n\nThe issue: we\'re undercounting meal occasions. Many Americans eat fast food (McDonald\'s alone serves ~69M customers/day globally, ~40M in the US). Including QSR, fast casual, and delivery-only restaurants: total US foodservice units is about 1M per the NRA. Our demand-side estimate of 300-400k represents sit-down and independent restaurants; the other 600k are fast food chains and franchise units.\n\nRevised estimate for total US restaurants (all types): ~1M.\n\nYelp coverage: Yelp has been around since 2004 and has strong penetration in urban/suburban areas. Coverage for sit-down restaurants: ~75-80%. Coverage for fast food chains (McDonald\'s, Starbucks): ~90%+ (auto-listed). Coverage for very small, cash-only local spots: ~30-40%. Blended coverage: ~60%.\n\nYelp restaurant listings: 1M × 60% = 600k restaurant-category listings.\n\nBut Yelp also lists bars, cafes, food trucks. Total food/drink = ~600k / 0.55 = ~1.09M total food/drink listings (if restaurants are 55% of that category). The question asks specifically for restaurants: ~600k.',
       keyAssumptions: [
         '3 restaurant visits per household per week — slightly below the NRA\'s reported average of ~5.5 eating occasions outside home, but accounting for grocery delivery/meal kits',
         '150 average covers/day across all restaurant types — blended across fast food (high volume) and fine dining (low volume)',
@@ -331,30 +270,7 @@ But Yelp also lists bars, cafes, food trucks. Total food/drink = ~600k / 0.55 = 
     ],
 
     modelAnswer: {
-      walkthrough: `Approach 1: Build from historical catalog + digital era growth.
-
-Pre-digital era (1950-2010, 60 years): Estimate ~500k commercial tracks released per year globally (all genres, all countries). 60 years × 500k = 30M tracks in the historical catalog. Of these, ~60% have been digitized and licensed to streaming: 30M × 0.60 = 18M pre-2010 tracks on Spotify.
-
-Early streaming era (2010-2015, 5 years): Music industry was adapting to streaming. Releases growing but not yet explosive. ~1M tracks/year → 5M tracks added. ~80% availability → 4M tracks.
-
-DIY explosion (2015-2020, 5 years): DistroKid, TuneCore, CD Baby made distribution nearly free. Releases growing from 5M/year to 30M/year. Average: ~15M/year × 5 = 75M tracks released. ~90% uploaded to Spotify → 67M tracks.
-
-Recent era (2020-2024, 4 years): ~40-50M tracks released per year (the ~100k/day figure = 36.5M/year). 4 years × 40M = 160M new releases, ~95% on Spotify → 152M.
-
-But wait — this gives 18M + 4M + 67M + 152M = 241M, which seems too high. The issue: many "uploads" in the DIY era are AI-generated or duplicate tracks that Spotify has since removed.
-
-Approach 2: Upload rate triangulation (cleaner).
-Spotify receives ~100k new tracks/day = 36.5M/year currently. But the platform has been accepting uploads since 2008. Using a growth curve:
-- 2008-2012: ~5M tracks/year → 20M cumulative
-- 2013-2016: ~10M tracks/year → 40M cumulative
-- 2017-2019: ~20M tracks/year → 60M cumulative
-- 2020-2022: ~30M tracks/year → 90M cumulative
-- 2023-2024: ~36M tracks/year → 72M cumulative
-Total cumulative: 20+40+60+90+72 = 282M. Minus removals (AI spam, duplicates, inactive labels): ~25% removed → ~212M.
-
-Spotify stated ~100M tracks in late 2023. Our estimate skews high, suggesting upload rate was lower than 100k/day historically (that's a very recent figure). A more conservative ramp gives ~80-120M.
-
-The honest answer: without knowing Spotify's exact catalog, triangulation via the upload rate and a historical music release rate yields 80-120M tracks, converging on the ~100M disclosed figure.`,
+      walkthrough: 'Approach 1: Build from historical catalog + digital era growth.\n\nPre-digital era (1950-2010, 60 years): Estimate ~500k commercial tracks released per year globally (all genres, all countries). 60 years × 500k = 30M tracks in the historical catalog. Of these, ~60% have been digitized and licensed to streaming: 30M × 0.60 = 18M pre-2010 tracks on Spotify.\n\nEarly streaming era (2010-2015, 5 years): Music industry was adapting to streaming. Releases growing but not yet explosive. ~1M tracks/year → 5M tracks added. ~80% availability → 4M tracks.\n\nDIY explosion (2015-2020, 5 years): DistroKid, TuneCore, CD Baby made distribution nearly free. Releases growing from 5M/year to 30M/year. Average: ~15M/year × 5 = 75M tracks released. ~90% uploaded to Spotify → 67M tracks.\n\nRecent era (2020-2024, 4 years): ~40-50M tracks released per year (the ~100k/day figure = 36.5M/year). 4 years × 40M = 160M new releases, ~95% on Spotify → 152M.\n\nBut wait — this gives 18M + 4M + 67M + 152M = 241M, which seems too high. The issue: many "uploads" in the DIY era are AI-generated or duplicate tracks that Spotify has since removed.\n\nApproach 2: Upload rate triangulation (cleaner).\nSpotify receives ~100k new tracks/day = 36.5M/year currently. But the platform has been accepting uploads since 2008. Using a growth curve:\n- 2008-2012: ~5M tracks/year → 20M cumulative\n- 2013-2016: ~10M tracks/year → 40M cumulative\n- 2017-2019: ~20M tracks/year → 60M cumulative\n- 2020-2022: ~30M tracks/year → 90M cumulative\n- 2023-2024: ~36M tracks/year → 72M cumulative\nTotal cumulative: 20+40+60+90+72 = 282M. Minus removals (AI spam, duplicates, inactive labels): ~25% removed → ~212M.\n\nSpotify stated ~100M tracks in late 2023. Our estimate skews high, suggesting upload rate was lower than 100k/day historically (that\'s a very recent figure). A more conservative ramp gives ~80-120M.\n\nThe honest answer: without knowing Spotify\'s exact catalog, triangulation via the upload rate and a historical music release rate yields 80-120M tracks, converging on the ~100M disclosed figure.',
       keyAssumptions: [
         '500k global commercial tracks per year pre-2010 — covers all genres (pop, classical, world music) but excludes unreleased recordings',
         '60% licensing rate for pre-digital catalog — many tracks are out-of-print or have unresolved rights',
@@ -414,34 +330,7 @@ The honest answer: without knowing Spotify's exact catalog, triangulation via th
     ],
 
     modelAnswer: {
-      walkthrough: `Start with the global user base.
-
-Global internet users: ~5.3 billion people.
-Google search market share: ~91% → 5.3B × 0.91 = ~4.8B Google users.
-
-But not everyone searches every day. Distinguish by engagement level:
-- Heavy users (daily multiple searches, typically young adults/professionals): ~35% of users, ~8 searches/day
-- Regular users (search daily but fewer queries): ~40% of users, ~3 searches/day
-- Light/occasional users (weekly, older demographics, feature phones): ~25% of users, ~0.5 searches/day
-
-Weighted average searches per user per day:
-(0.35 × 8) + (0.40 × 3) + (0.25 × 0.5) = 2.8 + 1.2 + 0.125 = ~4.1 searches/user/day
-
-Total daily searches: 4.8B users × 4.1 searches = 19.7B searches/day.
-
-Per second: 19.7B ÷ 86,400 = ~228,000 searches/second.
-
-Simpler check: 4.8B users × 3.5 searches/day ÷ 86,400 = ~194,000/second.
-
-Google's disclosed data: Google reported ~2 trillion searches per year as of 2016 = 5.5B/day = ~63,700/second. More recent industry estimates suggest 8-9 billion searches/day = ~100,000/second.
-
-Our estimate of ~200,000/second is likely high because:
-1. Many "users" in the 5.3B count are not daily Google searchers
-2. The 3.5 searches/user/day might be too high for global average including low-connectivity regions
-
-Adjusted: If 60% of Google users are active on any given day: 4.8B × 0.60 = 2.88B daily active searchers × 3.5 searches = 10.1B/day ÷ 86,400 = ~117,000/second.
-
-The canonical answer the interviewer wants: approximately 100,000 searches per second.`,
+      walkthrough: 'Start with the global user base.\n\nGlobal internet users: ~5.3 billion people.\nGoogle search market share: ~91% → 5.3B × 0.91 = ~4.8B Google users.\n\nBut not everyone searches every day. Distinguish by engagement level:\n- Heavy users (daily multiple searches, typically young adults/professionals): ~35% of users, ~8 searches/day\n- Regular users (search daily but fewer queries): ~40% of users, ~3 searches/day\n- Light/occasional users (weekly, older demographics, feature phones): ~25% of users, ~0.5 searches/day\n\nWeighted average searches per user per day:\n(0.35 × 8) + (0.40 × 3) + (0.25 × 0.5) = 2.8 + 1.2 + 0.125 = ~4.1 searches/user/day\n\nTotal daily searches: 4.8B users × 4.1 searches = 19.7B searches/day.\n\nPer second: 19.7B ÷ 86,400 = ~228,000 searches/second.\n\nSimpler check: 4.8B users × 3.5 searches/day ÷ 86,400 = ~194,000/second.\n\nGoogle\'s disclosed data: Google reported ~2 trillion searches per year as of 2016 = 5.5B/day = ~63,700/second. More recent industry estimates suggest 8-9 billion searches/day = ~100,000/second.\n\nOur estimate of ~200,000/second is likely high because:\n1. Many "users" in the 5.3B count are not daily Google searchers\n2. The 3.5 searches/user/day might be too high for global average including low-connectivity regions\n\nAdjusted: If 60% of Google users are active on any given day: 4.8B × 0.60 = 2.88B daily active searchers × 3.5 searches = 10.1B/day ÷ 86,400 = ~117,000/second.\n\nThe canonical answer the interviewer wants: approximately 100,000 searches per second.',
       keyAssumptions: [
         '91% Google search market share globally — consistent with StatCounter data',
         '60% daily active rate among Google users — many people go days without searching',
@@ -502,28 +391,7 @@ The canonical answer the interviewer wants: approximately 100,000 searches per s
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Define acquisition channels and estimate mix (for US new host acquisition):
-
-Channel A — Referral / Word-of-mouth: A guest who loved their Airbnb experience and decides to list their own home. Also host referrals to friends. Cost: effectively $0 marginal CAC (brand/product cost amortized broadly). Estimated mix: ~40% of new host signups.
-
-Channel B — Paid digital: Facebook/Instagram and Google campaigns targeting homeowners ("Earn extra income"). Cost per lead (someone who starts an application): ~$30-50. Cost per signup (completes the basic host profile): ~$80-120. Estimated mix: ~35% of new host signups.
-
-Channel C — Organic / SEO / PR: Airbnb blog posts, press coverage, word-of-mouth discovery. Near-zero marginal cost. Estimated mix: ~15%.
-
-Channel D — Direct sales / partnerships: Airbnb's "Superhosts for Hire" type programs, property manager outreach, relocation company partnerships. Cost per acquisition very high (~$500-1,000+) but yields high-value multi-listing hosts. Estimated mix: ~10%.
-
-Step 2: Blended CAC at signup:
-(40% × $0) + (35% × $100) + (15% × $20) + (10% × $750)
-= $0 + $35 + $3 + $75 = $113 per host signup.
-
-Step 3: Adjust for activation rate.
-Not all signups become active. A host "signs up" = creates a profile. An active host = completes a verified listing AND receives at least one booking within 90 days. Estimated activation rate: ~50-60% (many people explore the idea but don't follow through with professional photos, listing copywriting, calendar management). Use 55%:
-
-True CAC per active host = $113 ÷ 0.55 = ~$205 per active host.
-
-Range: $150-$300 per active host.
-
-LTV check: Active US host earns ~$14k/year. Airbnb take rate: ~14% → $1,960/year revenue to Airbnb. Average host stays active ~3.5 years → LTV = $1,960 × 3.5 = $6,860. CAC/LTV ratio = $205 / $6,860 = ~3%. This is an excellent CAC:LTV ratio (conventional threshold is CAC < LTV/3, i.e., ratio < 33%). Airbnb's host supply economics are highly attractive — the product itself (earning $14k/year) is the best marketing.`,
+      walkthrough: 'Step 1: Define acquisition channels and estimate mix (for US new host acquisition):\n\nChannel A — Referral / Word-of-mouth: A guest who loved their Airbnb experience and decides to list their own home. Also host referrals to friends. Cost: effectively $0 marginal CAC (brand/product cost amortized broadly). Estimated mix: ~40% of new host signups.\n\nChannel B — Paid digital: Facebook/Instagram and Google campaigns targeting homeowners ("Earn extra income"). Cost per lead (someone who starts an application): ~$30-50. Cost per signup (completes the basic host profile): ~$80-120. Estimated mix: ~35% of new host signups.\n\nChannel C — Organic / SEO / PR: Airbnb blog posts, press coverage, word-of-mouth discovery. Near-zero marginal cost. Estimated mix: ~15%.\n\nChannel D — Direct sales / partnerships: Airbnb\'s "Superhosts for Hire" type programs, property manager outreach, relocation company partnerships. Cost per acquisition very high (~$500-1,000+) but yields high-value multi-listing hosts. Estimated mix: ~10%.\n\nStep 2: Blended CAC at signup:\n(40% × $0) + (35% × $100) + (15% × $20) + (10% × $750)\n= $0 + $35 + $3 + $75 = $113 per host signup.\n\nStep 3: Adjust for activation rate.\nNot all signups become active. A host "signs up" = creates a profile. An active host = completes a verified listing AND receives at least one booking within 90 days. Estimated activation rate: ~50-60% (many people explore the idea but don\'t follow through with professional photos, listing copywriting, calendar management). Use 55%:\n\nTrue CAC per active host = $113 ÷ 0.55 = ~$205 per active host.\n\nRange: $150-$300 per active host.\n\nLTV check: Active US host earns ~$14k/year. Airbnb take rate: ~14% → $1,960/year revenue to Airbnb. Average host stays active ~3.5 years → LTV = $1,960 × 3.5 = $6,860. CAC/LTV ratio = $205 / $6,860 = ~3%. This is an excellent CAC:LTV ratio (conventional threshold is CAC < LTV/3, i.e., ratio < 33%). Airbnb\'s host supply economics are highly attractive — the product itself (earning $14k/year) is the best marketing.',
       keyAssumptions: [
         '40% referral/organic split — Airbnb is a strong network-effects platform; most supply growth in mature markets is organic',
         '$100 blended CPL for paid channels — competitive for a high-intent, low-frequency decision (listing your home)',
@@ -585,34 +453,7 @@ LTV check: Active US host earns ~$14k/year. Airbnb take rate: ~14% → $1,960/ye
     ],
 
     modelAnswer: {
-      walkthrough: `Approach 1: Top-down from Meta financials.
-
-Meta total revenue 2023: ~$135B globally. Meta US & Canada revenue: ~$63B (roughly 46% of global, consistent with Meta's earnings reports).
-
-Instagram's share of Meta revenue: Instagram accounts for approximately 35% of Meta's total revenue (it's the higher-CPM, younger-demographic platform; Facebook is larger by users but increasingly older and lower-CPM). Instagram global revenue: $135B × 35% = $47B. Instagram US revenue: proportional to the US share of Instagram's global user base — US is ~7.5% of Instagram's ~2B global MAU. But US commands a CPM premium of ~10x vs. emerging markets. Revenue-weighted US share: approximately $47B × 30% = $14B from the US (US is 7.5% of users but ~30% of revenue due to CPM premium).
-
-Instagram US MAU: ~170M.
-
-Instagram ARPU (US): $14B ÷ 170M = $82 per user per year.
-
-Approach 2: Bottom-up via ad impressions.
-
-An average Instagram user in the US spends ~30 minutes/day on the app. In 30 minutes of scrolling, a user sees approximately 20-25 ad impressions (roughly 1 ad per ~8 posts in the feed/stories/Reels). Daily ad impressions per user: ~22. Annual impressions per user: 22 × 365 = ~8,030 impressions/user/year.
-
-Instagram US CPM (cost per thousand impressions): ~$7-$12. Use $9. Revenue per user per year: (8,030/1,000) × $9 = $72.27/user/year.
-
-Both approaches converge around $75-$90/user/year.
-
-Benchmarking:
-- YouTube US ARPU: ~$30-40/user/year (lower because ads are skippable, CPMs lower)
-- LinkedIn US ARPU: ~$80-120/user/year (higher CPM B2B audience)
-- TikTok US ARPU: ~$20-30/user/year (newer, still scaling monetization)
-- Facebook US ARPU: ~$70-80/user/year (Instagram and Facebook are similar)
-Instagram at ~$80-90 looks reasonable — above YouTube (visual/intent-driven), similar to Facebook, below LinkedIn.
-
-Final: ~$85/user/year.
-
-Engagement value check: At 30 min/day and $85/year ARPU, Instagram generates $85 / (30 min × 365 days / 60 min/hour) = $85 / 182.5 hours = $0.47 per hour of user attention. Compare: LinkedIn ~$2-3/hour, YouTube ~$0.10-0.15/hour. Instagram's $0.47/hour reflects its high-intent shopping audience vs. YouTube's scale but lower commercial intent.`,
+      walkthrough: 'Approach 1: Top-down from Meta financials.\n\nMeta total revenue 2023: ~$135B globally. Meta US & Canada revenue: ~$63B (roughly 46% of global, consistent with Meta\'s earnings reports).\n\nInstagram\'s share of Meta revenue: Instagram accounts for approximately 35% of Meta\'s total revenue (it\'s the higher-CPM, younger-demographic platform; Facebook is larger by users but increasingly older and lower-CPM). Instagram global revenue: $135B × 35% = $47B. Instagram US revenue: proportional to the US share of Instagram\'s global user base — US is ~7.5% of Instagram\'s ~2B global MAU. But US commands a CPM premium of ~10x vs. emerging markets. Revenue-weighted US share: approximately $47B × 30% = $14B from the US (US is 7.5% of users but ~30% of revenue due to CPM premium).\n\nInstagram US MAU: ~170M.\n\nInstagram ARPU (US): $14B ÷ 170M = $82 per user per year.\n\nApproach 2: Bottom-up via ad impressions.\n\nAn average Instagram user in the US spends ~30 minutes/day on the app. In 30 minutes of scrolling, a user sees approximately 20-25 ad impressions (roughly 1 ad per ~8 posts in the feed/stories/Reels). Daily ad impressions per user: ~22. Annual impressions per user: 22 × 365 = ~8,030 impressions/user/year.\n\nInstagram US CPM (cost per thousand impressions): ~$7-$12. Use $9. Revenue per user per year: (8,030/1,000) × $9 = $72.27/user/year.\n\nBoth approaches converge around $75-$90/user/year.\n\nBenchmarking:\n- YouTube US ARPU: ~$30-40/user/year (lower because ads are skippable, CPMs lower)\n- LinkedIn US ARPU: ~$80-120/user/year (higher CPM B2B audience)\n- TikTok US ARPU: ~$20-30/user/year (newer, still scaling monetization)\n- Facebook US ARPU: ~$70-80/user/year (Instagram and Facebook are similar)\nInstagram at ~$80-90 looks reasonable — above YouTube (visual/intent-driven), similar to Facebook, below LinkedIn.\n\nFinal: ~$85/user/year.\n\nEngagement value check: At 30 min/day and $85/year ARPU, Instagram generates $85 / (30 min × 365 days / 60 min/hour) = $85 / 182.5 hours = $0.47 per hour of user attention. Compare: LinkedIn ~$2-3/hour, YouTube ~$0.10-0.15/hour. Instagram\'s $0.47/hour reflects its high-intent shopping audience vs. YouTube\'s scale but lower commercial intent.',
       keyAssumptions: [
         'Instagram = 35% of Meta global revenue — consistent with published analyst estimates (eMarketer, Bernstein)',
         'US = 30% of Instagram revenue despite 7.5% of users — reflects the 10x US/emerging market CPM differential',
@@ -673,30 +514,7 @@ Engagement value check: At 30 min/day and $85/year ARPU, Instagram generates $85
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Estimate WhatsApp DAU.
-
-WhatsApp MAU: ~2.4 billion as of 2024.
-Daily active rate: ~72% (messaging apps have higher daily engagement than social media because they are utility-like communication tools, not entertainment feeds).
-DAU = 2.4B × 0.72 = ~1.73B daily active users.
-
-Step 2: Estimate messages sent per DAU per day.
-
-Segment WhatsApp users by messaging intensity:
-- Heavy users (primarily in South Asia, Brazil, Nigeria, teens and young adults): ~30% of DAU. Use WhatsApp as their primary communication channel. Estimate 40 messages/day (includes group chats, voice message transcription replies, business interactions).
-- Moderate users (Europe, Southeast Asia, everyday communication): ~45% of DAU. Estimate 15 messages/day.
-- Light users (business contacts only, occasional personal): ~25% of DAU. Estimate 4 messages/day.
-
-Weighted average messages/DAU: (0.30 × 40) + (0.45 × 15) + (0.25 × 4) = 12 + 6.75 + 1 = ~20 messages/user/day.
-
-Step 3: Total messages per day.
-1.73B DAU × 20 messages = ~34.6 billion messages/day.
-
-Step 4: Sanity check.
-WhatsApp disclosed 100 billion messages/day in 2020. Our 35B estimate is 3x lower. The discrepancy likely reflects two things: (1) WhatsApp may count received messages, not just sent — a group of 50 people counts each message as 50 received, 1 sent. If the ratio is sent:received = 1:3 on average, our 35B sent becomes ~105B total. (2) Message count may include read receipts, delivery notifications, and status updates.
-
-If the question is "sent messages" (1 per user action), ~35B is the right range. If the question is "messages processed by servers" (including delivery to all recipients), 100B+ is consistent.
-
-Final answer: ~35B messages sent per day, or ~100B messages delivered/processed per day. State both and explain the difference.`,
+      walkthrough: 'Step 1: Estimate WhatsApp DAU.\n\nWhatsApp MAU: ~2.4 billion as of 2024.\nDaily active rate: ~72% (messaging apps have higher daily engagement than social media because they are utility-like communication tools, not entertainment feeds).\nDAU = 2.4B × 0.72 = ~1.73B daily active users.\n\nStep 2: Estimate messages sent per DAU per day.\n\nSegment WhatsApp users by messaging intensity:\n- Heavy users (primarily in South Asia, Brazil, Nigeria, teens and young adults): ~30% of DAU. Use WhatsApp as their primary communication channel. Estimate 40 messages/day (includes group chats, voice message transcription replies, business interactions).\n- Moderate users (Europe, Southeast Asia, everyday communication): ~45% of DAU. Estimate 15 messages/day.\n- Light users (business contacts only, occasional personal): ~25% of DAU. Estimate 4 messages/day.\n\nWeighted average messages/DAU: (0.30 × 40) + (0.45 × 15) + (0.25 × 4) = 12 + 6.75 + 1 = ~20 messages/user/day.\n\nStep 3: Total messages per day.\n1.73B DAU × 20 messages = ~34.6 billion messages/day.\n\nStep 4: Sanity check.\nWhatsApp disclosed 100 billion messages/day in 2020. Our 35B estimate is 3x lower. The discrepancy likely reflects two things: (1) WhatsApp may count received messages, not just sent — a group of 50 people counts each message as 50 received, 1 sent. If the ratio is sent:received = 1:3 on average, our 35B sent becomes ~105B total. (2) Message count may include read receipts, delivery notifications, and status updates.\n\nIf the question is "sent messages" (1 per user action), ~35B is the right range. If the question is "messages processed by servers" (including delivery to all recipients), 100B+ is consistent.\n\nFinal answer: ~35B messages sent per day, or ~100B messages delivered/processed per day. State both and explain the difference.',
       keyAssumptions: [
         '2.4B MAU — Meta has not disclosed a more recent figure but organic growth in emerging markets is steady',
         '72% daily active rate — messaging apps have near-utility engagement in high-volume markets',
@@ -755,33 +573,7 @@ Final answer: ~35B messages sent per day, or ~100B messages delivered/processed 
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Catalog size.
-Netflix reported ~36,000 hours of content in 2023 — this includes movies (~15,000 movies × ~1.8 hours average), TV series (~5,000 series × ~2 seasons × ~8 episodes × 0.7 hours), and documentaries/specials.
-
-Step 2: File size per hour per encoding profile.
-Netflix encodes content in roughly 4 quality tiers:
-- 4K HDR (HEVC/H.265): ~6 GB/hour
-- 1080p (H.265): ~3.5 GB/hour
-- 720p (H.264): ~1.5 GB/hour
-- 480p/360p mobile (H.264/AV1): ~0.5 GB/hour
-
-Netflix maintains ~1,000 encoding profiles per title when you include different device types, adaptive bitrate rungs, language versions, and accessibility tracks (audio descriptions, subtitles embedded in various formats). However, many of these are smaller variants — the primary storage is driven by the top 4-5 quality tiers.
-
-Simplified: 5 main quality tiers averaging ~2.5 GB/hour = 12.5 GB/hour per title across all tiers.
-
-Step 3: Raw catalog storage.
-36,000 hours × 12.5 GB/hour = 450,000 GB = ~450 TB of content before replication.
-
-Step 4: Replication multiplier.
-Netflix replicates data across at least 3 AWS regions for redundancy. Originals (~30% of catalog) may have additional backups. Use a 3.5× replication multiplier:
-450 TB × 3.5 = ~1,575 TB ≈ 1.6 petabytes.
-
-Step 5: Add operational data.
-Netflix also stores user data, analytics, thumbnail images (multiple sizes per title per user context), recommendation model artifacts, and encoding pipeline data. This likely adds another 20-30% on top of raw video. Total: ~2 petabytes.
-
-Range: 1.5–3 petabytes of total storage.
-
-Sanity check: Netflix has disclosed using AWS S3 at massive scale. A 2015 Netflix blog post mentioned storing data at petabyte scale. Our 2 PB estimate for current catalog is consistent with publicly discussed infrastructure scale. Netflix's actual catalog is larger if you include raw footage, but for final-encoded streaming assets, 1.5–3 PB is the right order of magnitude.`,
+      walkthrough: 'Step 1: Catalog size.\nNetflix reported ~36,000 hours of content in 2023 — this includes movies (~15,000 movies × ~1.8 hours average), TV series (~5,000 series × ~2 seasons × ~8 episodes × 0.7 hours), and documentaries/specials.\n\nStep 2: File size per hour per encoding profile.\nNetflix encodes content in roughly 4 quality tiers:\n- 4K HDR (HEVC/H.265): ~6 GB/hour\n- 1080p (H.265): ~3.5 GB/hour\n- 720p (H.264): ~1.5 GB/hour\n- 480p/360p mobile (H.264/AV1): ~0.5 GB/hour\n\nNetflix maintains ~1,000 encoding profiles per title when you include different device types, adaptive bitrate rungs, language versions, and accessibility tracks (audio descriptions, subtitles embedded in various formats). However, many of these are smaller variants — the primary storage is driven by the top 4-5 quality tiers.\n\nSimplified: 5 main quality tiers averaging ~2.5 GB/hour = 12.5 GB/hour per title across all tiers.\n\nStep 3: Raw catalog storage.\n36,000 hours × 12.5 GB/hour = 450,000 GB = ~450 TB of content before replication.\n\nStep 4: Replication multiplier.\nNetflix replicates data across at least 3 AWS regions for redundancy. Originals (~30% of catalog) may have additional backups. Use a 3.5× replication multiplier:\n450 TB × 3.5 = ~1,575 TB ≈ 1.6 petabytes.\n\nStep 5: Add operational data.\nNetflix also stores user data, analytics, thumbnail images (multiple sizes per title per user context), recommendation model artifacts, and encoding pipeline data. This likely adds another 20-30% on top of raw video. Total: ~2 petabytes.\n\nRange: 1.5–3 petabytes of total storage.\n\nSanity check: Netflix has disclosed using AWS S3 at massive scale. A 2015 Netflix blog post mentioned storing data at petabyte scale. Our 2 PB estimate for current catalog is consistent with publicly discussed infrastructure scale. Netflix\'s actual catalog is larger if you include raw footage, but for final-encoded streaming assets, 1.5–3 PB is the right order of magnitude.',
       keyAssumptions: [
         '36,000 hours of final encoded content — Netflix\'s publicly disclosed catalog size',
         '5 encoding profiles at 12.5 GB/hour average — simplified from ~1,000 profiles; captures dominant storage cost',
@@ -840,45 +632,7 @@ Sanity check: Netflix has disclosed using AWS S3 at massive scale. A 2015 Netfli
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Establish the baseline.
-Average US Uber ride: ~$20 gross booking value.
-Uber net revenue (take rate): ~27% × $20 = $5.40 per ride.
-Driver pay: ~73% × $20 = $14.60 per ride (this is the direct cost paid out of gross bookings).
-
-Note: Uber's P&L shows "Cost of Revenue" as a % of net revenue (the $5.40), not gross bookings. I'll work from gross bookings for clarity.
-
-Step 2: Variable costs per ride.
-
-Driver pay: $14.60 (already established — this is the largest cost)
-Insurance (per-trip): Uber provides commercial auto insurance while the driver is in trip. Commercial rideshare insurance in the US is estimated at ~$0.35–0.50/ride on average. Use $0.45.
-Payment processing: ~2.5% of $20 = $0.50.
-Driver incentives/bonuses (surge, guarantees): ~3-4% of gross bookings annualized = ~$0.70.
-Fraud and chargebacks: ~0.5% of net revenue = ~$0.03.
-Estimated variable cost: $14.60 + $0.45 + $0.50 + $0.70 + $0.03 = ~$16.28.
-
-Step 3: Allocate overhead per ride.
-Uber had ~2.2B trips in 2023 in mobility. Total revenue (net) was ~$14.2B.
-
-Cost of revenue (support, infrastructure): ~38% of net revenue = $5.40 × 0.38 = $2.05/ride.
-But most of this is driver pay and insurance already counted. Incremental overhead (customer support, maps/routing tech, AWS): ~$0.35/ride.
-
-Sales & marketing: ~16% of net revenue = $5.40 × 0.16 = $0.86/ride.
-R&D: ~15% of net revenue = $0.81/ride.
-G&A: ~9% of net revenue = $0.49/ride.
-
-Total overhead per ride: $0.35 + $0.86 + $0.81 + $0.49 = $2.51.
-
-Step 4: Fully loaded cost per ride.
-Variable costs: $16.28
-Overhead allocation: $2.51
-Total: $18.79 per ride.
-
-Revenue (net): $5.40 per ride.
-Gross bookings: $20 per ride.
-
-The math: Uber retains $5.40 from a $20 ride. Their adjusted EBITDA was ~$1.1B on ~$14.2B net revenue in 2023 = ~7.7% of net revenue = ~$0.42/ride in EBITDA. That means total costs from net revenue perspective are $5.40 − $0.42 = $4.98 per ride. Adding back driver pay ($14.60) gives fully loaded cost of ~$19.58 per ride.
-
-Final estimate: ~$18–20 fully loaded cost per ride, leaving $0–$2 in net economics.`,
+      walkthrough: 'Step 1: Establish the baseline.\nAverage US Uber ride: ~$20 gross booking value.\nUber net revenue (take rate): ~27% × $20 = $5.40 per ride.\nDriver pay: ~73% × $20 = $14.60 per ride (this is the direct cost paid out of gross bookings).\n\nNote: Uber\'s P&L shows "Cost of Revenue" as a % of net revenue (the $5.40), not gross bookings. I\'ll work from gross bookings for clarity.\n\nStep 2: Variable costs per ride.\n\nDriver pay: $14.60 (already established — this is the largest cost)\nInsurance (per-trip): Uber provides commercial auto insurance while the driver is in trip. Commercial rideshare insurance in the US is estimated at ~$0.35–0.50/ride on average. Use $0.45.\nPayment processing: ~2.5% of $20 = $0.50.\nDriver incentives/bonuses (surge, guarantees): ~3-4% of gross bookings annualized = ~$0.70.\nFraud and chargebacks: ~0.5% of net revenue = ~$0.03.\nEstimated variable cost: $14.60 + $0.45 + $0.50 + $0.70 + $0.03 = ~$16.28.\n\nStep 3: Allocate overhead per ride.\nUber had ~2.2B trips in 2023 in mobility. Total revenue (net) was ~$14.2B.\n\nCost of revenue (support, infrastructure): ~38% of net revenue = $5.40 × 0.38 = $2.05/ride.\nBut most of this is driver pay and insurance already counted. Incremental overhead (customer support, maps/routing tech, AWS): ~$0.35/ride.\n\nSales & marketing: ~16% of net revenue = $5.40 × 0.16 = $0.86/ride.\nR&D: ~15% of net revenue = $0.81/ride.\nG&A: ~9% of net revenue = $0.49/ride.\n\nTotal overhead per ride: $0.35 + $0.86 + $0.81 + $0.49 = $2.51.\n\nStep 4: Fully loaded cost per ride.\nVariable costs: $16.28\nOverhead allocation: $2.51\nTotal: $18.79 per ride.\n\nRevenue (net): $5.40 per ride.\nGross bookings: $20 per ride.\n\nThe math: Uber retains $5.40 from a $20 ride. Their adjusted EBITDA was ~$1.1B on ~$14.2B net revenue in 2023 = ~7.7% of net revenue = ~$0.42/ride in EBITDA. That means total costs from net revenue perspective are $5.40 − $0.42 = $4.98 per ride. Adding back driver pay ($14.60) gives fully loaded cost of ~$19.58 per ride.\n\nFinal estimate: ~$18–20 fully loaded cost per ride, leaving $0–$2 in net economics.',
       keyAssumptions: [
         '$20 average gross booking value — mid-range for US UberX; actual average is in the $18–22 range based on disclosed data',
         '27% take rate — Uber\'s disclosed "take rate" (net revenue / gross bookings)',
@@ -936,43 +690,7 @@ Final estimate: ~$18–20 fully loaded cost per ride, leaving $0–$2 in net eco
     ],
 
     modelAnswer: {
-      walkthrough: `Approach 1: Top-down from total headcount.
-
-Alphabet total headcount: ~182,000 employees as of end-2023.
-
-Technical workforce breakdown:
-- Software engineers (SWE, SWE II, Senior SWE, Staff, Principal, L3-L9): ~27% of headcount
-- Site reliability engineers (SRE): ~3%
-- Hardware/EE engineers: ~3%
-- Data scientists and ML engineers: ~4%
-- TPMs and PMs: ~6%
-- Sales, ops, legal, finance, HR: ~35%
-- Other technical staff (IT, security, support): ~7%
-- Nontechnical ops (facilities, admin): ~15%
-
-Software engineers specifically: 182,000 × 0.27 = ~49,000.
-
-Approach 2: Bottom-up via product teams.
-
-Google's major products and their approximate engineering headcount:
-- Search + Ads infrastructure: ~8,000 engineers (search ranking, ads serving, quality, relevance)
-- Google Cloud (GCP): ~10,000 (fastest-growing segment with significant hiring in 2021-2022)
-- YouTube: ~4,000 (video pipeline, recommendation, ads)
-- Android + Pixel hardware software: ~5,000
-- Google Maps + Geo products: ~2,500
-- Gmail/Workspace: ~2,000
-- Chrome + V8: ~1,000
-- DeepMind + Google Brain (now Google DeepMind): ~3,000 researchers and engineers
-- Waymo: ~1,500
-- Platforms/infra (Borg, Kubernetes, Spanner, Bigtable, TensorFlow teams): ~5,000
-- Other (Verily, X, Fiber, misc): ~2,000
-- Internal tools + G Suite developer experience: ~3,000
-
-Sum: ~47,000 software engineers.
-
-Both approaches converge on ~45,000–50,000 software engineers.
-
-Final estimate: ~45,000–55,000 software engineers at Google/Alphabet, with a point estimate of ~50,000.`,
+      walkthrough: 'Approach 1: Top-down from total headcount.\n\nAlphabet total headcount: ~182,000 employees as of end-2023.\n\nTechnical workforce breakdown:\n- Software engineers (SWE, SWE II, Senior SWE, Staff, Principal, L3-L9): ~27% of headcount\n- Site reliability engineers (SRE): ~3%\n- Hardware/EE engineers: ~3%\n- Data scientists and ML engineers: ~4%\n- TPMs and PMs: ~6%\n- Sales, ops, legal, finance, HR: ~35%\n- Other technical staff (IT, security, support): ~7%\n- Nontechnical ops (facilities, admin): ~15%\n\nSoftware engineers specifically: 182,000 × 0.27 = ~49,000.\n\nApproach 2: Bottom-up via product teams.\n\nGoogle\'s major products and their approximate engineering headcount:\n- Search + Ads infrastructure: ~8,000 engineers (search ranking, ads serving, quality, relevance)\n- Google Cloud (GCP): ~10,000 (fastest-growing segment with significant hiring in 2021-2022)\n- YouTube: ~4,000 (video pipeline, recommendation, ads)\n- Android + Pixel hardware software: ~5,000\n- Google Maps + Geo products: ~2,500\n- Gmail/Workspace: ~2,000\n- Chrome + V8: ~1,000\n- DeepMind + Google Brain (now Google DeepMind): ~3,000 researchers and engineers\n- Waymo: ~1,500\n- Platforms/infra (Borg, Kubernetes, Spanner, Bigtable, TensorFlow teams): ~5,000\n- Other (Verily, X, Fiber, misc): ~2,000\n- Internal tools + G Suite developer experience: ~3,000\n\nSum: ~47,000 software engineers.\n\nBoth approaches converge on ~45,000–50,000 software engineers.\n\nFinal estimate: ~45,000–55,000 software engineers at Google/Alphabet, with a point estimate of ~50,000.',
       keyAssumptions: [
         '182,000 total Alphabet headcount — from 2023 annual report (post-12k layoffs)',
         '27% software engineering fraction — based on LinkedIn title distribution analysis and tech company benchmarks',
@@ -1030,28 +748,7 @@ Final estimate: ~45,000–55,000 software engineers at Google/Alphabet, with a p
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Size the US food delivery TAM.
-
-US restaurant industry total spending: ~$900B/year (NRA estimate). Third-party delivery (DoorDash, Uber Eats, Grubhub) captures ~13% of that: $900B × 0.13 = $117B in gross order value (GOV) through delivery platforms in the US.
-
-Step 2: Uber Eats US market share.
-DoorDash: ~67% share → $78B GOV.
-Uber Eats: ~23% share → $117B × 0.23 = ~$26.9B in US Gross Bookings.
-Grubhub + others: ~10%.
-
-Step 3: Uber Eats take rate.
-Uber Eats charges restaurants a commission (15-30%, average ~25%) and charges consumers a delivery fee ($2-5) plus a service fee (~15% of subtotal). However, Uber Eats reports "net revenue" as what it keeps after paying out delivery partners. The disclosed take rate is roughly 12-14% of gross bookings for the Delivery segment.
-
-Using 13% take rate: $26.9B × 0.13 = ~$3.5B in US net revenue for Uber Eats.
-
-Add: Uber One subscription attributable to Delivery, advertising revenue from restaurants (Uber Eats Ads), and Grocery/convenience delivery. These add roughly 15-20% incremental. Total US Delivery net revenue ≈ $3.5B × 1.175 = ~$4.1B.
-
-Range: $3.5B–$4.5B in US net revenue.
-
-Step 4: Cross-check via Uber financials.
-Uber disclosed global Delivery net revenue of ~$8.9B in 2023. US is ~45-50% of that → $4.0B–4.5B. Our bottom-up estimate of $4.1B aligns well.
-
-Note: Some interviewers may want "gross bookings" not net revenue. Make sure to clarify — $26.9B (gross) vs. $3.5-4.5B (net) are both valid answers to different questions.`,
+      walkthrough: 'Step 1: Size the US food delivery TAM.\n\nUS restaurant industry total spending: ~$900B/year (NRA estimate). Third-party delivery (DoorDash, Uber Eats, Grubhub) captures ~13% of that: $900B × 0.13 = $117B in gross order value (GOV) through delivery platforms in the US.\n\nStep 2: Uber Eats US market share.\nDoorDash: ~67% share → $78B GOV.\nUber Eats: ~23% share → $117B × 0.23 = ~$26.9B in US Gross Bookings.\nGrubhub + others: ~10%.\n\nStep 3: Uber Eats take rate.\nUber Eats charges restaurants a commission (15-30%, average ~25%) and charges consumers a delivery fee ($2-5) plus a service fee (~15% of subtotal). However, Uber Eats reports "net revenue" as what it keeps after paying out delivery partners. The disclosed take rate is roughly 12-14% of gross bookings for the Delivery segment.\n\nUsing 13% take rate: $26.9B × 0.13 = ~$3.5B in US net revenue for Uber Eats.\n\nAdd: Uber One subscription attributable to Delivery, advertising revenue from restaurants (Uber Eats Ads), and Grocery/convenience delivery. These add roughly 15-20% incremental. Total US Delivery net revenue ≈ $3.5B × 1.175 = ~$4.1B.\n\nRange: $3.5B–$4.5B in US net revenue.\n\nStep 4: Cross-check via Uber financials.\nUber disclosed global Delivery net revenue of ~$8.9B in 2023. US is ~45-50% of that → $4.0B–4.5B. Our bottom-up estimate of $4.1B aligns well.\n\nNote: Some interviewers may want "gross bookings" not net revenue. Make sure to clarify — $26.9B (gross) vs. $3.5-4.5B (net) are both valid answers to different questions.',
       keyAssumptions: [
         '$900B US restaurant spending with 13% going through delivery apps — industry standard estimate; delivery share has grown from 6% in 2019 to ~13-15% post-pandemic',
         '23% US market share for Uber Eats — based on Bloomberg Second Measure and Bloomberg data as of 2023',
@@ -1111,32 +808,7 @@ Note: Some interviewers may want "gross bookings" not net revenue. Make sure to 
     ],
 
     modelAnswer: {
-      walkthrough: `Approach 1: Supply-side (housing stock penetration).
-
-Paris housing stock: Population ~2.1M ÷ 1.8 people/household = ~1.17M housing units.
-
-Short-term rental penetration: In cities with heavy Airbnb adoption but regulatory constraints (like Paris), approximately 5-7% of housing units may be listed at some point. Paris is an extreme case — very high tourist demand but increasingly strict enforcement. Use 5.5%: 1.17M × 0.055 = ~64,000 total listings.
-
-But regulation adjustment: Paris's 120-day cap and registration requirements mean many potential hosts don't list. About 20% of would-be hosts are deterred. After regulation adjustment: 64,000 × 0.80 = ~51,000.
-
-Approach 2: Demand-side (tourist arrivals).
-
-Paris receives ~30M international + domestic tourists/year. Average stay: ~3.5 nights. Total tourist nights/year: 30M × 3.5 = 105M tourist nights/year.
-
-Hotel supply: ~80,000 hotel rooms × 365 nights × 70% average occupancy = ~20.4M hotel nights absorbed.
-Short-term rental share: Hotels serve ~75% of visitor nights, STRs (Airbnb + VRBO + etc.) serve ~15%, friends/family/other ~10%.
-Airbnb nights/year: 105M × 0.15 = 15.75M nights via Airbnb.
-
-Airbnb listing count: At an average of 3 nights booked per listing per week and 70% of year active: 1 listing × 52 weeks × 3 nights/week × 0.70 = ~109 nights/year per active listing. Total listings: 15.75M ÷ 109 = ~144,000. This seems too high.
-
-Recalibrate: Many Paris Airbnb listings are only occasionally rented (primary residence hosts renting during vacation). Average annual booked nights per listing is lower — perhaps 40-50 nights/year. 15.75M ÷ 45 = ~350,000. Still very high.
-
-The issue: Airbnb is not 15% of Paris tourist nights — it's closer to 7-8%. Hotel capacity includes high-end hotels (unavailable to Airbnb) and Airbnb serves a different price point. Adjust:
-Airbnb nights: 105M × 0.07 = 7.35M nights. At 45 nights/year per listing: 7.35M ÷ 45 = ~163,000. Still high vs. supply-side estimate.
-
-Best estimate: supply-side is more reliable given concrete housing stock data. ~50,000–80,000 listings total, with ~35,000–55,000 active (reviewed in past year).
-
-Published benchmark: InsideAirbnb reported ~65,000 total Paris listings with ~40,000 active as of 2023. Our supply-side estimate of ~51,000 is consistent.`,
+      walkthrough: 'Approach 1: Supply-side (housing stock penetration).\n\nParis housing stock: Population ~2.1M ÷ 1.8 people/household = ~1.17M housing units.\n\nShort-term rental penetration: In cities with heavy Airbnb adoption but regulatory constraints (like Paris), approximately 5-7% of housing units may be listed at some point. Paris is an extreme case — very high tourist demand but increasingly strict enforcement. Use 5.5%: 1.17M × 0.055 = ~64,000 total listings.\n\nBut regulation adjustment: Paris\'s 120-day cap and registration requirements mean many potential hosts don\'t list. About 20% of would-be hosts are deterred. After regulation adjustment: 64,000 × 0.80 = ~51,000.\n\nApproach 2: Demand-side (tourist arrivals).\n\nParis receives ~30M international + domestic tourists/year. Average stay: ~3.5 nights. Total tourist nights/year: 30M × 3.5 = 105M tourist nights/year.\n\nHotel supply: ~80,000 hotel rooms × 365 nights × 70% average occupancy = ~20.4M hotel nights absorbed.\nShort-term rental share: Hotels serve ~75% of visitor nights, STRs (Airbnb + VRBO + etc.) serve ~15%, friends/family/other ~10%.\nAirbnb nights/year: 105M × 0.15 = 15.75M nights via Airbnb.\n\nAirbnb listing count: At an average of 3 nights booked per listing per week and 70% of year active: 1 listing × 52 weeks × 3 nights/week × 0.70 = ~109 nights/year per active listing. Total listings: 15.75M ÷ 109 = ~144,000. This seems too high.\n\nRecalibrate: Many Paris Airbnb listings are only occasionally rented (primary residence hosts renting during vacation). Average annual booked nights per listing is lower — perhaps 40-50 nights/year. 15.75M ÷ 45 = ~350,000. Still very high.\n\nThe issue: Airbnb is not 15% of Paris tourist nights — it\'s closer to 7-8%. Hotel capacity includes high-end hotels (unavailable to Airbnb) and Airbnb serves a different price point. Adjust:\nAirbnb nights: 105M × 0.07 = 7.35M nights. At 45 nights/year per listing: 7.35M ÷ 45 = ~163,000. Still high vs. supply-side estimate.\n\nBest estimate: supply-side is more reliable given concrete housing stock data. ~50,000–80,000 listings total, with ~35,000–55,000 active (reviewed in past year).\n\nPublished benchmark: InsideAirbnb reported ~65,000 total Paris listings with ~40,000 active as of 2023. Our supply-side estimate of ~51,000 is consistent.',
       keyAssumptions: [
         '1.17M Paris housing units — derived from population ÷ household size; roughly in line with INSEE data',
         '5.5% STR penetration rate — reflects high tourist demand but regulatory suppression vs. 10-15% in less-regulated tourist cities',
@@ -1196,41 +868,7 @@ Published benchmark: InsideAirbnb reported ~65,000 total Paris listings with ~40
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Establish user base and message volume.
-WhatsApp DAU: ~1.5B.
-Total messages delivered (including to all recipients in groups): ~100B/day.
-Total messages sent by users (unique send actions): ~35B/day (see EST09 for derivation).
-
-Step 2: Break down by message type (% of sent messages).
-Text messages: ~70% of sends = 24.5B texts/day
-Images (photos sent directly): ~15% = 5.25B images/day
-Video clips: ~5% = 1.75B videos/day
-Voice notes (audio recordings): ~7% = 2.45B voice notes/day
-Documents (PDFs, Office files): ~2% = 700M docs/day
-Stickers/GIFs: ~1% = 350M/day
-
-Step 3: Data size per type.
-Text message: ~200 bytes average (UTF-8 text + metadata) → 24.5B × 200B = 4.9 TB
-Image (WhatsApp-compressed JPEG): ~250 KB average → 5.25B × 250KB = 1,312 TB = ~1.3 PB
-Video clip (WhatsApp-compressed, avg 30 sec): ~8 MB average → 1.75B × 8MB = 14,000 TB = ~14 PB
-Voice note (avg 20 seconds, Opus codec): ~40 KB → 2.45B × 40KB = 98 TB ≈ 0.1 PB
-Documents: avg 500 KB → 700M × 500KB = 350 TB ≈ 0.35 PB
-Stickers/GIFs: ~50 KB average → 350M × 50KB = 17.5 TB
-
-Step 4: Total data generated (sent by users, stored on WhatsApp servers at least transiently).
-Text: ~5 TB
-Images: ~1,300 TB
-Voice notes: ~98 TB
-Videos: ~14,000 TB
-Documents: ~350 TB
-Stickers/GIFs: ~18 TB
-Total: ~15,771 TB ≈ 15–16 petabytes per day
-
-Importantly: WhatsApp uses end-to-end encryption and stores messages transiently (delivers and discards for most messages). But the data still flows through their infrastructure daily.
-
-If the question is about stored data (WhatsApp does temporarily store undelivered messages and media): subtract the ~85% that is delivered in real time. But as transmitted data volume: ~15–16 PB/day.
-
-Range: 12–20 petabytes of data transmitted through WhatsApp globally per day, dominated by video content.`,
+      walkthrough: 'Step 1: Establish user base and message volume.\nWhatsApp DAU: ~1.5B.\nTotal messages delivered (including to all recipients in groups): ~100B/day.\nTotal messages sent by users (unique send actions): ~35B/day (see EST09 for derivation).\n\nStep 2: Break down by message type (% of sent messages).\nText messages: ~70% of sends = 24.5B texts/day\nImages (photos sent directly): ~15% = 5.25B images/day\nVideo clips: ~5% = 1.75B videos/day\nVoice notes (audio recordings): ~7% = 2.45B voice notes/day\nDocuments (PDFs, Office files): ~2% = 700M docs/day\nStickers/GIFs: ~1% = 350M/day\n\nStep 3: Data size per type.\nText message: ~200 bytes average (UTF-8 text + metadata) → 24.5B × 200B = 4.9 TB\nImage (WhatsApp-compressed JPEG): ~250 KB average → 5.25B × 250KB = 1,312 TB = ~1.3 PB\nVideo clip (WhatsApp-compressed, avg 30 sec): ~8 MB average → 1.75B × 8MB = 14,000 TB = ~14 PB\nVoice note (avg 20 seconds, Opus codec): ~40 KB → 2.45B × 40KB = 98 TB ≈ 0.1 PB\nDocuments: avg 500 KB → 700M × 500KB = 350 TB ≈ 0.35 PB\nStickers/GIFs: ~50 KB average → 350M × 50KB = 17.5 TB\n\nStep 4: Total data generated (sent by users, stored on WhatsApp servers at least transiently).\nText: ~5 TB\nImages: ~1,300 TB\nVoice notes: ~98 TB\nVideos: ~14,000 TB\nDocuments: ~350 TB\nStickers/GIFs: ~18 TB\nTotal: ~15,771 TB ≈ 15–16 petabytes per day\n\nImportantly: WhatsApp uses end-to-end encryption and stores messages transiently (delivers and discards for most messages). But the data still flows through their infrastructure daily.\n\nIf the question is about stored data (WhatsApp does temporarily store undelivered messages and media): subtract the ~85% that is delivered in real time. But as transmitted data volume: ~15–16 PB/day.\n\nRange: 12–20 petabytes of data transmitted through WhatsApp globally per day, dominated by video content.',
       keyAssumptions: [
         '35B messages sent/day — derived from 1.5B DAU × 20 messages/user/day on average (see EST09)',
         '5% of messages are video — this is the critical assumption; video dominates total data volume',
@@ -1291,35 +929,7 @@ Range: 12–20 petabytes of data transmitted through WhatsApp globally per day, 
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Total Netflix-eligible viewing population.
-Paid subscribers: ~260M households.
-Average viewers per household: ~2.2 (Netflix allows up to 4 streams per account; average is 2.2 actual viewers using the account regularly).
-Total eligible viewers: 260M × 2.2 = ~572M people.
-
-Step 2: Daily active viewers.
-Not every subscriber watches every day. Daily active rate (share of subscriber households watching at least once on a given day): ~45%. This accounts for weekday/weekend variation — use a midpoint.
-Daily active households: 260M × 0.45 = 117M active households per day.
-Active viewers per active household: ~1.6 (not all household members watch every day even in active households).
-Daily active viewers: 117M × 1.6 = ~187M individual viewers per day.
-
-Step 3: Watch time per daily active viewer.
-Netflix's disclosed average of ~2 hours/day is across all subscribers (including inactive days). For daily active viewers (who actually watched), average watch time is higher: ~2.5 hours per active viewing session.
-Total daily watch-hours: 187M × 2.5 = ~467M watch-hours/day.
-
-Step 4: Convert to average concurrent viewers.
-Average concurrent viewers = Total watch-hours per day ÷ 24 hours.
-467M ÷ 24 = ~19.5M concurrent viewers on average at any given moment.
-
-Step 5: Apply time-of-day and peak adjustments.
-"Right now" without a specified time requires a global average estimate. But:
-- Peak viewing globally (aggregating across time zones): evening hours in major markets (US 8pm EST, Europe 9pm CET, India 9pm IST) drive above-average concurrency.
-- At peak: ~1.8x the average → 19.5M × 1.8 = ~35M concurrent viewers at peak global moment.
-- At off-peak (e.g., 4am global average): ~0.4x → ~8M.
-- Average any given moment: ~19-20M.
-
-Range: 15M–40M depending on time of day; ~20M as a neutral estimate.
-
-Cross-check: Netflix has ~260M subscribers streaming at avg 2 hrs/day. If Netflix processes ~20M streams at any time × 5 Mbps per stream = 100 Gbps = 100 petabits... actually 20M × 5 Mbps = 100,000 Gbps = 100 Tbps. That is Netflix's approximate CDN bandwidth requirement — consistent with industry reporting of Netflix driving ~15% of global internet downstream traffic.`,
+      walkthrough: 'Step 1: Total Netflix-eligible viewing population.\nPaid subscribers: ~260M households.\nAverage viewers per household: ~2.2 (Netflix allows up to 4 streams per account; average is 2.2 actual viewers using the account regularly).\nTotal eligible viewers: 260M × 2.2 = ~572M people.\n\nStep 2: Daily active viewers.\nNot every subscriber watches every day. Daily active rate (share of subscriber households watching at least once on a given day): ~45%. This accounts for weekday/weekend variation — use a midpoint.\nDaily active households: 260M × 0.45 = 117M active households per day.\nActive viewers per active household: ~1.6 (not all household members watch every day even in active households).\nDaily active viewers: 117M × 1.6 = ~187M individual viewers per day.\n\nStep 3: Watch time per daily active viewer.\nNetflix\'s disclosed average of ~2 hours/day is across all subscribers (including inactive days). For daily active viewers (who actually watched), average watch time is higher: ~2.5 hours per active viewing session.\nTotal daily watch-hours: 187M × 2.5 = ~467M watch-hours/day.\n\nStep 4: Convert to average concurrent viewers.\nAverage concurrent viewers = Total watch-hours per day ÷ 24 hours.\n467M ÷ 24 = ~19.5M concurrent viewers on average at any given moment.\n\nStep 5: Apply time-of-day and peak adjustments.\n"Right now" without a specified time requires a global average estimate. But:\n- Peak viewing globally (aggregating across time zones): evening hours in major markets (US 8pm EST, Europe 9pm CET, India 9pm IST) drive above-average concurrency.\n- At peak: ~1.8x the average → 19.5M × 1.8 = ~35M concurrent viewers at peak global moment.\n- At off-peak (e.g., 4am global average): ~0.4x → ~8M.\n- Average any given moment: ~19-20M.\n\nRange: 15M–40M depending on time of day; ~20M as a neutral estimate.\n\nCross-check: Netflix has ~260M subscribers streaming at avg 2 hrs/day. If Netflix processes ~20M streams at any time × 5 Mbps per stream = 100 Gbps = 100 petabits... actually 20M × 5 Mbps = 100,000 Gbps = 100 Tbps. That is Netflix\'s approximate CDN bandwidth requirement — consistent with industry reporting of Netflix driving ~15% of global internet downstream traffic.',
       keyAssumptions: [
         '260M paid subscriber households — disclosed Q4 2023 figure',
         '2.2 viewers per household — slightly above average household size because Netflix captures multi-person households disproportionately',
@@ -1380,35 +990,7 @@ Cross-check: Netflix has ~260M subscribers streaming at avg 2 hrs/day. If Netfli
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Estimate annual Amazon orders in the US.
-
-US Prime members: ~168M (Amazon disclosed 200M+ globally; US is ~84%).
-Average orders per Prime member per year: ~25 (Prime members order frequently due to free shipping incentive; mix of daily essentials, gifts, electronics).
-Prime member orders: 168M × 25 = 4.2B orders/year.
-
-Non-Prime US shoppers: US population 330M − 168M Prime = ~162M potential non-Prime shoppers. Not all non-Prime users shop on Amazon at all. Estimate 80M non-Prime Amazon shoppers.
-Average orders per non-Prime customer: ~5/year (they face shipping fees, so order less frequently).
-Non-Prime orders: 80M × 5 = 400M orders/year.
-
-Total annual Amazon US orders: 4.2B + 0.4B = ~4.6B orders/year.
-
-Step 2: Orders per package.
-Most Amazon orders ship as 1 package per order. However, some multi-item orders split across 2+ packages (especially from different fulfillment centers or different sellers). Average: ~1.15 packages per order.
-Total packages shipped: 4.6B × 1.15 = ~5.3B packages/year.
-
-Step 3: Amazon Logistics vs. 3rd party carriers.
-Amazon delivers ~72% of its packages via AMZL (Amazon Logistics); 28% goes to USPS, UPS, FedEx, etc. Amazon-delivered packages: 5.3B × 0.72 = ~3.8B through AMZL. Total (all carriers): ~5.3B/year.
-
-Step 4: Daily average.
-Total annual packages: ~5.3B ÷ 365 = ~14.5M packages/day on average.
-Amazon-delivered specifically: ~3.8B ÷ 365 = ~10.4M packages/day via AMZL.
-
-Range: 14M–16M total packages/day; ~10M–12M delivered by Amazon's own network.
-
-Step 5: Q4 peak.
-Peak-season daily deliveries (Cyber Monday week): ~2.5x average = ~35-40M packages/day at peak.
-
-Cross-check: Amazon disclosed delivering over 5 billion packages via its own logistics in the US in 2023 → 5B ÷ 365 = ~13.7M/day. Our AMZL estimate of 10.4M is slightly conservative; total including 3P carriers aligns well at 13-15M.`,
+      walkthrough: 'Step 1: Estimate annual Amazon orders in the US.\n\nUS Prime members: ~168M (Amazon disclosed 200M+ globally; US is ~84%).\nAverage orders per Prime member per year: ~25 (Prime members order frequently due to free shipping incentive; mix of daily essentials, gifts, electronics).\nPrime member orders: 168M × 25 = 4.2B orders/year.\n\nNon-Prime US shoppers: US population 330M − 168M Prime = ~162M potential non-Prime shoppers. Not all non-Prime users shop on Amazon at all. Estimate 80M non-Prime Amazon shoppers.\nAverage orders per non-Prime customer: ~5/year (they face shipping fees, so order less frequently).\nNon-Prime orders: 80M × 5 = 400M orders/year.\n\nTotal annual Amazon US orders: 4.2B + 0.4B = ~4.6B orders/year.\n\nStep 2: Orders per package.\nMost Amazon orders ship as 1 package per order. However, some multi-item orders split across 2+ packages (especially from different fulfillment centers or different sellers). Average: ~1.15 packages per order.\nTotal packages shipped: 4.6B × 1.15 = ~5.3B packages/year.\n\nStep 3: Amazon Logistics vs. 3rd party carriers.\nAmazon delivers ~72% of its packages via AMZL (Amazon Logistics); 28% goes to USPS, UPS, FedEx, etc. Amazon-delivered packages: 5.3B × 0.72 = ~3.8B through AMZL. Total (all carriers): ~5.3B/year.\n\nStep 4: Daily average.\nTotal annual packages: ~5.3B ÷ 365 = ~14.5M packages/day on average.\nAmazon-delivered specifically: ~3.8B ÷ 365 = ~10.4M packages/day via AMZL.\n\nRange: 14M–16M total packages/day; ~10M–12M delivered by Amazon\'s own network.\n\nStep 5: Q4 peak.\nPeak-season daily deliveries (Cyber Monday week): ~2.5x average = ~35-40M packages/day at peak.\n\nCross-check: Amazon disclosed delivering over 5 billion packages via its own logistics in the US in 2023 → 5B ÷ 365 = ~13.7M/day. Our AMZL estimate of 10.4M is slightly conservative; total including 3P carriers aligns well at 13-15M.',
       keyAssumptions: [
         '168M US Prime members — widely cited figure from Consumer Intelligence Research Partners (CIRP)',
         '25 orders/year per Prime member — based on CIRP survey data showing Prime members average ~25 annual orders',
@@ -1469,58 +1051,7 @@ Cross-check: Amazon disclosed delivering over 5 billion packages via its own log
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: US population age breakdown.
-Total US population: ~335M.
-Approximate age distribution:
-- 13-17 (teens): ~22M (6.5% of pop)
-- 18-24 (young adults): ~31M (9.2%)
-- 25-34: ~45M (13.4%)
-- 35-44: ~43M (12.8%)
-- 45-54: ~41M (12.2%)
-- 55-64: ~40M (11.9%)
-- 65+: ~56M (16.7%)
-- Under 13 (not eligible): ~57M
-
-Total addressable (13+): ~278M.
-
-Step 2: Smartphone ownership by age group.
-13-17: ~93% have smartphones.
-18-34: ~97%.
-35-54: ~88%.
-55-64: ~73%.
-65+: ~50%.
-
-Step 3: TikTok monthly adoption rate by age cohort (among smartphone owners).
-13-17: ~67% (extremely high; TikTok is the primary entertainment platform for Gen Z teens)
-18-24: ~63%
-25-34: ~42%
-35-44: ~24%
-45-54: ~12%
-55-64: ~7%
-65+: ~3%
-
-Step 4: Calculate MAU by cohort.
-13-17: 22M × 0.93 × 0.67 = 13.7M
-18-24: 31M × 0.97 × 0.63 = 18.9M
-25-34: 45M × 0.97 × 0.42 = 18.3M
-35-44: 43M × 0.88 × 0.24 = 9.1M
-45-54: 41M × 0.88 × 0.12 = 4.3M
-55-64: 40M × 0.73 × 0.07 = 2.0M
-65+: 56M × 0.50 × 0.03 = 0.8M
-
-Total US TikTok MAU: 13.7 + 18.9 + 18.3 + 9.1 + 4.3 + 2.0 + 0.8 = ~67M.
-
-Hmm — this comes in at ~67M, short of TikTok's stated 150M. The discrepancy likely reflects under-estimated adoption rates, particularly among 18-34 year olds. TikTok penetration in 18-34 may be 65-75%, not 42-63%.
-
-Revised 25-34 at 60%: 45M × 0.97 × 0.60 = 26.2M. Revised 35-44 at 35%: 43M × 0.88 × 0.35 = 13.2M. Revised total: ~80-90M.
-
-TikTok stated ~150M US MAU to Congress in 2023. This suggests either:
-(a) Adoption rates are higher than Pew Research surveys suggest (perhaps self-report bias in surveys), or
-(b) TikTok counts any account that logged in during the month, including passive browsers.
-
-Best estimate anchoring on TikTok's own statement: ~150M US MAU. Bottom-up suggests 80-120M, with the gap explained by survey undercounting.
-
-Final answer: 120M–150M US monthly active users, with ~150M as the company-disclosed figure.`,
+      walkthrough: 'Step 1: US population age breakdown.\nTotal US population: ~335M.\nApproximate age distribution:\n- 13-17 (teens): ~22M (6.5% of pop)\n- 18-24 (young adults): ~31M (9.2%)\n- 25-34: ~45M (13.4%)\n- 35-44: ~43M (12.8%)\n- 45-54: ~41M (12.2%)\n- 55-64: ~40M (11.9%)\n- 65+: ~56M (16.7%)\n- Under 13 (not eligible): ~57M\n\nTotal addressable (13+): ~278M.\n\nStep 2: Smartphone ownership by age group.\n13-17: ~93% have smartphones.\n18-34: ~97%.\n35-54: ~88%.\n55-64: ~73%.\n65+: ~50%.\n\nStep 3: TikTok monthly adoption rate by age cohort (among smartphone owners).\n13-17: ~67% (extremely high; TikTok is the primary entertainment platform for Gen Z teens)\n18-24: ~63%\n25-34: ~42%\n35-44: ~24%\n45-54: ~12%\n55-64: ~7%\n65+: ~3%\n\nStep 4: Calculate MAU by cohort.\n13-17: 22M × 0.93 × 0.67 = 13.7M\n18-24: 31M × 0.97 × 0.63 = 18.9M\n25-34: 45M × 0.97 × 0.42 = 18.3M\n35-44: 43M × 0.88 × 0.24 = 9.1M\n45-54: 41M × 0.88 × 0.12 = 4.3M\n55-64: 40M × 0.73 × 0.07 = 2.0M\n65+: 56M × 0.50 × 0.03 = 0.8M\n\nTotal US TikTok MAU: 13.7 + 18.9 + 18.3 + 9.1 + 4.3 + 2.0 + 0.8 = ~67M.\n\nHmm — this comes in at ~67M, short of TikTok\'s stated 150M. The discrepancy likely reflects under-estimated adoption rates, particularly among 18-34 year olds. TikTok penetration in 18-34 may be 65-75%, not 42-63%.\n\nRevised 25-34 at 60%: 45M × 0.97 × 0.60 = 26.2M. Revised 35-44 at 35%: 43M × 0.88 × 0.35 = 13.2M. Revised total: ~80-90M.\n\nTikTok stated ~150M US MAU to Congress in 2023. This suggests either:\n(a) Adoption rates are higher than Pew Research surveys suggest (perhaps self-report bias in surveys), or\n(b) TikTok counts any account that logged in during the month, including passive browsers.\n\nBest estimate anchoring on TikTok\'s own statement: ~150M US MAU. Bottom-up suggests 80-120M, with the gap explained by survey undercounting.\n\nFinal answer: 120M–150M US monthly active users, with ~150M as the company-disclosed figure.',
       keyAssumptions: [
         'TikTok adoption rates by age cohort — derived from Pew Research Center social media surveys (2022-2023)',
         '150M US MAU — stated by TikTok CEO Shou Zi Chew to US Congress in March 2023',
@@ -1580,46 +1111,7 @@ Final answer: 120M–150M US monthly active users, with ~150M as the company-dis
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Estimate Zoom's user base and segment it.
-
-Zoom total registered users: ~300M+ (estimates; Zoom stopped disclosing full user count post-2020).
-Zoom Monthly Active Users (paying/regularly using): ~200M.
-Daily active users on a typical weekday: ~50% of MAU = 100M daily participants (meetings are concentrated on business days).
-
-Step 2: Segment by user type.
-
-Enterprise/Paid heavy users (~15% of DAU = 15M participants):
-- Description: Knowledge workers in corporations, consulting firms, universities with enterprise licenses.
-- Meetings/day: ~4 meetings per day (calendar-heavy professionals).
-- Avg meeting size: 6 participants.
-- Meetings contributed per heavy-user participant: 4 meetings / 6 avg participants = 0.67 meetings per participant.
-- Total meetings from this segment: 15M × 0.67 = 10M meetings/day.
-
-SMB / Pro users (~25% of DAU = 25M participants):
-- Description: Small teams, startups, freelancers with paid Pro accounts.
-- Meetings/day: ~2 per participant.
-- Avg meeting size: 4 participants.
-- Meetings per participant: 2 / 4 = 0.50.
-- Total meetings: 25M × 0.50 = 12.5M meetings/day.
-
-Free-tier users (~60% of DAU = 60M participants):
-- Description: Students, family calls, occasional users. Free tier has 40-minute limit.
-- Meetings/day: ~0.5 per participant (use Zoom a few times per week).
-- Avg meeting size: 3 participants.
-- Meetings per participant: 0.5 / 3 = 0.17.
-- Total meetings: 60M × 0.17 = 10M meetings/day.
-
-Step 3: Total daily meetings.
-10M + 12.5M + 10M = ~32.5M meetings/day on a typical weekday.
-
-Weekend adjustment: If we're estimating a global average across all 7 days/week and meetings drop 70% on weekends:
-Weekday average: 32.5M.
-Weekend average: 32.5M × 0.30 = 9.75M.
-Weekly average: (5 × 32.5M + 2 × 9.75M) / 7 = (162.5M + 19.5M) / 7 = 26M/day.
-
-Range: 25M–35M meetings per day on a typical weekday; ~26M global average across all days.
-
-Cross-check: Zoom disclosed ~300M daily meeting participants at peak (April 2020). At 300M participants ÷ 6 avg meeting size = 50M meetings/day at peak. Post-pandemic normalization: Zoom's paid revenue is now roughly stable at ~$4.5B/year, suggesting activity is ~50-60% of peak. 50M × 0.55 = ~27.5M meetings/day. Consistent with our bottom-up.`,
+      walkthrough: 'Step 1: Estimate Zoom\'s user base and segment it.\n\nZoom total registered users: ~300M+ (estimates; Zoom stopped disclosing full user count post-2020).\nZoom Monthly Active Users (paying/regularly using): ~200M.\nDaily active users on a typical weekday: ~50% of MAU = 100M daily participants (meetings are concentrated on business days).\n\nStep 2: Segment by user type.\n\nEnterprise/Paid heavy users (~15% of DAU = 15M participants):\n- Description: Knowledge workers in corporations, consulting firms, universities with enterprise licenses.\n- Meetings/day: ~4 meetings per day (calendar-heavy professionals).\n- Avg meeting size: 6 participants.\n- Meetings contributed per heavy-user participant: 4 meetings / 6 avg participants = 0.67 meetings per participant.\n- Total meetings from this segment: 15M × 0.67 = 10M meetings/day.\n\nSMB / Pro users (~25% of DAU = 25M participants):\n- Description: Small teams, startups, freelancers with paid Pro accounts.\n- Meetings/day: ~2 per participant.\n- Avg meeting size: 4 participants.\n- Meetings per participant: 2 / 4 = 0.50.\n- Total meetings: 25M × 0.50 = 12.5M meetings/day.\n\nFree-tier users (~60% of DAU = 60M participants):\n- Description: Students, family calls, occasional users. Free tier has 40-minute limit.\n- Meetings/day: ~0.5 per participant (use Zoom a few times per week).\n- Avg meeting size: 3 participants.\n- Meetings per participant: 0.5 / 3 = 0.17.\n- Total meetings: 60M × 0.17 = 10M meetings/day.\n\nStep 3: Total daily meetings.\n10M + 12.5M + 10M = ~32.5M meetings/day on a typical weekday.\n\nWeekend adjustment: If we\'re estimating a global average across all 7 days/week and meetings drop 70% on weekends:\nWeekday average: 32.5M.\nWeekend average: 32.5M × 0.30 = 9.75M.\nWeekly average: (5 × 32.5M + 2 × 9.75M) / 7 = (162.5M + 19.5M) / 7 = 26M/day.\n\nRange: 25M–35M meetings per day on a typical weekday; ~26M global average across all days.\n\nCross-check: Zoom disclosed ~300M daily meeting participants at peak (April 2020). At 300M participants ÷ 6 avg meeting size = 50M meetings/day at peak. Post-pandemic normalization: Zoom\'s paid revenue is now roughly stable at ~$4.5B/year, suggesting activity is ~50-60% of peak. 50M × 0.55 = ~27.5M meetings/day. Consistent with our bottom-up.',
       keyAssumptions: [
         '200M Zoom MAU (estimated) — Zoom stopped disclosing MAU post-2020; this is an industry analyst estimate based on revenue and seat-count data',
         '50% weekday daily active rate — ~100M daily participants on an average weekday',
@@ -1680,41 +1172,7 @@ Cross-check: Zoom disclosed ~300M daily meeting participants at peak (April 2020
     ],
 
     modelAnswer: {
-      walkthrough: `Approach 1: Top-down from podcast ad market.
-
-Total global podcast advertising market 2023: ~$4B (IAB/PwC: $2B US × 2 for global).
-Spotify's listener market share: ~31% of all podcast listening hours globally (Spotify has become the largest single platform).
-Revenue share ≠ listener share. Spotify monetizes a smaller share of inventory than its listener share because:
-(a) Most Spotify podcast listeners use the free tier where Spotify needs to monetize through ads — this is actually an advantage.
-(b) Many podcast creators use Spotify as a distribution channel but monetize through host-read ads outside Spotify's network (especially Apple Podcasts, independent).
-(c) Spotify's programmatic and first-party ad network for podcasts is still scaling.
-
-Spotify's monetizable podcast listen share: ~20% of global podcast ad market = $4B × 0.20 = ~$800M.
-
-Approach 2: Bottom-up from listeners and CPM.
-
-Spotify total MAU: ~602M as of Q4 2023.
-Podcast listeners on Spotify: ~25% of MAU listen to at least one podcast/month = ~150M podcast MAU.
-Monthly active podcast listeners who generate ad inventory (ad-supported, not Premium skip-enabled): ~60% of podcast listeners are on the free tier = 90M ad-eligible podcast listeners.
-
-Podcast listening hours per ad-eligible user per month: ~3.5 hours/month (roughly 30-45 minutes/week for a casual podcast listener).
-Total monthly ad-eligible podcast listening hours: 90M × 3.5 = 315M hours/month.
-Annual listening hours: 315M × 12 = 3.78B hours.
-
-Ad load: ~3 ads per hour of podcast content (pre-roll + mid-roll × 2).
-Ad impressions per year: 3.78B hours × 3 ads/hour = 11.34B impressions.
-Blended CPM: ~$18 (host-read premium: ~$35 for O&O shows; programmatic: ~$12 for distribution network).
-Annual revenue: 11.34B impressions × ($18 / 1,000) = $204M.
-
-But wait — this only covers the ad-supported free-tier listeners. Spotify also:
-(a) Sells ads on Premium users' podcast feeds for some shows (Premium users see fewer ads but not zero).
-(b) Earns revenue from its Spotify Audience Network (SANeT), which monetizes podcasts hosted on Anchor across ANY platform, not just Spotify's app. SANeT impressions could be 3-5x Spotify-app-only.
-
-Applying a 3x SANeT multiplier (podcasts distributed via Anchor that Spotify monetizes elsewhere): $204M × 3 = ~$612M.
-
-Range from both approaches: $600M–$900M.
-
-Spotify's own commentary: On earnings calls through 2022-2023, Spotify has indicated podcast monetization is "hundreds of millions of dollars and growing," with an aspiration to build it into a multi-billion dollar segment. "Hundreds of millions" = likely $400M–$800M range in 2023. Consistent.`,
+      walkthrough: 'Approach 1: Top-down from podcast ad market.\n\nTotal global podcast advertising market 2023: ~$4B (IAB/PwC: $2B US × 2 for global).\nSpotify\'s listener market share: ~31% of all podcast listening hours globally (Spotify has become the largest single platform).\nRevenue share ≠ listener share. Spotify monetizes a smaller share of inventory than its listener share because:\n(a) Most Spotify podcast listeners use the free tier where Spotify needs to monetize through ads — this is actually an advantage.\n(b) Many podcast creators use Spotify as a distribution channel but monetize through host-read ads outside Spotify\'s network (especially Apple Podcasts, independent).\n(c) Spotify\'s programmatic and first-party ad network for podcasts is still scaling.\n\nSpotify\'s monetizable podcast listen share: ~20% of global podcast ad market = $4B × 0.20 = ~$800M.\n\nApproach 2: Bottom-up from listeners and CPM.\n\nSpotify total MAU: ~602M as of Q4 2023.\nPodcast listeners on Spotify: ~25% of MAU listen to at least one podcast/month = ~150M podcast MAU.\nMonthly active podcast listeners who generate ad inventory (ad-supported, not Premium skip-enabled): ~60% of podcast listeners are on the free tier = 90M ad-eligible podcast listeners.\n\nPodcast listening hours per ad-eligible user per month: ~3.5 hours/month (roughly 30-45 minutes/week for a casual podcast listener).\nTotal monthly ad-eligible podcast listening hours: 90M × 3.5 = 315M hours/month.\nAnnual listening hours: 315M × 12 = 3.78B hours.\n\nAd load: ~3 ads per hour of podcast content (pre-roll + mid-roll × 2).\nAd impressions per year: 3.78B hours × 3 ads/hour = 11.34B impressions.\nBlended CPM: ~$18 (host-read premium: ~$35 for O&O shows; programmatic: ~$12 for distribution network).\nAnnual revenue: 11.34B impressions × ($18 / 1,000) = $204M.\n\nBut wait — this only covers the ad-supported free-tier listeners. Spotify also:\n(a) Sells ads on Premium users\' podcast feeds for some shows (Premium users see fewer ads but not zero).\n(b) Earns revenue from its Spotify Audience Network (SANeT), which monetizes podcasts hosted on Anchor across ANY platform, not just Spotify\'s app. SANeT impressions could be 3-5x Spotify-app-only.\n\nApplying a 3x SANeT multiplier (podcasts distributed via Anchor that Spotify monetizes elsewhere): $204M × 3 = ~$612M.\n\nRange from both approaches: $600M–$900M.\n\nSpotify\'s own commentary: On earnings calls through 2022-2023, Spotify has indicated podcast monetization is "hundreds of millions of dollars and growing," with an aspiration to build it into a multi-billion dollar segment. "Hundreds of millions" = likely $400M–$800M range in 2023. Consistent.',
       keyAssumptions: [
         '$4B global podcast ad market — IAB/PwC 2023 report; growing ~5-10% per year',
         '20% Spotify podcast ad revenue share vs. 31% listener share — monetization share lags due to creator independence and platform immaturity',
@@ -1775,31 +1233,7 @@ Spotify's own commentary: On earnings calls through 2022-2023, Spotify has indic
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: US Uber Eats user base.
-US internet users: ~285M. Food delivery app penetration: ~35% use any food delivery app at least monthly → 100M food delivery MAU across all platforms.
-Uber Eats US market share: ~29% of food delivery orders → 29M Uber Eats MAU in the US.
-
-Step 2: Baseline daily orders.
-Order frequency for active users: ~3.5 orders/month = 3.5/30 ≈ 0.117 orders/day.
-Daily orders on a typical day: 29M × 0.117 = ~3.4M orders/day.
-
-Step 3: NYE multiplier.
-New Year's Eve is a major gathering event. Drivers of increased demand:
-(a) Parties and group meals replacing restaurant dining ($150 group order vs. 2 individual orders)
-(b) Office closed, more people at home
-(c) "Don't want to cook" + special occasion uplift
-Estimated NYE multiplier: 2.8x typical day.
-
-NYE orders: 3.4M × 2.8 = ~9.5M Uber Eats orders on New Year's Eve.
-
-But this counts order events. Some group orders may be single orders for 6-8 people, so the "number of orders" could be slightly lower if ordering behavior consolidates. Adjusting down ~10% for consolidation: ~8.5M.
-
-Range: 7M–11M Uber Eats orders on New Year's Eve in the US.
-
-Cross-check via revenue:
-Uber delivery gross bookings ~$12B/quarter globally = $4B/month globally. US is ~55% of Uber delivery bookings → ~$2.2B/month US = $73M/typical day.
-At $37 average order value: 73M/37 = ~2M orders/day typical, weighted to include quieter days.
-NYE at 2.8x: ~5.5M. (This is slightly lower than our bottom-up because Uber's disclosed bookings include some very low-volume days. Using a weekday baseline brings the range to 5M–10M. Consistent with our 7-11M range.)`,
+      walkthrough: 'Step 1: US Uber Eats user base.\nUS internet users: ~285M. Food delivery app penetration: ~35% use any food delivery app at least monthly → 100M food delivery MAU across all platforms.\nUber Eats US market share: ~29% of food delivery orders → 29M Uber Eats MAU in the US.\n\nStep 2: Baseline daily orders.\nOrder frequency for active users: ~3.5 orders/month = 3.5/30 ≈ 0.117 orders/day.\nDaily orders on a typical day: 29M × 0.117 = ~3.4M orders/day.\n\nStep 3: NYE multiplier.\nNew Year\'s Eve is a major gathering event. Drivers of increased demand:\n(a) Parties and group meals replacing restaurant dining ($150 group order vs. 2 individual orders)\n(b) Office closed, more people at home\n(c) "Don\'t want to cook" + special occasion uplift\nEstimated NYE multiplier: 2.8x typical day.\n\nNYE orders: 3.4M × 2.8 = ~9.5M Uber Eats orders on New Year\'s Eve.\n\nBut this counts order events. Some group orders may be single orders for 6-8 people, so the "number of orders" could be slightly lower if ordering behavior consolidates. Adjusting down ~10% for consolidation: ~8.5M.\n\nRange: 7M–11M Uber Eats orders on New Year\'s Eve in the US.\n\nCross-check via revenue:\nUber delivery gross bookings ~$12B/quarter globally = $4B/month globally. US is ~55% of Uber delivery bookings → ~$2.2B/month US = $73M/typical day.\nAt $37 average order value: 73M/37 = ~2M orders/day typical, weighted to include quieter days.\nNYE at 2.8x: ~5.5M. (This is slightly lower than our bottom-up because Uber\'s disclosed bookings include some very low-volume days. Using a weekday baseline brings the range to 5M–10M. Consistent with our 7-11M range.)',
       keyAssumptions: [
         '29M Uber Eats US MAU — consistent with DoorDash\'s ~67M MAU and Uber Eats\' ~29% market share',
         '3.5 orders/month per active user — based on industry surveys; active users place orders about once per week on average',
@@ -1859,31 +1293,7 @@ NYE at 2.8x: ~5.5M. (This is slightly lower than our bottom-up because Uber's di
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Daily upload volume.
-500 hours uploaded/minute × 60 min × 24 hours = 720,000 hours of video uploaded per day.
-
-Step 2: Raw file size estimate.
-Blended average across all uploads: a mix of phone-shot 1080p (2 GB/hr), YouTube Creator 4K (8 GB/hr), old standard-def content (0.5 GB/hr). Weighted blended: ~1.8 GB/hour raw.
-Total raw data uploaded in 1 day: 720,000 hours × 1.8 GB/hour = 1,296,000 GB = ~1.3 PB of raw upload data per day.
-
-Step 3: Transcoding multiplier.
-YouTube stores: original + 144p + 240p + 360p + 480p + 720p + 1080p. Each quality tier is smaller but the set accumulates. Typical multiplier: ~4x the original (the lower-quality versions are much smaller; 144p is ~0.05 GB/hr, but there are 6+ versions).
-Total stored data per day of uploads: 1.3 PB × 4 = 5.2 PB stored per day's batch.
-
-Step 4: Storage cost.
-Google's internal storage cost is estimated at ~$0.012-0.016/GB/month (below public cloud due to Google's infrastructure scale and custom hardware). Use $0.013/GB/month.
-Monthly cost to store one day's uploads: 5.2 PB × 1,024 × 1,024 GB/PB × ... wait, let's convert cleanly.
-5.2 PB = 5,200 TB = 5,200,000 GB.
-Monthly cost: 5,200,000 GB × $0.013/GB/month = $67,600/month to store one day's uploads.
-Annual cost: $67,600 × 12 = ~$811,000/year.
-
-But this is just for one day's worth of uploads, stored for a year. Over a full year, YouTube accumulates 365 days of uploads, each requiring perpetual storage.
-Year 1 cumulative annual storage cost for all uploads in Year 1: approximately $811k × (1 + 2/3) adjustment for the average cohort being uploaded mid-year = ~$400k average monthly × 12 = ~$5M/year for one year's worth of new uploads (ongoing monthly cost building up to $67,600 × 365 = $24.7M/month by year-end).
-
-Single-day upload cost framing (what does one day cost, stored for one month):
-5.2 PB × $0.013/GB = ~$68k for one month's storage of one day's content.
-
-Range: $60,000–$80,000 per month in storage costs for one day's YouTube uploads.`,
+      walkthrough: 'Step 1: Daily upload volume.\n500 hours uploaded/minute × 60 min × 24 hours = 720,000 hours of video uploaded per day.\n\nStep 2: Raw file size estimate.\nBlended average across all uploads: a mix of phone-shot 1080p (2 GB/hr), YouTube Creator 4K (8 GB/hr), old standard-def content (0.5 GB/hr). Weighted blended: ~1.8 GB/hour raw.\nTotal raw data uploaded in 1 day: 720,000 hours × 1.8 GB/hour = 1,296,000 GB = ~1.3 PB of raw upload data per day.\n\nStep 3: Transcoding multiplier.\nYouTube stores: original + 144p + 240p + 360p + 480p + 720p + 1080p. Each quality tier is smaller but the set accumulates. Typical multiplier: ~4x the original (the lower-quality versions are much smaller; 144p is ~0.05 GB/hr, but there are 6+ versions).\nTotal stored data per day of uploads: 1.3 PB × 4 = 5.2 PB stored per day\'s batch.\n\nStep 4: Storage cost.\nGoogle\'s internal storage cost is estimated at ~$0.012-0.016/GB/month (below public cloud due to Google\'s infrastructure scale and custom hardware). Use $0.013/GB/month.\nMonthly cost to store one day\'s uploads: 5.2 PB × 1,024 × 1,024 GB/PB × ... wait, let\'s convert cleanly.\n5.2 PB = 5,200 TB = 5,200,000 GB.\nMonthly cost: 5,200,000 GB × $0.013/GB/month = $67,600/month to store one day\'s uploads.\nAnnual cost: $67,600 × 12 = ~$811,000/year.\n\nBut this is just for one day\'s worth of uploads, stored for a year. Over a full year, YouTube accumulates 365 days of uploads, each requiring perpetual storage.\nYear 1 cumulative annual storage cost for all uploads in Year 1: approximately $811k × (1 + 2/3) adjustment for the average cohort being uploaded mid-year = ~$400k average monthly × 12 = ~$5M/year for one year\'s worth of new uploads (ongoing monthly cost building up to $67,600 × 365 = $24.7M/month by year-end).\n\nSingle-day upload cost framing (what does one day cost, stored for one month):\n5.2 PB × $0.013/GB = ~$68k for one month\'s storage of one day\'s content.\n\nRange: $60,000–$80,000 per month in storage costs for one day\'s YouTube uploads.',
       keyAssumptions: [
         '500 hours/minute upload rate — stated by YouTube at Google I/O; this figure has been stable since 2022',
         '1.8 GB/hour blended raw upload size — weighted average across 4K creator content (heavy) and mobile/legacy uploads (light)',
@@ -1944,36 +1354,7 @@ Range: $60,000–$80,000 per month in storage costs for one day's YouTube upload
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: WhatsApp MAU.
-WhatsApp MAU: ~2.78B (Meta disclosed 2B+ as of early 2024; industry estimates are 2.7-2.9B).
-
-Step 2: Group participation rate.
-WhatsApp groups are ubiquitous. Usage patterns:
-- In India (largest market, ~500M users): almost every user is in multiple family and neighborhood groups.
-- In Brazil, Mexico, Indonesia: similar high-group-usage patterns.
-- In the US/EU: lower group usage; people use iMessage or SMS groups.
-Estimate: ~75% of MAU are in at least one active group = 2.78B × 0.75 = ~2.1B group-participating users.
-
-Step 3: Groups per user.
-Typical active group user:
-- 1-2 family groups (immediate family, extended family)
-- 1-2 friend circles
-- 1-2 work/professional groups
-- 1 school/class group (especially in EM markets)
-Average: ~6 groups per user, but many are low-activity.
-
-Total group memberships: 2.1B users × 6 groups = 12.6B group memberships.
-
-Step 4: Average group size.
-Most groups are small: the median WhatsApp group probably has 10-15 members. Large groups (100+) are rare and skew the average up. Blended average: ~20 members per group.
-
-Total unique groups: 12.6B memberships / 20 members per group = 630M total groups.
-
-Step 5: Apply activity filter.
-Not all groups are active. Many groups are created and go quiet. Define active = ≥1 message in past 30 days.
-Estimate: ~60% of all groups are active in any given month → 630M × 0.60 = ~378M active groups.
-
-Range: 300M–450M active WhatsApp groups globally.`,
+      walkthrough: 'Step 1: WhatsApp MAU.\nWhatsApp MAU: ~2.78B (Meta disclosed 2B+ as of early 2024; industry estimates are 2.7-2.9B).\n\nStep 2: Group participation rate.\nWhatsApp groups are ubiquitous. Usage patterns:\n- In India (largest market, ~500M users): almost every user is in multiple family and neighborhood groups.\n- In Brazil, Mexico, Indonesia: similar high-group-usage patterns.\n- In the US/EU: lower group usage; people use iMessage or SMS groups.\nEstimate: ~75% of MAU are in at least one active group = 2.78B × 0.75 = ~2.1B group-participating users.\n\nStep 3: Groups per user.\nTypical active group user:\n- 1-2 family groups (immediate family, extended family)\n- 1-2 friend circles\n- 1-2 work/professional groups\n- 1 school/class group (especially in EM markets)\nAverage: ~6 groups per user, but many are low-activity.\n\nTotal group memberships: 2.1B users × 6 groups = 12.6B group memberships.\n\nStep 4: Average group size.\nMost groups are small: the median WhatsApp group probably has 10-15 members. Large groups (100+) are rare and skew the average up. Blended average: ~20 members per group.\n\nTotal unique groups: 12.6B memberships / 20 members per group = 630M total groups.\n\nStep 5: Apply activity filter.\nNot all groups are active. Many groups are created and go quiet. Define active = ≥1 message in past 30 days.\nEstimate: ~60% of all groups are active in any given month → 630M × 0.60 = ~378M active groups.\n\nRange: 300M–450M active WhatsApp groups globally.',
       keyAssumptions: [
         '2.78B WhatsApp MAU — Meta\'s disclosed figure; consistent with public reports',
         '75% of users are in at least one active group — based on WhatsApp\'s group-centric usage in India, Brazil, Indonesia (the 3 largest markets)',
@@ -2033,46 +1414,7 @@ Range: 300M–450M active WhatsApp groups globally.`,
     ],
 
     modelAnswer: {
-      walkthrough: `Approach: Break down cost by usage component.
-
-User profile — average consumer Maps user:
-Sessions per week: ~4 sessions (commute + weekend errands + occasional trips).
-Sessions per year: 4 × 52 = ~208 sessions/year.
-Per session:
-- ~10-15 map tile loads (panning, zooming)
-- ~0.5 route requests (not every session uses navigation)
-- ~0.5 place searches (restaurant lookups, etc.)
-
-Component 1: Map tile serving.
-208 sessions × 12 tiles/session = 2,496 tile requests/year.
-Each tile is a small data packet (~20-50 KB for vector tiles). Data transfer: 2,496 × 35 KB = ~87 MB/year.
-Cloud data egress: ~$0.05-0.08/GB. Google's internal cost: ~$0.03/GB.
-Tile serving data cost: 0.087 GB × $0.03 = ~$0.003/year.
-Tile serving compute (rendering, CDN): estimate ~$0.50/1,000 tiles → 2,496/1,000 × $0.50 = $1.25. But at Google scale with massive CDN caching, effective cost is 10-20x lower: ~$0.10/user/year for tiles.
-
-Component 2: Routing (Directions).
-208 sessions × 0.5 routes = 104 route requests/year.
-Google Maps Platform Directions API: $5/1,000 requests (retail). Internal cost at 20% of retail: $0.001/request.
-Routing cost per user: 104 × $0.001 = $0.10/year.
-
-Component 3: Places/Search.
-208 × 0.5 = 104 place searches/year.
-Places API retail: ~$17/1,000 = $0.017/request. Internal cost at 20%: ~$0.0034/request.
-Places cost: 104 × $0.0034 = ~$0.35/year.
-
-Component 4: Real-time traffic data processing.
-Maps continuously processes GPS signals, road sensor data, and incident reports. This is a fixed infrastructure cost spread across 1B users.
-Google's annual traffic data infrastructure (estimated): $300-500M/year globally.
-Per user: $400M / 1B users = $0.40/user/year.
-
-Component 5: Street View image serving.
-Most users occasionally view Street View (maybe 10 sessions/year at 30-second views).
-Each Street View load: ~2-5 MB of panoramic images. 10 sessions × 3 MB = 30 MB/year.
-Storage + egress: ~$0.005/user/year.
-
-Total cost per user per year: $0.10 + $0.10 + $0.35 + $0.40 + $0.005 = ~$0.96/user/year.
-
-Range: $0.50–$1.50/user/year for Google Maps infrastructure cost.`,
+      walkthrough: 'Approach: Break down cost by usage component.\n\nUser profile — average consumer Maps user:\nSessions per week: ~4 sessions (commute + weekend errands + occasional trips).\nSessions per year: 4 × 52 = ~208 sessions/year.\nPer session:\n- ~10-15 map tile loads (panning, zooming)\n- ~0.5 route requests (not every session uses navigation)\n- ~0.5 place searches (restaurant lookups, etc.)\n\nComponent 1: Map tile serving.\n208 sessions × 12 tiles/session = 2,496 tile requests/year.\nEach tile is a small data packet (~20-50 KB for vector tiles). Data transfer: 2,496 × 35 KB = ~87 MB/year.\nCloud data egress: ~$0.05-0.08/GB. Google\'s internal cost: ~$0.03/GB.\nTile serving data cost: 0.087 GB × $0.03 = ~$0.003/year.\nTile serving compute (rendering, CDN): estimate ~$0.50/1,000 tiles → 2,496/1,000 × $0.50 = $1.25. But at Google scale with massive CDN caching, effective cost is 10-20x lower: ~$0.10/user/year for tiles.\n\nComponent 2: Routing (Directions).\n208 sessions × 0.5 routes = 104 route requests/year.\nGoogle Maps Platform Directions API: $5/1,000 requests (retail). Internal cost at 20% of retail: $0.001/request.\nRouting cost per user: 104 × $0.001 = $0.10/year.\n\nComponent 3: Places/Search.\n208 × 0.5 = 104 place searches/year.\nPlaces API retail: ~$17/1,000 = $0.017/request. Internal cost at 20%: ~$0.0034/request.\nPlaces cost: 104 × $0.0034 = ~$0.35/year.\n\nComponent 4: Real-time traffic data processing.\nMaps continuously processes GPS signals, road sensor data, and incident reports. This is a fixed infrastructure cost spread across 1B users.\nGoogle\'s annual traffic data infrastructure (estimated): $300-500M/year globally.\nPer user: $400M / 1B users = $0.40/user/year.\n\nComponent 5: Street View image serving.\nMost users occasionally view Street View (maybe 10 sessions/year at 30-second views).\nEach Street View load: ~2-5 MB of panoramic images. 10 sessions × 3 MB = 30 MB/year.\nStorage + egress: ~$0.005/user/year.\n\nTotal cost per user per year: $0.10 + $0.10 + $0.35 + $0.40 + $0.005 = ~$0.96/user/year.\n\nRange: $0.50–$1.50/user/year for Google Maps infrastructure cost.',
       keyAssumptions: [
         'Google Maps 1B MAU consumer app — this is the user base for infrastructure amortization',
         'Internal cost is ~20% of Google Maps Platform API retail price — Google\'s internal cost advantage and the API price includes significant margin',
@@ -2131,33 +1473,7 @@ Range: $0.50–$1.50/user/year for Google Maps infrastructure cost.`,
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: NYC housing stock.
-NYC has ~3.5M residential units. Ownership breakdown:
-- ~30% owner-occupied (condos, co-ops, townhouses): ~1.05M units
-- ~70% renter-occupied: ~2.45M units
-
-Step 2: Pre-regulation estimate (to understand baseline).
-Airbnb hosting requires willingness to host strangers, regulatory compliance, and a unit type suitable for guests.
-Pre-LL18 (before Sept 2023) estimate:
-Among owner-occupied units, ~3% might list on Airbnb = 1.05M × 0.03 = 31,500 listings.
-Among rental units, tenants subletting illegally or legally: ~0.5% = 2.45M × 0.005 = 12,250 listings.
-Total pre-regulation: ~43,750 listings. Consistent with the ~40,000-50,000 reported before 2023.
-
-Step 3: Post-regulation (current, post-Sept 2023).
-NYC Local Law 18 requires:
-(a) Host must be present during guest stays (no "whole unit" rentals)
-(b) Max 2 guests
-(c) Registration with NYC government
-
-This eliminated most whole-unit vacation rentals. The practical effect:
-- Owner-occupied hosts who can remain present while renting a spare room: ~0.3% of owner units = 1.05M × 0.003 = 3,150
-- Renters with a spare room and lease allowing subletting: very rare, ~0.1% = 2.45M × 0.001 = 2,450
-Total compliant listings post-LL18: ~5,600.
-
-Some non-compliant listings still exist (enforcement is imperfect). Add ~30% non-compliant: 5,600 × 1.30 = ~7,300 total active listings (including those operating illegally).
-
-Range: 4,000–8,000 active Airbnb listings in NYC today.
-Pre-regulation range: 35,000–50,000 (for historical context).`,
+      walkthrough: 'Step 1: NYC housing stock.\nNYC has ~3.5M residential units. Ownership breakdown:\n- ~30% owner-occupied (condos, co-ops, townhouses): ~1.05M units\n- ~70% renter-occupied: ~2.45M units\n\nStep 2: Pre-regulation estimate (to understand baseline).\nAirbnb hosting requires willingness to host strangers, regulatory compliance, and a unit type suitable for guests.\nPre-LL18 (before Sept 2023) estimate:\nAmong owner-occupied units, ~3% might list on Airbnb = 1.05M × 0.03 = 31,500 listings.\nAmong rental units, tenants subletting illegally or legally: ~0.5% = 2.45M × 0.005 = 12,250 listings.\nTotal pre-regulation: ~43,750 listings. Consistent with the ~40,000-50,000 reported before 2023.\n\nStep 3: Post-regulation (current, post-Sept 2023).\nNYC Local Law 18 requires:\n(a) Host must be present during guest stays (no "whole unit" rentals)\n(b) Max 2 guests\n(c) Registration with NYC government\n\nThis eliminated most whole-unit vacation rentals. The practical effect:\n- Owner-occupied hosts who can remain present while renting a spare room: ~0.3% of owner units = 1.05M × 0.003 = 3,150\n- Renters with a spare room and lease allowing subletting: very rare, ~0.1% = 2.45M × 0.001 = 2,450\nTotal compliant listings post-LL18: ~5,600.\n\nSome non-compliant listings still exist (enforcement is imperfect). Add ~30% non-compliant: 5,600 × 1.30 = ~7,300 total active listings (including those operating illegally).\n\nRange: 4,000–8,000 active Airbnb listings in NYC today.\nPre-regulation range: 35,000–50,000 (for historical context).',
       keyAssumptions: [
         'NYC has 3.5M housing units — NYC Housing and Vacancy Survey data; this is a well-documented figure',
         '30% owner-occupied vs. 70% renter — NYC is one of the highest renter-proportion cities in the US',
@@ -2215,25 +1531,7 @@ Pre-regulation range: 35,000–50,000 (for historical context).`,
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Instagram user base.
-Instagram MAU: ~2 billion (Meta reported in 2023).
-Instagram DAU: roughly 500M, assuming a 25% DAU/MAU ratio (Instagram is a daily-use app for many but not all MAU check in daily; 25% is a reasonable blended rate for a social media platform with high frequency but also passive/monthly users).
-
-Step 2: Stories engagement among DAU.
-Stories is the default entry point on Instagram — when you open the app, Stories appear at the top of the feed. Nearly every DAU is exposed to Stories.
-
-Stories viewers: ~90% of DAU view at least one Story per day = 500M × 0.90 = 450M viewers/day.
-
-Stories posters: Typically 5-10% of DAU post a Story daily. 500M × 0.075 = ~37.5M posters/day.
-
-"Using" Stories (viewers + posters; most overlap, so this is basically the viewer count since all posters are also viewers): ~450M daily Stories users.
-
-Step 3: Cross-check.
-Meta disclosed in 2018 that "500 million accounts use Stories on Instagram every day." This was the figure at a point when Instagram MAU was ~1B. With MAU now at 2B, extrapolating: 500M × (2B/1B) × modest decay for saturation ≈ 600-700M? But Stories engagement rates may have declined as Reels became dominant.
-
-Conservative estimate anchored on more recent signals: ~400M–500M daily Stories users.
-
-Range: 350M–500M people use Instagram Stories daily.`,
+      walkthrough: 'Step 1: Instagram user base.\nInstagram MAU: ~2 billion (Meta reported in 2023).\nInstagram DAU: roughly 500M, assuming a 25% DAU/MAU ratio (Instagram is a daily-use app for many but not all MAU check in daily; 25% is a reasonable blended rate for a social media platform with high frequency but also passive/monthly users).\n\nStep 2: Stories engagement among DAU.\nStories is the default entry point on Instagram — when you open the app, Stories appear at the top of the feed. Nearly every DAU is exposed to Stories.\n\nStories viewers: ~90% of DAU view at least one Story per day = 500M × 0.90 = 450M viewers/day.\n\nStories posters: Typically 5-10% of DAU post a Story daily. 500M × 0.075 = ~37.5M posters/day.\n\n"Using" Stories (viewers + posters; most overlap, so this is basically the viewer count since all posters are also viewers): ~450M daily Stories users.\n\nStep 3: Cross-check.\nMeta disclosed in 2018 that "500 million accounts use Stories on Instagram every day." This was the figure at a point when Instagram MAU was ~1B. With MAU now at 2B, extrapolating: 500M × (2B/1B) × modest decay for saturation ≈ 600-700M? But Stories engagement rates may have declined as Reels became dominant.\n\nConservative estimate anchored on more recent signals: ~400M–500M daily Stories users.\n\nRange: 350M–500M people use Instagram Stories daily.',
       keyAssumptions: [
         'Instagram MAU: 2B (Meta 2023)',
         'Instagram DAU/MAU ratio: 25% → ~500M DAU',
@@ -2292,34 +1590,7 @@ Range: 350M–500M people use Instagram Stories daily.`,
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Concurrent US Netflix streams at peak.
-Netflix US subscribers: ~80M.
-Peak concurrent viewer rate: 20-25% of subscribers. This accounts for:
-- Not all subscribers are in the US timezone simultaneously at peak (8-11pm ET)
-- Households share a subscription (avg ~2.3 people per household, but the concurrent stream count is per household, not per person)
-- Not everyone watches every night
-
-US concurrent streams at peak: 80M × 0.22 = ~17.6M concurrent streams.
-
-Note: Netflix allows 2-4 simultaneous streams per account depending on plan. Many households have multiple concurrent streams. Adjusting: 80M accounts × 25% active accounts × 1.3 average streams per active account = 26M concurrent streams.
-
-Use 20M concurrent streams as a midpoint estimate.
-
-Step 2: Average bitrate per stream.
-Netflix plan distribution (US, 2024):
-- Standard with ads: ~25% → mostly HD (1080p) = 5 Mbps
-- Standard: ~30% → HD = 5 Mbps
-- Premium: ~35% → 4K UHD = 15 Mbps average (not all 4K-capable TVs or content)
-- Basic/legacy: ~10% → SD = 3 Mbps
-
-Blended average bitrate: (25%×5) + (30%×5) + (35%×12) + (10%×3) = 1.25 + 1.50 + 4.20 + 0.30 = 7.25 Mbps per stream.
-
-Also: Netflix uses adaptive bitrate (ABR) — quality adjusts to network conditions. During peak when networks are congested, actual delivered bitrate may drop to 4-5 Mbps. Use 6 Mbps as a congestion-adjusted blended average.
-
-Step 3: Total peak bandwidth.
-20M concurrent streams × 6 Mbps = 120 million Mbps = 120,000 Gbps = 120 Tbps.
-
-Range: 80–150 Tbps.`,
+      walkthrough: 'Step 1: Concurrent US Netflix streams at peak.\nNetflix US subscribers: ~80M.\nPeak concurrent viewer rate: 20-25% of subscribers. This accounts for:\n- Not all subscribers are in the US timezone simultaneously at peak (8-11pm ET)\n- Households share a subscription (avg ~2.3 people per household, but the concurrent stream count is per household, not per person)\n- Not everyone watches every night\n\nUS concurrent streams at peak: 80M × 0.22 = ~17.6M concurrent streams.\n\nNote: Netflix allows 2-4 simultaneous streams per account depending on plan. Many households have multiple concurrent streams. Adjusting: 80M accounts × 25% active accounts × 1.3 average streams per active account = 26M concurrent streams.\n\nUse 20M concurrent streams as a midpoint estimate.\n\nStep 2: Average bitrate per stream.\nNetflix plan distribution (US, 2024):\n- Standard with ads: ~25% → mostly HD (1080p) = 5 Mbps\n- Standard: ~30% → HD = 5 Mbps\n- Premium: ~35% → 4K UHD = 15 Mbps average (not all 4K-capable TVs or content)\n- Basic/legacy: ~10% → SD = 3 Mbps\n\nBlended average bitrate: (25%×5) + (30%×5) + (35%×12) + (10%×3) = 1.25 + 1.50 + 4.20 + 0.30 = 7.25 Mbps per stream.\n\nAlso: Netflix uses adaptive bitrate (ABR) — quality adjusts to network conditions. During peak when networks are congested, actual delivered bitrate may drop to 4-5 Mbps. Use 6 Mbps as a congestion-adjusted blended average.\n\nStep 3: Total peak bandwidth.\n20M concurrent streams × 6 Mbps = 120 million Mbps = 120,000 Gbps = 120 Tbps.\n\nRange: 80–150 Tbps.',
       keyAssumptions: [
         'Netflix US subscribers: 80M (Netflix Q4 2023 earnings; Netflix reported ~260M global; US is ~31%)',
         '25% peak concurrent rate — industry benchmark; Netflix\'s Open Connect CDN documentation references similar figures',
@@ -2378,37 +1649,7 @@ Range: 80–150 Tbps.`,
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Stripe's active merchant base.
-Stripe has disclosed "millions of companies" use Stripe. Industry estimates: ~4-5M active businesses.
-Segment breakdown:
-- Startups and developers (integrating/testing): ~2M accounts (many low-volume, often technical support)
-- SMBs and mid-market (regular payment processing): ~1.5M businesses
-- Enterprise/large companies: ~50,000 (Stripe's "Stripe Corporate" segment)
-
-Step 2: Daily ticket rate by segment.
-
-Startups/developers:
-These users hit integration issues, API errors, sandbox questions. Monthly ticket rate: ~2% of this segment submits a ticket per month.
-Daily tickets: 2M × 0.02 / 30 = ~1,333 tickets/day.
-
-SMBs/mid-market:
-Issues: payment disputes, fraud, failed transactions, payout questions. Monthly ticket rate: ~1% per month.
-Daily tickets: 1.5M × 0.01 / 30 = 500 tickets/day.
-
-Enterprise:
-Dedicated support channels, often via Slack/email with designated account managers. Monthly ticket rate: ~5% of enterprise accounts have a touch per month (many through non-ticket channels).
-Daily tickets through formal ticketing: 50,000 × 0.05 / 30 = ~83 tickets/day.
-
-Step 3: Cardholder/payment-end tickets.
-Stripe also handles inquiries from consumers who see "Stripe" on their bank statement. These are typically redirected to the merchant, but some arrive at Stripe.
-Estimate: ~200 such tickets/day (Stripe tries to minimize this channel).
-
-Step 4: Total.
-Total daily tickets: 1,333 + 500 + 83 + 200 = ~2,116 tickets/day.
-
-Add a spike/incident multiplier: On normal days, this is the baseline. On days with payment network outages or fraud spikes, volume may 2-3x. Average daily including incident days: ~2,500 tickets/day.
-
-Range: 1,500–4,000 tickets/day.`,
+      walkthrough: 'Step 1: Stripe\'s active merchant base.\nStripe has disclosed "millions of companies" use Stripe. Industry estimates: ~4-5M active businesses.\nSegment breakdown:\n- Startups and developers (integrating/testing): ~2M accounts (many low-volume, often technical support)\n- SMBs and mid-market (regular payment processing): ~1.5M businesses\n- Enterprise/large companies: ~50,000 (Stripe\'s "Stripe Corporate" segment)\n\nStep 2: Daily ticket rate by segment.\n\nStartups/developers:\nThese users hit integration issues, API errors, sandbox questions. Monthly ticket rate: ~2% of this segment submits a ticket per month.\nDaily tickets: 2M × 0.02 / 30 = ~1,333 tickets/day.\n\nSMBs/mid-market:\nIssues: payment disputes, fraud, failed transactions, payout questions. Monthly ticket rate: ~1% per month.\nDaily tickets: 1.5M × 0.01 / 30 = 500 tickets/day.\n\nEnterprise:\nDedicated support channels, often via Slack/email with designated account managers. Monthly ticket rate: ~5% of enterprise accounts have a touch per month (many through non-ticket channels).\nDaily tickets through formal ticketing: 50,000 × 0.05 / 30 = ~83 tickets/day.\n\nStep 3: Cardholder/payment-end tickets.\nStripe also handles inquiries from consumers who see "Stripe" on their bank statement. These are typically redirected to the merchant, but some arrive at Stripe.\nEstimate: ~200 such tickets/day (Stripe tries to minimize this channel).\n\nStep 4: Total.\nTotal daily tickets: 1,333 + 500 + 83 + 200 = ~2,116 tickets/day.\n\nAdd a spike/incident multiplier: On normal days, this is the baseline. On days with payment network outages or fraud spikes, volume may 2-3x. Average daily including incident days: ~2,500 tickets/day.\n\nRange: 1,500–4,000 tickets/day.',
       keyAssumptions: [
         'Stripe has 4-5M active businesses — based on Stripe\'s disclosed "millions of companies" and analyst estimates',
         'Developer/startup segment (2M accounts) has a higher ticket rate (2%/month) due to integration complexity',
@@ -2467,41 +1708,7 @@ Range: 1,500–4,000 tickets/day.`,
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Prime Day order volume vs. typical day.
-Prime Day 2023: ~$12.9B over 2 days = ~$6.45B/day.
-Typical Amazon day: ~$1.2B in third-party + first-party product sales.
-Uplift ratio: 6.45 / 1.2 = ~5.4x typical day volume.
-
-Daily order count baseline: At ~$40 average order value, 1.2B/40 = 30M orders/day typical.
-Prime Day daily orders: 30M × 5.4 = ~162M orders on each Prime Day.
-
-Step 2: Inventory pre-staging.
-To fulfill Prime Day orders without stockouts, Amazon pre-positions inventory 3-4 weeks ahead.
-Pre-staged inventory = anticipated Prime Day demand × safety stock factor.
-
-Incremental inventory to support Prime Day (above normal inventory levels):
-Normal daily throughput: 30M units.
-Normal inventory on hand: ~2-3 weeks of normal demand = 30M × 18 days = 540M units in transit/storage.
-Prime Day pre-stage: Need to support 162M/day for 2 days = 324M units, plus safety stock = ~500M extra units.
-Net incremental inventory: 500M - 540M normal = actually, inventory is being built up gradually, so total FCs need to hold ~(normal + 500M incremental) during the pre-stage period.
-
-Focus on incremental physical space for the 500M additional units:
-500M units × average unit size. Amazon average item: a book, small electronics item, apparel piece — roughly 0.5 lb, dimensions ~6×4×3 inches = 72 cubic inches.
-
-Storage density in Amazon RobotStow/Kiva FCs: ~8-12 units per cubic foot of storage (shelves + aisles + robots).
-At 10 units/cubic foot: 500M / 10 = 50M cubic feet of storage volume needed.
-Converting to floor space (storage height ~20 feet usable): 50M / 20 = 2.5M square feet of floor space.
-
-Step 3: Translate to fulfillment centers.
-A typical Amazon FC is ~1M sq ft floor space, with ~40% used for storage = 400,000 sq ft of active storage.
-Incremental floor space needed: 2.5M sq ft → approximately 6 additional standard fulfillment centers' worth of storage.
-
-In practice, Amazon handles this through:
-(a) Clearing existing FCs by shipping out slow-moving inventory beforehand
-(b) Using overflow storage in partner 3PL warehouses
-(c) Distributing across 400+ US FCs (each absorbing ~12,500 sq ft / 400 = ~6,250 additional sq ft per FC)
-
-Range: 2M–4M sq ft of additional storage space activated for Prime Day pre-staging.`,
+      walkthrough: 'Step 1: Prime Day order volume vs. typical day.\nPrime Day 2023: ~$12.9B over 2 days = ~$6.45B/day.\nTypical Amazon day: ~$1.2B in third-party + first-party product sales.\nUplift ratio: 6.45 / 1.2 = ~5.4x typical day volume.\n\nDaily order count baseline: At ~$40 average order value, 1.2B/40 = 30M orders/day typical.\nPrime Day daily orders: 30M × 5.4 = ~162M orders on each Prime Day.\n\nStep 2: Inventory pre-staging.\nTo fulfill Prime Day orders without stockouts, Amazon pre-positions inventory 3-4 weeks ahead.\nPre-staged inventory = anticipated Prime Day demand × safety stock factor.\n\nIncremental inventory to support Prime Day (above normal inventory levels):\nNormal daily throughput: 30M units.\nNormal inventory on hand: ~2-3 weeks of normal demand = 30M × 18 days = 540M units in transit/storage.\nPrime Day pre-stage: Need to support 162M/day for 2 days = 324M units, plus safety stock = ~500M extra units.\nNet incremental inventory: 500M - 540M normal = actually, inventory is being built up gradually, so total FCs need to hold ~(normal + 500M incremental) during the pre-stage period.\n\nFocus on incremental physical space for the 500M additional units:\n500M units × average unit size. Amazon average item: a book, small electronics item, apparel piece — roughly 0.5 lb, dimensions ~6×4×3 inches = 72 cubic inches.\n\nStorage density in Amazon RobotStow/Kiva FCs: ~8-12 units per cubic foot of storage (shelves + aisles + robots).\nAt 10 units/cubic foot: 500M / 10 = 50M cubic feet of storage volume needed.\nConverting to floor space (storage height ~20 feet usable): 50M / 20 = 2.5M square feet of floor space.\n\nStep 3: Translate to fulfillment centers.\nA typical Amazon FC is ~1M sq ft floor space, with ~40% used for storage = 400,000 sq ft of active storage.\nIncremental floor space needed: 2.5M sq ft → approximately 6 additional standard fulfillment centers\' worth of storage.\n\nIn practice, Amazon handles this through:\n(a) Clearing existing FCs by shipping out slow-moving inventory beforehand\n(b) Using overflow storage in partner 3PL warehouses\n(c) Distributing across 400+ US FCs (each absorbing ~12,500 sq ft / 400 = ~6,250 additional sq ft per FC)\n\nRange: 2M–4M sq ft of additional storage space activated for Prime Day pre-staging.',
       keyAssumptions: [
         'Prime Day daily order volume: ~5.4x typical day, based on $12.9B/2 days vs. $1.2B/day typical',
         '$40 average Amazon order value — consistent with published estimates; lower than pure electronics, higher than pure daily deals',
@@ -2560,35 +1767,7 @@ Range: 2M–4M sq ft of additional storage space activated for Prime Day pre-sta
     ],
 
     modelAnswer: {
-      walkthrough: `Step 1: Chrome users active right now.
-Chrome total global users: ~3.3B accounts/installs.
-Active at any moment: Not everyone is using Chrome right now.
-Desktop Chrome users: ~1.5B. At a typical mid-day moment on a weekday, ~25% of desktop users have Chrome open: 1.5B × 0.25 = 375M desktop Chrome sessions active.
-Mobile Chrome users: ~1.8B. At any moment ~20% are actively browsing: 1.8B × 0.20 = 360M mobile Chrome sessions active.
-
-Step 2: Tabs per session.
-
-Desktop users:
-Light users (students, casual browsing): ~5 tabs → 30% of desktop sessions
-Medium users (office workers, news readers): ~12 tabs → 40% of desktop sessions
-Heavy/power users (developers, researchers): ~35 tabs → 30% of desktop sessions
-Weighted average desktop tabs: (0.30×5) + (0.40×12) + (0.30×35) = 1.5 + 4.8 + 10.5 = 16.8 tabs/session.
-
-Mobile users:
-Mobile browsers have fewer tabs; Android Chrome often encourages tab closure.
-Light: ~2 tabs (60% of mobile sessions)
-Medium: ~5 tabs (30%)
-Heavy: ~15 tabs (10%)
-Weighted average mobile tabs: (0.60×2) + (0.30×5) + (0.10×15) = 1.2 + 1.5 + 1.5 = 4.2 tabs/session.
-
-Step 3: Total tabs.
-Desktop: 375M sessions × 16.8 tabs = 6.3B tabs.
-Mobile: 360M sessions × 4.2 tabs = 1.51B tabs.
-Total: 6.3B + 1.51B = ~7.8B active Chrome tabs globally.
-
-Round to nearest order of magnitude: approximately 5–10 billion active Chrome tabs.
-
-The "right now" qualifier means this is for a mid-day weekday moment when internet usage is near but not at its global peak (which would be higher due to overlapping time zones in the afternoon).`,
+      walkthrough: 'Step 1: Chrome users active right now.\nChrome total global users: ~3.3B accounts/installs.\nActive at any moment: Not everyone is using Chrome right now.\nDesktop Chrome users: ~1.5B. At a typical mid-day moment on a weekday, ~25% of desktop users have Chrome open: 1.5B × 0.25 = 375M desktop Chrome sessions active.\nMobile Chrome users: ~1.8B. At any moment ~20% are actively browsing: 1.8B × 0.20 = 360M mobile Chrome sessions active.\n\nStep 2: Tabs per session.\n\nDesktop users:\nLight users (students, casual browsing): ~5 tabs → 30% of desktop sessions\nMedium users (office workers, news readers): ~12 tabs → 40% of desktop sessions\nHeavy/power users (developers, researchers): ~35 tabs → 30% of desktop sessions\nWeighted average desktop tabs: (0.30×5) + (0.40×12) + (0.30×35) = 1.5 + 4.8 + 10.5 = 16.8 tabs/session.\n\nMobile users:\nMobile browsers have fewer tabs; Android Chrome often encourages tab closure.\nLight: ~2 tabs (60% of mobile sessions)\nMedium: ~5 tabs (30%)\nHeavy: ~15 tabs (10%)\nWeighted average mobile tabs: (0.60×2) + (0.30×5) + (0.10×15) = 1.2 + 1.5 + 1.5 = 4.2 tabs/session.\n\nStep 3: Total tabs.\nDesktop: 375M sessions × 16.8 tabs = 6.3B tabs.\nMobile: 360M sessions × 4.2 tabs = 1.51B tabs.\nTotal: 6.3B + 1.51B = ~7.8B active Chrome tabs globally.\n\nRound to nearest order of magnitude: approximately 5–10 billion active Chrome tabs.\n\nThe "right now" qualifier means this is for a mid-day weekday moment when internet usage is near but not at its global peak (which would be higher due to overlapping time zones in the afternoon).',
       keyAssumptions: [
         'Chrome has ~3.3B active users globally — consistent with StatCounter data (~65% of ~5.2B internet-using devices)',
         '25% of desktop Chrome users have Chrome open at any given weekday mid-day moment — desktop activity rates are lower than mobile (mobile is always-on)',
