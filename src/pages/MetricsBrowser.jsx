@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { metricCases } from '../data/metricCases.js';
 import { getMetricsProgress } from '../utils/metricsProgress.js';
+import { FOUNDATION_DOMAINS } from '../data/foundationMeta.js';
 
 const DIFF_CFG = {
   foundational: { label: 'Foundational', color: 'var(--blue-text)', bg: 'var(--blue-bg)',   border: 'var(--blue-border)' },
@@ -20,8 +21,9 @@ const LEVEL_CFG = {
 
 const DIFF_ORDER = { analyst: 0, foundational: 0, intermediate: 1, senior: 1, advanced: 2, staff: 2 };
 
-export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
+export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle }) {
   const [sortBy, setSortBy] = useState('default');
+  const [theoryActive, setTheoryActive] = useState(false);
   const completedCount = metricCases.filter(c => getMetricsProgress(c.id)).length;
 
   const displayCases = sortBy === 'difficulty'
@@ -52,7 +54,30 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
         </div>
       </div>
 
+      {/* Theory / Cases tab bar */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+        {['Cases', 'Theory'].map(tab => {
+          const active = tab === 'Theory' ? theoryActive : !theoryActive;
+          return (
+            <button
+              key={tab}
+              onClick={() => setTheoryActive(tab === 'Theory')}
+              style={{
+                padding: '0.35rem 0.9rem',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid ' + (active ? 'var(--accent-border)' : 'var(--border)'),
+                background: active ? 'var(--accent-bg)' : 'none',
+                color: active ? 'var(--accent)' : 'var(--text-muted)',
+                fontWeight: active ? 600 : 400,
+                fontSize: '0.82rem', cursor: 'pointer',
+              }}
+            >{tab}</button>
+          );
+        })}
+      </div>
+
       {/* Sort controls */}
+      {!theoryActive && (
       <div style={{ display: 'flex', gap: 6, marginBottom: 12, justifyContent: 'flex-end' }}>
         {['default', 'difficulty'].map(opt => (
           <button key={opt} onClick={() => setSortBy(opt)} style={{
@@ -63,8 +88,10 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
           }}>{opt === 'default' ? 'Default' : 'By Difficulty'}</button>
         ))}
       </div>
+      )}
 
       {/* Case cards grid */}
+      {!theoryActive && (
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))',
@@ -157,6 +184,34 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock }) {
           );
         })}
       </div>
+      )}
+
+      {theoryActive && (
+        <div>
+          <div style={{ marginBottom: '1rem', fontSize: '0.83rem', color: 'var(--text-muted)' }}>
+            Read the theory, then practice it in the cases above.
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))', gap: '0.75rem' }}>
+            {FOUNDATION_DOMAINS['metrics'].articles.map(a => (
+              <button
+                key={a.id}
+                onClick={() => onOpenArticle && onOpenArticle(a.id)}
+                style={{
+                  textAlign: 'left', background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: '10px',
+                  padding: '0.9rem 1rem', cursor: 'pointer',
+                  transition: 'border-color 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+              >
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.4 }}>{a.title}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--accent)', marginTop: '0.35rem', fontWeight: 500 }}>Read article →</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
     </div>
   );

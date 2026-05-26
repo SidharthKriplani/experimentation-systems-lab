@@ -100,6 +100,7 @@ const TakehomeRunner   = lazy(() => import('./components/takehome/TakehomeRunner
 const DefenseDocGenerator = lazy(() => import('./pages/DefenseDocGenerator.jsx').then(m => ({ default: m.DefenseDocGenerator })));
 const InstrumentationBrowser = lazy(() => import('./pages/InstrumentationBrowser.jsx').then(m => ({ default: m.InstrumentationBrowser })));
 const InstrumentationRunner   = lazy(() => import('./components/instrumentation/InstrumentationRunner.jsx').then(m => ({ default: m.InstrumentationRunner })));
+const FoundationHub           = lazy(() => import('./pages/FoundationHub.jsx').then(m => ({ default: m.FoundationHub })));
 
 function getInitialTheme() {
   try {
@@ -129,6 +130,7 @@ export default function App() {
   const [activeSTFCaseId, setActiveSTFCaseId] = useState(null);
   const [activeTakehomeCaseId, setActiveTakehomeCaseId] = useState(null);
   const [activeInstrumentationCaseId, setActiveInstrumentationCaseId] = useState(null);
+  const [playbookInitialArticle, setPlaybookInitialArticle] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => ({ ...getAllProgress(), challengesProgress: getAllChallengesProgress(), biProgress: getAllBIProgress(), stfProgress: getAllSTFProgress(), takehomeProgress: getAllTakehomeProgress(), instrumentationProgress: getAllInstrumentationProgress() }));
   const [theme, setTheme] = useState(getInitialTheme);
@@ -175,6 +177,7 @@ export default function App() {
       'defense-doc': 'Defense Doc — Product Analytics Lab',
       'instrumentation': 'Analytics Instrumentation — Product Analytics Lab',
       'instrumentation-runner': 'Case — Analytics Instrumentation — Product Analytics Lab',
+      'foundations': 'Foundations — Product Analytics Lab',
     };
     document.title = titles[page] || 'Product Analytics Lab';
   }, [page]);
@@ -380,6 +383,12 @@ export default function App() {
   function getNextTakehomeCaseId(currentId) {
     const idx = takehomeCases.findIndex(c => c.id === currentId);
     return idx >= 0 && idx < takehomeCases.length - 1 ? takehomeCases[idx + 1].id : null;
+  }
+
+  function openPlaybookArticle(id) {
+    setPlaybookInitialArticle(id);
+    setPage('playbook');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function openInstrumentationCase(id) {
@@ -588,7 +597,7 @@ export default function App() {
 
         {/* ── Stats Room ── */}
         {page === 'stats' && (
-          <StatsBrowser onSelectModule={openStatsModule} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
+          <StatsBrowser onSelectModule={openStatsModule} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} />
         )}
         {page === 'stats-runner' && activeStatsModule && (
           <StatsRunner
@@ -604,7 +613,7 @@ export default function App() {
 
         {/* ── Metrics Room ── */}
         {page === 'metrics' && (
-          <MetricsBrowser onSelectCase={openMetricsCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
+          <MetricsBrowser onSelectCase={openMetricsCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} />
         )}
         {page === 'metrics-runner' && activeMetricsCase && (
           <MetricsRunner
@@ -621,7 +630,7 @@ export default function App() {
 
         {/* ── Design Room ── */}
         {page === 'design' && (
-          <DesignBrowser onSelectScenario={openDesignScenario} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
+          <DesignBrowser onSelectScenario={openDesignScenario} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} />
         )}
         {page === 'design-runner' && activeDesignScenario && (
           <DesignRunner
@@ -642,6 +651,7 @@ export default function App() {
             onSelect={id => { openScenario(id); refreshProgress(); }}
             unlocked={unlocked}
             onUnlock={() => navigate('unlock')}
+            onOpenArticle={openPlaybookArticle}
           />
         )}
         {page === 'runner' && activeScenario && (
@@ -658,7 +668,7 @@ export default function App() {
 
         {/* ── RCA Room ── */}
         {page === 'rca' && (
-          <RCABrowser onSelectCase={openRCACase} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
+          <RCABrowser onSelectCase={openRCACase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} />
         )}
         {page === 'rca-runner' && activeRCACase && (
           <RCARunner
@@ -692,6 +702,7 @@ export default function App() {
             onSelectScenario={openPDScenario}
             unlocked={unlocked}
             onUnlock={() => navigate('unlock')}
+            onOpenArticle={openPlaybookArticle}
           />
         )}
         {page === 'product-design-runner' && activePDScenario && (
@@ -711,6 +722,7 @@ export default function App() {
             onSelectModule={openCodeModule}
             unlocked={unlocked}
             onUnlock={() => navigate('unlock')}
+            onOpenArticle={openPlaybookArticle}
           />
         )}
         {page === 'code-runner' && activeCodeModule && (
@@ -728,6 +740,7 @@ export default function App() {
           <PrioritizationBrowser
             onStart={openPrioritizationScenario}
             unlocked={unlocked}
+            onOpenArticle={openPlaybookArticle}
           />
         )}
         {page === 'prioritization-runner' && activePrioritizationScenario && (
@@ -790,6 +803,7 @@ export default function App() {
           <GrowthAnalyticsBrowser
             onSelectCase={openGrowthAnalyticsCase}
             unlocked={unlocked}
+            onOpenArticle={openPlaybookArticle}
           />
         )}
         {page === 'growth-analytics-runner' && activeGrowthAnalyticsCase && (
@@ -836,7 +850,7 @@ export default function App() {
         {/* ── BI Room ── */}
         {page === 'bi' && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
-            <BIBrowser onSelectCase={openBICase} unlocked={unlocked} />
+            <BIBrowser onSelectCase={openBICase} unlocked={unlocked} onOpenArticle={openPlaybookArticle} />
           </Suspense>
         )}
         {page === 'bi-runner' && activeBICaseId && (
@@ -870,7 +884,7 @@ export default function App() {
         {/* ── Take-Home Room ── */}
         {page === 'take-home' && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
-            <TakehomeBrowser onSelectCase={openTakehomeCase} unlocked={unlocked} />
+            <TakehomeBrowser onSelectCase={openTakehomeCase} unlocked={unlocked} onOpenArticle={openPlaybookArticle} />
           </Suspense>
         )}
         {page === 'takehome-runner' && activeTakehomeCaseId && (
@@ -887,7 +901,7 @@ export default function App() {
         {/* ── Analytics Instrumentation Room ── */}
         {page === 'instrumentation' && (
           <Suspense fallback={<div style={{ padding: '2rem', color: 'var(--text-muted)' }}>Loading...</div>}>
-            <InstrumentationBrowser onSelectCase={openInstrumentationCase} unlocked={unlocked} />
+            <InstrumentationBrowser onSelectCase={openInstrumentationCase} unlocked={unlocked} onOpenArticle={openPlaybookArticle} />
           </Suspense>
         )}
         {page === 'instrumentation-runner' && activeInstrumentationCaseId && (
@@ -946,7 +960,7 @@ export default function App() {
           <BlogBrowser onNavigate={navigate} />
         )}
         {page === 'playbook' && (
-          <PlaybookBrowser onOpenItem={(room, id) => {
+          <PlaybookBrowser key={playbookInitialArticle || 'playbook'} initialArticleId={playbookInitialArticle} onOpenItem={(room, id) => {
             if (room === 'stats') openStatsModule(id);
             else if (room === 'metrics') openMetricsCase(id);
             else if (room === 'design') openDesignScenario(id);
@@ -959,6 +973,12 @@ export default function App() {
             else if (room === 'instrumentation') openInstrumentationCase(id);
             else if (room === 'take-home') openTakehomeCase(id);
           }} />
+        )}
+        {page === 'foundations' && (
+          <FoundationHub
+            onOpenArticle={openPlaybookArticle}
+            onNavigate={navigate}
+          />
         )}
         {page === 'simulator' && <InterviewSimulator onBack={() => setPage('home')} onNavigate={navigate} />}
         {page === 'ab-interpreter' && <ABTestInterpreter onBack={() => setPage('home')} />}

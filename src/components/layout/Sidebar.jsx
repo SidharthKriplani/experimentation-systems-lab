@@ -106,7 +106,8 @@ function getIsActive(itemId, currentPage) {
     || (itemId === 'spot-the-flaw'   && (currentPage === 'spot-the-flaw' || currentPage === 'stf-runner'))
     || (itemId === 'take-home'       && (currentPage === 'take-home' || currentPage === 'takehome-runner'))
     || (itemId === 'defense-doc'     && currentPage === 'defense-doc')
-    || (itemId === 'instrumentation' && (currentPage === 'instrumentation' || currentPage === 'instrumentation-runner'));
+    || (itemId === 'instrumentation' && (currentPage === 'instrumentation' || currentPage === 'instrumentation-runner'))
+    || (itemId === 'foundations'     && currentPage === 'foundations');
 }
 
 function getActiveSubGroup(currentPage) {
@@ -154,6 +155,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
     const label = [
       ...ROOM_SUBGROUPS.flatMap(sg => sg.items),
       { id: 'stat-foundations', label: 'Stat Foundations' },
+      { id: 'foundations', label: 'Theory Hub' },
       ...FLAT_GROUPS.flatMap(g => g.items),
     ].find(i => i.id === id)?.label || id;
 
@@ -243,6 +245,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
           {/* ── FOUNDATIONS ── */}
           <SectionLabel label="FOUNDATIONS" />
           <NavItem id="stat-foundations" />
+          <NavItem id="foundations" />
 
           {/* ── ROOMS (accordion) ── */}
           <SectionLabel label="ROOMS" />

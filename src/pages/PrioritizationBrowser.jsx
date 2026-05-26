@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { prioritizationScenarios } from '../data/prioritizationScenarios.js';
 import { getAllPrioritizationProgress } from '../utils/prioritizationProgress.js';
+import { FOUNDATION_DOMAINS } from '../data/foundationMeta.js';
 
 const TAGS = ['All', 'RICE', 'effort-impact', 'technical debt', 'stakeholder conflict', 'OKRs', 'platform vs. feature'];
 
@@ -15,8 +16,9 @@ const RATING_COLOR = {
   miss:    'var(--red)',
 };
 
-export function PrioritizationBrowser({ onStart, unlocked }) {
+export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
   const [activeTag, setActiveTag] = useState('All');
+  const [theoryActive, setTheoryActive] = useState(false);
   const progress = getAllPrioritizationProgress();
 
   const filtered = activeTag === 'All'
@@ -50,7 +52,30 @@ export function PrioritizationBrowser({ onStart, unlocked }) {
         </div>
       </div>
 
+      {/* Theory / Cases tab bar */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+        {['Cases', 'Theory'].map(tab => {
+          const active = tab === 'Theory' ? theoryActive : !theoryActive;
+          return (
+            <button
+              key={tab}
+              onClick={() => setTheoryActive(tab === 'Theory')}
+              style={{
+                padding: '0.35rem 0.9rem',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid ' + (active ? 'var(--accent-border)' : 'var(--border)'),
+                background: active ? 'var(--accent-bg)' : 'none',
+                color: active ? 'var(--accent)' : 'var(--text-muted)',
+                fontWeight: active ? 600 : 400,
+                fontSize: '0.82rem', cursor: 'pointer',
+              }}
+            >{tab}</button>
+          );
+        })}
+      </div>
+
       {/* Tag filter */}
+      {!theoryActive && (
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '1.5rem' }}>
         {TAGS.map(tag => (
           <button
@@ -71,8 +96,10 @@ export function PrioritizationBrowser({ onStart, unlocked }) {
           </button>
         ))}
       </div>
+      )}
 
       {/* Scenario cards */}
+      {!theoryActive && (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
         {filtered.map(scenario => {
           const prog = progress[scenario.id];
@@ -169,6 +196,35 @@ export function PrioritizationBrowser({ onStart, unlocked }) {
           );
         })}
       </div>
+      )}
+
+      {theoryActive && (
+        <div>
+          <div style={{ marginBottom: '1rem', fontSize: '0.83rem', color: 'var(--text-muted)' }}>
+            Read the theory, then practice it in the cases above.
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))', gap: '0.75rem' }}>
+            {FOUNDATION_DOMAINS['prioritization'].articles.map(a => (
+              <button
+                key={a.id}
+                onClick={() => onOpenArticle && onOpenArticle(a.id)}
+                style={{
+                  textAlign: 'left', background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: '10px',
+                  padding: '0.9rem 1rem', cursor: 'pointer',
+                  transition: 'border-color 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+              >
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.4 }}>{a.title}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--accent)', marginTop: '0.35rem', fontWeight: 500 }}>Read article →</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { biCases } from '../data/biCases.js';
 import { getAllBIProgress } from '../utils/biProgress.js';
+import { FOUNDATION_DOMAINS } from '../data/foundationMeta.js';
 
 const DIFF_CFG = {
   analyst: { label: 'Analyst', color: 'var(--blue-text)', bg: 'var(--blue-bg)',    border: 'var(--blue-border)' },
@@ -50,10 +51,11 @@ const RATING_COLOR = {
   miss:    'var(--red)',
 };
 
-export function BIBrowser({ onSelectCase, unlocked }) {
+export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
   const allProgress = getAllBIProgress();
   const completedCount = Object.keys(allProgress).length;
   const [activeFilter, setActiveFilter] = useState('All');
+  const [theoryActive, setTheoryActive] = useState(false);
 
   const filtered = biCases
     .filter(c => matchesFilter(c.domain, activeFilter))
@@ -112,7 +114,30 @@ export function BIBrowser({ onSelectCase, unlocked }) {
         </div>
       </div>
 
+      {/* Theory / Cases tab bar */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+        {['Cases', 'Theory'].map(tab => {
+          const active = tab === 'Theory' ? theoryActive : !theoryActive;
+          return (
+            <button
+              key={tab}
+              onClick={() => setTheoryActive(tab === 'Theory')}
+              style={{
+                padding: '0.35rem 0.9rem',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid ' + (active ? 'var(--accent-border)' : 'var(--border)'),
+                background: active ? 'var(--accent-bg)' : 'none',
+                color: active ? 'var(--accent)' : 'var(--text-muted)',
+                fontWeight: active ? 600 : 400,
+                fontSize: '0.82rem', cursor: 'pointer',
+              }}
+            >{tab}</button>
+          );
+        })}
+      </div>
+
       {/* Domain filter chips */}
+      {!theoryActive && (
       <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
         {FILTER_CHIPS.map(chip => {
           const isActive = activeFilter === chip.key;
@@ -137,8 +162,10 @@ export function BIBrowser({ onSelectCase, unlocked }) {
           );
         })}
       </div>
+      )}
 
       {/* Case cards — 2-col grid on desktop, 1-col on mobile */}
+      {!theoryActive && (
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))',
@@ -292,6 +319,35 @@ export function BIBrowser({ onSelectCase, unlocked }) {
           );
         })}
       </div>
+      )}
+
+      {theoryActive && (
+        <div>
+          <div style={{ marginBottom: '1rem', fontSize: '0.83rem', color: 'var(--text-muted)' }}>
+            Read the theory, then practice it in the cases above.
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))', gap: '0.75rem' }}>
+            {FOUNDATION_DOMAINS['bi'].articles.map(a => (
+              <button
+                key={a.id}
+                onClick={() => onOpenArticle && onOpenArticle(a.id)}
+                style={{
+                  textAlign: 'left', background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: '10px',
+                  padding: '0.9rem 1rem', cursor: 'pointer',
+                  transition: 'border-color 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+              >
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.4 }}>{a.title}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--accent)', marginTop: '0.35rem', fontWeight: 500 }}>Read article →</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

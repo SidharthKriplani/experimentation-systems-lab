@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { instrumentationCases } from '../data/instrumentationCases.js';
 import { getAllInstrumentationProgress } from '../utils/instrumentationProgress.js';
+import { FOUNDATION_DOMAINS } from '../data/foundationMeta.js';
 
 const DIFF_CFG = {
   junior: { label: 'Junior', color: 'var(--blue-text)', bg: 'var(--blue-bg)',    border: 'var(--blue-border)' },
@@ -34,10 +35,11 @@ function matchesFilter(domain, filter) {
 
 const DIFF_ORDER = { junior: 0, senior: 1, staff: 2 };
 
-export function InstrumentationBrowser({ onSelectCase, unlocked }) {
+export function InstrumentationBrowser({ onSelectCase, unlocked, onOpenArticle }) {
   const allProgress = getAllInstrumentationProgress();
   const completedCount = Object.keys(allProgress).length;
   const [activeFilter, setActiveFilter] = useState('All');
+  const [theoryActive, setTheoryActive] = useState(false);
 
   const filtered = instrumentationCases
     .filter(c => matchesFilter(c.domain, activeFilter))
@@ -96,7 +98,30 @@ export function InstrumentationBrowser({ onSelectCase, unlocked }) {
         </div>
       </div>
 
+      {/* Theory / Cases tab bar */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+        {['Cases', 'Theory'].map(tab => {
+          const active = tab === 'Theory' ? theoryActive : !theoryActive;
+          return (
+            <button
+              key={tab}
+              onClick={() => setTheoryActive(tab === 'Theory')}
+              style={{
+                padding: '0.35rem 0.9rem',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid ' + (active ? 'var(--accent-border)' : 'var(--border)'),
+                background: active ? 'var(--accent-bg)' : 'none',
+                color: active ? 'var(--accent)' : 'var(--text-muted)',
+                fontWeight: active ? 600 : 400,
+                fontSize: '0.82rem', cursor: 'pointer',
+              }}
+            >{tab}</button>
+          );
+        })}
+      </div>
+
       {/* Domain filter chips */}
+      {!theoryActive && (
       <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
         {FILTER_CHIPS.map(chip => {
           const isActive = activeFilter === chip.key;
@@ -121,8 +146,10 @@ export function InstrumentationBrowser({ onSelectCase, unlocked }) {
           );
         })}
       </div>
+      )}
 
       {/* Case cards */}
+      {!theoryActive && (
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))',
@@ -276,6 +303,35 @@ export function InstrumentationBrowser({ onSelectCase, unlocked }) {
           );
         })}
       </div>
+      )}
+
+      {theoryActive && (
+        <div>
+          <div style={{ marginBottom: '1rem', fontSize: '0.83rem', color: 'var(--text-muted)' }}>
+            Read the theory, then practice it in the cases above.
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))', gap: '0.75rem' }}>
+            {FOUNDATION_DOMAINS['instrumentation'].articles.map(a => (
+              <button
+                key={a.id}
+                onClick={() => onOpenArticle && onOpenArticle(a.id)}
+                style={{
+                  textAlign: 'left', background: 'var(--surface)',
+                  border: '1px solid var(--border)', borderRadius: '10px',
+                  padding: '0.9rem 1rem', cursor: 'pointer',
+                  transition: 'border-color 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+              >
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.4 }}>{a.title}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--accent)', marginTop: '0.35rem', fontWeight: 500 }}>Read article →</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -4742,13 +4742,31 @@ const ROOM_CONFIG = {
   'take-home':        { label: 'Take-Home Room',          color: 'var(--purple)',    page: 'take-home',        openFn: 'openTakehomeCase' },
 };
 
+// Categories whose articles belong in room foundations, not the Playbook
+const FOUNDATION_CATEGORIES = new Set([
+  'Metrics', 'RCA', 'Experimentation', 'Statistics',
+  'Growth Analytics', 'BI', 'Instrumentation', 'Take-Home',
+  'Product Design', 'Prioritization',
+]);
+// SQL & Data articles that belong in Code Foundation
+const FOUNDATION_SQL_IDS = new Set([
+  'sql-funnel-analysis', 'retention-sql', 'cohort-analysis-sql',
+  'window-functions', 'data-quality', 'ab-test-sql',
+]);
+function isFoundationPost(p) {
+  return FOUNDATION_CATEGORIES.has(p.category) || FOUNDATION_SQL_IDS.has(p.id);
+}
+
 const CATEGORIES = Object.keys(CATEGORY_CONFIG);
 
-export function PlaybookBrowser({ onOpenItem }) {
-  const [activePost, setActivePost] = useState(null);
-  const total = POSTS.length;
-  const companyCat = POSTS.filter(p => p.category === 'Company Questions').length;
-  const writtenCount = POSTS.filter(p => p.content).length;
+export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
+  const [activePost, setActivePost] = useState(() =>
+    initialArticleId ? (POSTS.find(p => p.id === initialArticleId) || null) : null
+  );
+  const playbookPosts = POSTS.filter(p => !isFoundationPost(p));
+  const total = playbookPosts.length;
+  const companyCat = playbookPosts.filter(p => p.category === 'Company Questions').length;
+  const writtenCount = playbookPosts.filter(p => p.content).length;
 
   if (activePost) {
     return (
@@ -4810,7 +4828,7 @@ export function PlaybookBrowser({ onOpenItem }) {
       {/* Category sections */}
       {CATEGORIES.map(cat => {
         const cfg = CATEGORY_CONFIG[cat];
-        const posts = POSTS.filter(p => p.category === cat);
+        const posts = playbookPosts.filter(p => p.category === cat);
         if (!posts.length) return null;
         return (
           <div key={cat} style={{ marginBottom: '2.75rem' }}>
