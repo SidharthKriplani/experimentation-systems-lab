@@ -955,6 +955,9 @@ export default function App() {
             else if (room === 'cases') openBusinessCase(id);
             else if (room === 'product-design') openPDScenario(id);
             else if (room === 'prioritization') openPrioritizationScenario(id);
+            else if (room === 'bi') openBICase(id);
+            else if (room === 'instrumentation') openInstrumentationCase(id);
+            else if (room === 'take-home') openTakehomeCase(id);
           }} />
         )}
         {page === 'simulator' && <InterviewSimulator onBack={() => setPage('home')} onNavigate={navigate} />}

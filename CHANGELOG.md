@@ -4,6 +4,35 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.8.2] — 2026-05
+
+### Added — Playbook articles for BI, Instrumentation, and Take-Home rooms
+
+12 new articles across 3 categories, closing the learn→practice loop for rooms that had no Playbook coverage. Added `'BI'`, `'Instrumentation'`, and `'Take-Home'` to `CATEGORY_CONFIG` and `ROOM_CONFIG` in `PlaybookBrowser.jsx`. Wired all three rooms in `App.jsx` `onOpenItem` handler so "Practice now" buttons route correctly.
+
+**BI (4 articles)**
+- *Dashboard Design That Actually Gets Used* — audience-first design, vanity metric test, signal-to-noise layout hierarchy, self-serving dashboard anti-pattern (→ BI01, BI04)
+- *Attribution Models: Why Your Channel Credits Don\'t Add Up* — last-touch systematic bias, five model comparison, incrementality testing as ground truth, DTC attribution audit example (→ BI03)
+- *Separating Seasonality from Real Trend* — WoW vs YoY comparisons, time-series decomposition (trend + seasonal + residual), EdTech platform example where -22% WoW was entirely seasonal (→ BI08)
+- *Data Storytelling for Stakeholders: Findings Before Numbers* — Pyramid Principle, slide title test (label vs finding), SCR framework, separating findings from caveats (→ BI07)
+
+**Instrumentation (4 articles)**
+- *Measurement Plans: Write the Questions Before the Events* — question → metric → event chain, critical vs nice-to-have events, common failures (missing denominator, inconsistent naming, missing properties, timing errors) (→ inst01, inst07)
+- *Event Taxonomy Design: The Naming Decisions That Save You* — Entity-Action-Object pattern, verb tense standard, property schema types, versioning and deprecation (→ inst02)
+- *Diagnosing Data Quality Incidents: The Isolation Methodology* — three incident types (sudden drop, gradual drift, schema break), When/Where/What/Who isolation, deployment correlation rule, SRM during A/B tests (→ inst03, inst08)
+- *A/B Test Instrumentation: What Goes Wrong and How to Prevent It* — assignment vs exposure event distinction, pre-experiment checklist, SRM detection and causes (→ inst04, inst05)
+
+**Take-Home (4 articles)**
+- *The Take-Home Analysis Framework: Structure Before SQL* — what reviewers look for, four pre-SQL steps, deliverable structure (→ TH01, TH04)
+- *Diagnosing a Metric Decline: The Right Order of Operations* — confirm real → locate by segment → hypothesize and test, driver retention example (→ TH02, TH05)
+- *Cohort Analysis in Take-Homes: When to Slice and What to Look For* — retention vs reach use cases, cohort divergence test, mix-shift problem, behavioral cohorts (→ TH03, TH05)
+- *Communicating Uncertainty: Confidence Without Overclaiming* — two failure modes, confidence ladder (observed/inferred/assumed), calibrated conclusion template, limitations section guidance (→ TH04, TH01)
+
+### Files changed
+`src/pages/PlaybookBrowser.jsx` (CATEGORY_CONFIG + ROOM_CONFIG + 12 new articles), `src/App.jsx` (onOpenItem routing), `CHANGELOG.md`
+
+---
+
 ## [4.8.1] — 2026-05
 
 ### Fixed — Audit #68 findings (4 bugs)
