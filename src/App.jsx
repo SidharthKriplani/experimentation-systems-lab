@@ -342,8 +342,10 @@ export default function App() {
     const c = biCasesById[id];
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'bi', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'bi', id, title: c.title });
     setActiveBICaseId(id);
     setPage('bi-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   function getNextBICaseId(currentId) {
     const idx = biCases.findIndex(c => c.id === currentId);
@@ -354,8 +356,10 @@ export default function App() {
     const c = spotTheFlawCasesById[id];
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'spot-the-flaw', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'spot-the-flaw', id, title: c.title });
     setActiveSTFCaseId(id);
     setPage('stf-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   function getNextSTFCaseId(currentId) {
     const idx = spotTheFlawCases.findIndex(c => c.id === currentId);
@@ -366,8 +370,10 @@ export default function App() {
     const c = takehomeCasesById[id];
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'take-home', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'take-home', id, title: c.title });
     setActiveTakehomeCaseId(id);
     setPage('takehome-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   function getNextTakehomeCaseId(currentId) {
     const idx = takehomeCases.findIndex(c => c.id === currentId);
@@ -378,8 +384,10 @@ export default function App() {
     const c = instrumentationCasesById[id];
     if (!c) return;
     if (!unlocked && !c.isFree) { navigate('unlock'); return; }
+    track('case_opened', { room: 'instrumentation', id, title: c.title });
     setActiveInstrumentationCaseId(id);
     navigate('instrumentation-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function openPDScenario(id) {
@@ -1047,7 +1055,10 @@ export default function App() {
                'pal-metrics-progress-v2', 'pal-rca-progress-v2', 'pal-cases-progress-v2',
                'pal-code-progress-v1', 'pal-pri-progress-v1',
                'pal-behavioral-progress-v1', 'pal-estimation-progress-v1',
-               'pal-stat-foundations-progress-v1'
+               'pal-stat-foundations-progress-v1',
+               'pal-bi-progress-v1', 'pal-stf-progress-v1', 'pal-takehome-progress-v1',
+               'pal-instrumentation-progress-v1', 'pal-growth-analytics-progress-v1',
+               'pal-challenges-progress-v1', 'pal-bookmarks-v1', 'pal-notes-v1'
               ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
               // Clear per-scenario product-design progress (prefix: pd-progress-)
               try {

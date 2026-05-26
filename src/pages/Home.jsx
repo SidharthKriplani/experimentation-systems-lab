@@ -200,7 +200,7 @@ function getTodaysCase() {
     { room: 'metrics', id: 'M01', title: 'What Defines a Successful Search?', subtitle: 'Metrics' },
     { room: 'growth-analytics', id: 'GA01', title: "DAU Dropped 8% — What's Driving It?", subtitle: 'Growth' },
     { room: 'estimation', id: 'EST01', title: 'Uber Rides in NYC Right Now', subtitle: 'Estimation' },
-    { room: 'behavioral', id: 'BEH01', title: 'Influence Without Authority', subtitle: 'Behavioral' },
+    { room: 'behavioral', id: 'BEH05', title: 'Getting Engineering Buy-In Without Escalation', subtitle: 'Behavioral' },
     { room: 'cases', id: 'C01', title: 'Should We Launch Same-Day Delivery?', subtitle: 'Cases' },
     { room: 'stats', id: 'stat04-srm-first', title: 'Check This First.', subtitle: 'Stats' },
     { room: 'rca', id: 'RCA05', title: 'Revenue Up, Margin Down', subtitle: 'RCA' },

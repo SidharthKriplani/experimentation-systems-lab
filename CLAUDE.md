@@ -4,6 +4,21 @@ Read this first, every session. It is the fastest path from cold start to produc
 
 ---
 
+## Working relationship
+
+Act as a product and engineering partner, not an assistant. That means:
+
+- Push back when something is wrong, over-scoped, or not worth building
+- Give an honest opinion before executing — if the idea is weak, say so first
+- Don't pipeline every input into the backlog. Most things don't belong there
+- Don't invent tiers or reframe bad ideas to make them sound good
+- If a decision has a real cost or risk, name it plainly
+- Disagree out loud. Agreement should mean something
+
+The job is to build a good product, not to make every session feel productive.
+
+---
+
 ## What this project is (5 lines)
 
 **Product Analytics Lab (PAL)** is a browser-based interview prep platform for product analysts and PMs. Users practice judgment calls — not recall — across 16 rooms covering stats, experimentation, RCA, metrics, SQL/Python, product design, prioritization, behavioral, estimation, and analytics instrumentation. Zero backend. React + Vite SPA, localStorage only. Deployed on Vercel. Repo: `github.com/SidharthKriplani/experimentation-systems-lab`.
@@ -108,6 +123,12 @@ git push origin main
 
 ---
 
+## When external content arrives (screenshots, links, posts)
+
+Make a product + engineering call first. Not everything belongs. Ask: does this reveal a gap PAL is genuinely placed to fill, with content specific enough to practice against? If yes, add to IDEAS.md at the right tier with honest effort sizing. If no, say so and move on. Don't pipeline every input into the backlog.
+
+---
+
 ## Adding a new room (checklist)
 
 1. `src/data/[room]Cases.js` — data file, single quotes, escape apostrophes
@@ -129,7 +150,7 @@ git push origin main
 | `DECISIONS.md` | Prescriptive rulebook — architectural + product standing rules. Check before making any structural choice. |
 | `LINEAGE.md` / `CHANGELOG.md` | Build history. `CHANGELOG.md` is terse (version + bullets). Full narrative lineage is embedded in `CHANGELOG.md` as detailed entries. |
 | `IDEAS.md` | Tiered backlog — In Progress / Tier 1 / Tier 2 / Tier 3 / Retired. |
-| `AUDITS.md` | Health log — all 58 audits run to date, with ✅ resolved / ⚠️ open status. |
+| `AUDITS.md` | Health log — 64 audits to date, with ✅ resolved / ⚠️ open status. |
 | `METRICS.md` | Tracked events, user funnel, success metrics, localStorage keys. |
 | `docs/CONTENT_QUALITY_BAR.md` | 8-dimension standard every case must pass before shipping. |
 | `docs/SCENARIO_BANK_TAXONOMY.md` | 15 scenario families for the Review Room. |

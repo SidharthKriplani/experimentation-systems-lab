@@ -4,6 +4,19 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.6.1] — 2026-05
+
+### Fixed
+- **Home.jsx daily drill wrong case** (audit #65) — pool entry had `id: 'BEH01', title: 'Influence Without Authority'` but BEH01 is "Changing a PM's Mind with Cohort Data." The influence-without-authority case is BEH05. Fixed to `id: 'BEH05', title: 'Getting Engineering Buy-In Without Escalation'`. Users clicking the daily drill now land on the correct case.
+- **`case_opened` missing from 4 V4.4+ open functions** (audit #61) — `openBICase`, `openSTFCase`, `openTakehomeCase`, `openInstrumentationCase` all now call `track('case_opened', { room, id, title: c.title })`. PostHog was undercounting opens for all rooms shipped in V4.4+.
+- **`onResetAllProgress` missing 8 localStorage keys** (audit #62) — Added `pal-bi-progress-v1`, `pal-stf-progress-v1`, `pal-takehome-progress-v1`, `pal-instrumentation-progress-v1`, `pal-growth-analytics-progress-v1`, `pal-challenges-progress-v1`, `pal-bookmarks-v1`, `pal-notes-v1`. Reset All Progress now covers all rooms and clears bookmarks + notes.
+- **Sitemap missing 8 V4.x routes** (audit #63) — Added `#bi`, `#spot-the-flaw`, `#take-home`, `#instrumentation`, `#challenges`, `#metrics`, `#search`, `#consult`. Sitemap now at 22 URLs.
+
+### Files changed
+`src/pages/Home.jsx` (BEH01→BEH05 in drill pool), `src/App.jsx` (+track case_opened to 4 open functions, +8 keys to onResetAllProgress), `public/sitemap.xml` (14→22 URLs), `AUDITS.md` (#61 #62 #63 ✅, +#65 ✅), `IDEAS.md` (bugs marked shipped), `CHANGELOG.md` (this entry)
+
+---
+
 ## [4.6.0] — 2026-05
 
 ### Added

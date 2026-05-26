@@ -39,6 +39,9 @@ The positioning is "practice the calls." Every room must put the user in a decis
 
 ## Content
 
+**LinkedIn practitioners are a primary content signal source.**
+See `CLAUDE.md → When a screenshot is dropped` for the full workflow. Short version: assess credibility, gap-map to rooms, add named cluster to IDEAS.md, log the source.
+
 **Decision-first, always. Never definition-first.**
 Every room, module, and article opens with a situation — not a definition. The Stats Room module on p-values starts with a stakeholder claim to evaluate, not "A p-value is the probability of...".
 

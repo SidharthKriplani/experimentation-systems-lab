@@ -528,6 +528,50 @@ Before wiring PostHog, audited: what events matter (page_viewed, case_opened, pa
 
 ---
 
+---
+
+## Part XIV — V4.x Gap Audits
+
+### 61. ✅ `case_opened` Tracking Gap — V4.4+ Open Functions
+**Version:** V4.6 (scan) → fixed V4.6.1
+**Output:** 4 open functions confirmed missing `track('case_opened', ...)`
+
+Scanned all `openX()` functions in `src/App.jsx`. Rooms added in V4.4 and later — `openBICase`, `openSTFCase`, `openTakehomeCase`, `openInstrumentationCase` — never received `track('case_opened', ...)` calls. The V4.x batch builds wired routing but missed the analytics line. Fixed: added `track('case_opened', { room, id, title: c.title })` to all four functions, plus `window.scrollTo` for consistency.
+
+---
+
+### 62. ✅ `onResetAllProgress` Missing 9 localStorage Keys
+**Version:** V4.6 (scan) → fixed V4.6.1
+**Output:** Reset function in `src/App.jsx` confirmed incomplete, now complete
+
+Added 7 missing keys (actual confirmed keys from utils/): `pal-bi-progress-v1`, `pal-stf-progress-v1`, `pal-takehome-progress-v1`, `pal-instrumentation-progress-v1`, `pal-growth-analytics-progress-v1`, `pal-challenges-progress-v1`, `pal-bookmarks-v1`, `pal-notes-v1`. Reset All Progress now clears all 19 keys + pd-progress- prefix pattern.
+
+---
+
+### 63. ✅ Sitemap Missing 8 Routes Added in V4.x
+**Version:** V4.6 (scan) → fixed V4.6.1
+**Output:** `public/sitemap.xml` updated — 22 URLs, all live routes indexed
+
+Added `#bi`, `#spot-the-flaw`, `#take-home`, `#instrumentation`, `#challenges`, `#metrics`, `#search`, `#consult`. Also promoted `#metrics` and `#growth-analytics` to priority `0.9`. Sitemap now at 22 URLs covering all rooms, practice tools, and discovery tools.
+
+---
+
+### 64. ⚠️ Template Literals in 9 Data Files — Latent Build Risk
+**Version:** V4.6 (scan)
+**Output:** 9 data files confirmed using backtick template literals
+
+DECISIONS.md rule: "No template literals (backticks) in data files — Vite/Rolldown throws parse errors." Scan found backticks in: `prioritizationScenarios.js` (37), `codeModules.js` (159), `rcaCases.js` (60), `productDesignScenarios.js` (192), `scenarios.js` (60), `estimationProblems.js` (15), `challengesCases.js` (15), `growthAnalyticsCases.js` (32), `designScenarios.js` (16). The rule was written after build failures caused by unescaped apostrophes *within* template literals — the backticks themselves haven't broken the build in all cases. However, the risk is real: any future apostrophe inside a template-literal field in these files will cause a silent Vercel parse failure. The rule should either be enforced (migrate all backtick strings to single-quoted + escaped apostrophes) or clarified (backticks allowed but apostrophes inside must be escaped). Currently unresolved.
+
+---
+
+### 65. ✅ Home.jsx Daily Drill Pool — Wrong Case ID/Title for BEH05
+**Version:** V4.6.1 (live site report)
+**Output:** `Home.jsx` pool entry fixed — `BEH01` → `BEH05`, title corrected
+
+User reported "Influence Without Authority section breaks" on the live site. Root cause: the daily drill pool in `getTodaysCase()` had `{ id: 'BEH01', title: 'Influence Without Authority' }` but `BEH01` is "Changing a PM's Mind with Cohort Data." The pool was built when BEH01 had a different title and was never updated when content was rewritten. The intended case — about cross-functional influence — is `BEH05` ("Getting Engineering Buy-In Without Escalation"). Fixed: updated pool entry to `id: 'BEH05'` with correct title. Users clicking the daily drill card now land on the case the title describes.
+
+---
+
 ### 59. ✅ Analytics Completion Coverage Audit
 **Version:** V4.6
 **Output:** `track('case_completed', { room, id, rating })` in all 18 runner components
@@ -608,3 +652,8 @@ Diagnosed institutional memory problem: every new session required expensive re-
 | 58 | Behavioral Question ID Consistency | V4.1 | Bug/diagnostic |
 | 59 | Analytics Completion Coverage (18 runners) | V4.6 | Analytics |
 | 60 | MD Spine System Documentation Audit | V4.6 | Architecture |
+| 61 | `case_opened` Missing from 4 V4.4+ Open Functions ✅ | V4.6.1 | Analytics |
+| 62 | `onResetAllProgress` Missing 9 localStorage Keys ✅ | V4.6.1 | Bug/diagnostic |
+| 63 | Sitemap Missing 8 V4.x Routes ✅ | V4.6.1 | SEO |
+| 64 | Template Literals in 9 Data Files ⚠️ | V4.6 | Build safety |
+| 65 | Home.jsx Daily Drill Wrong BEH Case ID ✅ | V4.6.1 | Bug/diagnostic |
