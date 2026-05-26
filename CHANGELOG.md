@@ -4,6 +4,20 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.7.1] — 2026-05
+
+### Improved — Defense Doc Generator
+- **Specific case recommendations** — added `CASE_MAP` (12 rooms, 60+ cases with skill tags). For each top room detected in the JD, the output now surfaces 2–3 specific PAL case IDs and titles matched by tag overlap with the JD text. "Complete 3 cases in Metrics Room" → "Start with M01 (Search Success Rate), M05 (Revenue vs GMV vs ARPU)."
+- **Interview questions to expect** — added `QUESTION_PATTERNS` (12 rooms, 4–5 questions each). Top 4 JD signal rooms each contribute 2 realistic interview questions to a new "Questions to Prepare For" section. Questions are role- and topic-specific, not generic.
+- **Company intel callout** — added `COMPANY_SIGNALS` detecting 10 company clusters (Meta, Google, Amazon, Airbnb, Stripe/fintech, Netflix, Spotify, Uber/marketplaces, social platforms, e-commerce). When a company is detected, a callout describes known interview focus areas.
+- **Better keyword coverage** — expanded keyword lists: added `ab test`, `pvalue`, `p value`, `srm`, `sample ratio`, `guardrail`, `dbt`, `window function`, `sr.`, `product owner`, and 20+ more. Previous detection missed many standard JD phrasings.
+- **7-day plan references specific cases** — Days 1–4 now show the actual case titles from the CASE_MAP instead of generic "Complete 3 cases in X."
+
+### Files changed
+`src/pages/DefenseDocGenerator.jsx` (full rewrite with CASE_MAP, QUESTION_PATTERNS, COMPANY_SIGNALS, getRecommendedCases, getExpectedQuestions), `CHANGELOG.md` (this entry)
+
+---
+
 ## [4.7.0] — 2026-05
 
 ### Changed — Layout
