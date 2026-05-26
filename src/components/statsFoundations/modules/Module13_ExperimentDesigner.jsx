@@ -461,7 +461,7 @@ export function Module13_ExperimentDesigner({ module, onNext }) {
             letterSpacing: '0.02em',
           }}
         >
-          Complete ✓
+          Next concept →
         </button>
       </div>
     </div>

@@ -4,6 +4,19 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.6.2] — 2026-05
+
+### Fixed
+- **SF free tier extended** — sf03 (Variance & SD) and sf04 (Normal Distribution) changed from `isFree: false` to `isFree: true`. Cold-path users now get a complete beginner track (data types → central tendency → spread → normal distribution) before hitting the paywall.
+- **Button label/style inconsistencies in SF modules 12–16** — modules sf12 and sf13 had "Complete ✓" (green) buttons left over from when they were the last module; sf15 and sf16 had the same. All changed to "Next concept →" (yellow) matching the rest of the sequence.
+- **Module sf20 button fixed** — was "Next concept →" (yellow); corrected to "Complete ✓" (green) as it is the actual final module.
+- **Duplicate Playbook Reading sections removed** — modules sf14–sf20 rendered their own inline `module.playbookLinks` block, which duplicated the runner-level playbook chips already rendered at lines 340–360 of `StatsFoundationsRunner.jsx`. All 7 inline blocks removed.
+
+### Files changed
+`src/data/statsFoundationsModules.js` (sf03+sf04 isFree→true), `src/components/statsFoundations/modules/Module12_Power.jsx` (button), `src/components/statsFoundations/modules/Module13_ExperimentDesigner.jsx` (button text), `src/components/statsFoundations/modules/Module14_Correlation.jsx` (button + remove playbook block), `src/components/statsFoundations/modules/Module15_SimpsonsParadox.jsx` (button + remove playbook block), `src/components/statsFoundations/modules/Module16_Skewness.jsx` (button + remove playbook block), `src/components/statsFoundations/modules/Module17_MultipleTesting.jsx` (remove playbook block), `src/components/statsFoundations/modules/Module18_RegressionToMean.jsx` (remove playbook block), `src/components/statsFoundations/modules/Module19_SelectionBias.jsx` (remove playbook block), `src/components/statsFoundations/modules/Module20_PracticalSignificance.jsx` (button + remove playbook block), `AUDITS.md` (#64 ✅), `CHANGELOG.md` (this entry)
+
+---
+
 ## [4.6.1] — 2026-05
 
 ### Fixed

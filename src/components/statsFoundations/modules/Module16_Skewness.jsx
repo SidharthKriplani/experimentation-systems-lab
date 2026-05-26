@@ -306,29 +306,12 @@ export function Module16_Skewness({ module, onNext }) {
         </div>
       </div>
 
-      {/* Playbook links */}
-      {module?.playbookLinks?.length > 0 && (
-        <div style={{ marginTop: 24, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Playbook Reading</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {module.playbookLinks.map(link => (
-              <span key={link.id} style={{ fontSize: 13, color: 'var(--accent)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 6, padding: '4px 10px' }}>{link.label}</span>
-            ))}
-          </div>
-        </div>
-      )}
-
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
           onClick={onNext}
-          style={{
-            padding: '0.7rem 1.75rem', borderRadius: 'var(--radius-sm)',
-            border: 'none', background: 'var(--green)', color: '#fff',
-            fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer',
-            boxShadow: 'var(--shadow)', letterSpacing: '0.02em',
-          }}
+          style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >
-          Complete ✓
+          Next concept →
         </button>
       </div>
     </div>

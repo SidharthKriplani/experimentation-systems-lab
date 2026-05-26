@@ -564,6 +564,19 @@ DECISIONS.md rule: "No template literals (backticks) in data files — Vite/Roll
 
 ---
 
+### 66. ✅ SF Module Button Labels + Duplicate Playbook Sections
+**Version:** V4.6.2
+**Output:** Button labels corrected across sf12–sf20; duplicate playbook rendering removed from sf14–sf20; free tier extended to sf01–sf04
+
+Three distinct issues found in a single SF completeness pass:
+
+1. **"Complete ✓" on non-final modules** — sf12 and sf13 had `var(--green)` "Complete ✓" buttons left from when they were the last module. sf15 and sf16 had the same. All changed to "Next concept →" (`var(--yellow)`, matching sf01–sf11).
+2. **"Next concept →" on the final module** — sf20 (Practical vs Statistical Significance) incorrectly used "Next concept →"; changed to "Complete ✓" (`var(--green)`) as the true final module.
+3. **Duplicate Playbook Reading sections** — sf14–sf20 rendered their own inline `module.playbookLinks` block. `StatsFoundationsRunner.jsx` already renders playbook chips after each module (lines 340–360). All 7 inline blocks removed.
+4. **Free tier too thin for cold path** — Only sf01–sf02 were free, leaving new users unable to complete even the beginner cluster. sf03 (Variance & SD) and sf04 (Normal Distribution) changed to `isFree: true`, giving a complete beginner path before the paywall.
+
+---
+
 ### 65. ✅ Home.jsx Daily Drill Pool — Wrong Case ID/Title for BEH05
 **Version:** V4.6.1 (live site report)
 **Output:** `Home.jsx` pool entry fixed — `BEH01` → `BEH05`, title corrected
@@ -657,3 +670,4 @@ Diagnosed institutional memory problem: every new session required expensive re-
 | 63 | Sitemap Missing 8 V4.x Routes ✅ | V4.6.1 | SEO |
 | 64 | Template Literals in 9 Data Files ⚠️ | V4.6 | Build safety |
 | 65 | Home.jsx Daily Drill Wrong BEH Case ID ✅ | V4.6.1 | Bug/diagnostic |
+| 66 | SF Module Button Labels + Duplicate Playbook Sections ✅ | V4.6.2 | Visual consistency / BUILD |
