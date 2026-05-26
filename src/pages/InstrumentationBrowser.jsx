@@ -85,7 +85,7 @@ export function InstrumentationBrowser({ onSelectCase, unlocked, onOpenArticle }
 
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
-            8 cases · Junior–Staff · 20–35 min each
+            12 cases · Junior–Staff · 18–35 min each
           </span>
           {completedCount > 0 && (
             <span style={{ fontSize: '0.82rem', color: 'var(--teal)' }}>

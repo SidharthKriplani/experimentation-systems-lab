@@ -102,7 +102,8 @@ function getIsActive(itemId, currentPage) {
     || (itemId === 'defense-doc'     && currentPage === 'defense-doc')
     || (itemId === 'instrumentation' && (currentPage === 'instrumentation' || currentPage === 'instrumentation-runner'))
     || (itemId === 'foundations'     && currentPage === 'foundations')
-    || (itemId === 'metrics-foundations' && (currentPage === 'metrics-foundations' || currentPage === 'metrics-foundations-runner'));
+    || (itemId === 'metrics-foundations' && (currentPage === 'metrics-foundations' || currentPage === 'metrics-foundations-runner'))
+    || (itemId === 'rca-foundations'     && (currentPage === 'rca-foundations' || currentPage === 'rca-foundations-runner'));
 }
 
 function getActiveSubGroup(currentPage) {
@@ -151,6 +152,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
       ...ROOM_SUBGROUPS.flatMap(sg => sg.items),
       { id: 'stat-foundations', label: 'Stat Foundations' },
       { id: 'metrics-foundations', label: 'Metrics Foundations' },
+      { id: 'rca-foundations',     label: 'RCA Foundations' },
       { id: 'foundations', label: 'Theory Hub' },
       ...FLAT_GROUPS.flatMap(g => g.items),
     ].find(i => i.id === id)?.label || id;
@@ -242,6 +244,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
           <SectionLabel label="FOUNDATIONS" />
           <NavItem id="stat-foundations" />
           <NavItem id="metrics-foundations" />
+          <NavItem id="rca-foundations" />
 
           {/* ── ROOMS (accordion) ── */}
           <SectionLabel label="ROOMS" />

@@ -262,6 +262,142 @@ export const instrumentationCases = [
       'An event registry with mandatory ownership is the governance mechanism that prevents instrumentation debt from recurring'
     ],
     playbookLinks: []
+  },
+  {
+    id: 'inst09',
+    title: 'dbt Data Lineage Audit',
+    subtitle: 'A source rename breaks 47 dashboards at 2am — respond and prevent recurrence',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'data-lineage',
+    company: 'dbt Labs (internal)',
+    estimatedMin: 22,
+    tags: ['dbt', 'data lineage', 'dependency graph', 'breaking changes', 'schema migration'],
+    situation: 'Your team runs 340 dbt models. A data engineer renames a source table from raw.events to raw.product_events to align with a new naming convention. Twelve hours later, 47 downstream dashboards show NULL values. The on-call engineer pages you at 2am.',
+    question: 'Walk through your incident response and remediation. What should have prevented this? What governance change do you make after the incident?',
+    hints: [
+      'Start with immediate mitigation — what do you do in the first 30 minutes to stop the bleeding?',
+      'dbt has a dependency graph — how do you use it to scope impact?',
+      'Preventing this in the future requires both a technical safeguard and a process change.'
+    ],
+    modelAnswer: {
+      approach: 'Immediate mitigation → scope impact via dependency graph → root cause analysis → post-incident governance',
+      answer: 'Immediate response (0-30 min): check dbt run logs to confirm the source rename caused the failure. Run dbt ls --select raw.product_events+ to list all downstream models. Identify the 47 affected dashboards by tracing to the marts/reports layer. Immediate fix: create a view raw.events pointing to raw.product_events as a compatibility shim. This restores all downstream without any model changes. Re-run affected models. Escalation: post incident in #data-oncall with impact scope and ETA. Root cause: source rename without updating all upstream refs. The dbt ref() macro tracks model-to-model dependencies but source() references to raw tables are not automatically updated by renames. Remediation after incident: (1) Add a source freshness test AND a schema contract test to all sources — dbt source freshness + dbt test --select source:raw in CI before any source changes. (2) Enforce a source rename protocol: create the new source first, run both in parallel for 2 weeks, migrate models, then deprecate old source. (3) Add dbt compile + dbt test to the data warehouse migration PR checklist. (4) Post-incident review (blameless): the engineer followed naming convention guidance with no awareness of downstream impact — the gap was missing tooling, not human error.',
+      keyInsights: [
+        'Source renames in dbt break all downstream source() references — unlike ref(), there is no automatic dependency tracking update',
+        'Compatibility shims (views pointing to new names) are the fastest mitigation with zero downstream changes required',
+        'CI enforcement of dbt test --select source:* before any warehouse schema change prevents the 2am page'
+      ]
+    },
+    leadershipNote: 'A staff analytics engineer would have shipped source contracts (dbt 1.5+ contracts: block) on all production sources, making breaking changes fail at CI rather than at 2am. The 2am page is a CI gap, not a human error.',
+    keyTakeaways: [
+      'dbt source renames break all downstream refs — create compatibility views as immediate mitigation',
+      'CI must include dbt test --select source:* before any warehouse schema migration',
+      'Source rename protocol (parallel run → migrate → deprecate) prevents recurrence'
+    ],
+    playbookLinks: []
+  },
+  {
+    id: 'inst10',
+    title: 'Tracking Plan for a Mobile Feature Launch',
+    subtitle: 'Instrument a new iOS feature with cannibalization guards and A/B test support',
+    difficulty: 'junior',
+    isFree: false,
+    domain: 'measurement-plan',
+    company: 'Instagram',
+    estimatedMin: 18,
+    tags: ['mobile tracking', 'tracking plan', 'iOS', 'event properties', 'A/B test instrumentation'],
+    situation: 'Instagram is launching a new Close Friends Story feature on iOS next sprint. The PM asks you to write the tracking plan. The feature lets users create a Story visible only to a curated Close Friends list. You need to track feature adoption, engagement depth, and whether the feature cannibalizes regular Story posts.',
+    question: 'Write the full tracking plan: events, properties, success metrics, and cannibalization guard.',
+    hints: [
+      'Map the user journey first — what actions can a user take with this feature?',
+      'Cannibalization requires comparing close_friends_story_created vs regular_story_created rates for the same users pre/post launch.',
+      'Mobile tracking has constraints: events must be batched efficiently to save battery; property cardinality must stay low.'
+    ],
+    modelAnswer: {
+      approach: 'Map user journey → define events per step → specify low-cardinality properties → cannibalization measurement design',
+      answer: 'User journey: discover feature → create close friends list (if new) → post close friends story → friends view story → sender sees who viewed. Events: (1) close_friends_list_created { user_id, list_size, platform: ios }. (2) close_friends_story_posted { user_id, media_type: photo|video, duration_sec, list_size_bucket: 1-5|6-20|21+ }. (3) close_friends_story_viewed { viewer_id, poster_id, media_type, view_duration_sec, viewed_from: feed|direct_open }. (4) close_friends_story_replied { viewer_id, poster_id, reply_type: text|reaction }. Success metrics: (1) Adoption: % of active users who post at least one CFS in first 30 days. (2) Engagement depth: replies per CFS post vs regular story post. (3) Retention: D30 retention of users who adopted CFS vs matched non-adopters. Cannibalization guard: compare story_posted rate for the same users in the 30 days pre-launch vs 30 days post-launch. If CFS users post fewer regular stories, segment by list_size_bucket — users with small close friends lists may truly substitute, large list users likely do not. Property design: list_size_bucket (not raw list_size) to control cardinality on mobile. No PII in properties.',
+      keyInsights: [
+        'Mobile event schemas need bucketed properties (not raw counts) to control cardinality',
+        'Cannibalization measurement requires pre/post comparison on the same users, not just cross-sectional',
+        'Engagement depth (replies per post) is a better signal than raw view counts for feature quality'
+      ]
+    },
+    leadershipNote: 'A staff analytics engineer would instrument this with a feature flag segment — all events carry a feature_flag_variant property so the tracking plan doubles as A/B test instrumentation from day one. No retroactive joins needed.',
+    keyTakeaways: [
+      'Mobile tracking plans need low-cardinality properties (buckets, not raw numbers)',
+      'Cannibalization measurement = pre/post same-user comparison, not aggregate comparison',
+      'Instrument feature flag variant in all events from launch day — enables A/B analysis without retroactive joins'
+    ],
+    playbookLinks: []
+  },
+  {
+    id: 'inst11',
+    title: 'Schema Migration Without Downtime',
+    subtitle: 'Migrate 800 consumers to a new event schema using Expand-Contract',
+    difficulty: 'staff',
+    isFree: false,
+    domain: 'schema-migration',
+    company: 'Stripe',
+    estimatedMin: 25,
+    tags: ['schema migration', 'backward compatibility', 'dual-write', 'versioning', 'zero-downtime'],
+    situation: 'Stripe needs to add a payment_method_details JSON column to the payments event. Currently the event has flat fields: card_brand, card_last4, bank_name. The new schema nests all of these under payment_method_details.card.brand etc. 800 downstream consumers read the flat fields. You cannot take downtime. The migration must be backward compatible.',
+    question: 'Design the zero-downtime schema migration strategy. What pattern do you use and what are the rollout phases?',
+    hints: [
+      'Zero-downtime schema migrations use a dual-write or expand-contract pattern.',
+      'Consumers cannot be migrated all at once — your strategy must support both old and new schemas simultaneously.',
+      'How do you know when it is safe to drop the old fields?'
+    ],
+    modelAnswer: {
+      approach: 'Expand-Contract pattern → dual-write window → consumer migration tracking → field removal verification',
+      answer: 'Use the Expand-Contract pattern (also called parallel writes). Phase 1 — Expand (Week 1-2): Add the new payment_method_details JSON column alongside existing flat columns. Update the event producer to write BOTH: flat fields (unchanged) AND new nested JSON. All 800 consumers continue reading flat fields — zero impact. Phase 2 — Migrate consumers (Weeks 3-8): Communicate deprecation schedule with 60-day notice. Provide a migration guide: card_brand → payment_method_details.card.brand. Track migration progress via a consumer registry (which teams have migrated). Flag: any consumer still reading deprecated fields after week 8 gets a page. Phase 3 — Contract (Week 9+): Once >95% of consumers have migrated (verified via field usage tracking in the data warehouse: SELECT COUNT(*) WHERE card_brand IS NOT NULL), stop writing the flat fields. Run both schemas in parallel for 2 more weeks with flat fields as NULL to catch any stragglers. Phase 4 — Remove (Week 12): Drop the deprecated columns. Key principle: never remove a column before all consumers have migrated. Track readership, not just writer status. The dual-write window (phases 1-3) is the migration runway — its length is determined by consumer migration velocity, not a fixed calendar.',
+      keyInsights: [
+        'Expand-Contract is the canonical zero-downtime migration pattern — add new fields, migrate consumers, then remove old fields',
+        'Never remove fields before verifying zero readership in production queries',
+        'Consumer migration tracking (field usage in DWH) is more reliable than self-reported we migrated'
+      ]
+    },
+    leadershipNote: 'Staff engineers instrument field-level read tracking in the data warehouse from the start of the migration — not as an afterthought. Without it, you cannot know when it is safe to drop the old fields, and migrations drag on indefinitely.',
+    keyTakeaways: [
+      'Expand-Contract pattern = add new fields → dual-write → migrate consumers → remove old fields',
+      'Never drop a field based on "we told them to migrate" — verify zero reads in production',
+      'Migration runway length is set by consumer velocity, not a calendar'
+    ],
+    playbookLinks: []
+  },
+  {
+    id: 'inst12',
+    title: 'PII in the Event Stream',
+    subtitle: 'Contain an accidental PII leak and build governance to prevent recurrence',
+    difficulty: 'senior',
+    isFree: false,
+    domain: 'data-governance',
+    company: 'Lyft',
+    estimatedMin: 20,
+    tags: ['PII', 'data privacy', 'GDPR', 'event stream', 'data governance', 'anonymization'],
+    situation: 'A Lyft engineer accidentally logged driver_phone_number and passenger_email as event properties in a ride_completed event that fires to the main analytics event stream. The events have been in production for 3 weeks, ingested into Snowflake, and replicated to 12 downstream tables used by 40+ analysts. A privacy review flags it.',
+    question: 'What is your immediate response, remediation plan, and long-term governance change to prevent PII leakage into the event stream?',
+    hints: [
+      'Immediate containment first — stop new PII from flowing before remediating what already exists.',
+      'GDPR/CCPA require deletion of PII within specific timeframes — your remediation must be compliant.',
+      'Technical controls (not just policy) prevent recurrence.'
+    ],
+    modelAnswer: {
+      approach: 'Immediate containment → identify all affected sinks → compliant deletion → technical prevention at ingestion layer',
+      answer: 'Immediate (0-4 hours): (1) Remove PII fields from the event producer — deploy a hotfix that strips driver_phone_number and passenger_email from the event before emission. (2) Revoke analyst access to the affected Snowflake tables containing the PII rows. (3) Page the privacy/legal team — this may be a notifiable breach depending on jurisdiction and data sensitivity. Remediation (Day 1-7): (1) Identify all tables containing the leaked PII: SELECT table_name FROM information_schema.columns WHERE column_name IN (\'driver_phone_number\', \'passenger_email\'). (2) Run UPDATE statements to NULL out the PII columns: UPDATE ride_completed_events SET driver_phone_number = NULL, passenger_email = NULL WHERE event_date >= [3 weeks ago]. (3) Verify deletion with row counts. (4) Check Snowflake Time Travel — PII may persist in historical snapshots; disable time travel on affected tables or wait for retention window to expire. (5) Check if data was exported to S3, GCS, or third-party tools (BI tools, Amplitude, etc.) — each integration needs a separate deletion request. Governance (ongoing): (1) PII classifier in the event validation layer — before any event is ingested, run a regex + ML classifier against all string properties to flag potential PII (email patterns, phone patterns, SSN patterns). Reject events with PII at ingestion, not downstream. (2) Event schema registry: all new event schemas require a privacy review before shipping. (3) Annual PII audit of all analytics tables.',
+      keyInsights: [
+        'PII remediation has three phases: stop new leakage (producer fix), contain existing leakage (access revocation + deletion), verify completeness (check all downstream sinks including Time Travel and third-party exports)',
+        'Technical controls at ingestion (PII classifier) are the only reliable prevention — policy alone fails because engineers make mistakes',
+        'Deletion is not complete until verified in every downstream system including DWH snapshots and third-party exports'
+      ]
+    },
+    leadershipNote: 'Staff-level data governance means shipping the PII classifier as infrastructure, not as a policy document. The policy says don\'t log PII; the classifier makes it technically impossible to accidentally log PII by rejecting non-compliant events at the ingestion layer before they reach Snowflake.',
+    keyTakeaways: [
+      'PII breach response: stop producer → revoke access → delete from all sinks (including Time Travel and third-party exports)',
+      'Deletion is not complete until verified in every downstream system',
+      'Technical controls (PII classifier at ingestion) prevent recurrence; policy alone does not'
+    ],
+    playbookLinks: []
   }
 ];
 

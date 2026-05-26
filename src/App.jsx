@@ -22,6 +22,7 @@ import { takehomeCases, takehomeCasesById } from './data/takehomeCases.js';
 import { instrumentationCases, instrumentationCasesById } from './data/instrumentationCases.js';
 import { getAllInstrumentationProgress } from './utils/instrumentationProgress.js';
 import { metricsFoundationModules } from './data/metricsFoundationModules.js';
+import { rcaFoundationModules } from './data/rcaFoundationModules.js';
 // Layout (always needed — not lazy)
 import { Sidebar } from './components/layout/Sidebar.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -104,6 +105,8 @@ const InstrumentationRunner   = lazy(() => import('./components/instrumentation/
 const FoundationHub           = lazy(() => import('./pages/FoundationHub.jsx').then(m => ({ default: m.FoundationHub })));
 const MetricsFoundationsBrowser = lazy(() => import('./pages/MetricsFoundationsBrowser.jsx').then(m => ({ default: m.MetricsFoundationsBrowser })));
 const MetricsFoundationsRunner  = lazy(() => import('./components/metricsFoundations/MetricsFoundationsRunner.jsx').then(m => ({ default: m.MetricsFoundationsRunner })));
+const RCAFoundationsBrowser     = lazy(() => import('./pages/RCAFoundationsBrowser.jsx').then(m => ({ default: m.RCAFoundationsBrowser })));
+const RCAFoundationsRunner      = lazy(() => import('./components/rcaFoundations/RCAFoundationsRunner.jsx').then(m => ({ default: m.RCAFoundationsRunner })));
 
 function getInitialTheme() {
   try {
@@ -134,6 +137,7 @@ export default function App() {
   const [activeTakehomeCaseId, setActiveTakehomeCaseId] = useState(null);
   const [activeInstrumentationCaseId, setActiveInstrumentationCaseId] = useState(null);
   const [activeMetricsFoundationId, setActiveMetricsFoundationId] = useState(null);
+  const [activeRCAFoundationId, setActiveRCAFoundationId] = useState(null);
   const [playbookInitialArticle, setPlaybookInitialArticle] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => ({ ...getAllProgress(), challengesProgress: getAllChallengesProgress(), biProgress: getAllBIProgress(), stfProgress: getAllSTFProgress(), takehomeProgress: getAllTakehomeProgress(), instrumentationProgress: getAllInstrumentationProgress() }));
@@ -184,6 +188,8 @@ export default function App() {
       'foundations': 'Foundations — Product Analytics Lab',
       'metrics-foundations': 'Metrics Foundations — Product Analytics Lab',
       'metrics-foundations-runner': 'Metrics Foundations — Product Analytics Lab',
+      'rca-foundations': 'RCA Foundations — Product Analytics Lab',
+      'rca-foundations-runner': 'RCA Foundations — Product Analytics Lab',
     };
     document.title = titles[page] || 'Product Analytics Lab';
   }, [page]);
@@ -407,6 +413,16 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function openRCAFoundationModule(id) {
+    const m = rcaFoundationModules.find(m => m.id === id);
+    if (!m) return;
+    if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'rca-foundations', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'rca-foundations', id, title: m.title });
+    setActiveRCAFoundationId(id);
+    setPage('rca-foundations-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function openMetricsFoundationModule(id) {
     const m = metricsFoundationModules.find(m => m.id === id);
     if (!m) return;
@@ -526,6 +542,13 @@ export default function App() {
   function getNextGrowthAnalyticsId(currentId) {
     const accessible = growthAnalyticsCases.filter(c => c.isFree || unlocked);
     const idx = accessible.findIndex(c => c.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
+  function getNextRCAFoundationId(currentId) {
+    const accessible = rcaFoundationModules.filter(m => m.isFree || unlocked);
+    const idx = accessible.findIndex(m => m.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
@@ -1003,6 +1026,20 @@ export default function App() {
             onNavigate={navigate}
           />
         )}
+        {/* ── RCA Foundations ── */}
+        {page === 'rca-foundations' && (
+          <RCAFoundationsBrowser onStart={openRCAFoundationModule} unlocked={unlocked} />
+        )}
+        {page === 'rca-foundations-runner' && activeRCAFoundationId && (
+          <RCAFoundationsRunner
+            key={activeRCAFoundationId}
+            moduleId={activeRCAFoundationId}
+            onBack={() => setPage('rca-foundations')}
+            onNext={(() => { const n = getNextRCAFoundationId(activeRCAFoundationId); return n ? () => openRCAFoundationModule(n) : () => setPage('rca-foundations'); })()}
+            unlocked={unlocked}
+          />
+        )}
+
         {/* ── Metrics Foundations ── */}
         {page === 'metrics-foundations' && (
           <MetricsFoundationsBrowser onStart={openMetricsFoundationModule} unlocked={unlocked} />
@@ -1149,7 +1186,8 @@ export default function App() {
                'pal-bi-progress-v1', 'pal-stf-progress-v1', 'pal-takehome-progress-v1',
                'pal-instrumentation-progress-v1', 'pal-growth-analytics-progress-v1',
                'pal-challenges-progress-v1', 'pal-bookmarks-v1', 'pal-notes-v1',
-               'pal-metrics-foundation-progress-v1'
+               'pal-metrics-foundation-progress-v1',
+               'pal-rca-foundation-progress-v1'
               ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
               // Clear per-scenario product-design progress (prefix: pd-progress-)
               try {

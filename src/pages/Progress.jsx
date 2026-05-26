@@ -36,6 +36,8 @@ import { getAllInstrumentationProgress } from '../utils/instrumentationProgress.
 import { instrumentationCases } from '../data/instrumentationCases.js';
 import { getAllMetricsFoundationProgress } from '../utils/metricsFoundationProgress.js';
 import { metricsFoundationModules } from '../data/metricsFoundationModules.js';
+import { getAllRCAFoundationProgress } from '../utils/rcaFoundationProgress.js';
+import { rcaFoundationModules } from '../data/rcaFoundationModules.js';
 import { learningPaths } from '../data/learningPaths.js';
 import { GuidedPathCard } from '../components/paths/GuidedPathCard.jsx';
 
@@ -176,6 +178,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   const takehomeProgress = getAllTakehomeProgress();
   const instrProgress = getAllInstrumentationProgress();
   const mfProgress = getAllMetricsFoundationProgress();
+  const rfProgress = getAllRCAFoundationProgress();
 
   const statsCompleted = statsModules.filter(m => statsProgress[m.id]?.attempts > 0);
   const metricsCompleted = metricCases.filter(c => metricsProgress[c.id]?.attempts > 0);
@@ -236,6 +239,8 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
       onReset: makeRoomResetter(['pal-stat-foundations-progress-v1']) },
     { label: 'Metrics Foundations', completed: metricsFoundationModules.filter(m => mfProgress[m.id]?.completedAt).length, total: metricsFoundationModules.length, color: 'var(--green)',
       onReset: makeRoomResetter(['pal-metrics-foundation-progress-v1']) },
+    { label: 'RCA Foundations', completed: rcaFoundationModules.filter(m => rfProgress[m.id]?.completedAt).length, total: rcaFoundationModules.length, color: 'var(--teal)',
+      onReset: makeRoomResetter(['pal-rca-foundation-progress-v1']) },
     { label: 'Prioritization', completed: prioritizationScenarios.filter(s => priProgress[s.id]?.completedAt).length, total: prioritizationScenarios.length, color: 'var(--yellow)',
       onReset: makeRoomResetter(['pal-pri-progress-v1']) },
   ];
@@ -318,6 +323,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
   takehomeCases.forEach(c => { if (takehomeProgress[c.id]?.completedAt) completionMap[`take-home:${c.id}`] = true; });
   instrumentationCases.forEach(c => { if (instrProgress[c.id]?.completedAt) completionMap[`instrumentation:${c.id}`] = true; });
   metricsFoundationModules.forEach(m => { if (mfProgress[m.id]?.completedAt) completionMap[`metrics-foundations:${m.id}`] = true; });
+  rcaFoundationModules.forEach(m => { if (rfProgress[m.id]?.completedAt) completionMap[`rca-foundations:${m.id}`] = true; });
 
   // Practice heatmap: collect all practice dates from all progress stores
   function getPracticeDates() {
@@ -329,6 +335,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
       'pal-growth-analytics-progress-v1',
       'pal-challenges-progress-v1', 'pal-bi-progress-v1', 'pal-stf-progress-v1', 'pal-takehome-progress-v1',
       'pal-metrics-foundation-progress-v1',
+      'pal-rca-foundation-progress-v1',
       'pal-instrumentation-progress-v1', 'pal-pri-progress-v1'
     ];
     stores.forEach(key => {
