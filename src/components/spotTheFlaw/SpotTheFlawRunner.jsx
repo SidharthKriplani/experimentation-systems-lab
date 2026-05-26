@@ -461,7 +461,7 @@ export function SpotTheFlawRunner({ caseData, onBack, onNext, unlocked }) {
         <textarea
           value={userNote}
           onChange={e => { setUserNote(e.target.value); setNoteSaved(false); }}
-          placeholder='What tripped you up? What\'s the key heuristic to remember?'
+          placeholder="What tripped you up? What's the key heuristic to remember?"
           rows={3}
           style={{
             width: '100%', boxSizing: 'border-box', resize: 'vertical',
