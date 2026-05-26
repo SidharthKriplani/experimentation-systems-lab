@@ -21,6 +21,7 @@ import { spotTheFlawCases, spotTheFlawCasesById } from './data/spotTheFlawCases.
 import { takehomeCases, takehomeCasesById } from './data/takehomeCases.js';
 import { instrumentationCases, instrumentationCasesById } from './data/instrumentationCases.js';
 import { getAllInstrumentationProgress } from './utils/instrumentationProgress.js';
+import { metricsFoundationModules } from './data/metricsFoundationModules.js';
 // Layout (always needed — not lazy)
 import { Sidebar } from './components/layout/Sidebar.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -101,6 +102,8 @@ const DefenseDocGenerator = lazy(() => import('./pages/DefenseDocGenerator.jsx')
 const InstrumentationBrowser = lazy(() => import('./pages/InstrumentationBrowser.jsx').then(m => ({ default: m.InstrumentationBrowser })));
 const InstrumentationRunner   = lazy(() => import('./components/instrumentation/InstrumentationRunner.jsx').then(m => ({ default: m.InstrumentationRunner })));
 const FoundationHub           = lazy(() => import('./pages/FoundationHub.jsx').then(m => ({ default: m.FoundationHub })));
+const MetricsFoundationsBrowser = lazy(() => import('./pages/MetricsFoundationsBrowser.jsx').then(m => ({ default: m.MetricsFoundationsBrowser })));
+const MetricsFoundationsRunner  = lazy(() => import('./components/metricsFoundations/MetricsFoundationsRunner.jsx').then(m => ({ default: m.MetricsFoundationsRunner })));
 
 function getInitialTheme() {
   try {
@@ -130,6 +133,7 @@ export default function App() {
   const [activeSTFCaseId, setActiveSTFCaseId] = useState(null);
   const [activeTakehomeCaseId, setActiveTakehomeCaseId] = useState(null);
   const [activeInstrumentationCaseId, setActiveInstrumentationCaseId] = useState(null);
+  const [activeMetricsFoundationId, setActiveMetricsFoundationId] = useState(null);
   const [playbookInitialArticle, setPlaybookInitialArticle] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => ({ ...getAllProgress(), challengesProgress: getAllChallengesProgress(), biProgress: getAllBIProgress(), stfProgress: getAllSTFProgress(), takehomeProgress: getAllTakehomeProgress(), instrumentationProgress: getAllInstrumentationProgress() }));
@@ -178,6 +182,8 @@ export default function App() {
       'instrumentation': 'Analytics Instrumentation — Product Analytics Lab',
       'instrumentation-runner': 'Case — Analytics Instrumentation — Product Analytics Lab',
       'foundations': 'Foundations — Product Analytics Lab',
+      'metrics-foundations': 'Metrics Foundations — Product Analytics Lab',
+      'metrics-foundations-runner': 'Metrics Foundations — Product Analytics Lab',
     };
     document.title = titles[page] || 'Product Analytics Lab';
   }, [page]);
@@ -401,6 +407,16 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function openMetricsFoundationModule(id) {
+    const m = metricsFoundationModules.find(m => m.id === id);
+    if (!m) return;
+    if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'metrics-foundations', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'metrics-foundations', id, title: m.title });
+    setActiveMetricsFoundationId(id);
+    setPage('metrics-foundations-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function openPDScenario(id) {
     const s = productDesignScenarios.find(s => s.id === id);
     if (!s) return;
@@ -510,6 +526,13 @@ export default function App() {
   function getNextGrowthAnalyticsId(currentId) {
     const accessible = growthAnalyticsCases.filter(c => c.isFree || unlocked);
     const idx = accessible.findIndex(c => c.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
+  function getNextMetricsFoundationId(currentId) {
+    const accessible = metricsFoundationModules.filter(m => m.isFree || unlocked);
+    const idx = accessible.findIndex(m => m.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
@@ -980,6 +1003,20 @@ export default function App() {
             onNavigate={navigate}
           />
         )}
+        {/* ── Metrics Foundations ── */}
+        {page === 'metrics-foundations' && (
+          <MetricsFoundationsBrowser onStart={openMetricsFoundationModule} unlocked={unlocked} />
+        )}
+        {page === 'metrics-foundations-runner' && activeMetricsFoundationId && (
+          <MetricsFoundationsRunner
+            key={activeMetricsFoundationId}
+            moduleId={activeMetricsFoundationId}
+            onBack={() => setPage('metrics-foundations')}
+            onNext={(() => { const n = getNextMetricsFoundationId(activeMetricsFoundationId); return n ? () => openMetricsFoundationModule(n) : () => setPage('metrics-foundations'); })()}
+            unlocked={unlocked}
+          />
+        )}
+
         {page === 'simulator' && <InterviewSimulator onBack={() => setPage('home')} onNavigate={navigate} />}
         {page === 'ab-interpreter' && <ABTestInterpreter onBack={() => setPage('home')} />}
         {page === 'consult' && (
@@ -1111,7 +1148,8 @@ export default function App() {
                'pal-stat-foundations-progress-v1',
                'pal-bi-progress-v1', 'pal-stf-progress-v1', 'pal-takehome-progress-v1',
                'pal-instrumentation-progress-v1', 'pal-growth-analytics-progress-v1',
-               'pal-challenges-progress-v1', 'pal-bookmarks-v1', 'pal-notes-v1'
+               'pal-challenges-progress-v1', 'pal-bookmarks-v1', 'pal-notes-v1',
+               'pal-metrics-foundation-progress-v1'
               ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
               // Clear per-scenario product-design progress (prefix: pd-progress-)
               try {
