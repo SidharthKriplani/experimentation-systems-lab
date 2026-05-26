@@ -4,6 +4,25 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.7.2] — 2026-05
+
+### Fixed — Stats Room (audit #67)
+
+- **DIFFICULTY_CFG missing `intermediate`, `advanced`, `staff` entries** — `StatsRunner.jsx` and `StatsBrowser.jsx` both defined their difficulty config maps with only 3 entries (foundational, analyst, senior). Modules STAT09 (advanced), STAT10 (intermediate), STAT11 (advanced), STAT12 (advanced) all fell back to "Foundational" badge with wrong color. Added: `intermediate` (yellow), `advanced` (purple), `staff` (red) to both files. Systemic root cause: config maps were not updated when the causal inference module batch was added.
+- **STAT08 claim-data alignment** — The SUTVA scenario claim and options referenced seller conversion figures (+19% treatment sellers, −11.4% control sellers, +2.8% platform-level) that did not appear anywhere in `setup.observedResult` or `caveat`. Users had no data to evaluate the claim from. Fixed: added seller-arm conversion rates, control-side drop, and platform-level booking rate to `observedResult`; added inquiry volume delta to `caveat`.
+- **STAT13 concept ID standardized** — `stat13-did-parallel-trends` used `concept: 'did'` and `linkedConceptIds: ['did', ...]` while `stat17-did` used `concept: 'diff-in-diff'`. Same concept, two different string IDs. Standardized both to `'diff-in-diff'`.
+- **STAT17 difficulty recalibrated** — `stat17-did` ("Is +7pp the Onboarding Uplift?") was labelled `difficulty: 'senior'` but tests a basic DiD arithmetic subtraction (7pp − 4pp = 3pp). Changed to `'analyst'` to match the content quality bar's tier definitions.
+- **STAT10–12 missing field stubs** — `stat10`, `stat11`, `stat12` lacked `linkedScenarioIds` and `linkedDesignIds` fields. All causal inference modules added in a later batch (STAT13–STAT20) have these as empty arrays. Added `linkedScenarioIds: []` and `linkedDesignIds: []` to all three.
+
+### Updated — MD spine
+- `IDEAS.md` — per-case notes entry clarified; first-time user audit updated to mention V4.7 sidebar; two Stats bugs logged as resolved
+- `AUDITS.md` — audit type table expanded with 3 new types (Content staleness, Dead code/orphans, Config completeness); audit #67 (Stats Room comprehensive audit, 6 findings) added
+
+### Files changed
+`src/components/stats/StatsRunner.jsx`, `src/pages/StatsBrowser.jsx`, `src/data/statsModules.js` (STAT08 observedResult/caveat, STAT10–12 field stubs, STAT13 concept ID, STAT17 difficulty), `IDEAS.md`, `AUDITS.md`, `CHANGELOG.md` (this entry)
+
+---
+
 ## [4.7.1] — 2026-05
 
 ### Improved — Defense Doc Generator

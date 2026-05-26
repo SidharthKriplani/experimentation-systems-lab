@@ -20,7 +20,7 @@ _(nothing active — update this at session start when pulling from Tier 1)_
 ### Features
 - ~~`case_completed` PostHog event~~ — ✅ shipped V4.6 (all 18 runners instrumented)
 - Interview debrief export (PDF of session answers + model answers) — high-value, users want to share results
-- Per-case notes that persist across sessions (currently one global textarea)
+- Per-case notes that persist across sessions (currently one global textarea) — `pal-notes-v1` key exists in StatsRunner; other runners need the same pattern
 - Search within a single room (room-level filter on global search)
 
 ### Infrastructure
@@ -32,6 +32,8 @@ _(nothing active — update this at session start when pulling from Tier 1)_
 - ~~**`case_opened` missing from 4 open functions** (audit #61)~~ — ✅ fixed V4.6.1 (BI, STF, Take-Home, Instrumentation now tracked)
 - ~~**Sitemap missing 8 V4.x routes** (audit #63)~~ — ✅ fixed V4.6.1 (22 URLs, all rooms indexed)
 - ~~**Home.jsx daily drill — wrong BEH case** (audit #65)~~ — ✅ fixed V4.6.1 (BEH01→BEH05, title corrected)
+- ~~**Stats Room DIFFICULTY_CFG missing intermediate/advanced/staff entries** (audit #67)~~ — ✅ fixed V4.7.2 (STAT09/STAT10-12 showed "Foundational" badge incorrectly)
+- ~~**STAT08 claim references seller data not shown in setup** (audit #67)~~ — ✅ fixed V4.7.2 (seller conversion data added to observedResult)
 - **Template literals in 9 data files** (audit #64) — latent build risk; any unescaped apostrophe in a backtick string causes a silent Vercel parse failure
 
 ---
@@ -50,7 +52,7 @@ _(nothing active — update this at session start when pulling from Tier 1)_
 - Difficulty progression lock (must complete junior before senior unlocks) — opt-in mode only
 
 ### Platform
-- First-Time User cold walk-through audit (incognito, every confusion point noted) — feeds directly into Tier 1 UX fixes
+- First-Time User cold walk-through audit with sidebar nav (incognito, every confusion point noted) — sidebar is new in V4.7, cold path not yet audited
 - IP/Moat audit — what's genuinely hard to replicate? What to double down on?
 - MVP/Weight audit — which features earn their place? Consolidation candidates?
 - **India PM Company Tracks** — Blinkit, CRED, Meesho, Zepto, Myntra, Swiggy, Razorpay, Flipkart, PhonePe, Paytm etc. Round-by-round maps exist (Malay Krishna source). Infrastructure is `companyTracks.js`. Blocked on: no data that Indian users are on PAL yet; content needs to be specific enough to actually prep against, not just round-name lists.

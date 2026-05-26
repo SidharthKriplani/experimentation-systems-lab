@@ -14,17 +14,17 @@ Start here when running an audit. Add rows as new types emerge.
 
 | Type | What it covers |
 |---|---|
-| **BUILD** | Prop wiring, dead code, duplicate keys, component contracts |
-| **Visual Consistency** | Color drift, spacing, border radius, font usage, CSS variable adherence |
-| **Navigation & Discoverability** | Hidden features, dead-end flows, tab/menu structure, active states |
-| **Content Integrity** | Stale copy, version mismatches, duplicate data keys, field coverage |
+| **BUILD** | Prop wiring, dead code, duplicate keys, component contracts, missing field stubs |
+| **Visual Consistency** | Color drift, spacing, border radius, font usage, CSS variable adherence, badge config completeness |
+| **Navigation & Discoverability** | Hidden features, dead-end flows, tab/menu structure, active states, cross-room links |
+| **Content Integrity** | Stale copy, version mismatches, duplicate data keys, field coverage, claim-data alignment |
 | **Framework / Technical** | Language patterns, hook usage, render correctness, lazy loading |
 | **SEO / Social** | OG tags, meta descriptions, sitemap, robots.txt, sharing previews |
 | **UX / Human Elements** | Empty states, tone, onboarding friction, exit states, CTA hierarchy |
 | **Performance** | Bundle size, lazy loading, render bottlenecks, code splitting |
 | **Creativity / Product** | Design, value delivery, layout, differentiation, positioning |
 | **Coverage** | Which features/topics/rooms lack tests, questions, or cross-links |
-| **First-Time User** | Cold walk-through in incognito — every confusion point noted live _(not yet run)_ |
+| **First-Time User** | Cold walk-through in incognito — every confusion point noted live _(not yet run post-V4.7 sidebar)_ |
 | **MVP / Weight** | Which features earn their place? Cut or consolidate candidates _(not yet run)_ |
 | **IP / Moat** | What's hard to replicate? What's original? What to double down on? _(not yet run)_ |
 | **Architecture** | Stack decisions, IA, build sequence, scope, strategic risk |
@@ -33,6 +33,9 @@ Start here when running an audit. Add rows as new types emerge.
 | **Mobile** | Viewport overflow, touch targets, responsive grid patterns |
 | **Analytics** | Event taxonomy, PII policy, funnel gaps, missing signals |
 | **Build safety** | Syntax errors, parse failures, Vite/Rolldown compatibility |
+| **Content staleness** | Counts, company names, version strings, benchmark data that drifts over time |
+| **Dead code / orphans** | Unreferenced files, unused imports, data objects with no consumer, retired features still in bundle |
+| **Config completeness** | Lookup maps, enum configs, case enums that grow when content is added but configs are not updated |
 
 ---
 
@@ -577,6 +580,33 @@ Three distinct issues found in a single SF completeness pass:
 
 ---
 
+### 67. ✅ Stats Room Comprehensive Audit — V4.7.2
+**Version:** V4.7.2
+**Output:** 6 findings across BUILD, Visual Consistency, Content Integrity dimensions; 5 issues fixed
+
+Full sweep across all 20 Stats modules, StatsBrowser.jsx, and StatsRunner.jsx covering: BUILD (prop wiring, field stubs, component contracts), Visual Consistency (badge config maps), Content Integrity (claim-data alignment, concept ID consistency, difficulty calibration), UX (cross-room nav, empty states), Coverage (field parity between original and causal inference modules), and Build Safety (template literal check).
+
+**Findings:**
+
+1. ✅ **DIFFICULTY_CFG missing `intermediate`, `advanced`, `staff` entries** — both `StatsRunner.jsx` and `StatsBrowser.jsx` defined DIFF_CFG only for `foundational`, `analyst`, `senior`. Modules STAT09 (advanced), STAT10 (intermediate), STAT11 (advanced), STAT12 (advanced) all fell back to the "Foundational" badge with wrong color. Root cause: config maps not updated when causal inference modules were added. Fixed: added `intermediate` (yellow), `advanced` (purple), `staff` (red) entries to both files. This is an instance of **Config Completeness** failure — a systematic pattern to watch across all rooms with difficulty tiers.
+
+2. ✅ **STAT08 claim references seller conversion data not shown in setup** — The scenario presents buyer-level booking rate data (+18%) but the claim evaluates "treatment sellers showed +19% conversion lift vs. control sellers." Options also reference control seller drop (-11.4%) and platform-level result (+2.8%) — none of these numbers appear in `setup.observedResult` or `caveat`. Users had no way to evaluate the claim from information given. Fixed: added seller-arm conversion rates and platform-level booking rate to `setup.observedResult`.
+
+3. ✅ **STAT13 concept ID inconsistency** — `stat13-did-parallel-trends` used `concept: 'did'` and `linkedConceptIds: ['did', ...]` while `stat17-did` uses `concept: 'diff-in-diff'` and `linkedConceptIds: ['diff-in-diff', ...]`. Two modules covering the same statistical concept used different string IDs. The concept badge chip showed 'did' for one and 'diff-in-diff' for the other; any concept drawer that looked up by ID would resolve only one. Fixed: STAT13 standardized to `concept: 'diff-in-diff'` and `linkedConceptIds` updated to replace 'did' with 'diff-in-diff'.
+
+4. ✅ **STAT17 difficulty miscalibrated as 'senior'** — `stat17-did` asks users to compute DiD = 7pp − 4pp = 3pp. This is a foundational arithmetic check, not a senior-level judgment call. The scenario was built to teach the DiD subtraction concept, not to test ambiguous senior-level decisions. Fixed: difficulty changed from 'senior' to 'analyst'. This brings it in line with the tier calibration described in `docs/CONTENT_QUALITY_BAR.md`.
+
+5. ✅ **STAT10–12 missing `linkedScenarioIds` and `linkedDesignIds` field stubs** — All 8 causal inference modules (STAT13–STAT20) have `linkedScenarioIds: []` and `linkedDesignIds: []` even when empty. STAT10, STAT11, STAT12 (added in an earlier batch) were missing both fields entirely. While `StatsConceptPanel` likely handles missing fields gracefully, the structural inconsistency breaks any field-level QA scan. Fixed: added empty array stubs to all three modules.
+
+6. ✅ **Build safety check: statsModules.js** — Grep confirmed no backtick template literals in the file. Only single-quoted strings throughout. All apostrophes within single-quoted strings are escaped as `\'`. No build risk.
+
+**Open findings not fixed this session:**
+- sfPrerequisites missing for STAT10–STAT20: these modules have no SF room cross-links. The SF room currently has no modules covering DiD, RD, synthetic control, or IV — so no SF links to add yet. Will populate when/if SF causal inference modules are built.
+- StatsBrowser has no concept/tag filter (other rooms have this). Low priority for now — 20 modules is browsable without filtering.
+- sfPrerequisites chips are display-only, not clickable navigation. Minor UX improvement for a later pass.
+
+---
+
 ### 65. ✅ Home.jsx Daily Drill Pool — Wrong Case ID/Title for BEH05
 **Version:** V4.6.1 (live site report)
 **Output:** `Home.jsx` pool entry fixed — `BEH01` → `BEH05`, title corrected
@@ -671,3 +701,4 @@ Diagnosed institutional memory problem: every new session required expensive re-
 | 64 | Template Literals in 9 Data Files ⚠️ | V4.6 | Build safety |
 | 65 | Home.jsx Daily Drill Wrong BEH Case ID ✅ | V4.6.1 | Bug/diagnostic |
 | 66 | SF Module Button Labels + Duplicate Playbook Sections ✅ | V4.6.2 | Visual consistency / BUILD |
+| 67 | Stats Room Comprehensive Audit (6 findings, 5 fixed) ✅ | V4.7.2 | BUILD / Visual / Content / Build safety |

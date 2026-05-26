@@ -556,9 +556,9 @@ export const statsModules = [
     setup: {
       metric: 'Booking completion rate per buyer (primary)',
       baseline: '34% of initiated conversations ended in a booking',
-      observedResult: 'Treatment buyers: 40.1% booking rate (+18%). p < 0.001. 95% CI: [+14%, +22%].',
+      observedResult: 'Treatment buyers: 40.1% booking rate (+18%). p < 0.001. 95% CI: [+14%, +22%]. Treatment-side sellers (serving treatment buyers): 48.2% inquiry-to-booking conversion (+19% vs. 40.5% for control-side sellers). Control-side sellers: −11.4% booking conversion vs. pre-test. Platform-level booking rate: 36.9% (+2.8%, p = 0.41, not significant).',
       sampleInfo: 'n = 22,000 buyers per arm. 21-day test. Buyer-level randomization. Sellers were not randomized — all sellers saw both treatment and control buyers.',
-      caveat: 'Average seller utilization in treatment arm during test: 87% (near capacity). In control arm: 71%. Pre-test seller utilization: ~74%.',
+      caveat: 'Average seller utilization in treatment arm during test: 87% (near capacity). In control arm: 71%. Pre-test seller utilization: ~74%. Treatment-side sellers received +28% more buyer inquiries than control-side sellers during the test.',
     },
 
     question: 'Evaluate this claim.',
@@ -689,6 +689,8 @@ export const statsModules = [
     isFree: false,
     companies: ['Netflix', 'YouTube', 'Duolingo'],
     linkedConceptIds: ['novelty-effect', 'confidence-interval', 'p-value'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
 
     situation: {
       company: 'Prism Learning',
@@ -761,6 +763,8 @@ export const statsModules = [
     isFree: false,
     companies: ['Stripe', 'PayPal', 'Revolut'],
     linkedConceptIds: ['bayesian-ab-testing', 'optional-stopping', 'pre-registration'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
 
     situation: {
       company: 'Volta Fintech',
@@ -833,6 +837,8 @@ export const statsModules = [
     isFree: false,
     companies: ['Netflix', 'Spotify', 'Hulu'],
     linkedConceptIds: ['metric-hierarchy', 'proxy-metric', 'guardrail-metric', 'p-value'],
+    linkedScenarioIds: [],
+    linkedDesignIds: [],
 
     situation: {
       company: 'Orbit Streaming',
@@ -896,11 +902,11 @@ export const statsModules = [
     id: 'stat13-did-parallel-trends',
     title: 'DiD Without Parallel Trends',
     subtitle: 'Difference-in-differences assumption violation',
-    concept: 'did',
+    concept: 'diff-in-diff',
     difficulty: 'senior',
     isFree: false,
     companies: ['Airbnb', 'Amazon', 'Walmart'],
-    linkedConceptIds: ['did', 'parallel-trends', 'selection-bias', 'causal-inference'],
+    linkedConceptIds: ['diff-in-diff', 'parallel-trends', 'selection-bias', 'causal-inference'],
     linkedScenarioIds: [],
     linkedDesignIds: [],
 
@@ -1181,7 +1187,7 @@ export const statsModules = [
     title: 'Is +7pp the Onboarding Uplift?',
     subtitle: 'Diff-in-diff vs. raw treatment group change',
     concept: 'diff-in-diff',
-    difficulty: 'senior',
+    difficulty: 'analyst',
     isFree: false,
     companies: ['Amazon', 'Walmart', 'Target'],
     linkedConceptIds: ['diff-in-diff', 'counterfactual', 'causal-inference'],

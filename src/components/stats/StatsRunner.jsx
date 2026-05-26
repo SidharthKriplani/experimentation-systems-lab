@@ -25,9 +25,12 @@ function saveNote(room, id, text) {
 }
 
 const DIFFICULTY_CFG = {
-  foundational: { label: 'Foundational', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
-  analyst:      { label: 'Analyst',      color: 'var(--accent)',    bg: 'var(--accent-bg)', border: 'var(--accent-border)' },
-  senior:       { label: 'Senior',       color: 'var(--teal)',      bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
+  foundational: { label: 'Foundational', color: 'var(--blue-text)', bg: 'var(--blue-bg)',    border: 'var(--blue-border)' },
+  analyst:      { label: 'Analyst',      color: 'var(--accent)',    bg: 'var(--accent-bg)',  border: 'var(--accent-border)' },
+  intermediate: { label: 'Intermediate', color: 'var(--yellow)',    bg: 'var(--yellow-bg)',  border: 'var(--yellow-border)' },
+  senior:       { label: 'Senior',       color: 'var(--teal)',      bg: 'var(--teal-bg)',    border: 'var(--teal-border)' },
+  advanced:     { label: 'Advanced',     color: 'var(--purple)',    bg: 'var(--purple-bg)',  border: 'var(--purple-border)' },
+  staff:        { label: 'Staff',        color: 'var(--red)',       bg: 'var(--red-bg)',     border: 'var(--red-border)' },
 };
 
 export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoToDesign, onNext }) {
