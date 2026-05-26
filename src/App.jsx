@@ -22,7 +22,7 @@ import { takehomeCases, takehomeCasesById } from './data/takehomeCases.js';
 import { instrumentationCases, instrumentationCasesById } from './data/instrumentationCases.js';
 import { getAllInstrumentationProgress } from './utils/instrumentationProgress.js';
 // Layout (always needed — not lazy)
-import { Header } from './components/layout/Header.jsx';
+import { Sidebar } from './components/layout/Sidebar.jsx';
 import { Footer } from './components/layout/Footer.jsx';
 // Utils
 import { getAllProgress } from './utils/progress.js';
@@ -132,6 +132,7 @@ export default function App() {
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => ({ ...getAllProgress(), challengesProgress: getAllChallengesProgress(), biProgress: getAllBIProgress(), stfProgress: getAllSTFProgress(), takehomeProgress: getAllTakehomeProgress(), instrumentationProgress: getAllInstrumentationProgress() }));
   const [theme, setTheme] = useState(getInitialTheme);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : '');
@@ -189,6 +190,7 @@ export default function App() {
   function navigate(target) {
     track('page_viewed', { page: target });
     setPage(target);
+    setSidebarOpen(false);
     setActiveScenarioId(null);
     setActiveDesignScenarioId(null);
     setActiveStatsModuleId(null);
@@ -544,15 +546,42 @@ export default function App() {
     return d?.id || null;
   }
 
+  const isFocusMode = page === 'runner' || page.endsWith('-runner');
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
-      <Header currentPage={page} onNavigate={navigate} unlockedStatus={unlocked} theme={theme} onToggleTheme={toggleTheme} />
-      <main style={{ flex: 1 }}>
-        <Suspense fallback={
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-            Loading…
-          </div>
-        }>
+    <div className={`app-layout${isFocusMode ? ' focus-mode' : ''}`} style={{ color: 'var(--text)' }}>
+      <Sidebar
+        currentPage={page}
+        onNavigate={navigate}
+        unlockedStatus={unlocked}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      <div className="app-main-wrapper">
+        {/* Mobile top bar */}
+        <div className="mobile-topbar">
+          <button
+            onClick={() => setSidebarOpen(s => !s)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text)', fontSize: '1.1rem', padding: '0.3rem', lineHeight: 1, display: 'flex', alignItems: 'center' }}
+            aria-label="Open menu"
+          >☰</button>
+          <button
+            onClick={() => navigate('home')}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.2rem 0' }}
+          >
+            <div style={{ width: 20, height: 20, background: 'linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, flexShrink: 0 }}>⚗</div>
+            <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', letterSpacing: '-0.02em' }}>Analytics Lab</span>
+          </button>
+        </div>
+
+        <main style={{ flex: 1 }}>
+          <Suspense fallback={
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+              Loading…
+            </div>
+          }>
         {page === 'home' && (
           <Home onNavigate={navigate} onStartScenario={openScenario} />
         )}
@@ -1075,5 +1104,6 @@ export default function App() {
       </main>
       <Footer onNavigate={navigate} />
     </div>
+  </div>
   );
 }

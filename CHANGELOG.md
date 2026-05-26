@@ -4,6 +4,19 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.7.0] — 2026-05
+
+### Changed — Layout
+- **Sidebar navigation** — replaced the sticky horizontal `Header.jsx` with a fixed 210px left sidebar (`src/components/layout/Sidebar.jsx`). Same 5 nav groups (ROOMS, PRACTICE, TOOLS, LEARN, TRACK) with identical routing logic. Theme toggle + beta badge moved to sidebar footer.
+- **Layout wrapper** — `App.jsx` now uses `app-layout` / `app-main-wrapper` CSS classes. Focus mode (any `-runner` page) hides the sidebar completely for distraction-free practice.
+- **Mobile** — sidebar slides in as a 230px overlay triggered by a hamburger in `.mobile-topbar`. Tap outside or navigate to close.
+- **Home.jsx → Today Dashboard** — stripped marketing copy (hero, nine-rooms grid, "Why different" section, RoomList cards). New structure: page header with date, Today's Case + The Brief, "Jump back in" row (recently visited rooms, or role-based starters for new users), Guided Paths (4 cards). Sidebar handles all room navigation so Home is now a focused daily dashboard.
+
+### Files changed
+`src/components/layout/Sidebar.jsx` (new), `src/index.css` (+sidebar layout CSS), `src/App.jsx` (import swap, sidebarOpen state, isFocusMode, layout divs), `src/pages/Home.jsx` (full rewrite), `CHANGELOG.md` (this entry)
+
+---
+
 ## [4.6.2] — 2026-05
 
 ### Fixed
