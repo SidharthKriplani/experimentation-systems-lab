@@ -304,6 +304,7 @@ export function RCARunner({ caseId, savedProgress, unlocked, onBack, onNext }) {
       {/* ─── Debrief ────────────────────────────────────────────────── */}
       {view === 'debrief' && (
         <>
+          <div style={{ paddingBottom: '70px' }}>
           <RCADebriefPanel
             rcaCase={rcaCase}
             onRetry={handleRetry}
@@ -367,6 +368,46 @@ export function RCARunner({ caseId, savedProgress, unlocked, onBack, onNext }) {
               </button>
             </div>
           )}
+          </div>
+
+          {/* Sticky bottom bar — always shown in debrief */}
+          <div style={{
+            position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
+            background: 'var(--surface)', borderTop: '1px solid var(--border)',
+            padding: '0.75rem 1.5rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem',
+          }}>
+            <span style={{ fontSize: '0.83rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+              Case complete
+            </span>
+            <div style={{ display: 'flex', gap: '0.6rem' }}>
+              <button
+                onClick={onBack}
+                style={{
+                  background: 'var(--surface-2)', border: '1px solid var(--border)',
+                  borderRadius: '7px', padding: '0.45rem 1rem',
+                  color: 'var(--text-muted)', fontSize: '0.83rem', fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                ← Back
+              </button>
+              {onNext && (
+                <button
+                  onClick={onNext}
+                  style={{
+                    background: 'var(--teal)', color: '#fff',
+                    border: 'none', borderRadius: '7px',
+                    padding: '0.45rem 1.1rem',
+                    fontSize: '0.83rem', fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Next →
+                </button>
+              )}
+            </div>
+          </div>
         </>
       )}
 

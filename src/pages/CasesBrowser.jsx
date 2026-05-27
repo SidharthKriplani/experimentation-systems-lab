@@ -3,6 +3,9 @@ import { businessCases } from '../data/businessCases.js';
 import { getCaseProgress } from '../utils/caseProgress.js';
 
 export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
+  const completedIds = new Set(businessCases.map(bc => bc.id).filter(id => getCaseProgress(id)));
+  const firstUnstartedId = businessCases.find(bc => !completedIds.has(bc.id))?.id;
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
@@ -69,6 +72,7 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
               isLocked={!bc.isFree && !unlocked}
               onSelect={() => onSelectCase(bc.id)}
               onUnlock={onUnlock}
+              isNextUnstarted={bc.id === firstUnstartedId}
             />
           );
         })}
@@ -78,13 +82,14 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
   );
 }
 
-function CaseCard({ businessCase: bc, progress, isLocked, onSelect, onUnlock }) {
+function CaseCard({ businessCase: bc, progress, isLocked, onSelect, onUnlock, isNextUnstarted }) {
   const levelCfg = progress ? getLevelConfig(progress.level) : null;
 
   return (
     <div
       style={{
         border: '1.5px solid var(--border)',
+        borderLeft: isNextUnstarted ? '3px solid var(--accent)' : '1.5px solid var(--border)',
         borderRadius: 'var(--radius)',
         background: 'var(--surface)',
         padding: '1.1rem 1.25rem',
@@ -108,6 +113,17 @@ function CaseCard({ businessCase: bc, progress, isLocked, onSelect, onUnlock }) 
         e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
+      {isNextUnstarted && (
+        <span style={{
+          position: 'absolute', top: '0.6rem', right: '0.7rem',
+          fontSize: '0.68rem', fontWeight: 700,
+          color: 'var(--accent)', background: 'var(--accent-bg)',
+          border: '1px solid var(--accent-border)',
+          borderRadius: 4, padding: '0.1rem 0.4rem',
+        }}>
+          Next →
+        </span>
+      )}
       {/* Badges row */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.45rem', flexWrap: 'wrap' }}>
         <DomainBadge domain={bc.domain} />

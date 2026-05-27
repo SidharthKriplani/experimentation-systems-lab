@@ -85,6 +85,8 @@ Visit `http://localhost:5173`. No environment variables required for local devel
 VITE_POSTHOG_KEY=     # PostHog analytics (gated — omit to disable)
 ```
 
+**Auth (optional):** Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in Vercel env vars to enable sign-in and cross-device progress sync. See `SETUP_AUTH.md` for the full setup guide. Without these vars, the app runs in localStorage-only mode.
+
 **Build for production:**
 ```bash
 npm run build

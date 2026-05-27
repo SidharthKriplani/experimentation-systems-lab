@@ -239,36 +239,78 @@ export function CaseRunner({ caseId, savedProgress, unlocked, onBack, onNext }) 
 
       {/* ─── DEBRIEF VIEW ─── */}
       {view === 'debrief' && (
-        <div style={{
-          border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-          padding: '1.5rem', background: 'var(--surface)',
-        }}>
-          <CaseDebriefPanel
-            businessCase={businessCase}
-            onRetry={handleRetry}
-            onBack={onBack}
-            onNext={onNext}
-          />
-          <div style={{ marginTop: '1.5rem' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              My Notes
-            </div>
-            <textarea
-              value={note}
-              onChange={e => { setNote(e.target.value); saveNote('cases', businessCase.id, e.target.value); }}
-              placeholder="Add your own notes, reminders, or follow-up questions..."
-              rows={4}
-              style={{
-                width: '100%', boxSizing: 'border-box',
-                background: 'var(--surface-2)', border: '1px solid var(--border)',
-                borderRadius: '8px', padding: '0.65rem 0.85rem',
-                color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
-                resize: 'vertical', outline: 'none',
-                fontFamily: 'inherit',
-              }}
+        <>
+          <div style={{
+            border: '1px solid var(--border)', borderRadius: 'var(--radius)',
+            padding: '1.5rem', background: 'var(--surface)',
+            paddingBottom: '70px',
+          }}>
+            <CaseDebriefPanel
+              businessCase={businessCase}
+              onRetry={handleRetry}
+              onBack={onBack}
+              onNext={onNext}
             />
+            <div style={{ marginTop: '1.5rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                My Notes
+              </div>
+              <textarea
+                value={note}
+                onChange={e => { setNote(e.target.value); saveNote('cases', businessCase.id, e.target.value); }}
+                placeholder="Add your own notes, reminders, or follow-up questions..."
+                rows={4}
+                style={{
+                  width: '100%', boxSizing: 'border-box',
+                  background: 'var(--surface-2)', border: '1px solid var(--border)',
+                  borderRadius: '8px', padding: '0.65rem 0.85rem',
+                  color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
+                  resize: 'vertical', outline: 'none',
+                  fontFamily: 'inherit',
+                }}
+              />
+            </div>
           </div>
-        </div>
+
+          {/* Sticky bottom bar — always shown in debrief */}
+          <div style={{
+            position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
+            background: 'var(--surface)', borderTop: '1px solid var(--border)',
+            padding: '0.75rem 1.5rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem',
+          }}>
+            <span style={{ fontSize: '0.83rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+              Case complete
+            </span>
+            <div style={{ display: 'flex', gap: '0.6rem' }}>
+              <button
+                onClick={onBack}
+                style={{
+                  background: 'var(--surface-2)', border: '1px solid var(--border)',
+                  borderRadius: '7px', padding: '0.45rem 1rem',
+                  color: 'var(--text-muted)', fontSize: '0.83rem', fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                ← Back
+              </button>
+              {onNext && (
+                <button
+                  onClick={onNext}
+                  style={{
+                    background: 'var(--accent)', color: '#fff',
+                    border: 'none', borderRadius: '7px',
+                    padding: '0.45rem 1.1rem',
+                    fontSize: '0.83rem', fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Next →
+                </button>
+              )}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

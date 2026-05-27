@@ -11,6 +11,7 @@ export function ScenarioBrowser({ allProgress, onSelect, unlocked, onUnlock, onO
 
   const completedCount = scenarios.filter(s => allProgress[s.id]?.attempts?.length > 0).length;
   const industries = [...new Set(scenarios.map(s => s.industry))];
+  const firstUnstartedId = scenarios.find(s => !(allProgress[s.id]?.attempts?.length > 0))?.id;
 
   const filteredScenarios = scenarios.filter(s => {
     if (statusFilter === 'free') return s.isFree;
@@ -114,6 +115,7 @@ export function ScenarioBrowser({ allProgress, onSelect, unlocked, onUnlock, onO
             progress={allProgress[scenario.id]}
             onClick={onSelect}
             unlocked={unlocked}
+            isNextUnstarted={scenario.id === firstUnstartedId}
           />
         ))}
         {filteredScenarios.length === 0 && (

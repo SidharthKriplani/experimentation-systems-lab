@@ -52,6 +52,9 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
     ? sortedCases
     : sortedCases.filter(c => c.difficulty === filterDiff);
 
+  const completedIds = new Set(Object.keys(allProgress));
+  const firstUnstartedId = sortedCases.find(c => !completedIds.has(c.id))?.id;
+
   return (
     <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
@@ -148,6 +151,7 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
           const isLocked = !c.isFree && !unlocked;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.senior;
           const isHovered = hoveredId === c.id;
+          const isNextUnstarted = c.id === firstUnstartedId;
 
           return (
             <div
@@ -165,7 +169,8 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
               onMouseLeave={() => setHoveredId(null)}
               style={{
                 background: 'var(--surface)',
-                border: `1px solid ${isHovered ? 'var(--red-border)' : 'var(--border)'}`,
+                border: '1px solid ' + (isHovered ? 'var(--red-border)' : 'var(--border)'),
+                borderLeft: isNextUnstarted ? '3px solid var(--red)' : ('1px solid ' + (isHovered ? 'var(--red-border)' : 'var(--border)')),
                 borderRadius: '10px',
                 padding: '1.25rem',
                 cursor: 'pointer',
@@ -175,8 +180,20 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
                 flexDirection: 'column',
                 gap: '0.75rem',
                 boxShadow: isHovered ? '0 2px 12px rgba(220,38,38,0.08)' : 'none',
+                position: 'relative',
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--red)', background: 'var(--red-bg)',
+                  border: '1px solid var(--red-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               {/* Top row: ID + badges */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
                 <span style={{

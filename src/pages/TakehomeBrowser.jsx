@@ -58,6 +58,8 @@ export function TakehomeBrowser({ onSelectCase, unlocked, onOpenArticle }) {
     return 'in-progress';
   }
 
+  const firstUnstartedId = takehomeCases.find(c => !allProgress[c.id]?.completedAt)?.id;
+
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
@@ -170,6 +172,7 @@ export function TakehomeBrowser({ onSelectCase, unlocked, onOpenArticle }) {
           const isLocked = !c.isFree && !unlocked;
           const trackCfg = TRACK_COLOR[c.track] || TRACK_COLOR.both;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.senior;
+          const isNextUnstarted = c.id === firstUnstartedId;
 
           return (
             <div
@@ -181,7 +184,7 @@ export function TakehomeBrowser({ onSelectCase, unlocked, onOpenArticle }) {
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
-                borderLeft: `3px solid ${diffCfg.color}`,
+                borderLeft: isNextUnstarted ? '3px solid var(--yellow)' : '3px solid ' + diffCfg.color,
                 borderRadius: '10px',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',
@@ -198,6 +201,17 @@ export function TakehomeBrowser({ onSelectCase, unlocked, onOpenArticle }) {
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--yellow)', background: 'var(--yellow-bg)',
+                  border: '1px solid var(--yellow-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
                 <div style={{ flex: 1 }}>
                   {/* Badge row */}

@@ -1,3 +1,4 @@
+import { Icon } from '../components/shared/Icon.jsx';
 import { useState } from 'react';
 import { spotTheFlawCases } from '../data/spotTheFlawCases.js';
 import { getAllSTFProgress } from '../utils/spotTheFlawProgress.js';
@@ -35,6 +36,9 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
   const filteredCases = activeFlawType === 'All'
     ? spotTheFlawCases
     : spotTheFlawCases.filter(c => c.flawType === activeFlawType);
+
+  const completedIds = new Set(Object.keys(allProgress));
+  const firstUnstartedId = spotTheFlawCases.find(c => !completedIds.has(c.id))?.id;
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
@@ -79,9 +83,9 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{ width: 96, height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / stfCases.length * 100))}%`, background: 'var(--red)', borderRadius: 2, transition: 'width 0.4s' }} />
+              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / spotTheFlawCases.length * 100))}%`, background: 'var(--red)', borderRadius: 2, transition: 'width 0.4s' }} />
             </div>
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{stfCases.length}</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{spotTheFlawCases.length}</span>
           </div>
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
             {spotTheFlawCases.filter(c => c.isFree).length} free to try
@@ -146,6 +150,7 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
           const prog = allProgress[c.id];
           const isLocked = !c.isFree && !unlocked;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.analyst;
+          const isNextUnstarted = c.id === firstUnstartedId;
 
           return (
             <div
@@ -157,7 +162,7 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
-                borderLeft: `3px solid ${diffCfg.color}`,
+                borderLeft: isNextUnstarted ? '3px solid var(--red)' : '3px solid ' + diffCfg.color,
                 borderRadius: '10px',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',
@@ -174,6 +179,17 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
                 e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--red)', background: 'var(--red-bg)',
+                  border: '1px solid var(--red-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
                 <div style={{ flex: 1 }}>
                   {/* Badge row */}

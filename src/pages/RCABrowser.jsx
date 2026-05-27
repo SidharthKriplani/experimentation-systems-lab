@@ -63,6 +63,8 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
     ? [...rcaCases].sort((a, b) => (DIFF_ORDER[a.difficulty] ?? 1) - (DIFF_ORDER[b.difficulty] ?? 1))
     : rcaCases;
 
+  const firstUnstartedId = rcaCases.find(c => !getRCAProgress(c.id))?.id;
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
@@ -171,6 +173,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
               domainCfg={domainCfg}
               onSelectCase={onSelectCase}
               onUnlock={onUnlock}
+              isNextUnstarted={c.id === firstUnstartedId}
             />
           );
         })}
@@ -208,7 +211,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
   );
 }
 
-function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCase, onUnlock }) {
+function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCase, onUnlock, isNextUnstarted }) {
   const levelColor = progress ? LEVEL_COLOR[progress.level] : null;
   const levelBg = progress ? LEVEL_BG[progress.level] : null;
 
@@ -229,12 +232,13 @@ function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCas
       style={{
         background: 'var(--surface)',
         border: '1px solid var(--border)',
-        borderLeft: `3px solid ${diffCfg.color}`,
+        borderLeft: isNextUnstarted ? '3px solid var(--teal)' : '3px solid ' + diffCfg.color,
         borderRadius: 'var(--radius)',
         padding: '1.1rem 1.25rem',
         cursor: 'pointer',
         opacity: isLocked ? 0.65 : 1,
         transition: 'border-color 0.12s, box-shadow 0.12s',
+        position: 'relative',
       }}
       onMouseEnter={e => {
         e.currentTarget.style.borderColor = 'var(--yellow-border)';
@@ -245,6 +249,17 @@ function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCas
         e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
+      {isNextUnstarted && (
+        <span style={{
+          position: 'absolute', top: '0.6rem', right: '0.7rem',
+          fontSize: '0.68rem', fontWeight: 700,
+          color: 'var(--teal)', background: 'var(--teal-bg)',
+          border: '1px solid var(--teal-border)',
+          borderRadius: 4, padding: '0.1rem 0.4rem',
+        }}>
+          Next →
+        </span>
+      )}
       {/* Top row: tags + status */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.55rem', flexWrap: 'wrap' }}>
         <Tag label={domainCfg.label} color={domainCfg.color} bg={domainCfg.bg} />

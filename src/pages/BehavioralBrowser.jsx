@@ -93,6 +93,8 @@ export function BehavioralBrowser({ onStart, unlocked }) {
   });
 
   const completedCount = Object.keys(progress).length;
+  const completedIds = new Set(Object.keys(progress));
+  const firstUnstartedId = behavioralQuestions.find(q => !completedIds.has(q.id))?.id;
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
@@ -244,6 +246,7 @@ export function BehavioralBrowser({ onStart, unlocked }) {
           const isLocked = !question.isFree && !unlocked;
           const dc = DIFFICULTY_COLOR[question.difficulty] || {};
           const cc = CATEGORY_COLOR[question.category] || {};
+          const isNextUnstarted = question.id === firstUnstartedId;
 
           return (
             <div
@@ -252,7 +255,7 @@ export function BehavioralBrowser({ onStart, unlocked }) {
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
-                borderLeft: `3px solid ${dc.color}`,
+                borderLeft: isNextUnstarted ? '3px solid var(--purple)' : '3px solid ' + (dc.color || 'var(--border)'),
                 borderRadius: '10px',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',
@@ -269,6 +272,17 @@ export function BehavioralBrowser({ onStart, unlocked }) {
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--purple)', background: 'var(--purple-bg)',
+                  border: '1px solid var(--purple-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               {/* Top row */}
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
                 <div style={{ flex: 1 }}>

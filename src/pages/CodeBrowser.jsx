@@ -33,6 +33,9 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
   const pythonCount = modules.filter(m => m.track === 'python').length;
   const doneCount   = Object.keys(allProgress).length;
 
+  const completedIds = new Set(Object.keys(allProgress));
+  const firstUnstartedId = modules.find(m => !completedIds.has(m.id))?.id;
+
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
 
@@ -116,6 +119,7 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
           const diffCfg     = DIFF_CONFIG[module.difficulty] || DIFF_CONFIG.analyst;
           const ratingColor = progress ? (RATING_COLORS[progress.rating] || 'var(--text-muted)') : null;
           const ratingLabel = progress?.rating === 'strong' ? 'Nailed it' : progress?.rating === 'partial' ? 'Close enough' : progress?.rating === 'miss' ? 'Needs review' : null;
+          const isNextUnstarted = module.id === firstUnstartedId;
 
           return (
             <div
@@ -123,7 +127,8 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
               onClick={() => isLocked ? onUnlock() : onSelectModule(module.id)}
               style={{
                 background: 'var(--surface)',
-                border: `1.5px solid ${progress ? 'var(--border)' : 'var(--border-subtle)'}`,
+                border: '1.5px solid ' + (progress ? 'var(--border)' : 'var(--border-subtle)'),
+                borderLeft: isNextUnstarted ? '3px solid var(--teal)' : ('1.5px solid ' + (progress ? 'var(--border)' : 'var(--border-subtle)')),
                 borderRadius: 'var(--radius)',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',
@@ -135,6 +140,17 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
               onMouseEnter={e => { e.currentTarget.style.borderColor = isLocked ? 'var(--border)' : 'var(--yellow-border)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = progress ? 'var(--border)' : 'var(--border-subtle)'; }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--teal)', background: 'var(--teal-bg)',
+                  border: '1px solid var(--teal-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               {/* Track + difficulty badges */}
               <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
                 <span style={{

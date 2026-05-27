@@ -1,7 +1,7 @@
 import { DifficultyBadge, IndustryBadge, ThemeBadge } from '../ui/Badge.jsx';
 import { getScoreLevel } from '../../utils/scoring.js';
 
-export function ScenarioCard({ scenario, progress, onClick }) {
+export function ScenarioCard({ scenario, progress, onClick, isNextUnstarted }) {
   const isCompleted = progress && progress.attempts?.length > 0;
   const bestScore = progress?.bestScore;
   const scoreLevel = bestScore ? getScoreLevel(bestScore) : null;
@@ -12,6 +12,7 @@ export function ScenarioCard({ scenario, progress, onClick }) {
       style={{
         background: 'var(--surface)',
         border: '1px solid var(--border)',
+        borderLeft: isNextUnstarted ? '3px solid var(--accent)' : '1px solid var(--border)',
         borderRadius: '8px',
         padding: '1.1rem',
         cursor: 'pointer',
@@ -22,6 +23,17 @@ export function ScenarioCard({ scenario, progress, onClick }) {
       onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 0 2px var(--accent-bg)'; }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'var(--shadow)'; }}
     >
+      {isNextUnstarted && (
+        <span style={{
+          position: 'absolute', top: '0.6rem', right: '0.7rem',
+          fontSize: '0.68rem', fontWeight: 700,
+          color: 'var(--accent)', background: 'var(--accent-bg)',
+          border: '1px solid var(--accent-border)',
+          borderRadius: 4, padding: '0.1rem 0.4rem',
+        }}>
+          Next →
+        </span>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.6rem', gap: '0.5rem' }}>
         <div style={{ flex: 1 }}>

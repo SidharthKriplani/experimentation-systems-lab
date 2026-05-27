@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { signOut } from '../../utils/auth.js';
 
+// NOTE: This component is not currently rendered. Navigation is handled by Sidebar.jsx.
+// Kept as a reference/alternative desktop nav. Do not import without updating App.jsx routing.
+
 export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme, user, onShowAuth }) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const navGroups = [

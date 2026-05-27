@@ -31,6 +31,8 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
     ? [...metricCases].sort((a, b) => (DIFF_ORDER[a.difficulty] ?? 1) - (DIFF_ORDER[b.difficulty] ?? 1))
     : metricCases;
 
+  const firstUnstartedId = metricCases.find(mc => !getMetricsProgress(mc.id))?.id;
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
@@ -128,6 +130,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
           const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
           const diffCfg = DIFF_CFG[mc.difficulty] || DIFF_CFG.analyst;
           const isLocked = !mc.isFree && !unlocked;
+          const isNextUnstarted = mc.id === firstUnstartedId;
 
           return (
             <div
@@ -139,11 +142,13 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
               style={{
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',
+                borderLeft: isNextUnstarted ? '3px solid var(--green)' : '1.5px solid var(--border)',
                 borderRadius: 'var(--radius)',
                 padding: '1.25rem',
                 cursor: 'pointer',
                 transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
                 display: 'flex', flexDirection: 'column', gap: '0.6rem',
+                position: 'relative',
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderColor = 'var(--green-border)';
@@ -154,6 +159,17 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
                 e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--green)', background: 'var(--green-bg)',
+                  border: '1px solid var(--green-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               {/* Badges row */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
                 <span style={{

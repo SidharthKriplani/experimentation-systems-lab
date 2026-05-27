@@ -26,6 +26,8 @@ export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
     : prioritizationScenarios.filter(s => s.tags.includes(activeTag));
 
   const completedCount = Object.keys(progress).length;
+  const completedIds = new Set(Object.keys(progress));
+  const firstUnstartedId = prioritizationScenarios.find(s => !completedIds.has(s.id))?.id;
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
@@ -46,9 +48,9 @@ export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{ width: 96, height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / priScenarios.length * 100))}%`, background: 'var(--purple)', borderRadius: 2, transition: 'width 0.4s' }} />
+              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / prioritizationScenarios.length * 100))}%`, background: 'var(--accent)', borderRadius: 2, transition: 'width 0.4s' }} />
             </div>
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{priScenarios.length}</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{prioritizationScenarios.length}</span>
           </div>
         </div>
       </div>
@@ -105,6 +107,8 @@ export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
         {filtered.map(scenario => {
           const prog = progress[scenario.id];
           const isLocked = !scenario.isFree && !unlocked;
+          const dc = DIFFICULTY_COLOR[scenario.difficulty] || {};
+          const isNextUnstarted = scenario.id === firstUnstartedId;
 
           return (
             <div
@@ -113,7 +117,7 @@ export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
-                borderLeft: `3px solid ${dc.color}`,
+                borderLeft: isNextUnstarted ? '3px solid var(--accent)' : ('3px solid ' + (dc.color || 'var(--border)')),
                 borderRadius: '10px',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',
@@ -130,6 +134,17 @@ export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--accent)', background: 'var(--accent-bg)',
+                  border: '1px solid var(--accent-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               {/* Top row */}
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
                 <div style={{ flex: 1 }}>
@@ -139,18 +154,13 @@ export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
                       {scenario.company}
                     </span>
                     {/* Difficulty */}
-                    {(() => {
-                      const dc = DIFFICULTY_COLOR[scenario.difficulty] || {};
-                      return (
-                        <span style={{
-                          fontSize: '0.7rem', fontWeight: 600,
-                          color: dc.color, background: dc.bg, border: `1px solid ${dc.border}`,
-                          borderRadius: '4px', padding: '0.1rem 0.4rem',
-                        }}>
-                          {scenario.difficulty}
-                        </span>
-                      );
-                    })()}
+                    <span style={{
+                      fontSize: '0.7rem', fontWeight: 600,
+                      color: dc.color, background: dc.bg, border: '1px solid ' + dc.border,
+                      borderRadius: '4px', padding: '0.1rem 0.4rem',
+                    }}>
+                      {scenario.difficulty}
+                    </span>
                     {/* Free badge */}
                     {scenario.isFree && (
                       <span style={{

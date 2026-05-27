@@ -9,9 +9,18 @@ const LEVEL_COLORS = {
   analyst_ready: { color: 'var(--blue-text)', bg: 'var(--blue-bg)',   border: 'var(--blue-border)' },
 };
 
+const DESIGN_DIFF_CFG = {
+  analyst: { color: 'var(--blue-text)' },
+  senior:  { color: 'var(--accent)' },
+  staff:   { color: 'var(--teal)' },
+};
+
 export function DesignBrowser({ onSelectScenario, onOpenArticle }) {
   const [theoryActive, setTheoryActive] = useState(false);
   const allProgress = getAllDesignProgress();
+
+  const completedIds = new Set(Object.keys(allProgress));
+  const firstUnstartedId = designScenarios.find(s => !completedIds.has(s.id))?.id;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
@@ -70,13 +79,15 @@ export function DesignBrowser({ onSelectScenario, onOpenArticle }) {
           const progress = allProgress[scenario.id];
           const bestLevel = progress?.bestLevel;
           const levelCfg = bestLevel ? LEVEL_COLORS[bestLevel] : null;
+          const diffCfg = DESIGN_DIFF_CFG[scenario.difficulty] || { color: 'var(--accent)' };
+          const isNextUnstarted = scenario.id === firstUnstartedId;
 
           return (
             <div
               key={scenario.id}
               style={{
                 border: '1.5px solid var(--border)',
-                borderLeft: `3px solid ${diffCfg.color}`,
+                borderLeft: isNextUnstarted ? '3px solid var(--accent)' : '3px solid ' + diffCfg.color,
                 borderRadius: 'var(--radius)',
                 background: 'var(--surface)',
                 padding: '1.1rem 1.25rem',
@@ -97,6 +108,17 @@ export function DesignBrowser({ onSelectScenario, onOpenArticle }) {
                 e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--accent)', background: 'var(--accent-bg)',
+                  border: '1px solid var(--accent-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               {/* Badges row */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.45rem', flexWrap: 'wrap' }}>
                 <DifficultyBadge difficulty={scenario.difficulty} />

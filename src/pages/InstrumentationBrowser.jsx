@@ -46,6 +46,9 @@ export function InstrumentationBrowser({ onSelectCase, unlocked, onOpenArticle }
     .slice()
     .sort((a, b) => DIFF_ORDER[a.difficulty] - DIFF_ORDER[b.difficulty]);
 
+  const completedIds = new Set(Object.keys(allProgress));
+  const firstUnstartedId = instrumentationCases.find(c => !completedIds.has(c.id))?.id;
+
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
@@ -159,6 +162,7 @@ export function InstrumentationBrowser({ onSelectCase, unlocked, onOpenArticle }
           const prog = allProgress[c.id];
           const isLocked = !c.isFree && !unlocked;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.junior;
+          const isNextUnstarted = c.id === firstUnstartedId;
 
           return (
             <div
@@ -166,6 +170,7 @@ export function InstrumentationBrowser({ onSelectCase, unlocked, onOpenArticle }
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
+                borderLeft: isNextUnstarted ? '3px solid var(--teal)' : '3px solid ' + diffCfg.color,
                 borderRadius: '10px',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',
@@ -174,6 +179,7 @@ export function InstrumentationBrowser({ onSelectCase, unlocked, onOpenArticle }
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '0.5rem',
+                position: 'relative',
               }}
               role="button"
               tabIndex={0}
@@ -188,6 +194,17 @@ export function InstrumentationBrowser({ onSelectCase, unlocked, onOpenArticle }
                 e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--teal)', background: 'var(--teal-bg)',
+                  border: '1px solid var(--teal-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               {/* Badge row */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
                 <span style={{

@@ -157,8 +157,20 @@ export default function App() {
         setUser(null);
       }
     });
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'hidden') {
+        setUser(currentUser => {
+          if (currentUser) pushProgressToSupabase(currentUser);
+          return currentUser;
+        });
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
       data?.subscription?.unsubscribe?.();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -651,6 +663,27 @@ export default function App() {
             <div style={{ width: 20, height: 20, background: 'linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, flexShrink: 0 }}>⚗</div>
             <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', letterSpacing: '-0.02em' }}>Analytics Lab</span>
           </button>
+          {!user && (
+            <button
+              onClick={() => setShowAuth(true)}
+              style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '5px', padding: '0.25rem 0.55rem', fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer' }}
+            >
+              Sign in
+            </button>
+          )}
+          {user && (
+            <div style={{
+              width: '26px', height: '26px', borderRadius: '50%',
+              background: 'var(--accent-bg, var(--surface-2))',
+              border: '1px solid var(--border)',
+              color: 'var(--accent)',
+              fontSize: '0.75rem', fontWeight: 700,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              textTransform: 'uppercase', flexShrink: 0,
+            }}>
+              {user.email ? user.email[0] : '?'}
+            </div>
+          )}
         </div>
 
         <main style={{ flex: 1 }}>

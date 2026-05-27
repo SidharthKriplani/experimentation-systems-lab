@@ -44,6 +44,11 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
   const [theoryActive, setTheoryActive] = useState(false);
   const allProgress = getAllProductDesignProgress();
 
+  const completedIds = new Set(
+    Object.keys(allProgress).filter(id => allProgress[id]?.completedPhaseIds?.length > 0)
+  );
+  const firstUnstartedId = productDesignScenarios.find(s => !completedIds.has(s.id))?.id;
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
@@ -118,13 +123,15 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
           const levelCfg = result ? LEVEL_CONFIG[result.level] : null;
           const isLocked = !scenario.isFree && !unlocked;
           const phasesComplete = progress?.completedPhaseIds?.length || 0;
+          const diffCfg = DIFFICULTY_CONFIG[scenario.difficulty] || DIFFICULTY_CONFIG.medium;
+          const isNextUnstarted = scenario.id === firstUnstartedId;
 
           return (
             <div
               key={scenario.id}
               style={{
                 border: '1.5px solid var(--border)',
-                borderLeft: `3px solid ${diffCfg.color}`,
+                borderLeft: isNextUnstarted ? '3px solid var(--purple)' : '3px solid ' + diffCfg.color,
                 borderRadius: 'var(--radius)',
                 background: 'var(--surface)',
                 padding: '1.1rem 1.25rem',
@@ -145,6 +152,17 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
                 e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--purple)', background: 'var(--purple-bg)',
+                  border: '1px solid var(--purple-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               {/* Badges row */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                 {/* Company dot */}

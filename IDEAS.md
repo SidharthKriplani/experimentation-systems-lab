@@ -26,6 +26,11 @@ _(nothing active — update at session start when pulling from priority list)_
 - ~~Consult page — overlaps with Search~~ — ✅ cut V4.14.0
 - Stripe paywall activation — flip isUnlocked() → false, test end-to-end
 - Confirm `VITE_POSTHOG_KEY` is live in Vercel prod and establish WAU baseline
+- ~~**Next-case highlight for all 15 remaining case room browsers** (audit #72)~~ — ✅ shipped V4.25.0 (all 16 browsers now have firstUnstartedId + accent border + "Next →" badge, each using room color var)
+- ~~**Sticky next CTA for RCARunner, CaseRunner, BIRunner** (audit #72)~~ — ✅ shipped V4.25.0 (position-fixed bottom bar with back + next buttons)
+- ~~**Progress sync on tab close for signed-in users** (audit #73)~~ — ✅ shipped V4.25.0 (visibilitychange listener in App.jsx)
+- ~~**Delete Header.jsx or document it as unused** (audit #73)~~ — ✅ shipped V4.25.0 (comment added noting Sidebar.jsx is the real nav)
+- ~~**Sign-in button in mobile topbar** (audit #73)~~ — ✅ shipped V4.25.0 (sign-in button + avatar added to mobile-topbar right slot)
 
 ### Bugs
 - ~~**`onResetAllProgress` missing 9 keys** (audit #62)~~ — ✅ fixed V4.6.1 (8 keys added, reset now covers all rooms)

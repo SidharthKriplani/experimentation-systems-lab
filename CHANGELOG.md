@@ -4,6 +4,38 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.25.0] — 2026-05-27
+
+### Changed — Audit #72 + #73: Full UX consistency pass + auth hardening
+
+**Next-case highlight — all 16 case room browsers (audit #72A):**
+Every room browser now shows a "first unstarted case" signal: accent-colored left border (`3px solid var(--<room-color>)`) + absolute "Next →" badge on the top-right corner of the card. Previously only StatsBrowser had this pattern. Each browser uses its own room color variable and its own progress getter. Notable implementation details:
+- `CasesBrowser`, `RCABrowser`: progress is per-case (`getCaseProgress(id)`, `getRCAProgress(id)`) — firstUnstartedId computed by scanning the full list
+- `MetricsBrowser`: same per-case pattern via `getMetricsProgress(id)`
+- `ChallengesBrowser`: firstUnstartedId from the full case list, not the filtered list — highlight persists across difficulty filter changes
+- `ScenarioBrowser`: delegates `isNextUnstarted` prop to `ScenarioCard` component
+- `ProductDesignBrowser`: "started" defined as `completedPhaseIds.length > 0` (multi-phase room)
+- `TakehomeBrowser`: "completed" defined by `completedAt` field
+- `GrowthAnalyticsBrowser`: "Next →" badge shifted left when bookmark emoji is also present to avoid overlap
+- Agent also fixed pre-existing bugs in DesignBrowser (`diffCfg` undefined), PrioritizationBrowser (`priScenarios` reference + inner IIFE), SpotTheFlawBrowser (`stfCases` reference + missing `Icon` import)
+
+**Sticky bottom CTA — RCARunner, CaseRunner, BIRunner (audit #72B):**
+Position-fixed bottom bar (same pattern as ChallengesRunner) added to the 3 runners with longest debrief content. Bar shows "← Back" (secondary) + "Next →" (primary, only when `onNext` exists). Padding-bottom added to content containers to prevent content being hidden behind the fixed bar. Colors: `var(--teal)` for RCA, `var(--accent)` for Cases, `var(--yellow)` for BI.
+
+**Auth hardening (audit #73):**
+- `App.jsx` — `visibilitychange` listener added inside auth useEffect: pushes progress to Supabase when tab goes to background and user is signed in. Prevents progress loss between sign-in events.
+- `App.jsx` — Sign-in button (and user initial avatar when signed in) added to mobile topbar right slot. Previously the only auth entry point on mobile was the sidebar hamburger.
+- `Header.jsx` — Comment added noting the component is not rendered and navigation is handled by Sidebar.jsx.
+- `README.md` — Supabase env var documentation added to deploy section.
+
+**Audit #64 status corrected:**
+Template literals in data files were already fully resolved in V4.12.0 (all 26 data files scanned, zero backticks remaining). AUDITS.md ⚠️ flag was stale — corrected to ✅.
+
+### Files changed
+`src/pages/BIBrowser.jsx`, `src/pages/BehavioralBrowser.jsx`, `src/pages/CasesBrowser.jsx`, `src/pages/ChallengesBrowser.jsx`, `src/pages/CodeBrowser.jsx`, `src/pages/DesignBrowser.jsx`, `src/pages/EstimationBrowser.jsx`, `src/pages/GrowthAnalyticsBrowser.jsx`, `src/pages/InstrumentationBrowser.jsx`, `src/pages/MetricsBrowser.jsx`, `src/pages/PrioritizationBrowser.jsx`, `src/pages/ProductDesignBrowser.jsx`, `src/pages/RCABrowser.jsx`, `src/pages/ScenarioBrowser.jsx`, `src/pages/SpotTheFlawBrowser.jsx`, `src/pages/TakehomeBrowser.jsx`, `src/components/scenario/ScenarioCard.jsx`, `src/components/rca/RCARunner.jsx`, `src/components/cases/CaseRunner.jsx`, `src/components/bi/BIRunner.jsx`, `src/App.jsx`, `src/components/layout/Header.jsx`, `README.md`, `AUDITS.md`, `IDEAS.md`
+
+---
+
 ## [4.24.0] — 2026-05-27
 
 ### Added — UX pass (P4/P5) + Supabase auth

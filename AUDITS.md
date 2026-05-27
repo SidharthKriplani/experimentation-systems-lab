@@ -75,6 +75,83 @@ Four distinct navigation problems found and resolved across the V4.12.x builds:
 
 ---
 
+### 73. ⚠️ Auth Layer Completeness Audit (V4.24)
+**Version:** V4.24.0
+**Type:** BUILD / Dead code / UX
+
+Four findings from the Supabase auth layer shipped in V4.24:
+
+1. **Header.jsx is dead code** — `Header.jsx` defines `user` and `onShowAuth` props and contains a sign-in button + user avatar dropdown, but the file is **never imported anywhere** in the codebase. App.jsx uses `Sidebar.jsx` as the sole navigation component. The auth UI in Header.jsx is unreachable. The sign-in button and avatar are only accessible via Sidebar. Status: ⚠️ Open. Fix: either delete Header.jsx or document that it's a design artifact.
+
+2. **Progress not synced after case completion** — `pushProgressToSupabase(user)` is called only on the `SIGNED_IN` auth event in App.jsx. If a signed-in user completes 10 cases and closes the tab without triggering a new sign-in, that progress is never pushed to Supabase. On a new device they'll see stale data. Status: ⚠️ Open. Fix: call `pushProgressToSupabase(user)` inside a `visibilitychange` listener (`document.addEventListener('visibilitychange', ...)`) when `document.visibilityState === 'hidden'` and user is signed in. This batches the push on tab close/background rather than per-case.
+
+3. **AuthModal not triggered from mobile topbar** — App.jsx renders a `mobile-topbar` div for mobile layout. This topbar has no sign-in button. Sign-in is only accessible by opening the Sidebar. On mobile, users who don't discover the sidebar hamburger will never see auth. Status: ⚠️ Open.
+
+4. **Supabase env vars undocumented in Vercel** — `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are required for auth to activate. They are documented in `SETUP_AUTH.md` (repo root) but not referenced from `README.md` or `DECISIONS.md`. Any new contributor deploying the app will get a silent auth-disabled experience with no indication of why. Status: ⚠️ Open. Fix: add one-line note to README deploy section.
+
+**Status:** ✅ Resolved V4.25.0 — Header.jsx commented as unused; visibilitychange progress sync added to App.jsx; sign-in button added to mobile topbar; Supabase env vars documented in README.
+
+---
+
+### 72. ⚠️ UX Completeness Audit — Next-Case Patterns (V4.24)
+**Version:** V4.24.0
+**Type:** UX / Coverage
+
+Systematic check of two UX patterns introduced in V4.24 across all room browsers and runners.
+
+**Pattern A: Next-case highlight in browsers**
+First-unstarted-case highlight (accent left border + "Next →" badge) was implemented in StatsBrowser only. Full coverage across all case room browsers:
+
+| Browser | Has highlight |
+|---------|--------------|
+| StatsBrowser | ✅ yes |
+| BIBrowser | ⚠️ no |
+| BehavioralBrowser | ⚠️ no |
+| CasesBrowser | ⚠️ no |
+| ChallengesBrowser | ⚠️ no |
+| CodeBrowser | ⚠️ no |
+| DesignBrowser | ⚠️ no |
+| EstimationBrowser | ⚠️ no |
+| GrowthAnalyticsBrowser | ⚠️ no |
+| InstrumentationBrowser | ⚠️ no |
+| MetricsBrowser | ⚠️ no |
+| PrioritizationBrowser | ⚠️ no |
+| ProductDesignBrowser | ⚠️ no |
+| RCABrowser | ⚠️ no |
+| ScenarioBrowser (Review) | ⚠️ no |
+| SpotTheFlawBrowser | ⚠️ no |
+| TakehomeBrowser | ⚠️ no |
+
+15/16 case room browsers are missing the highlight. Foundation browsers (StatsFoundations, MetricsFoundations, RCAFoundations, ExpFoundations) use module-list layouts with different progress patterns — lower priority.
+
+**Pattern B: Sticky bottom "Next →" CTA in runners**
+Position-fixed sticky bar after debrief was implemented in ChallengesRunner only. All other runners have an **inline** `onNext` button at the bottom of the debrief panel — functional but low-prominence. The inline button requires the user to scroll down past the debrief content to see it, whereas a sticky bar is always visible.
+
+| Runner | Sticky bar | Inline onNext |
+|--------|-----------|--------------|
+| ChallengesRunner | ✅ yes | — |
+| StatsRunner | no | ✅ inline |
+| MetricsRunner | no | ✅ inline |
+| DesignRunner | no | ✅ inline |
+| RCARunner | no | ✅ inline |
+| CaseRunner | no | ✅ inline |
+| BehavioralRunner | no | ✅ inline |
+| EstimationRunner | no | ✅ inline |
+| SpotTheFlawRunner | no | ✅ inline |
+| BIRunner | no | ✅ inline |
+| InstrumentationRunner | no | ✅ inline |
+| GrowthAnalyticsRunner | no | ✅ inline |
+| PrioritizationRunner | no | ✅ inline |
+| ProductDesignRunner | no | ✅ inline |
+| CodeRunner | no | ✅ inline |
+| ScenarioRunner | no | inline partial |
+
+Note: inline `onNext` is acceptable for most runners since debrief panels are not excessively long. The ChallengesRunner sticky bar was warranted because its debrief is multi-section and scrolling is longer. **Priority for sticky upgrade: runners with longest debrief content** — RCARunner, CaseRunner, BIRunner.
+
+**Status:** ✅ Resolved V4.25.0 — all 16 browsers have next-case highlight; RCARunner, CaseRunner, BIRunner have sticky bottom bar.
+
+---
+
 ### 71. ✅ Build Safety Audit — `\'` Escape Sequences in JSX (V4.14.1)
 **Version:** V4.14.1
 **Type:** Build safety
@@ -613,7 +690,7 @@ Added `#bi`, `#spot-the-flaw`, `#take-home`, `#instrumentation`, `#challenges`, 
 
 ---
 
-### 64. ⚠️ Template Literals in 9 Data Files — Latent Build Risk
+### 64. ✅ Template Literals in 9 Data Files — Latent Build Risk (Resolved V4.12.0)
 **Version:** V4.6 (scan)
 **Output:** 9 data files confirmed using backtick template literals
 
@@ -792,10 +869,13 @@ Diagnosed institutional memory problem: every new session required expensive re-
 | 61 | `case_opened` Missing from 4 V4.4+ Open Functions ✅ | V4.6.1 | Analytics |
 | 62 | `onResetAllProgress` Missing 9 localStorage Keys ✅ | V4.6.1 | Bug/diagnostic |
 | 63 | Sitemap Missing 8 V4.x Routes ✅ | V4.6.1 | SEO |
-| 64 | Template Literals in 9 Data Files ⚠️ | V4.6 | Build safety |
+| 64 | Template Literals in 9 Data Files ✅ | V4.12.0 | Build safety |
 | 65 | Home.jsx Daily Drill Wrong BEH Case ID ✅ | V4.6.1 | Bug/diagnostic |
 | 66 | SF Module Button Labels + Duplicate Playbook Sections ✅ | V4.6.2 | Visual consistency / BUILD |
 | 67 | Stats Room Comprehensive Audit (6 findings, 5 fixed) ✅ | V4.7.2 | BUILD / Visual / Content / Build safety |
 | 68 | Five-Perspective Comprehensive Audit (15 findings, all fixed) ✅ | V4.8.0–V4.8.1 | Build safety / Config completeness / Component reg / Content / Routing |
 | 69 | Navigation & Discoverability Audit — dead SPA links, orphaned Code room, label ambiguity, LEARN ordering ✅ | V4.12.0–V4.13.0 | Navigation & Discoverability |
 | 70 | Build Safety — DebriefCopyButton em dash parse error ✅ | V4.13.1 | Build safety |
+| 71 | Build Safety — `\'` Escape Sequences in JSX ✅ | V4.14.1 | Build safety |
+| 72 | UX Completeness — Next-Case Patterns (browser highlight + sticky CTA) ✅ | V4.25.0 | UX / Coverage |
+| 73 | Auth Layer Completeness — Header dead code, progress sync gap, mobile auth gap ✅ | V4.25.0 | BUILD / Dead code / UX |
