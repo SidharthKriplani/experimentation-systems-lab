@@ -103,7 +103,7 @@
   --text: #e8eaf0;
   --text-secondary: #c5c9d8;
   --text-muted: #8890a8;
-  --text-dim: #8890a8;
+  --text-dim: #5a6278;
 
   /* Primary accent — indigo (brighter in dark) */
   --accent: #6366f1;
@@ -562,10 +562,10 @@ table { border-collapse: collapse; }
   border-color: var(--border-strong);
 }
 .pal-sort-btn.active {
-  background: var(--accent-bg);
-  color: var(--accent);
-  border-color: var(--accent-border);
-  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  font-weight: 700;
 }
 
 /* ── Gradient CTA button ─────────────────────────────────────────────────── */

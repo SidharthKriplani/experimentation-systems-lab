@@ -348,8 +348,15 @@ export function Home({ onNavigate }) {
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
               {todaysCase.subtitle} Room
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--yellow)', fontWeight: 700, marginTop: 'auto', paddingTop: '0.5rem' }}>
-              Open →
+            <div style={{ marginTop: 'auto', paddingTop: '0.6rem' }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+                background: 'var(--yellow)', color: '#1a1a1a',
+                fontSize: '0.73rem', fontWeight: 800,
+                padding: '0.28rem 0.65rem', borderRadius: 'var(--radius-sm)',
+              }}>
+                Open case <Icon name="chevron-right" size={11} color="currentColor" />
+              </span>
             </div>
           </div>
 
@@ -524,7 +531,8 @@ export function Home({ onNavigate }) {
                 {path.subtitle}
               </div>
               {path.outcome && (
-                <div style={{ fontSize: '0.71rem', color: path.color, lineHeight: 1.4, marginTop: '0.45rem', fontStyle: 'italic', opacity: 0.9 }}>
+                <div style={{ fontSize: '0.69rem', color: 'var(--text-dim)', lineHeight: 1.4, marginTop: '0.5rem', fontWeight: 500 }}>
+                  <span style={{ color: path.color, marginRight: '0.25rem', fontWeight: 700 }}>→</span>
                   {path.outcome}
                 </div>
               )}

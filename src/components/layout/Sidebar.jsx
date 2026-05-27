@@ -253,14 +253,26 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxShadow: '0 2px 10px rgba(99,102,241,0.4)',
             }}><Icon name="flask" size={14} color="#fff" /></div>
-            <span style={{
-              fontWeight: 800,
-              fontSize: '0.875rem',
-              color: 'var(--text)',
-              letterSpacing: '-0.03em',
-            }}>
-              Analytics Lab
-            </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.05rem' }}>
+              <span style={{
+                fontWeight: 900,
+                fontSize: '0.92rem',
+                color: 'var(--text)',
+                letterSpacing: '-0.035em',
+                lineHeight: 1.1,
+              }}>
+                Product Analytics
+              </span>
+              <span style={{
+                fontSize: '0.6rem',
+                fontWeight: 600,
+                color: 'var(--text-dim)',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+              }}>
+                Lab
+              </span>
+            </div>
           </button>
 
           <button

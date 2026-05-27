@@ -4,6 +4,29 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.17.0] — 2026-05
+
+### Changed — "Million dollar" UI pass: difficulty borders, banners, progress bars, sort buttons, type hierarchy, dark mode
+
+**Difficulty left-border on all room browsers:** Every case card in StatsBrowser, MetricsBrowser, RCABrowser, DesignBrowser, ProductDesignBrowser, BIBrowser, SpotTheFlawBrowser, BehavioralBrowser, EstimationBrowser, PrioritizationBrowser, TakehomeBrowser, GrowthAnalyticsBrowser now has `borderLeft: 3px solid diffCfg.color` — consistent color-coded difficulty signal at a glance.
+
+**"Recommended starting point" banner redesign (6 browsers):** Replaced informal "New to this?" text hints with consistent left-accent callout blocks across StatsBrowser, MetricsBrowser, RCABrowser, BIBrowser, SpotTheFlawBrowser, GrowthAnalyticsBrowser. Pattern: `borderLeft: 3px solid var(--COLOR)`, colored bg, `<Icon name="book-open">`, uppercase "RECOMMENDED STARTING POINT" eyebrow, foundation link as styled button.
+
+**Progress bar added to all room headers:** Replaced ad-hoc stat chips/counts with a consistent 96px × 4px track + fill bar showing completion %. Added to StatsBrowser, MetricsBrowser, RCABrowser, BIBrowser, SpotTheFlawBrowser, BehavioralBrowser, EstimationBrowser, PrioritizationBrowser, TakehomeBrowser, GrowthAnalyticsBrowser.
+
+**Sort button active state:** `.pal-sort-btn.active` upgraded from tinted text to filled button (`background: var(--accent); color: #fff; font-weight: 700`). Applies to all 10 browsers using sort controls.
+
+**Home.jsx guided path card outcome text:** Removed `fontStyle: italic` from `path.outcome` display. Replaced with clean `var(--text-dim)` + colored `→` prefix — consistent with the rest of the design system.
+
+**Sidebar wordmark redesign:** Single "Analytics Lab" span replaced with two-line lockup: "Product Analytics" (900 weight, -0.035em tracking) above "LAB" (uppercase, 0.06em tracking, text-dim). Footer version string corrected from "V2.2 · 44 Playable Items" to "V4.16 · 150+ Playable Items". Build-breaking `./Icon.jsx` import path fixed to `../shared/Icon.jsx`.
+
+**Dark mode text hierarchy fix:** `--text-dim` differentiated from `--text-muted` in dark theme (`#5a6278` vs `#8890a8`). Previously identical — no lower-level text hierarchy in dark mode.
+
+### Files changed
+`src/index.css`, `src/components/layout/Sidebar.jsx`, `src/components/layout/Footer.jsx`, `src/pages/Home.jsx`, `src/pages/StatsBrowser.jsx`, `src/pages/MetricsBrowser.jsx`, `src/pages/RCABrowser.jsx`, `src/pages/DesignBrowser.jsx`, `src/pages/ProductDesignBrowser.jsx`, `src/pages/BIBrowser.jsx`, `src/pages/SpotTheFlawBrowser.jsx`, `src/pages/BehavioralBrowser.jsx`, `src/pages/EstimationBrowser.jsx`, `src/pages/PrioritizationBrowser.jsx`, `src/pages/TakehomeBrowser.jsx`, `src/pages/GrowthAnalyticsBrowser.jsx`
+
+---
+
 ## [4.16.0] — 2026-05
 
 ### Changed — SVG icon system, CSS utility classes, runner premium pass, browser cleanup

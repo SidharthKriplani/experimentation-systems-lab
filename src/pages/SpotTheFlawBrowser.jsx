@@ -77,11 +77,12 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
             {spotTheFlawCases.length} cases
           </span>
-          {completedCount > 0 && (
-            <span style={{ fontSize: '0.82rem', color: 'var(--red)' }}>
-              ✓ {completedCount} completed
-            </span>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: 96, height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / stfCases.length * 100))}%`, background: 'var(--red)', borderRadius: 2, transition: 'width 0.4s' }} />
+            </div>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{stfCases.length}</span>
+          </div>
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
             {spotTheFlawCases.filter(c => c.isFree).length} free to try
           </span>
@@ -89,24 +90,29 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
       </div>
 
       {/* Theory hint */}
-      {onNavigate && (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: '0.5rem',
-          padding: '0.5rem 0.85rem',
-          background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
-          borderRadius: '6px', marginBottom: '1.25rem',
-          fontSize: '0.78rem', color: 'var(--teal)',
-        }}>
-          <span>📖</span>
-          <span>New to this? Start with</span>
-          <button onClick={() => onNavigate('stat-foundations')} style={{
-            background: 'none', border: 'none', padding: 0,
-            color: 'var(--teal)', fontWeight: 700, cursor: 'pointer',
-            fontSize: '0.78rem', textDecoration: 'underline',
-          }}>Stat Foundations</button>
-          <span>first.</span>
-        </div>
-      )}
+              {onNavigate && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            padding: '0.7rem 1rem',
+            background: 'var(--teal-bg)',
+            borderLeft: '3px solid var(--teal)',
+            borderRadius: 'var(--radius-sm)',
+            marginBottom: '1.25rem',
+          }}>
+            <Icon name="book-open" size={14} color="var(--teal)" style={{ flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                <button onClick={() => onNavigate('stat-foundations')} style={{
+                  background: 'none', border: 'none', padding: 0,
+                  color: 'var(--teal)', fontWeight: 700, cursor: 'pointer',
+                  fontSize: '0.78rem',
+                }}>Stat Foundations</button>
+                {' '}builds the mental models these cases assume.
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* Flaw type filter chips */}
       <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
@@ -151,6 +157,7 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
+                borderLeft: `3px solid ${diffCfg.color}`,
                 borderRadius: '10px',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',

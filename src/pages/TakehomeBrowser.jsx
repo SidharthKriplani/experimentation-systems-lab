@@ -99,11 +99,12 @@ export function TakehomeBrowser({ onSelectCase, unlocked, onOpenArticle }) {
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
             {takehomeCases.length} challenges
           </span>
-          {completedCount > 0 && (
-            <span style={{ fontSize: '0.82rem', color: 'var(--green)' }}>
-              ✓ {completedCount} completed
-            </span>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: 96, height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / takehomeCases.length * 100))}%`, background: 'var(--green)', borderRadius: 2, transition: 'width 0.4s' }} />
+            </div>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{takehomeCases.length}</span>
+          </div>
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
             {takehomeCases.filter(c => c.isFree).length} free to try
           </span>
@@ -180,6 +181,7 @@ export function TakehomeBrowser({ onSelectCase, unlocked, onOpenArticle }) {
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
+                borderLeft: `3px solid ${diffCfg.color}`,
                 borderRadius: '10px',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',

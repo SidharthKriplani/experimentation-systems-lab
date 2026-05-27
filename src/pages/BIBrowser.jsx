@@ -103,11 +103,12 @@ export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
             8 cases · Analyst–Staff · 15–20 min each
           </span>
-          {completedCount > 0 && (
-            <span style={{ fontSize: '0.82rem', color: 'var(--yellow)' }}>
-              ✓ {completedCount} completed
-            </span>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: 96, height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / biCases.length * 100))}%`, background: 'var(--yellow)', borderRadius: 2, transition: 'width 0.4s' }} />
+            </div>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{biCases.length}</span>
+          </div>
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
             {biCases.filter(c => c.isFree).length} free to try
           </span>
@@ -182,6 +183,7 @@ export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
+                borderLeft: `3px solid ${diffCfg.color}`,
                 borderRadius: '10px',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',

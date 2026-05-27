@@ -50,31 +50,41 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
           Every concept appears inside a product decision — not as a textbook definition.
           Read the situation, inspect the data, make the call, then see how a senior analyst would have read it.
         </p>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Stat n={statsModules.length} label="modules" />
-          <Stat n={completedCount} label="completed" color="var(--teal)" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>{statsModules.length} modules</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: 96, height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / statsModules.length * 100))}%`, background: 'var(--accent)', borderRadius: 2, transition: 'width 0.4s' }} />
+            </div>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{statsModules.length}</span>
+          </div>
         </div>
       </div>
 
       {/* Theory hint */}
-      {onNavigate && (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: '0.5rem',
-          padding: '0.5rem 0.85rem',
-          background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
-          borderRadius: '6px', marginBottom: '1.25rem',
-          fontSize: '0.78rem', color: 'var(--teal)',
-        }}>
-          <Icon name="book-open" size={13} color="currentColor" />
-          <span>New to this? Start with</span>
-          <button onClick={() => onNavigate('stat-foundations')} style={{
-            background: 'none', border: 'none', padding: 0,
-            color: 'var(--teal)', fontWeight: 700, cursor: 'pointer',
-            fontSize: '0.78rem', textDecoration: 'underline',
-          }}>Stat Foundations</button>
-          <span>first.</span>
-        </div>
-      )}
+              {onNavigate && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            padding: '0.7rem 1rem',
+            background: 'var(--teal-bg)',
+            borderLeft: '3px solid var(--teal)',
+            borderRadius: 'var(--radius-sm)',
+            marginBottom: '1.25rem',
+          }}>
+            <Icon name="book-open" size={14} color="var(--teal)" style={{ flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                <button onClick={() => onNavigate('stat-foundations')} style={{
+                  background: 'none', border: 'none', padding: 0,
+                  color: 'var(--teal)', fontWeight: 700, cursor: 'pointer',
+                  fontSize: '0.78rem',
+                }}>Stat Foundations</button>
+                {' '}builds the mental models these cases assume.
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* Theory / Cases tab bar */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
@@ -124,6 +134,7 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
               style={{
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',
+                borderLeft: `3px solid ${diffCfg.color}`,
                 borderRadius: 'var(--radius)',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',

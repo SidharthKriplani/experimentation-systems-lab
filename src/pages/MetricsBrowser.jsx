@@ -49,31 +49,41 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
           Design the right metric before you measure the wrong thing. Choose your primary metric,
           diagnostics, guardrails, grain, and decision rule — then see the senior standard.
         </p>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
           <RoomBadge />
-          <StatPill n={completedCount} label="completed" color="var(--green)" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: 96, height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / metricCases.length * 100))}%`, background: 'var(--green)', borderRadius: 2, transition: 'width 0.4s' }} />
+            </div>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{metricCases.length}</span>
+          </div>
         </div>
       </div>
 
       {/* Theory hint */}
-      {onNavigate && (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: '0.5rem',
-          padding: '0.5rem 0.85rem',
-          background: 'var(--green-bg)', border: '1px solid var(--green-border)',
-          borderRadius: '6px', marginBottom: '1.25rem',
-          fontSize: '0.78rem', color: 'var(--green)',
-        }}>
-          <Icon name="book-open" size={13} color="currentColor" />
-          <span>New to this? Start with</span>
-          <button onClick={() => onNavigate('metrics-foundations')} style={{
-            background: 'none', border: 'none', padding: 0,
-            color: 'var(--green)', fontWeight: 700, cursor: 'pointer',
-            fontSize: '0.78rem', textDecoration: 'underline',
-          }}>Metrics Foundation</button>
-          <span>first.</span>
-        </div>
-      )}
+              {onNavigate && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            padding: '0.7rem 1rem',
+            background: 'var(--green-bg)',
+            borderLeft: '3px solid var(--green)',
+            borderRadius: 'var(--radius-sm)',
+            marginBottom: '1.25rem',
+          }}>
+            <Icon name="book-open" size={14} color="var(--green)" style={{ flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--green)', marginBottom: '0.15rem' }}>Recommended starting point</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                <button onClick={() => onNavigate('metrics-foundations')} style={{
+                  background: 'none', border: 'none', padding: 0,
+                  color: 'var(--green)', fontWeight: 700, cursor: 'pointer',
+                  fontSize: '0.78rem',
+                }}>Metrics Foundations</button>
+                {' '}builds the mental models these cases assume.
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* Theory / Cases tab bar */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>

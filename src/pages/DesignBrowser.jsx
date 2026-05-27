@@ -76,6 +76,7 @@ export function DesignBrowser({ onSelectScenario, onOpenArticle }) {
               key={scenario.id}
               style={{
                 border: '1.5px solid var(--border)',
+                borderLeft: `3px solid ${diffCfg.color}`,
                 borderRadius: 'var(--radius)',
                 background: 'var(--surface)',
                 padding: '1.1rem 1.25rem',

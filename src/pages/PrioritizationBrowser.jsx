@@ -44,11 +44,12 @@ export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
             {prioritizationScenarios.length} scenarios
           </span>
-          {completedCount > 0 && (
-            <span style={{ fontSize: '0.82rem', color: 'var(--green)' }}>
-              ✓ {completedCount} completed
-            </span>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: 96, height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${Math.min(100, Math.round(completedCount / priScenarios.length * 100))}%`, background: 'var(--purple)', borderRadius: 2, transition: 'width 0.4s' }} />
+            </div>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{completedCount}/{priScenarios.length}</span>
+          </div>
         </div>
       </div>
 
@@ -112,6 +113,7 @@ export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
+                borderLeft: `3px solid ${dc.color}`,
                 borderRadius: '10px',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',
