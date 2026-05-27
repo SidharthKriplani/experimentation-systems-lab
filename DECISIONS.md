@@ -117,6 +117,18 @@ These decisions are final through V4.x. Do not revisit without strong evidence:
 
 ---
 
+## Current priority (V4.25+)
+
+**Feature building is paused. Distribution and analytics come first.**
+The product is technically complete enough to charge for. The next risk is not features — it is unknown usage. Before any new feature work:
+1. Confirm `VITE_POSTHOG_KEY` is live in Vercel prod
+2. Establish a WAU baseline from real sessions
+3. Observe where users drop off before deciding what to build next
+
+Do not start new features until Step 2 is complete. Every feature decision before then is speculation.
+
+---
+
 ## Analytics
 
 **PostHog is env-var gated. App works identically without it.**

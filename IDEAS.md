@@ -6,7 +6,13 @@ Tiered build backlog. **In Progress** = actively being built this session. **Tie
 
 ## In Progress
 
-_(nothing active — update at session start when pulling from priority list)_
+**PAUSED — feature building suspended as of V4.25.1.**
+Next actions before any new feature work:
+1. Confirm `VITE_POSTHOG_KEY` is live in Vercel prod and establish WAU baseline
+2. Watch 20 real sessions — which room first, where do they drop off, do they reach debrief?
+3. Decide on paywall flip based on observed usage, not assumptions
+
+_No new features until PostHog baseline is established._
 
 ---
 
@@ -66,6 +72,9 @@ _(nothing active — update at session start when pulling from priority list)_
 
 ### Features
 - **Quiz Me on Playbook articles** (from GenAI Lab — auto-generated MCQs from article content) — every Playbook article gets a "Quiz Me" button that generates 3–5 MCQs from the article body. Transforms passive reading into active recall. Extends the MCQ Trainer without new manual content.
+- **Playbook → practice direct linking** (from ML Systems Lab ∇ Gradient pattern) — every Playbook/Gradient article has a "Practice this" link at the bottom that navigates directly to the most relevant case in the relevant room. Currently articles and cases are disconnected. This closes the read-to-practice loop in one tap.
+- **Timed exam lock mechanic** (from ML Systems Lab Combinator) — 30/45/60-min option where answers are locked until the timer ends. Current Interview Simulator has no time pressure. The lock mechanic makes it feel like a real screen.
+- **Production bug debugging room** (from ML Systems Lab Code Bugs tab — 20 Python/SQL production bugs) — dedicated room for debugging broken analytics code: wrong aggregation, off-by-one in window functions, silent NULL handling, metric definition bugs. Different from Code Room (which is execution-focused). Scenario: "this query is running but giving the wrong answer — find it."
 - **PM Practitioner tab** (from GenAI Lab AI Product tab analog) — dedicated tab/section for PM-specific tools: PRD critique simulator, stakeholder explainer, metric trade-off evaluator. PAL skews analyst-heavy; this anchors the PM audience.
 - **Single forward pointer after case debrief** (from GenAI Lab principle) — upgrade "Forward-pointer card" (Tier 3) to enforce ONE next step, not 3–5 options. Genai lab implemented this as a single "What to do next" card with no menu. Prevents decision paralysis at debrief end.
 
