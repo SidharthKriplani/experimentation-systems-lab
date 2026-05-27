@@ -88,79 +88,80 @@
 }
 
 :root[data-theme="dark"] {
-  /* Canvas — slightly lifted from #0a0d14 to reduce low-brightness bleed */
-  --bg: #0d1018;
-  --surface: #141828;
-  --surface-2: #1a1f30;
-  --surface-raised: #20253c;
+  /* Canvas — properly lifted for low-brightness visibility
+     bg→surface step is now ~12 luminance units (was ~7), cards clearly lift off page */
+  --bg: #111520;
+  --surface: #191e30;
+  --surface-2: #1f2438;
+  --surface-raised: #262c44;
 
-  /* Borders — lifted so they're visible at low brightness */
-  --border: #333a55;
-  --border-subtle: #262c45;
-  --border-strong: #444d6e;
+  /* Borders — significantly brighter, visible at 20-30% screen brightness */
+  --border: #3d4668;
+  --border-subtle: #2f3758;
+  --border-strong: #535e82;
 
-  /* Text — text-dim was #5a6278 (~2.9:1 contrast, fails AA); lifted to pass 4.5:1 at low brightness */
-  --text: #eceef4;
-  --text-secondary: #c8cdd9;
-  --text-muted: #9ba5be;
-  --text-dim: #7a8399;
+  /* Text — full hierarchy readable at low brightness */
+  --text: #f2f4fa;
+  --text-secondary: #d0d5e8;
+  --text-muted: #a2acc6;
+  --text-dim: #8490aa;
 
-  /* Primary accent — indigo (brighter in dark) */
+  /* Primary accent — indigo */
   --accent: #6366f1;
   --accent-hover: #818cf8;
   --accent-light: #818cf8;
-  --accent-bg: #0d1629;
-  --accent-border: #1d3a6e;
+  --accent-bg: #141f3e;
+  --accent-border: #2d4e98;
 
   /* Secondary accent — teal */
   --teal: #2dd4bf;
-  --teal-bg: #042f2e;
-  --teal-border: #134e4a;
+  --teal-bg: #0e2d2c;
+  --teal-border: #1e5e5a;
 
   /* Semantic — green */
   --green: #22c55e;
-  --green-bg: #0d2e1a;
-  --green-border: #166534;
+  --green-bg: #0f2c1e;
+  --green-border: #1e6840;
   --green-text: #86efac;
 
   /* Semantic — red */
   --red: #f87171;
-  --red-bg: #2e0d0d;
-  --red-border: #7f1d1d;
+  --red-bg: #2c1212;
+  --red-border: #8c2424;
   --red-text: #fca5a5;
 
   /* Semantic — yellow/amber */
   --yellow: #fbbf24;
-  --yellow-bg: #2e200d;
-  --yellow-border: #92400e;
+  --yellow-bg: #2c2010;
+  --yellow-border: #a84e12;
   --yellow-text: #fde68a;
 
   /* Semantic — purple */
   --purple: #a78bfa;
-  --purple-bg: #1e1030;
-  --purple-border: #5b21b6;
+  --purple-bg: #1e1238;
+  --purple-border: #6a2ec0;
   --purple-text: #ddd6fe;
 
   /* Blue */
   --blue-text: #93c5fd;
-  --blue-bg: #0d1629;
-  --blue-border: #1d3a6e;
+  --blue-bg: #141f3e;
+  --blue-border: #2d4e98;
 
   /* Structural */
-  --header-bg: rgba(10, 13, 20, 0.97);
+  --header-bg: rgba(17, 21, 32, 0.97);
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.25);
   --shadow: 0 2px 8px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.7), 0 4px 12px rgba(0,0,0,0.45);
   --shadow-xl: 0 20px 60px rgba(0,0,0,0.8), 0 8px 24px rgba(0,0,0,0.55);
   --shadow-glow: 0 0 0 3px rgba(99,102,241,0.25);
-  --input-bg: #111420;
+  --input-bg: #191e30;
   --radius: 9px;
   --radius-sm: 5px;
   --radius-lg: 13px;
   --radius-xl: 18px;
 
-  /* Gradients — brighter for dark bg */
+  /* Gradients */
   --gradient-accent: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
   --gradient-warm: linear-gradient(135deg, #fbbf24 0%, #fb923c 100%);
   --gradient-teal: linear-gradient(135deg, #2dd4bf 0%, #22d3ee 100%);
