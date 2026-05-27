@@ -4,6 +4,32 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.25.3] — 2026-05-27
+
+### Fixed — Dark mode contrast for low-brightness mobile (audit #74)
+
+`--text-dim` was `#5a6278` — approximately 2.9:1 contrast ratio against the dark canvas, failing WCAG AA even at full screen brightness and becoming effectively invisible on mobile at 20–30% brightness. All dark mode canvas and text variables lifted:
+
+| Variable | Before | After |
+|---|---|---|
+| `--bg` | `#0a0d14` | `#0d1018` |
+| `--surface` | `#111420` | `#141828` |
+| `--surface-2` | `#181b2a` | `#1a1f30` |
+| `--surface-raised` | `#1e2235` | `#20253c` |
+| `--border` | `#2d3148` | `#333a55` |
+| `--border-subtle` | `#1e2235` | `#262c45` |
+| `--border-strong` | `#3d4266` | `#444d6e` |
+| `--text` | `#e8eaf0` | `#eceef4` |
+| `--text-secondary` | `#c5c9d8` | `#c8cdd9` |
+| `--text-muted` | `#8890a8` | `#9ba5be` |
+| `--text-dim` | `#5a6278` | `#7a8399` |
+
+The theme stays dark — backgrounds are not washed out. `--text-dim` was the critical failure; the rest are modest lifts to give contrast buffer at low brightness. `--text-dim` now achieves ~4.5:1 contrast ratio, passing WCAG AA.
+
+**Files touched:** `src/index.css`
+
+---
+
 ## [4.25.2] — 2026-05-27
 
 ### Changed — Idea intake from sibling repos + feature pause decision

@@ -879,3 +879,4 @@ Diagnosed institutional memory problem: every new session required expensive re-
 | 71 | Build Safety — `\'` Escape Sequences in JSX ✅ | V4.14.1 | Build safety |
 | 72 | UX Completeness — Next-Case Patterns (browser highlight + sticky CTA) ✅ | V4.25.0 | UX / Coverage |
 | 73 | Auth Layer Completeness — Header dead code, progress sync gap, mobile auth gap ✅ | V4.25.0 | BUILD / Dead code / UX |
+| 74 | Dark Mode Contrast — Low-Brightness Mobile Readability ✅ | V4.25.3 | Visual Consistency / Accessibility |
