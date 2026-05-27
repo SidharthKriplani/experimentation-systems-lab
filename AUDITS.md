@@ -880,3 +880,117 @@ Diagnosed institutional memory problem: every new session required expensive re-
 | 72 | UX Completeness — Next-Case Patterns (browser highlight + sticky CTA) ✅ | V4.25.0 | UX / Coverage |
 | 73 | Auth Layer Completeness — Header dead code, progress sync gap, mobile auth gap ✅ | V4.25.0 | BUILD / Dead code / UX |
 | 74 | Dark Mode Contrast — Low-Brightness Mobile Readability ✅ | V4.25.3–V4.25.4 | Visual Consistency / Accessibility |
+| 75 | Mobile Layout + UX Full Audit — grid overflow, safe-area, tap targets, heatmap ⚠️ | V4.26 target | UX / Visual / Accessibility |
+
+---
+
+## Audit #75 — Mobile Layout + UX Full Audit
+
+**Date:** 2026-05-27
+**Type:** UX / Visual Consistency / Accessibility
+**Status:** ⚠️ Open — 9 findings, 0 resolved, target V4.26
+
+### Scope
+
+Full mobile pass across all pages, browsers, runners, and shared components. Checked for: grid overflow bugs, safe-area-inset gaps, touch target sizes, font size floor violations, tap feedback, heatmap layout, and rooms that are structurally not mobile-usable.
+
+---
+
+### Finding 75-A — Grid overflow: 5 pages use bare `minmax(Npx, 1fr)` ⚠️ CRITICAL
+
+**Rule:** `minmax(Npx, 1fr)` without the inner `min()` forces a minimum column width of Npx even when the viewport is narrower. On a 375px iPhone screen this causes horizontal scroll.
+
+Files and lines:
+
+| File | Line | Value | Breaks at |
+|---|---|---|---|
+| `CodeBrowser.jsx` | 114 | `minmax(300px, 1fr)` | 375px viewport |
+| `ScenarioBrowser.jsx` | 108 | `minmax(310px, 1fr)` | 375px viewport |
+| `JudgmentBank.jsx` | 554 | `minmax(290px, 1fr)` | 375px viewport |
+| `JudgmentBank.jsx` | 585 | `minmax(230px, 1fr)` | 430px viewport |
+| `statsFoundations/Module13_ExperimentDesigner.jsx` | 152 | `minmax(220px, 1fr)` | 450px viewport |
+
+**Fix:** Wrap each with `min()`: `minmax(min(300px, 100%), 1fr)`. This is the established pattern in CLAUDE.md and all other browsers already use it.
+
+---
+
+### Finding 75-B — Sticky bottom bars missing `env(safe-area-inset-bottom)` ⚠️ HIGH
+
+All four sticky bottom bars (RCARunner, CaseRunner, BIRunner, ChallengesRunner) use `position: 'fixed', bottom: 0`. On iPhone X and later (all models with a home indicator), the home gesture bar sits exactly at the bottom of the viewport and visually overlaps the "Next →" button.
+
+**Zero** `env(safe-area-inset-bottom)` or `safe-area` references exist anywhere in `src/index.css` or any component.
+
+**Fix:** Add `paddingBottom: 'env(safe-area-inset-bottom, 0px)'` to each sticky bar's wrapper div, and add `padding-bottom: env(safe-area-inset-bottom, 0px)` to the mobile topbar. Add `<meta name="viewport" content="viewport-fit=cover">` to `index.html` if not already present.
+
+---
+
+### Finding 75-C — No `WebkitTapHighlightColor: 'transparent'` ⚠️ HIGH
+
+On iOS Safari, every tap on any `div[role=button]`, `button`, or anchor shows a grey flash by default. Zero components in PAL set `WebkitTapHighlightColor: 'transparent'`. The ML Systems Lab README specifically notes this as a mobile fix: `WebkitTapHighlightColor: transparent — no grey flash on iOS Safari`.
+
+**Fix:** Add to `index.css` global reset:
+```css
+* { -webkit-tap-highlight-color: transparent; }
+```
+
+---
+
+### Finding 75-D — 91-day heatmap not mobile-optimised ⚠️ MEDIUM
+
+The heatmap uses `display: flex, flexWrap: wrap, width: fit-content` with 91 cells (7px × 7px each + 2px gap). On mobile this wraps arbitrarily into multiple rows of unknown width — it does not render as a 13-week grid. The visual result on a 375px screen is a ragged multi-line block of dots with no week-column alignment.
+
+**Fix:** Set `display: grid, gridTemplateColumns: 'repeat(13, 7px)', gridTemplateRows: 'repeat(7, 7px)'` (13 weeks × 7 days) with `gap: 2px`. This renders as a proper calendar grid on all screen sizes.
+
+---
+
+### Finding 75-E — Font sizes below 0.68rem floor ⚠️ MEDIUM
+
+CLAUDE.md states 0.68rem is the minimum font size. Grep found **24 instances** of `fontSize: '0.6[0-7]rem'` or smaller in component files. These are below the minimum and will be unreadable on a 375px screen at low-to-normal brightness.
+
+**Fix:** Audit all 24 instances. Most are likely label-caps or badge text that can be lifted to 0.68rem without layout impact.
+
+---
+
+### Finding 75-F — Code Room structurally not mobile-usable ⚠️ MEDIUM (known)
+
+`CodeBrowser.jsx` and `CodeRunner.jsx` contain a live Pyodide Python executor and SQL editor. These are inherently desktop — the code editor, result tables, and multi-panel layout cannot be meaningfully used on a 375px screen. This is a known constraint (DECISIONS.md: "Mobile app: content is inherently desktop — tables, charts, multi-column layouts don't translate").
+
+**Action:** Add a mobile notice banner in CodeBrowser: "This room is optimised for desktop. For best experience, use a laptop or tablet." No layout change needed — just a single info banner that shows only on mobile (check `window.innerWidth < 768` or use CSS `@media`).
+
+---
+
+### Finding 75-G — `ConsultationSpace` keyword grid bare `minmax(200px, 1fr)` ⚠️ LOW
+
+`ConsultationSpace.jsx:349` uses `minmax(200px, 1fr)`. 200px fits within a 375px screen (two columns at ~185px), so it does not cause hard overflow. However the pattern is inconsistent with the codebase standard and a 350px viewport (some Android devices) would break.
+
+**Fix:** Standardise to `minmax(min(200px, 100%), 1fr)`.
+
+---
+
+### Finding 75-H — `QADashboard.jsx` and `JudgmentBank.jsx` smaller bare minmax values ⚠️ LOW
+
+`QADashboard.jsx:202` uses `minmax(140px, 1fr)` — safe on 375px. `JudgmentBank.jsx:585` uses `minmax(230px, 1fr)` which is borderline. Both should be wrapped with `min()` for consistency.
+
+---
+
+### Finding 75-I — Mobile topbar has no `safe-area-inset-top` ⚠️ LOW
+
+The mobile topbar uses `height: 46px` with `position: sticky, top: 0`. On iPhones with a Dynamic Island or notch, the status bar overlaps the topbar if the viewport doesn't account for `env(safe-area-inset-top)`. The topbar height should be `calc(46px + env(safe-area-inset-top, 0px))` with matching top padding.
+
+---
+
+### Summary
+
+| # | Finding | Severity | Fix complexity |
+|---|---|---|---|
+| 75-A | 5 grid overflow bugs (bare minmax) | Critical | Low — 5 one-line fixes |
+| 75-B | No safe-area-inset on sticky bars | High | Low — paddingBottom on 4 components + index.html |
+| 75-C | No WebkitTapHighlightColor | High | Trivial — 1 CSS rule |
+| 75-D | Heatmap not a real 13-week grid on mobile | Medium | Low — swap flex for grid |
+| 75-E | 24 font sizes below 0.68rem floor | Medium | Low — lift each to 0.68rem |
+| 75-F | Code Room not mobile-usable | Medium | Low — add info banner |
+| 75-G | ConsultationSpace bare minmax(200px) | Low | Trivial |
+| 75-H | QADashboard/JudgmentBank bare minmax | Low | Trivial |
+| 75-I | Topbar no safe-area-inset-top | Low | Low |
+
+**Total:** 9 findings. 75-A through 75-C are the priority — they cause real visible breakage on real iOS devices today.

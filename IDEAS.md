@@ -31,6 +31,10 @@ _No new features until PostHog baseline is established._
 - ~~Frameworks (Playbook) page redesign~~ — ✅ shipped V4.14.0 (reference-card layout, 3-col grid, category filter tabs, distinct from Deep Dives)
 - ~~Consult page — overlaps with Search~~ — ✅ cut V4.14.0
 - Stripe paywall activation — flip isUnlocked() → false, test end-to-end
+- **Mobile audit #75 — fix 75-A through 75-C (critical/high):**
+  - **75-A:** Fix 5 bare `minmax(Npx, 1fr)` grids in CodeBrowser, ScenarioBrowser, JudgmentBank (×2), Module13_ExperimentDesigner — causes horizontal scroll on 375px iPhones
+  - **75-B:** Add `env(safe-area-inset-bottom)` to all 4 sticky bottom bars (RCA/Case/BI/Challenges runners) — "Next →" button hidden behind iPhone home indicator on all post-X models
+  - **75-C:** Add `-webkit-tap-highlight-color: transparent` to CSS reset — removes iOS grey flash on every tap
 - **`gated: true` per-case paywall flag** (from GenAI Lab — 163 questions pre-tagged) — add `isFree` boolean to every case/module that should be free-tier; currently all gating is coarse (isUnlocked() global). Enables surgical free tier without touching paywall logic. Zero UX change; prerequisite for Stripe activation.
 - Confirm `VITE_POSTHOG_KEY` is live in Vercel prod and establish WAU baseline
 - ~~**Next-case highlight for all 15 remaining case room browsers** (audit #72)~~ — ✅ shipped V4.25.0 (all 16 browsers now have firstUnstartedId + accent border + "Next →" badge, each using room color var)
@@ -71,6 +75,12 @@ _No new features until PostHog baseline is established._
 - **Verbal practice with speech-to-text** (from ML Systems Lab VerbatimTab) — Web Speech API, user speaks 2-min answer to interview question, transcript shown, self-score on 4 criteria (clarity, depth, speed, recovery). Already have the interview question bank.
 
 ### Features
+- **Mobile audit #75 — fix 75-D through 75-I (medium/low):**
+  - **75-D:** Heatmap swap flex→grid (`repeat(13, 7px)` × 7 rows) — currently wraps into ragged blob on mobile
+  - **75-E:** Lift 24 font-size instances below 0.68rem floor
+  - **75-F:** Code Room mobile notice banner ("optimised for desktop")
+  - **75-G/H:** Remaining bare `minmax()` in ConsultationSpace, QADashboard, JudgmentBank
+  - **75-I:** Topbar `env(safe-area-inset-top)` for notch/Dynamic Island iPhones
 - **Quiz Me on Playbook articles** (from GenAI Lab — auto-generated MCQs from article content) — every Playbook article gets a "Quiz Me" button that generates 3–5 MCQs from the article body. Transforms passive reading into active recall. Extends the MCQ Trainer without new manual content.
 - **Playbook → practice direct linking** (from ML Systems Lab ∇ Gradient pattern) — every Playbook/Gradient article has a "Practice this" link at the bottom that navigates directly to the most relevant case in the relevant room. Currently articles and cases are disconnected. This closes the read-to-practice loop in one tap.
 - **Timed exam lock mechanic** (from ML Systems Lab Combinator) — 30/45/60-min option where answers are locked until the timer ends. Current Interview Simulator has no time pressure. The lock mechanic makes it feel like a real screen.

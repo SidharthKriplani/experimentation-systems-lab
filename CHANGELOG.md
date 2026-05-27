@@ -4,6 +4,30 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.25.5] — 2026-05-27
+
+### Audit #75 — Mobile Layout + UX Full Audit (documented, not yet fixed)
+
+Full mobile pass across all pages, browsers, runners, and shared components. 9 findings across 4 severity levels. No code changes in this version — findings documented in AUDITS.md, actionable items added to IDEAS.md Tier 1 and Tier 2.
+
+**Critical/High findings (Tier 1 in IDEAS.md):**
+- **75-A:** 5 pages use bare `minmax(Npx, 1fr)` without `min()` wrapper — causes horizontal scroll on 375px iPhones. Files: CodeBrowser, ScenarioBrowser, JudgmentBank (×2), Module13_ExperimentDesigner.
+- **75-B:** All 4 sticky bottom bars missing `env(safe-area-inset-bottom)` — "Next →" button covered by home indicator on all post-iPhone X models.
+- **75-C:** No `-webkit-tap-highlight-color: transparent` anywhere — every tap on iOS shows grey flash.
+
+**Medium findings (Tier 2 in IDEAS.md):**
+- **75-D:** 91-day heatmap uses flex+wrap instead of a real 13×7 grid — renders as ragged blob on mobile.
+- **75-E:** 24 font-size instances below the 0.68rem floor defined in CLAUDE.md.
+- **75-F:** Code Room has no mobile-exclusion notice despite being structurally desktop-only.
+
+**Low findings (Tier 2 in IDEAS.md):**
+- **75-G/H:** Remaining bare `minmax()` in ConsultationSpace, QADashboard, JudgmentBank — inconsistent with codebase standard.
+- **75-I:** Mobile topbar missing `env(safe-area-inset-top)` for notch/Dynamic Island devices.
+
+**Files touched:** `AUDITS.md`, `IDEAS.md`, `CHANGELOG.md`
+
+---
+
 ## [4.25.4] — 2026-05-27
 
 ### Fixed — Full dark mode palette rebuild (audit #74 follow-up)
