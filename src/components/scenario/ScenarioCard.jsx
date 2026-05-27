@@ -1,10 +1,11 @@
 import { DifficultyBadge, IndustryBadge, ThemeBadge } from '../ui/Badge.jsx';
 import { getScoreLevel } from '../../utils/scoring.js';
 
-export function ScenarioCard({ scenario, progress, onClick, isNextUnstarted }) {
+export function ScenarioCard({ scenario, progress, onClick, isNextUnstarted, unlocked }) {
   const isCompleted = progress && progress.attempts?.length > 0;
   const bestScore = progress?.bestScore;
   const scoreLevel = bestScore ? getScoreLevel(bestScore) : null;
+  const isLocked = !unlocked && !scenario.isFree;
 
   return (
     <div
@@ -19,11 +20,12 @@ export function ScenarioCard({ scenario, progress, onClick, isNextUnstarted }) {
         transition: 'all 0.15s',
         position: 'relative',
         boxShadow: 'var(--shadow)',
+        opacity: isLocked ? 0.7 : 1,
       }}
       onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 0 2px var(--accent-bg)'; }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'var(--shadow)'; }}
     >
-      {isNextUnstarted && (
+      {isNextUnstarted && !isLocked && (
         <span style={{
           position: 'absolute', top: '0.6rem', right: '0.7rem',
           fontSize: '0.68rem', fontWeight: 700,
@@ -32,6 +34,14 @@ export function ScenarioCard({ scenario, progress, onClick, isNextUnstarted }) {
           borderRadius: 4, padding: '0.1rem 0.4rem',
         }}>
           Next →
+        </span>
+      )}
+      {isLocked && (
+        <span style={{
+          position: 'absolute', top: '0.6rem', right: '0.7rem',
+          fontSize: '0.68rem', color: 'var(--text-muted)',
+        }}>
+          🔒
         </span>
       )}
       {/* Header */}

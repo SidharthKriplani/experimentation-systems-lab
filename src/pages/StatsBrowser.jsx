@@ -34,7 +34,7 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
     ? [...statsModules].sort((a, b) => (DIFF_ORDER[a.difficulty] ?? 1) - (DIFF_ORDER[b.difficulty] ?? 1))
     : statsModules;
 
-  const firstUnstartedId = displayModules.find(m => !completedIds.has(m.id))?.id;
+  const firstUnstartedId = statsModules.find(m => !completedIds.has(m.id))?.id;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>

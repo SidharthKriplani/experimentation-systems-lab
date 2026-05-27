@@ -49,12 +49,19 @@ _(nothing active — update at session start when pulling from priority list)_
 - STAT17–20+: more causal inference (IV estimation, synthetic control, geo holdout) — partially done in V3.4, extend further
 - Cases Room expansion: pricing strategy, international expansion (C13+)
 - ~~Growth Analytics Room expansion: GA09+ — supply-side metrics, marketplace health~~ — ✅ shipped V4.8.4 (GA09–GA12)
+- **Multi-part escalating case dossiers** (from ML Systems Lab pattern) — 3–5 part company scenarios where each part builds on previous answer. E.g. "Google retention case: (1) define churn metric; (2) design experiment; (3) handle confound in results; (4) make trade-off decision." Deeper than current Cases Room format.
+- **Interview Q&A bank with 4-tier model answers** (from ML Systems Lab InterviewQATab) — 50+ curated questions ("Walk me through an A/B test," "How would you debug a retention drop?") with model answers at Junior/Mid/Senior/Principal tiers. Directly plugs into Behavioral + Stats + Metrics rooms.
+- **"Analytics Failures" catalog** (from GenAI Lab Debug pattern) — 25 named failure patterns: bad event taxonomy, selection bias in A/B, cohort leakage, Simpson's Paradox in segmentation, metric definition drift, silent imputation, etc. Failure modes catalog for RCA, Metrics, Growth rooms.
 
 ### Features
 - Stripe payment flow activation (link already scaffolded in `VITE_STRIPE_PAYMENT_LINK`) — requires flipping paywall gate + end-to-end test
 - ~~Company track completion badges~~ — ✅ shipped V4.14.0 (green Complete badge on card + 🎉 banner in TrackDetail)
 - ~~Dark/light mode persistence fix~~ — ✅ already in place via index.html inline script (was pre-existing)
 - Difficulty progression lock (must complete junior before senior unlocks) — opt-in mode only
+- **Learning paths with checkpoint tracking** (from ML Systems Lab, directly portable) — "6-week Analytics Interview Ready," "Metrics Mastery Track," "PM Onboarding Path." Each path is a guided sequence across rooms, with step completion checkmarks + progress counter (X/N steps). localStorage pattern identical to existing rooms.
+- **JD-to-skill-gap mapper** (from ML Systems Lab JDPrepTab + GenAI Lab PrepLab) — paste a job description → extract required skills against PAL room mastery → surface targeted drill questions. Extends Defense Doc Generator.
+- **Per-room breakdown in mock exam debrief** (from ML Systems Lab CombinatorTab) — after Interview Simulator session, show visual bar chart: Metrics 90% / Growth 65% / Behavioral 78% / Stats 80%. Gives clearer skill gap signal than current pass/fail format.
+- **Verbal practice with speech-to-text** (from ML Systems Lab VerbatimTab) — Web Speech API, user speaks 2-min answer to interview question, transcript shown, self-score on 4 criteria (clarity, depth, speed, recovery). Already have the interview question bank.
 
 ### Platform
 - First-Time User cold walk-through audit with sidebar nav (incognito, every confusion point noted) — sidebar is new in V4.7, cold path not yet audited
@@ -70,6 +77,8 @@ _(nothing active — update at session start when pulling from priority list)_
 - More Take-Home prompts (TH06+): marketplace, fintech, health domains
 - Behavioral Room expansion: BEH31+ for Staff/Director-level leadership scenarios
 - Estimation Room: industry-specific tracks (fintech, healthtech, marketplace)
+- **"Spot the flaw" adversarial format for RCA + Metrics** (from ML Systems Lab, adaptable) — show a plausible-looking analysis with a buried methodological error, no MCQ, user must identify and explain the flaw. Flaw types: selection bias, confounding variable, Simpson's Paradox, wrong metric, incorrect cohort definition, feature flag misconfiguration. PAL already has Spot the Flaw room (STF) — extend this mechanic into RCA and Metrics rooms as a sub-format.
+- **"Senior engineer reasoning" reveal layer** (from ML Systems Lab StaffLayerTab) — after each case, show "How a Staff analytics engineer reads this" with nuanced multi-step reasoning. Currently debriefs are authoritative but don't model the thought process explicitly.
 
 ### Features
 - `Escape` key closes hint accordions (currently only navigates home)
@@ -77,11 +86,22 @@ _(nothing active — update at session start when pulling from priority list)_
 - "Shuffle" button in MCQ Trainer (randomise across all 40 questions)
 - Per-session score summary after Interview Simulator (shareable card)
 - Consultation Space expansion: show heatmap of which concepts are most queried
+- **Weak topic heatmap in Trainer debrief** (from ML Systems Lab TrainerTab, directly portable) — after MCQ drill session, show colored grid: Stats/Metrics/RCA/Design/etc. with % correct per room. "Study these next" surface specific weak-room cases.
+- **Forward-pointer card at case/challenge endings** (from GenAI Lab sprint pattern, directly portable) — every case completion shows a "Master this concept" card: one related case to try next + one Defense Doc angle + one Company Track suggestion. Removes the dead-end after debrief.
+- **"Share score" clipboard button** (from ML Systems Lab, directly portable) — one-click copy of score summary. "PAL: 18/20 · 90% · Strong: Metrics · Weak: Growth Analytics" → paste to LinkedIn or resume.
+- **Difficulty badges on room entry cards** (from GenAI Lab pattern, directly portable) — label each card with difficulty tier (Junior/Mid/Senior) and estimated time. Makes progression legible at a glance.
+- **91-day practice heatmap** (already on Progress page) — already shipped. Confirm it's visible on the main Progress dashboard.
+- **Keyboard shortcuts in Trainer/Challenges** (from ML Systems Lab, directly portable) — press 1/2/3/4 to select MCQ options, Enter to submit, N for next. Currently requires mouse clicks.
+- **Skill category tagging across rooms** (from ML Systems Lab/GenAI Lab pattern, adaptable) — define 8 core skills (Metrics Design, Statistical Thinking, RCA, Storytelling, Technical Depth, Product Sense, Systems Thinking, Business Acumen) and tag every case/question. Enables cross-room skill-based filtering in Search.
+- **Progress export/import** (from ML Systems Lab, directly portable) — "Export my progress" button (JSON snapshot of all localStorage keys), "Import progress" for device handoff without Supabase auth.
+- **"Product-first" framing audit** (from GenAI Lab copy pattern) — reframe room descriptions from "Practice X questions" to "Do X like a staff analyst." Not a feature — a copy pass on all room cards, Home hero, and Pricing page.
 
 ### Platform
 - Review Queue smarter scheduling (weight by room difficulty + time since last attempt)
 - Learning path completion certificates (downloadable, shareable on LinkedIn)
 - "What changed" digest for returning users (new cases since last visit)
+- **Fidelity badges on Simulator scenarios** (from ML Systems Lab pattern) — label each interactive scenario: `~` Simulated (scripted), `◌` Illustrative (conceptual). Builds user trust about what is realistic vs. simplified.
+- **Breadcrumb nav on case runners** (from ML Systems Lab, adaptable) — "PAL > RCA > Case Bank > Case #47" breadcrumb in runner header. Makes navigation feel less like a dead end.
 
 ---
 
