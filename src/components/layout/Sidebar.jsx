@@ -42,15 +42,14 @@ const FLAT_GROUPS = [
     items: [
       { id: 'challenges',    label: '⚡ Challenges' },
       { id: 'take-home',     label: '📝 Take-Home' },
-      { id: 'simulator',     label: 'Simulator' },
-      { id: 'ab-interpreter', label: 'A/B Interpreter' },
+      { id: 'simulator',     label: 'Mock Interview' },
+      { id: 'ab-interpreter', label: 'Stats Calculator' },
     ],
   },
   {
     label: 'TOOLS',
     items: [
-      { id: 'search',         label: '🔍 Search' },
-      { id: 'trainer',        label: '🎯 Trainer' },
+      { id: 'trainer',        label: '🎯 MCQ Quiz' },
       { id: 'consult',        label: '💬 Consult' },
       { id: 'company-tracks', label: 'Companies' },
       { id: 'defense-doc',    label: '🛡️ Defense Doc' },
@@ -60,9 +59,8 @@ const FLAT_GROUPS = [
   {
     label: 'LEARN',
     items: [
-      { id: 'blog',        label: 'Articles' },
-      { id: 'playbook',    label: 'Playbook' },
-      { id: 'foundations', label: 'Theory Hub' },
+      { id: 'blog',     label: 'Deep Dives' },
+      { id: 'playbook', label: 'Frameworks' },
     ],
   },
   {
@@ -217,15 +215,15 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
       )}
 
       <aside className={`app-sidebar${isOpen ? ' open' : ''}`}>
-        {/* Logo */}
-        <div style={{ padding: '1rem 0.75rem 0.5rem', flexShrink: 0 }}>
+        {/* Logo + theme toggle */}
+        <div style={{ padding: '1rem 0.75rem 0.5rem', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <button
             onClick={() => handleNav('home')}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               padding: '0.3rem 0.25rem', borderRadius: 'var(--radius-sm)',
-              width: '100%',
+              flex: 1,
             }}
           >
             <div style={{
@@ -238,6 +236,18 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
             <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', letterSpacing: '-0.02em' }}>
               Analytics Lab
             </span>
+          </button>
+          <button
+            onClick={onToggleTheme}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              background: 'none', border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-sm)', padding: '0.26rem 0.5rem',
+              color: 'var(--text-muted)', fontSize: '0.8rem',
+              cursor: 'pointer', lineHeight: 1, flexShrink: 0,
+            }}
+          >
+            {theme === 'dark' ? '☀' : '🌙'}
           </button>
         </div>
 
@@ -320,46 +330,33 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
 
         </nav>
 
-        {/* Bottom: theme toggle + beta badge */}
+        {/* Bottom: search */}
         <div style={{
-          padding: '0.65rem 0.75rem',
+          padding: '0.6rem 0.75rem',
           borderTop: '1px solid var(--border)',
-          display: 'flex', alignItems: 'center', gap: '0.5rem',
           flexShrink: 0,
         }}>
           <button
-            onClick={onToggleTheme}
-            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            onClick={() => handleNav('search')}
             style={{
-              background: 'none', border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-sm)', padding: '0.28rem 0.55rem',
-              color: 'var(--text-muted)', fontSize: '0.82rem',
-              cursor: 'pointer', display: 'flex', alignItems: 'center',
-              lineHeight: 1,
+              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              width: '100%', textAlign: 'left',
+              background: 'var(--surface-2)', border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-sm)', padding: '0.4rem 0.65rem',
+              color: 'var(--text-muted)', fontSize: '0.8rem',
+              cursor: 'pointer', transition: 'border-color 0.1s',
             }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--text)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
           >
-            {theme === 'dark' ? '☀' : '🌙'}
+            <span style={{ fontSize: '0.85rem', lineHeight: 1 }}>🔍</span>
+            <span style={{ flex: 1 }}>Search</span>
+            <kbd style={{
+              fontSize: '0.6rem', padding: '0.1rem 0.3rem',
+              background: 'var(--surface)', border: '1px solid var(--border)',
+              borderRadius: 3, color: 'var(--text-muted)', fontFamily: 'inherit',
+            }}>/</kbd>
           </button>
-
-          {unlockedStatus ? (
-            <span style={{
-              fontSize: '0.7rem', fontWeight: 600,
-              padding: '0.2rem 0.55rem',
-              color: 'var(--green)', background: 'var(--green-bg)',
-              border: '1px solid var(--green-border)', borderRadius: 4,
-            }}>✓ Beta</span>
-          ) : (
-            <button
-              onClick={() => handleNav('unlock')}
-              style={{
-                fontSize: '0.72rem', fontWeight: 600,
-                padding: '0.2rem 0.55rem',
-                color: 'var(--text-muted)', background: 'var(--surface-2)',
-                border: '1px solid var(--border)', borderRadius: 4,
-                cursor: 'pointer',
-              }}
-            >🔒 Beta</button>
-          )}
         </div>
       </aside>
     </>
