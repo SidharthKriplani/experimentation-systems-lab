@@ -739,7 +739,7 @@ export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
             <span style={{
               fontSize: '0.7rem', fontWeight: 700, padding: '0.15rem 0.5rem',
               background: 'var(--teal-bg)', color: 'var(--teal)',
-              border: '1px solid var(--teal-border)', borderRadius: 4,
+              border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)',
             }}>
               ✓ Complete
             </span>
@@ -783,7 +783,7 @@ export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
                   <span key={link.id} style={{
                     fontSize: '0.78rem', padding: '0.2rem 0.55rem',
                     background: 'var(--teal-bg)', color: 'var(--teal)',
-                    border: '1px solid var(--teal-border)', borderRadius: 4, fontWeight: 500,
+                    border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', fontWeight: 500,
                   }}>
                     {link.label}
                   </span>

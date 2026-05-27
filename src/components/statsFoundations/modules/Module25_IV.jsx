@@ -125,7 +125,7 @@ export function Module25_IV({ module, onNext }) {
               transition: 'all 0.2s',
             }}>
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.2rem 0.5rem', borderRadius: 4, background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
+                <span style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0.2rem 0.5rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
                   {idx + 1}/3
                 </span>
                 <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text)' }}>{cond.label}</span>
@@ -145,7 +145,7 @@ export function Module25_IV({ module, onNext }) {
                       key={opt.id}
                       onClick={() => handleAnswer(cond.id, opt.id)}
                       style={{
-                        textAlign: 'left', padding: '0.45rem 0.8rem', borderRadius: 6, fontSize: '0.82rem',
+                        textAlign: 'left', padding: '0.45rem 0.8rem', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem',
                         border: '1px solid var(--border)', background: 'var(--surface-2)',
                         color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: 500,
                       }}

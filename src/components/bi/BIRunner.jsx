@@ -489,8 +489,8 @@ function RevealScreen({ caseData, onBack, onNext, unlocked }) {
         </div>
       </div>
 
-            <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
+            <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
                 ✏️ Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
               </div>
               <textarea
@@ -499,8 +499,8 @@ function RevealScreen({ caseData, onBack, onNext, unlocked }) {
                 placeholder="Jot your thinking before revealing the answer..."
                 style={{
                   width: '100%', minHeight: 72, padding: '10px 12px', background: 'var(--bg)',
-                  border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
-                  fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                  border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)',
+                  fontSize: '0.88rem', lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
                   boxSizing: 'border-box',
                 }}
               />
@@ -509,7 +509,7 @@ function RevealScreen({ caseData, onBack, onNext, unlocked }) {
                 style={{
                   marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
                   border: '1px solid ' + (noteSaved ? 'var(--green-border)' : 'var(--border)'),
-                  borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                  borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.75rem',
                   color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
                 }}
               >{noteSaved ? '✓ Saved' : 'Save note'}</button>

@@ -28,7 +28,7 @@ export function Module22_DiD({ module, onNext }) {
 
   const fieldStyle = {
     width: '100%', padding: '0.55rem 0.75rem', fontSize: '1.1rem', fontWeight: 700,
-    background: 'var(--bg)', border: '1.5px solid var(--border)', borderRadius: 6,
+    background: 'var(--bg)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-sm)',
     color: 'var(--text)', boxSizing: 'border-box', textAlign: 'center',
     fontVariantNumeric: 'tabular-nums',
   };
@@ -49,7 +49,7 @@ export function Module22_DiD({ module, onNext }) {
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
         <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', alignSelf: 'center', marginRight: 2 }}>Presets:</span>
         {PRESETS.map(p => (
-          <button key={p.label} onClick={() => applyPreset(p)} style={{ fontSize: '0.78rem', padding: '0.3rem 0.7rem', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--surface-2)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+          <button key={p.label} onClick={() => applyPreset(p)} style={{ fontSize: '0.78rem', padding: '0.3rem 0.7rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--surface-2)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
             {p.label}
           </button>
         ))}

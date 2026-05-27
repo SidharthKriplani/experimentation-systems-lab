@@ -3,6 +3,7 @@ import { RCAStepPanel } from './RCAStepPanel.jsx';
 import { RCAScoreReveal } from './RCAScoreReveal.jsx';
 import { RCADebriefPanel } from './RCADebriefPanel.jsx';
 import { DebriefCopyButton } from '../shared/DebriefCopyButton.jsx';
+import { Icon } from '../shared/Icon.jsx';
 import { saveRCAAttempt } from '../../utils/rcaProgress.js';
 import { track } from '../../utils/analytics.js';
 
@@ -157,15 +158,10 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
       {/* Back button */}
       <button
         onClick={onBack}
-        style={{
-          background: 'transparent', border: 'none', cursor: 'pointer',
-          fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: 600,
-          padding: '0 0 1.25rem', display: 'flex', alignItems: 'center', gap: '0.3rem',
-        }}
-        onMouseEnter={e => e.currentTarget.style.color = 'var(--yellow)'}
-        onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+        className="pal-back-btn"
+        style={{ marginBottom: '1.25rem' }}
       >
-        ← RCA Room
+        <Icon name="arrow-left" size={14} color="currentColor" />RCA Room
       </button>
 
       {/* Case title */}
@@ -174,13 +170,8 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
           <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)' }}>
             {rcaCase.subtitle}
           </div>
-          <span style={{
-            fontSize: 13,
-            color: elapsed > 600 ? 'var(--red, #ef4444)' : 'var(--text-muted, #888)',
-            fontVariantNumeric: 'tabular-nums',
-            marginLeft: 'auto',
-          }}>
-            ⏱ {formatTime(elapsed)}
+          <span className={`pal-timer${elapsed > 600 ? ' warning' : ''}`} style={{ marginLeft: 'auto' }}>
+            <Icon name="clock" size={12} color="currentColor" />{formatTime(elapsed)}
           </span>
         </div>
         <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>
@@ -233,9 +224,9 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
 
           {/* Active recall note — shown before the final "See results" button */}
           {isLastStep && currentStepSubmitted && (
-            <div style={{ marginBottom: 8, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
-                ✏️ Write your thinking first <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span>
+            <div className="pal-textarea-wrap" style={{ marginBottom: 8 }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <Icon name="pen-line" size={12} color="currentColor" />Write your thinking first <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span>
               </div>
               <textarea
                 value={userNote}
@@ -243,8 +234,8 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
                 placeholder="What's your read? Jot down your diagnosis before revealing the answer..."
                 style={{
                   width: '100%', minHeight: 80, padding: '10px 12px', background: 'var(--bg)',
-                  border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
-                  fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                  border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)',
+                  fontSize: '0.88rem', lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
                   boxSizing: 'border-box',
                 }}
               />
@@ -253,7 +244,7 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
                 style={{
                   marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
                   border: `1px solid ${noteSaved ? 'var(--green-border)' : 'var(--border)'}`,
-                  borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                  borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.75rem',
                   color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
                 }}
               >
@@ -268,16 +259,7 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
               <button
                 onClick={handleSubmitStep}
                 disabled={!pendingChoice}
-                style={{
-                  background: pendingChoice ? 'var(--yellow-bg)' : 'var(--surface-2)',
-                  border: `1.5px solid ${pendingChoice ? 'var(--yellow-border)' : 'var(--border)'}`,
-                  color: pendingChoice ? 'var(--yellow)' : 'var(--text-muted)',
-                  borderRadius: 'var(--radius)',
-                  padding: '0.6rem 1.25rem',
-                  fontSize: '0.85rem', fontWeight: 700,
-                  cursor: pendingChoice ? 'pointer' : 'not-allowed',
-                  transition: 'all 0.12s',
-                }}
+                className="pal-cta"
               >
                 Submit this step
               </button>
@@ -326,9 +308,9 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
             onBack={onBack}
             onNext={onNext}
           />
-          <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+          <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6, flexWrap: 'wrap', gap: '0.4rem' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Your notes</div>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Your notes</div>
               <DebriefCopyButton
                 title={rcaCase.title}
                 notes={userNote}
@@ -339,10 +321,10 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
               />
             </div>
             {userNote && (
-              <div style={{ fontSize: 14, color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
+              <div style={{ fontSize: '0.88rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
             )}
             {!userNote && (
-              <div style={{ fontSize: 13, color: 'var(--text-dim)', fontStyle: 'italic' }}>No notes added.</div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>No notes added.</div>
             )}
           </div>
 

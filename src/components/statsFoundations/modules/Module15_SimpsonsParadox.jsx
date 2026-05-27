@@ -98,9 +98,9 @@ export function Module15_SimpsonsParadox({ module, onNext }) {
           <BarChart width={440} height={240} data={AGG_DATA} style={{ maxWidth: '100%' }}
             margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-            <YAxis domain={[0, 14]} unit="%" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
-            <Tooltip formatter={v => `${v}%`} contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 13 }} />
+            <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+            <YAxis domain={[0, 14]} unit="%" tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} />
+            <Tooltip formatter={v => `${v}%`} contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem' }} />
             <Bar dataKey="conversion" name="Conversion Rate" radius={[4, 4, 0, 0]}>
               {AGG_DATA.map((entry, i) => (
                 <Cell key={i} fill={i === 0 ? 'var(--accent)' : 'var(--teal)'} />
@@ -109,19 +109,19 @@ export function Module15_SimpsonsParadox({ module, onNext }) {
           </BarChart>
 
           <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <div style={{ flex: 1, minWidth: 140, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 8, padding: '0.7rem 1rem' }}>
+            <div style={{ flex: 1, minWidth: 140, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 'var(--radius)', padding: '0.7rem 1rem' }}>
               <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 4 }}>Treatment</div>
               <div style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--accent)' }}>8.2%</div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>10,000 users total</div>
             </div>
-            <div style={{ flex: 1, minWidth: 140, background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 8, padding: '0.7rem 1rem' }}>
+            <div style={{ flex: 1, minWidth: 140, background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius)', padding: '0.7rem 1rem' }}>
               <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', marginBottom: 4 }}>Control</div>
               <div style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--green)' }}>9.1%</div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>10,000 users total</div>
             </div>
           </div>
 
-          <div style={{ marginTop: '0.75rem', background: 'var(--red-bg)', border: '1px solid var(--red-border)', borderRadius: 8, padding: '0.65rem 1rem', fontSize: '0.83rem', color: 'var(--red)' }}>
+          <div style={{ marginTop: '0.75rem', background: 'var(--red-bg)', border: '1px solid var(--red-border)', borderRadius: 'var(--radius)', padding: '0.65rem 1rem', fontSize: '0.83rem', color: 'var(--red)' }}>
             Aggregated result: <strong>Control wins</strong> by +0.9 pp. You'd ship the old checkout. But wait — toggle to segment view.
           </div>
         </div>
@@ -139,10 +139,10 @@ export function Module15_SimpsonsParadox({ module, onNext }) {
           <BarChart width={440} height={240} data={segChartData} style={{ maxWidth: '100%' }}
             margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-            <YAxis domain={[0, 16]} unit="%" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
-            <Tooltip formatter={v => `${v}%`} contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 13 }} />
-            <Legend wrapperStyle={{ fontSize: 12, color: 'var(--text-muted)' }} />
+            <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+            <YAxis domain={[0, 16]} unit="%" tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} />
+            <Tooltip formatter={v => `${v}%`} contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem' }} />
+            <Legend wrapperStyle={{ fontSize: '0.75rem', color: 'var(--text-muted)' }} />
             <Bar dataKey="Treatment" fill="var(--accent)" radius={[4, 4, 0, 0]} />
             <Bar dataKey="Control" fill="var(--teal)" radius={[4, 4, 0, 0]} />
           </BarChart>
@@ -174,7 +174,7 @@ export function Module15_SimpsonsParadox({ module, onNext }) {
             </table>
           </div>
 
-          <div style={{ marginTop: '0.75rem', background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 8, padding: '0.65rem 1rem', fontSize: '0.83rem', color: 'var(--green)', lineHeight: 1.55 }}>
+          <div style={{ marginTop: '0.75rem', background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius)', padding: '0.65rem 1rem', fontSize: '0.83rem', color: 'var(--green)', lineHeight: 1.55 }}>
             <strong>Segment result: Treatment wins on both Mobile (+0.3 pp) and Desktop (+0.5 pp).</strong> The aggregated "Control wins" result was an artifact: Treatment got 82% mobile users (low baseline), Control got 79% desktop users (high baseline). The mix created the illusion.
           </div>
         </div>

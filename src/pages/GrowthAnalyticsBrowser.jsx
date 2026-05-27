@@ -1,3 +1,4 @@
+import { Icon } from '../components/shared/Icon.jsx';
 import { useState } from 'react';
 import { growthAnalyticsCases } from '../data/growthAnalyticsCases.js';
 import { getAllGrowthAnalyticsProgress } from '../utils/growthAnalyticsProgress.js';
@@ -99,7 +100,7 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, 
           borderRadius: '6px', marginBottom: '1.25rem',
           fontSize: '0.78rem', color: 'var(--green)',
         }}>
-          <span>📖</span>
+          <Icon name="book-open" size={13} color="currentColor" />
           <span>New to this? Start with</span>
           <button onClick={() => onNavigate('metrics-foundations')} style={{
             background: 'none', border: 'none', padding: 0,

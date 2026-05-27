@@ -68,13 +68,13 @@ export function Module21_Counterfactuals({ module, onNext }) {
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <button
                     onClick={() => handleAnswer(s.id, 'causal')}
-                    style={{ padding: '0.4rem 1rem', borderRadius: 6, border: '1.5px solid var(--green-border)', background: 'var(--green-bg)', color: 'var(--green)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
+                    style={{ padding: '0.4rem 1rem', borderRadius: 'var(--radius-sm)', border: '1.5px solid var(--green-border)', background: 'var(--green-bg)', color: 'var(--green)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
                   >
                     Causal ✓
                   </button>
                   <button
                     onClick={() => handleAnswer(s.id, 'confounded')}
-                    style={{ padding: '0.4rem 1rem', borderRadius: 6, border: '1.5px solid var(--red-border)', background: 'var(--red-bg)', color: 'var(--red)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
+                    style={{ padding: '0.4rem 1rem', borderRadius: 'var(--radius-sm)', border: '1.5px solid var(--red-border)', background: 'var(--red-bg)', color: 'var(--red)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
                   >
                     Confounded ✗
                   </button>

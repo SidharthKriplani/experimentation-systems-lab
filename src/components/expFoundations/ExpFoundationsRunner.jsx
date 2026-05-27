@@ -910,7 +910,7 @@ export function ExpFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
             <span style={{
               fontSize: '0.7rem', fontWeight: 700, padding: '0.15rem 0.5rem',
               background: 'var(--accent-bg)', color: 'var(--accent)',
-              border: '1px solid var(--accent-border)', borderRadius: 4,
+              border: '1px solid var(--accent-border)', borderRadius: 'var(--radius-sm)',
             }}>
               ✓ Complete
             </span>

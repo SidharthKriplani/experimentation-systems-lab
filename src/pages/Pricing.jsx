@@ -61,7 +61,7 @@ export function Pricing({ onShowUnlock, onBack }) {
           </div>
           <div style={{ marginTop: 'auto', paddingTop: '1.25rem' }}>
             <div style={{
-              textAlign: 'center', padding: '0.65rem', borderRadius: 8,
+              textAlign: 'center', padding: '0.65rem', borderRadius: 'var(--radius)',
               border: '1px solid var(--border)', color: 'var(--text-muted)',
               fontSize: '0.875rem', fontWeight: 600,
             }}>
@@ -107,7 +107,7 @@ export function Pricing({ onShowUnlock, onBack }) {
                 window.open(stripeLink, '_blank');
               }}
               style={{
-                width: '100%', padding: '0.75rem', borderRadius: 8,
+                width: '100%', padding: '0.75rem', borderRadius: 'var(--radius)',
                 background: 'var(--accent)', color: '#fff',
                 border: 'none', cursor: 'pointer',
                 fontSize: '1rem', fontWeight: 700,

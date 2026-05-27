@@ -79,7 +79,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
                 background: 'var(--accent)',
                 color: '#fff',
                 padding: '12px 24px',
-                borderRadius: 8,
+                borderRadius: 'var(--radius)',
                 border: 'none',
                 cursor: 'pointer',
                 fontSize: 16,

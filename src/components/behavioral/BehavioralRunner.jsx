@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveBehavioralAttempt, getBehavioralProgress } from '../../utils/behavioralProgress.js';
 import { track } from '../../utils/analytics.js';
+import { Icon } from '../shared/Icon.jsx';
 
 const ROOM_KEY = 'behavioral';
 
@@ -98,9 +99,10 @@ export function BehavioralRunner({ question, onBack, onNext }) {
       {/* Back */}
       <button
         onClick={onBack}
-        style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.85rem', marginBottom: '1.5rem', padding: 0 }}
+        className="pal-back-btn"
+        style={{ marginBottom: '1.5rem' }}
       >
-        ← Back to Behavioral & Leadership
+        <Icon name="arrow-left" size={14} color="currentColor" />Back to Behavioral
       </button>
 
       {/* Question header */}
@@ -113,13 +115,8 @@ export function BehavioralRunner({ question, onBack, onNext }) {
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'capitalize' }}>{question.category}</span>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>·</span>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{question.difficulty}</span>
-          <span style={{
-            fontSize: 13,
-            color: elapsed > 600 ? 'var(--red, #ef4444)' : 'var(--text-muted, #888)',
-            fontVariantNumeric: 'tabular-nums',
-            marginLeft: 'auto',
-          }}>
-            ⏱ {formatTime(elapsed)}
+          <span className={`pal-timer${elapsed > 600 ? ' warning' : ''}`} style={{ marginLeft: 'auto' }}>
+            <Icon name="clock" size={12} color="currentColor" />{formatTime(elapsed)}
           </span>
         </div>
         <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 0.3rem', letterSpacing: '-0.02em' }}>
@@ -192,9 +189,9 @@ export function BehavioralRunner({ question, onBack, onNext }) {
               {response.trim().length < 60 ? `${response.trim().length}/60 characters to unlock` : '✓ Ready to reveal'}
             </span>
           </div>
-          <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
-              ✏️ Write your thinking first <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span>
+          <div className="pal-textarea-wrap" style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <Icon name="pen-line" size={12} color="currentColor" />Write your thinking first <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span>
             </div>
             <textarea
               value={userNote}
@@ -202,8 +199,8 @@ export function BehavioralRunner({ question, onBack, onNext }) {
               placeholder="What's your read? Jot down your diagnosis before revealing the answer..."
               style={{
                 width: '100%', minHeight: 80, padding: '10px 12px', background: 'var(--bg)',
-                border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
-                fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)',
+                fontSize: '0.88rem', lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
                 boxSizing: 'border-box',
               }}
             />
@@ -212,7 +209,7 @@ export function BehavioralRunner({ question, onBack, onNext }) {
               style={{
                 marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
                 border: `1px solid ${noteSaved ? 'var(--green-border)' : 'var(--border)'}`,
-                borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.75rem',
                 color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
               }}
             >
@@ -223,12 +220,7 @@ export function BehavioralRunner({ question, onBack, onNext }) {
             <button
               onClick={handleReveal}
               disabled={!canReveal}
-              style={{
-                background: canReveal ? 'var(--accent)' : 'var(--surface-2)',
-                color: canReveal ? '#fff' : 'var(--text-dim)',
-                border: 'none', borderRadius: '7px', padding: '0.55rem 1.25rem',
-                fontWeight: 600, fontSize: '0.88rem', cursor: canReveal ? 'pointer' : 'not-allowed',
-              }}
+              className="pal-cta"
             >
               See Model Answer →
             </button>
@@ -299,9 +291,9 @@ export function BehavioralRunner({ question, onBack, onNext }) {
 
           {/* Your notes */}
           {userNote && (
-            <div style={{ marginTop: 16, marginBottom: 16, padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 6 }}>Your notes</div>
-              <div style={{ fontSize: 14, color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
+            <div style={{ marginTop: 16, marginBottom: 16, padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 6 }}>Your notes</div>
+              <div style={{ fontSize: '0.88rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
             </div>
           )}
 

@@ -5,6 +5,7 @@ import { StatsConceptPanel } from './StatsConceptPanel.jsx';
 import { ConceptDrawer } from '../concepts/ConceptDrawer.jsx';
 import { saveStatsAttempt, clearStatsProgress } from '../../utils/statsProgress.js';
 import { track } from '../../utils/analytics.js';
+import { Icon } from '../shared/Icon.jsx';
 
 // views: 'question' | 'reveal' | 'debrief'
 
@@ -91,13 +92,10 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
       <div style={{ marginBottom: '1.25rem' }}>
         <button
           onClick={onBack}
-          style={{
-            background: 'none', border: 'none', color: 'var(--text-muted)',
-            fontSize: '0.78rem', cursor: 'pointer', padding: 0, marginBottom: '0.75rem',
-            display: 'flex', alignItems: 'center', gap: '0.3rem',
-          }}
+          className="pal-back-btn"
+          style={{ marginBottom: '0.75rem' }}
         >
-          ← Stats Room
+          <Icon name="arrow-left" size={14} color="currentColor" />Stats Room
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
@@ -118,13 +116,8 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
             color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>{module.concept}</span>
-          <span style={{
-            fontSize: 13,
-            color: elapsed > 600 ? 'var(--red, #ef4444)' : 'var(--text-muted, #888)',
-            fontVariantNumeric: 'tabular-nums',
-            marginLeft: 'auto',
-          }}>
-            ⏱ {formatTime(elapsed)}
+          <span className={`pal-timer${elapsed > 600 ? ' warning' : ''}`} style={{ marginLeft: 'auto' }}>
+            <Icon name="clock" size={12} color="currentColor" />{formatTime(elapsed)}
           </span>
         </div>
         <h1 style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--text)', margin: 0, letterSpacing: '-0.015em' }}>
@@ -132,9 +125,9 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
         </h1>
         {module.sfPrerequisites?.length > 0 && (
           <div style={{ marginTop: 10, marginBottom: 2 }}>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)', marginRight: 6 }}>📚 Review first:</span>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginRight: 6, display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Icon name="book-open" size={11} color="currentColor" />Review first:</span>
             {module.sfPrerequisites.map(p => (
-              <span key={p.id} style={{ fontSize: 12, padding: '2px 8px', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 4, marginRight: 4, color: 'var(--accent)' }}>{p.title}</span>
+              <span key={p.id} style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', marginRight: 4, color: 'var(--accent)' }}>{p.title}</span>
             ))}
           </div>
         )}
@@ -159,9 +152,9 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
             borderTop: '1px solid var(--border-subtle)',
             background: 'var(--surface-2)',
           }}>
-            <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
-                ✏️ Write your thinking first <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span>
+            <div className="pal-textarea-wrap" style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <Icon name="pen-line" size={12} color="currentColor" />Write your thinking first <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span>
               </div>
               <textarea
                 value={userNote}
@@ -169,8 +162,8 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
                 placeholder="What's your read? Jot down your diagnosis before revealing the answer..."
                 style={{
                   width: '100%', minHeight: 80, padding: '10px 12px', background: 'var(--bg)',
-                  border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
-                  fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                  border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)',
+                  fontSize: '0.88rem', lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
                   boxSizing: 'border-box',
                 }}
               />
@@ -179,7 +172,7 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
                 style={{
                   marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
                   border: `1px solid ${noteSaved ? 'var(--green-border)' : 'var(--border)'}`,
-                  borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                  borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.75rem',
                   color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
                 }}
               >
@@ -190,16 +183,7 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
               <button
                 onClick={handleSubmit}
                 disabled={!selectedId}
-                style={{
-                  padding: '0.6rem 1.25rem',
-                  background: selectedId ? 'var(--accent)' : 'var(--surface-2)',
-                  border: `1.5px solid ${selectedId ? 'var(--accent)' : 'var(--border)'}`,
-                  borderRadius: 'var(--radius-sm)',
-                  color: selectedId ? '#fff' : 'var(--text-dim)',
-                  fontSize: '0.88rem', fontWeight: 700,
-                  cursor: selectedId ? 'pointer' : 'default',
-                  transition: 'all 0.12s',
-                }}
+                className="pal-cta"
               >
                 Submit answer →
               </button>
@@ -248,9 +232,9 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
             onRetry={handleRetry}
           />
           {userNote && (
-            <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 6 }}>Your notes</div>
-              <div style={{ fontSize: 14, color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
+            <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 6 }}>Your notes</div>
+              <div style={{ fontSize: '0.88rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
             </div>
           )}
           {onNext && (

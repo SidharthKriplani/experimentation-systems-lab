@@ -1,3 +1,4 @@
+import { Icon } from '../components/shared/Icon.jsx';
 import { useState } from 'react';
 import { metricCases } from '../data/metricCases.js';
 import { getMetricsProgress } from '../utils/metricsProgress.js';
@@ -63,7 +64,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
           borderRadius: '6px', marginBottom: '1.25rem',
           fontSize: '0.78rem', color: 'var(--green)',
         }}>
-          <span>📖</span>
+          <Icon name="book-open" size={13} color="currentColor" />
           <span>New to this? Start with</span>
           <button onClick={() => onNavigate('metrics-foundations')} style={{
             background: 'none', border: 'none', padding: 0,
@@ -100,12 +101,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
       {!theoryActive && (
       <div style={{ display: 'flex', gap: 6, marginBottom: 12, justifyContent: 'flex-end' }}>
         {['default', 'difficulty'].map(opt => (
-          <button key={opt} onClick={() => setSortBy(opt)} style={{
-            fontSize: 12, padding: '4px 10px', borderRadius: 6, cursor: 'pointer', fontWeight: 600,
-            background: sortBy === opt ? 'var(--yellow)' : 'var(--surface)',
-            border: `1px solid ${sortBy === opt ? 'var(--yellow-border)' : 'var(--border)'}`,
-            color: sortBy === opt ? '#000' : 'var(--text-secondary)',
-          }}>{opt === 'default' ? 'Default' : 'By Difficulty'}</button>
+          <button key={opt} onClick={() => setSortBy(opt)} className={`pal-sort-btn${sortBy === opt ? ' active' : ''}`}>{opt === 'default' ? 'Default' : 'By Difficulty'}</button>
         ))}
       </div>
       )}

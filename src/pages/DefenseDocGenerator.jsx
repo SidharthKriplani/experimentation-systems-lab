@@ -254,7 +254,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
               value={jdText}
               onChange={function(e) { setJdText(e.target.value); }}
               placeholder={'Paste the job description here...\n\nInclude responsibilities and qualifications for best results.'}
-              style={{ width: '100%', minHeight: plan ? 280 : 220, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8, padding: '0.85rem', fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.65, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none' }}
+              style={{ width: '100%', minHeight: plan ? 280 : 220, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.85rem', fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.65, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none' }}
             />
             <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '0.35rem', marginBottom: '0.9rem' }}>
               Tip: more complete JDs produce better recommendations.
@@ -267,7 +267,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
                 background: plan ? 'var(--surface-2)' : (jdText.trim() ? 'var(--purple)' : 'var(--surface-2)'),
                 color: plan ? 'var(--text-muted)' : (jdText.trim() ? 'white' : 'var(--text-dim)'),
                 border: plan ? '1px solid var(--border)' : 'none',
-                borderRadius: 8,
+                borderRadius: 'var(--radius)',
                 padding: '0.75rem 1.25rem',
                 fontSize: '0.9rem',
                 fontWeight: 700,
@@ -281,7 +281,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
 
           {/* Keyword hint — shown when no plan yet */}
           {!plan && (
-            <div style={{ marginTop: '1rem', background: 'var(--purple-bg)', border: '1px solid var(--purple-border)', borderRadius: 10, padding: '1rem 1.1rem' }}>
+            <div style={{ marginTop: '1rem', background: 'var(--purple-bg)', border: '1px solid var(--purple-border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem' }}>
               <div style={{ fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--purple)', marginBottom: '0.55rem' }}>Scanned for keywords across</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
                 {CATEGORY_LABELS.map(function(cat) {
@@ -300,7 +300,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
         <div>
           {/* ── Example banner ── */}
           {usingExample && (
-            <div style={{ background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 10, padding: '0.75rem 1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <div style={{ background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius)', padding: '0.75rem 1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <span style={{ fontSize: '0.85rem' }}>💡</span>
               <span style={{ fontSize: '0.82rem', color: 'var(--yellow-text)', fontWeight: 500 }}>
                 Example plan for: <strong>{EXAMPLE_PLAN.role}</strong>. Paste a real JD to get your personalized plan.
@@ -349,13 +349,13 @@ export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
               var tier = dayNum <= 2 ? 'Foundation' : dayNum <= 5 ? 'Practice' : dayNum === 6 ? 'Breadth' : 'Review';
 
               return (
-                <div key={dayObj.day} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '1rem 1.1rem', borderLeft: '3px solid ' + accentColor }}>
+                <div key={dayObj.day} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', borderLeft: '3px solid ' + accentColor }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.4rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
                       <span style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text)' }}>{dayObj.label}</span>
                       <span style={{ fontWeight: 600, fontSize: '0.78rem', color: 'var(--text-muted)' }}>— {dayObj.theme}</span>
                     </div>
-                    <span style={{ fontSize: '0.66rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: accentColor, background: accentBg, border: '1px solid ' + accentBorder, borderRadius: 4, padding: '0.12rem 0.45rem' }}>
+                    <span style={{ fontSize: '0.66rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: accentColor, background: accentBg, border: '1px solid ' + accentBorder, borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.45rem' }}>
                       {tier}
                     </span>
                   </div>
@@ -369,7 +369,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
                         <button
                           key={roomId}
                           onClick={function() { if (onNavigate) onNavigate(meta.page); }}
-                          style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 6, padding: '0.3rem 0.7rem', fontSize: '0.78rem', fontWeight: 600, color: meta.color, cursor: 'pointer', transition: 'border-color 0.12s' }}
+                          style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.7rem', fontSize: '0.78rem', fontWeight: 600, color: meta.color, cursor: 'pointer', transition: 'border-color 0.12s' }}
                           title={'Go to ' + meta.label}
                         >
                           {meta.label} →
@@ -417,7 +417,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
           </div>
 
           {/* Footer note */}
-          <div style={{ marginTop: '1.25rem', padding: '0.85rem 1rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>
+          <div style={{ marginTop: '1.25rem', padding: '0.85rem 1rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>
             As you complete cases, your{' '}
             {onNavigate ? (
               <button onClick={function() { onNavigate('progress'); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--purple)', fontWeight: 600, fontSize: '0.82rem', padding: 0 }}>

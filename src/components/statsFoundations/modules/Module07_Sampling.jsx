@@ -249,7 +249,7 @@ export function Module07_Sampling({ module, onNext }) {
                 formatter={(v) => [v, 'Count']}
                 contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem' }}
               />
-              <ReferenceLine x={POP_MEAN.toFixed(1)} stroke="var(--teal)" strokeDasharray="4 3" strokeWidth={2} label={{ value: 'μ', fill: 'var(--teal)', fontSize: 11 }} />
+              <ReferenceLine x={POP_MEAN.toFixed(1)} stroke="var(--teal)" strokeDasharray="4 3" strokeWidth={2} label={{ value: 'μ', fill: 'var(--teal)', fontSize: '0.72rem' }} />
               <Bar dataKey="count" radius={[2, 2, 0, 0]}>
                 {histData.map((entry, i) => (
                   <Cell key={i} fill={Math.abs(entry.midpoint - POP_MEAN) < 1 ? 'var(--teal)' : 'var(--accent)'} opacity={0.75} />

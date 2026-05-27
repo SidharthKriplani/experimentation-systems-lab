@@ -1,3 +1,4 @@
+import { Icon } from './Icon.jsx';
 import { useState } from 'react';
 
 // DebriefCopyButton - reusable clipboard export for any room runner.
@@ -94,7 +95,7 @@ export function DebriefCopyButton({ title, notes, modelAnswer, tags, difficulty,
         }
       }}
     >
-      <span style={{ fontSize: '0.85rem' }}>{copied ? '✓' : '📋'}</span>
+      {copied ? <span style={{ fontSize: '0.85rem' }}>✓</span> : <Icon name="clipboard" size={14} color="currentColor" />}
       <span>{copied ? 'Copied!' : 'Copy debrief'}</span>
     </button>
   );

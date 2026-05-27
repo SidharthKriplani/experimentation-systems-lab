@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { learningPaths } from '../data/learningPaths.js';
+import { Icon } from '../components/shared/Icon.jsx';
 
 const BRIEFS = [
   {
@@ -332,14 +333,14 @@ export function Home({ onNavigate }) {
               background: 'var(--yellow-bg)',
               border: '1px solid var(--yellow-border)',
               borderTop: '3px solid var(--yellow)',
-              borderRadius: 10, cursor: 'pointer',
+              borderRadius: 'var(--radius)', cursor: 'pointer',
               display: 'flex', flexDirection: 'column', gap: '0.25rem',
               boxShadow: 'var(--shadow-sm)',
             }}
             onClick={() => onNavigate(todaysCase.room)}
           >
-            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--yellow)' }}>
-              ⚡ Today's Case
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--yellow)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <Icon name="zap" size={11} color="var(--yellow)" />Today's Case
             </div>
             <div style={{ fontWeight: 700, fontSize: '0.97rem', color: 'var(--text)', lineHeight: 1.35 }}>
               {todaysCase.title}
@@ -358,12 +359,12 @@ export function Home({ onNavigate }) {
             background: 'var(--surface)',
             border: '1px solid var(--border)',
             borderTop: '3px solid var(--accent)',
-            borderRadius: 10,
+            borderRadius: 'var(--radius)',
             padding: '1.1rem 1.2rem',
             boxShadow: 'var(--shadow-sm)',
           }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent)', marginBottom: 5 }}>
-              📰 The Brief · Daily Concept
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent)', marginBottom: 5, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <Icon name="newspaper" size={11} color="var(--accent)" />The Brief · Daily Concept
             </div>
             <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text)', marginBottom: 3, letterSpacing: '-0.01em' }}>
               {todaysBrief.concept}
@@ -386,7 +387,7 @@ export function Home({ onNavigate }) {
                 <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 0 0.65rem' }}>
                   {todaysBrief.depth}
                 </p>
-                <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 6, padding: '0.6rem 0.85rem', fontSize: '0.81rem', color: 'var(--text-muted)', lineHeight: 1.65, marginBottom: '0.7rem' }}>
+                <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 0.85rem', fontSize: '0.81rem', color: 'var(--text-muted)', lineHeight: 1.65, marginBottom: '0.7rem' }}>
                   <span style={{ fontWeight: 700, color: 'var(--text-secondary)', marginRight: 4 }}>Example:</span>
                   {todaysBrief.example}
                 </div>
@@ -402,7 +403,7 @@ export function Home({ onNavigate }) {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.4rem', marginTop: 8 }}>
               <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
                 {todaysBrief.tags.map(tag => (
-                  <span key={tag} style={{ fontSize: '0.66rem', fontWeight: 600, background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-dim)', borderRadius: 4, padding: '0.1rem 0.4rem', letterSpacing: '0.02em' }}>
+                  <span key={tag} style={{ fontSize: '0.66rem', fontWeight: 600, background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-dim)', borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem', letterSpacing: '0.02em' }}>
                     {tag}
                   </span>
                 ))}
@@ -426,7 +427,7 @@ export function Home({ onNavigate }) {
             {sectionLabel}
           </div>
           {visitedRooms.length === 0 && (
-            <div style={{ display: 'flex', gap: '0.2rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8, padding: '0.15rem' }}>
+            <div style={{ display: 'flex', gap: '0.2rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.15rem' }}>
               {[{ id: 'both', label: 'All' }, { id: 'ds', label: 'DS' }, { id: 'pm', label: 'PM' }].map(r => (
                 <button
                   key={r.id}
@@ -434,7 +435,7 @@ export function Home({ onNavigate }) {
                   style={{
                     background: role === r.id ? 'var(--surface)' : 'none',
                     border: role === r.id ? '1px solid var(--border)' : '1px solid transparent',
-                    borderRadius: 6, padding: '0.2rem 0.55rem',
+                    borderRadius: 'var(--radius-sm)', padding: '0.2rem 0.55rem',
                     color: role === r.id ? 'var(--text)' : 'var(--text-muted)',
                     fontWeight: role === r.id ? 600 : 400, fontSize: '0.75rem',
                     cursor: 'pointer',

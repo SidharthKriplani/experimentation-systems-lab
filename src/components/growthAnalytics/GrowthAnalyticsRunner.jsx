@@ -134,10 +134,10 @@ function ChartCard({ children, height = 200 }) {
       padding: '16px',
       background: 'var(--surface)',
       border: '1px solid var(--border)',
-      borderRadius: 8,
+      borderRadius: 'var(--radius)',
     }}>
       <div style={{
-        fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
+        fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase',
         letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 12,
       }}>
         Data Visualization
@@ -157,10 +157,10 @@ function GA01Chart() {
     <ChartCard height={210}>
       <BarChart data={ga01Data} stackOffset="sign" margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis tickFormatter={fmt} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} width={52} />
+        <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis tickFormatter={fmt} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} width={52} />
         <Tooltip formatter={(v, name) => [fmt(v), name.charAt(0).toUpperCase() + name.slice(1)]} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Bar dataKey="retained"    name="Retained"    stackId="a" fill={C.green}  />
         <Bar dataKey="new"         name="New"         stackId="a" fill={C.teal}   />
         <Bar dataKey="reactivated" name="Reactivated" stackId="a" fill={C.yellow} />
@@ -175,10 +175,10 @@ function GA02Chart() {
     <ChartCard height={200}>
       <BarChart data={ga02Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="segment" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 50]} />
+        <XAxis dataKey="segment" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} domain={[0, 50]} />
         <Tooltip formatter={v => `${v}%`} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Bar dataKey="before" name="Before Campaign" fill={C.teal}   />
         <Bar dataKey="after"  name="After Campaign"  fill={C.yellow} />
       </BarChart>
@@ -191,10 +191,10 @@ function GA03Chart() {
     <ChartCard height={210}>
       <LineChart data={ga03Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 100]} />
+        <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} domain={[0, 100]} />
         <Tooltip formatter={v => `${v}%`} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Line type="monotone" dataKey="jan"   name="Jan Cohort (Enterprise)" stroke={C.yellow} strokeWidth={2} dot={{ r: 4 }} />
         <Line type="monotone" dataKey="march" name="Mar Cohort (SMB)"        stroke={C.red}    strokeWidth={2} dot={{ r: 4 }} />
       </LineChart>
@@ -212,11 +212,11 @@ function GA04Chart() {
         margin={{ top: 8, right: 48, left: 8, bottom: 0 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-        <XAxis type="number" tickFormatter={fmtUsers} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
-        <YAxis type="category" dataKey="step" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} width={60} />
+        <XAxis type="number" tickFormatter={fmtUsers} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} />
+        <YAxis type="category" dataKey="step" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} width={60} />
         <Tooltip formatter={(v, name) => [fmtUsers(v), name]} />
         <Bar dataKey="users" name="Users" fill={C.teal} radius={[0, 4, 4, 0]}>
-          <LabelList dataKey="rate" position="right" formatter={v => `${v}%`} style={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+          <LabelList dataKey="rate" position="right" formatter={v => `${v}%`} style={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} />
         </Bar>
       </BarChart>
     </ChartCard>
@@ -228,10 +228,10 @@ function GA05Chart() {
     <ChartCard height={200}>
       <BarChart data={ga05Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="channel" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis tickFormatter={v => `$${v}`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+        <XAxis dataKey="channel" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis tickFormatter={v => `$${v}`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} />
         <Tooltip formatter={v => `$${v}`} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Bar dataKey="cac" name="CAC" fill={C.red}   />
         <Bar dataKey="ltv" name="LTV" fill={C.green} />
       </BarChart>
@@ -244,11 +244,11 @@ function GA06Chart() {
     <ChartCard height={200}>
       <BarChart data={ga06Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="type" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis yAxisId="left"  tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'Session (min)', angle: -90, position: 'insideLeft', fill: 'var(--text-muted)', fontSize: 10, dx: -2 }} />
-        <YAxis yAxisId="right" orientation="right" tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'D7 Retention', angle: 90, position: 'insideRight', fill: 'var(--text-muted)', fontSize: 10, dx: 2 }} />
+        <XAxis dataKey="type" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis yAxisId="left"  tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} label={{ value: 'Session (min)', angle: -90, position: 'insideLeft', fill: 'var(--text-muted)', fontSize: 10, dx: -2 }} />
+        <YAxis yAxisId="right" orientation="right" tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} label={{ value: 'D7 Retention', angle: 90, position: 'insideRight', fill: 'var(--text-muted)', fontSize: 10, dx: 2 }} />
         <Tooltip />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Bar yAxisId="left"  dataKey="sessionLength" name="Avg Session (min)" fill={C.teal}   />
         <Bar yAxisId="right" dataKey="d7Retention"   name="D7 Retention %"   fill={C.yellow} />
       </BarChart>
@@ -261,13 +261,13 @@ function GA07Chart() {
     <ChartCard height={200}>
       <AreaChart data={ga07Data} stackOffset="expand" margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis tickFormatter={v => `${(v * 100).toFixed(0)}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+        <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis tickFormatter={v => `${(v * 100).toFixed(0)}%`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} />
         <Tooltip formatter={(v, name, props) => {
           const total = props.payload.reduce((s, p) => s + p.value, 0);
           return [`${((v / total) * 100).toFixed(0)}%`, name];
         }} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Area type="monotone" dataKey="organic" name="Organic" stackId="1" stroke={C.green} fill={C.green} fillOpacity={0.6} />
         <Area type="monotone" dataKey="paid"    name="Paid"    stackId="1" stroke={C.red}   fill={C.red}   fillOpacity={0.5} />
       </AreaChart>
@@ -280,10 +280,10 @@ function GA08Chart() {
     <ChartCard height={200}>
       <BarChart data={ga08Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="metric" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 80]} />
+        <XAxis dataKey="metric" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} domain={[0, 80]} />
         <Tooltip formatter={v => `${v}%`} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Bar dataKey="us"    name="US"    fill={C.teal}   />
         <Bar dataKey="latam" name="LatAm" fill={C.yellow} />
       </BarChart>
@@ -296,11 +296,11 @@ function GA09Chart() {
     <ChartCard height={200}>
       <BarChart data={ga09Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="channel" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis yAxisId="left"  tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'LTV:CAC', angle: -90, position: 'insideLeft', fill: 'var(--text-muted)', fontSize: 10, dx: -2 }} />
-        <YAxis yAxisId="right" orientation="right" tickFormatter={v => `$${v}`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'LTV / CAC ($)', angle: 90, position: 'insideRight', fill: 'var(--text-muted)', fontSize: 10, dx: 2 }} />
+        <XAxis dataKey="channel" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis yAxisId="left"  tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} label={{ value: 'LTV:CAC', angle: -90, position: 'insideLeft', fill: 'var(--text-muted)', fontSize: 10, dx: -2 }} />
+        <YAxis yAxisId="right" orientation="right" tickFormatter={v => `$${v}`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} label={{ value: 'LTV / CAC ($)', angle: 90, position: 'insideRight', fill: 'var(--text-muted)', fontSize: 10, dx: 2 }} />
         <Tooltip />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Bar yAxisId="left"  dataKey="ltvCac" name="LTV:CAC Ratio" fill={C.teal}   />
         <Bar yAxisId="right" dataKey="ltv"    name="LTV ($)"       fill={C.green}  />
         <Bar yAxisId="right" dataKey="cac"    name="CAC ($)"       fill={C.red}    />
@@ -314,11 +314,11 @@ function GA10Chart() {
     <ChartCard height={200}>
       <BarChart data={ga10DeviceData} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="device" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis yAxisId="left"  tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'Conv Rate %', angle: -90, position: 'insideLeft', fill: 'var(--text-muted)', fontSize: 10, dx: -2 }} />
-        <YAxis yAxisId="right" orientation="right" tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} label={{ value: 'Traffic Share %', angle: 90, position: 'insideRight', fill: 'var(--text-muted)', fontSize: 10, dx: 2 }} />
+        <XAxis dataKey="device" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis yAxisId="left"  tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} label={{ value: 'Conv Rate %', angle: -90, position: 'insideLeft', fill: 'var(--text-muted)', fontSize: 10, dx: -2 }} />
+        <YAxis yAxisId="right" orientation="right" tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} label={{ value: 'Traffic Share %', angle: 90, position: 'insideRight', fill: 'var(--text-muted)', fontSize: 10, dx: 2 }} />
         <Tooltip formatter={v => `${v}%`} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Bar yAxisId="left"  dataKey="convRate" name="Conversion Rate %" fill={C.teal}   />
         <Bar yAxisId="right" dataKey="share"    name="Traffic Share %"  fill={C.yellow} />
       </BarChart>
@@ -331,10 +331,10 @@ function GA11Chart() {
     <ChartCard height={210}>
       <LineChart data={ga11Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 80]} />
+        <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} domain={[0, 80]} />
         <Tooltip formatter={v => `${v}%`} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Line type="monotone" dataKey="conversion" name="Paywall Conversion %" stroke={C.yellow} strokeWidth={2} dot={{ r: 4 }} />
         <Line type="monotone" dataKey="activation"  name="Feature Activation %"  stroke={C.teal}   strokeWidth={2} dot={{ r: 4 }} />
       </LineChart>
@@ -347,10 +347,10 @@ function GA12Chart() {
     <ChartCard height={200}>
       <BarChart data={ga12Data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-        <XAxis dataKey="metric" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 50]} />
+        <XAxis dataKey="metric" tick={{ fill: 'var(--text-muted)', fontSize: '0.75rem' }} />
+        <YAxis tickFormatter={v => `${v}%`} tick={{ fill: 'var(--text-muted)', fontSize: '0.72rem' }} domain={[0, 50]} />
         <Tooltip formatter={v => `${v}%`} />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
         <Bar dataKey="us"    name="US (Core)"  fill={C.teal}   />
         <Bar dataKey="latam" name="LatAm"      fill={C.yellow} />
         <Bar dataKey="sea"   name="SEA"        fill={C.blue}   />
@@ -722,8 +722,8 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
         </p>
       </div>
 
-            <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
+            <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
                 ✏️ Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
               </div>
               <textarea
@@ -732,8 +732,8 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
                 placeholder="Jot your thinking before revealing the answer..."
                 style={{
                   width: '100%', minHeight: 72, padding: '10px 12px', background: 'var(--bg)',
-                  border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
-                  fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                  border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)',
+                  fontSize: '0.88rem', lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
                   boxSizing: 'border-box',
                 }}
               />
@@ -742,7 +742,7 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
                 style={{
                   marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
                   border: '1px solid ' + (noteSaved ? 'var(--green-border)' : 'var(--border)'),
-                  borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                  borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.75rem',
                   color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
                 }}
               >{noteSaved ? '✓ Saved' : 'Save note'}</button>

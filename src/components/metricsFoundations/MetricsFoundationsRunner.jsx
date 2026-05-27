@@ -685,7 +685,7 @@ export function MetricsFoundationsRunner({ moduleId, onBack, onNext, unlocked })
         <span style={{ color: 'var(--border)', fontSize: '0.8rem' }}>|</span>
         <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Module {module.index} of {metricsFoundationModules.length}</span>
         {completed && (
-          <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '0.15rem 0.5rem', borderRadius: 4, background: 'var(--green-bg)', color: 'var(--green)', border: '1px solid var(--green-border)' }}>✓ Complete</span>
+          <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '0.15rem 0.5rem', borderRadius: 'var(--radius-sm)', background: 'var(--green-bg)', color: 'var(--green)', border: '1px solid var(--green-border)' }}>✓ Complete</span>
         )}
       </div>
 

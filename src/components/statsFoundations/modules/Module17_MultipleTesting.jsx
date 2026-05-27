@@ -123,7 +123,7 @@ export function Module17_MultipleTesting({ module, onNext }) {
 
         {/* Bonferroni cost note */}
         {bonferroni && n > 1 && (
-          <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.9rem', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 6, fontSize: '0.82rem', color: 'var(--yellow-text)' }}>
+          <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.9rem', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--yellow-text)' }}>
             <strong>Cost of Bonferroni at n={n}:</strong> α per test = {adjustedAlpha.toFixed(4)}.
             You need approximately <strong>{bonferroniDataMultiple}× more data</strong> to maintain the same statistical power.
           </div>
@@ -141,7 +141,7 @@ export function Module17_MultipleTesting({ module, onNext }) {
             const isActive = k === n;
             return (
               <div key={k} onClick={() => setN(k)} style={{
-                padding: '0.5rem 0.75rem', borderRadius: 6, cursor: 'pointer',
+                padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer',
                 border: `1.5px solid ${isActive ? 'var(--accent)' : 'var(--border)'}`,
                 background: isActive ? 'var(--accent-bg)' : 'var(--surface)',
                 textAlign: 'center',

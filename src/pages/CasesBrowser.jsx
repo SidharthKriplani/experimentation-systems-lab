@@ -1,3 +1,4 @@
+import { Icon } from '../components/shared/Icon.jsx';
 import { businessCases } from '../data/businessCases.js';
 import { getCaseProgress } from '../utils/caseProgress.js';
 
@@ -39,7 +40,7 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
           borderRadius: '6px', marginBottom: '1.25rem',
           fontSize: '0.78rem', color: 'var(--teal)',
         }}>
-          <span>📖</span>
+          <Icon name="book-open" size={13} color="currentColor" />
           <span>New to this? Start with</span>
           <button onClick={() => onNavigate('rca-foundations')} style={{
             background: 'none', border: 'none', padding: 0,

@@ -138,23 +138,23 @@ export function Module16_Skewness({ module, onNext }) {
 
       {/* Stats readout */}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 120, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 8, padding: '0.8rem 1rem' }}>
+        <div style={{ flex: 1, minWidth: 120, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 'var(--radius)', padding: '0.8rem 1rem' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 4 }}>Mean</div>
           <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>{meanVal.toFixed(2)}</div>
           <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>Dragged by outliers</div>
         </div>
-        <div style={{ flex: 1, minWidth: 120, background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 8, padding: '0.8rem 1rem' }}>
+        <div style={{ flex: 1, minWidth: 120, background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius)', padding: '0.8rem 1rem' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', marginBottom: 4 }}>Median</div>
           <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--green)', fontVariantNumeric: 'tabular-nums' }}>{medianVal.toFixed(2)}</div>
           <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>Robust to outliers</div>
         </div>
-        <div style={{ flex: 1, minWidth: 120, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8, padding: '0.8rem 1rem' }}>
+        <div style={{ flex: 1, minWidth: 120, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.8rem 1rem' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>Mode</div>
           <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--text)', fontVariantNumeric: 'tabular-nums' }}>{modeVal.toFixed(2)}</div>
           <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>Peak of distribution</div>
         </div>
         {!isNormal && (
-          <div style={{ flex: 1, minWidth: 140, background: 'var(--red-bg)', border: '1.5px solid var(--red-border)', borderRadius: 8, padding: '0.8rem 1rem' }}>
+          <div style={{ flex: 1, minWidth: 140, background: 'var(--red-bg)', border: '1.5px solid var(--red-border)', borderRadius: 'var(--radius)', padding: '0.8rem 1rem' }}>
             <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--red)', textTransform: 'uppercase', marginBottom: 4 }}>Mean / Median</div>
             <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--red)', fontVariantNumeric: 'tabular-nums' }}>{meanRatio}×</div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>Skew gap (should be 1.0)</div>

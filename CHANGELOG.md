@@ -4,6 +4,34 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.16.0] — 2026-05
+
+### Changed — SVG icon system, CSS utility classes, runner premium pass, browser cleanup
+
+**SVG Icon system (`src/components/shared/Icon.jsx`):** New shared component with 24 Lucide-compatible stroke icons. API: `<Icon name="..." size={16} color="currentColor" strokeWidth={1.75} />`. Icons cover all navigation, room, and UI contexts. Zero external dependency — inline SVG paths.
+
+**CSS utility classes added to `index.css`:** `.pal-tabs` / `.pal-tab` / `.pal-tab.active` (tab bar system), `.pal-timer` / `.pal-timer.warning` (elapsed time pill, red on warning), `.pal-back-btn` (ghost back button), `.pal-textarea-wrap` (note section container with border-radius + focus ring), `.pal-progress-track` / `.pal-progress-fill` (progress bar), `.pal-sort-btn` / `.pal-sort-btn.active` (sort chips), `.pal-cta` (gradient submit/reveal button with disabled state), `.pal-icon-label` (icon + text inline label), `.pal-eyebrow` (section label).
+
+**Sidebar emoji → icon pass:** ⚗ logo replaced with `<Icon name="flask">`. 🔍 search replaced with `<Icon name="search">`. All 12 FLAT_GROUPS nav items now render icons via `icon` field on each item definition.
+
+**Home.jsx icon pass:** ⚡ "Today's Case" label replaced with `<Icon name="zap">` + text. 📰 "The Brief" label replaced with `<Icon name="newspaper">` + text. Added `Icon` import.
+
+**Runner premium pass (6 runners):** Applied across BehavioralRunner, StatsRunner, RCARunner, EstimationRunner, MetricsRunner, InstrumentationRunner:
+- Timer spans (`⏱ {formatTime}`) → `<span className="pal-timer">` + `<Icon name="clock">`. Warning class applied when elapsed > 600s.
+- Note sections (`✏️ Write your thinking first`) → `className="pal-textarea-wrap"` + `<Icon name="pen-line">`. Hardcoded `borderRadius: 6/8` + `fontSize: 12/14` replaced with CSS variables.
+- Submit/Reveal CTAs (inline `background/border/color` style objects) → `className="pal-cta"`.
+- Back buttons (inline style objects) → `className="pal-back-btn"` + `<Icon name="arrow-left">`.
+- StatsRunner "Review first" badges: 📚 → `<Icon name="book-open">`.
+
+**Browser cleanup:** 📖 banners in StatsBrowser, MetricsBrowser, RCABrowser, CasesBrowser, GrowthAnalyticsBrowser → `<Icon name="book-open">`. Sort buttons in StatsBrowser, MetricsBrowser, RCABrowser upgraded from hardcoded yellow/black inline styles → `className="pal-sort-btn"` + `className="pal-sort-btn active"`. 📋 in DebriefCopyButton → `<Icon name="clipboard">`.
+
+**Batch hardcoded value cleanup (141 replacements across 27 files):** `borderRadius: 6/8/10` → `'var(--radius-sm)'` / `'var(--radius)'`. `fontSize: 11/12/13/14` → `'0.72rem'` / `'0.75rem'` / `'0.82rem'` / `'0.88rem'`. Heaviest files: GrowthAnalyticsRunner (47), Module15_SimpsonsParadox (13), Trainer (15), DefenseDocGenerator (8).
+
+### Files changed
+`src/components/shared/Icon.jsx` (new), `src/index.css`, `src/components/layout/Sidebar.jsx`, `src/pages/Home.jsx`, `src/components/behavioral/BehavioralRunner.jsx`, `src/components/stats/StatsRunner.jsx`, `src/components/rca/RCARunner.jsx`, `src/components/estimation/EstimationRunner.jsx`, `src/components/metrics/MetricsRunner.jsx`, `src/components/instrumentation/InstrumentationRunner.jsx`, `src/pages/StatsBrowser.jsx`, `src/pages/MetricsBrowser.jsx`, `src/pages/RCABrowser.jsx`, `src/pages/CasesBrowser.jsx`, `src/pages/GrowthAnalyticsBrowser.jsx`, `src/components/shared/DebriefCopyButton.jsx`, + 21 files with radius/fontSize normalization
+
+---
+
 ## [4.15.0] — 2026-05
 
 ### Changed — Visual overhaul: typography, shadows, gradients, micro-interactions

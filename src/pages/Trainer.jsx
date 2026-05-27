@@ -182,7 +182,7 @@ function SetupScreen({ onStart }) {
       <div style={{
         background: 'var(--surface-2)',
         border: '1px solid var(--border)',
-        borderRadius: 8,
+        borderRadius: 'var(--radius)',
         padding: '0.75rem 1rem',
         marginBottom: '1.25rem',
         fontSize: '0.875rem',
@@ -199,7 +199,7 @@ function SetupScreen({ onStart }) {
         style={{
           width: '100%',
           padding: '0.875rem',
-          borderRadius: 10,
+          borderRadius: 'var(--radius)',
           border: 'none',
           background: previewPool.length === 0 ? 'var(--border)' : 'var(--green)',
           color: '#fff',
@@ -249,7 +249,7 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
       width: '100%',
       minHeight: 48,
       padding: '0.75rem 1rem',
-      borderRadius: 8,
+      borderRadius: 'var(--radius)',
       border: '1.5px solid var(--border)',
       background: 'var(--surface)',
       color: 'var(--text)',
@@ -276,8 +276,8 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
     <div style={{ maxWidth: 700, margin: '0 auto', padding: '1.5rem 1rem' }}>
       {/* Progress bar + score chip */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.25rem' }}>
-        <div style={{ flex: 1, height: 6, background: 'var(--border)', borderRadius: 4, overflow: 'hidden' }}>
-          <div style={{ width: `${pct}%`, height: '100%', background: 'var(--green)', borderRadius: 4, transition: 'width 0.3s' }} />
+        <div style={{ flex: 1, height: 6, background: 'var(--border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+          <div style={{ width: `${pct}%`, height: '100%', background: 'var(--green)', borderRadius: 'var(--radius-sm)', transition: 'width 0.3s' }} />
         </div>
         <div style={{
           background: 'var(--green-bg)',
@@ -310,13 +310,13 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
         <div style={{ display: 'flex', gap: 8, marginBottom: '1rem' }}>
           <span style={{
             background: 'var(--accent-bg)', color: 'var(--accent)', border: '1px solid var(--accent-border)',
-            borderRadius: 6, padding: '2px 10px', fontSize: '0.75rem', fontWeight: 600, textTransform: 'capitalize',
+            borderRadius: 'var(--radius-sm)', padding: '2px 10px', fontSize: '0.75rem', fontWeight: 600, textTransform: 'capitalize',
           }}>
             {q.category}
           </span>
           <span style={{
             background: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border)',
-            borderRadius: 6, padding: '2px 10px', fontSize: '0.75rem', fontWeight: 600, textTransform: 'capitalize',
+            borderRadius: 'var(--radius-sm)', padding: '2px 10px', fontSize: '0.75rem', fontWeight: 600, textTransform: 'capitalize',
           }}>
             {q.difficulty}
           </span>
@@ -369,7 +369,7 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
             marginTop: '1rem',
             background: 'var(--yellow-bg)',
             border: '1.5px solid var(--yellow-border)',
-            borderRadius: 8,
+            borderRadius: 'var(--radius)',
             padding: '0.875rem 1rem',
             fontSize: '0.875rem',
             color: 'var(--text-secondary)',
@@ -389,7 +389,7 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
             onClick={onNext}
             style={{
               padding: '0.75rem 1.5rem',
-              borderRadius: 8,
+              borderRadius: 'var(--radius)',
               border: 'none',
               background: 'var(--green)',
               color: '#fff',
@@ -480,12 +480,12 @@ function DebriefScreen({ questions, answers, onRetry, onNewSession, onBack }) {
                 <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)', textTransform: 'capitalize' }}>{cat}</span>
                 <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>{correct}/{catTotal}</span>
               </div>
-              <div style={{ height: 8, background: 'var(--border)', borderRadius: 4, overflow: 'hidden' }}>
+              <div style={{ height: 8, background: 'var(--border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
                 <div style={{
                   width: `${catPct * 100}%`,
                   height: '100%',
                   background: scoreColor(catPct),
-                  borderRadius: 4,
+                  borderRadius: 'var(--radius-sm)',
                   transition: 'width 0.4s ease',
                 }} />
               </div>
@@ -543,7 +543,7 @@ function DebriefScreen({ questions, answers, onRetry, onNewSession, onBack }) {
                       gap: 8,
                       background: 'var(--green-bg)',
                       border: '1px solid var(--green-border)',
-                      borderRadius: 6,
+                      borderRadius: 'var(--radius-sm)',
                       padding: '0.5rem 0.75rem',
                       marginBottom: '0.5rem',
                     }}>
@@ -564,7 +564,7 @@ function DebriefScreen({ questions, answers, onRetry, onNewSession, onBack }) {
         <button onClick={onRetry} style={{
           flex: 1,
           padding: '0.75rem',
-          borderRadius: 8,
+          borderRadius: 'var(--radius)',
           border: '1.5px solid var(--green-border)',
           background: 'var(--green-bg)',
           color: 'var(--green)',
@@ -577,7 +577,7 @@ function DebriefScreen({ questions, answers, onRetry, onNewSession, onBack }) {
         <button onClick={onNewSession} style={{
           flex: 1,
           padding: '0.75rem',
-          borderRadius: 8,
+          borderRadius: 'var(--radius)',
           border: '1.5px solid var(--border)',
           background: 'var(--surface)',
           color: 'var(--text-secondary)',
@@ -590,7 +590,7 @@ function DebriefScreen({ questions, answers, onRetry, onNewSession, onBack }) {
         <button onClick={onBack} style={{
           flex: 1,
           padding: '0.75rem',
-          borderRadius: 8,
+          borderRadius: 'var(--radius)',
           border: 'none',
           background: 'var(--accent)',
           color: '#fff',

@@ -11,7 +11,7 @@ class ModuleErrorBoundary extends React.Component {
           <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⚠️</div>
           <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Module failed to load</div>
           <div style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>{String(this.state.error)}</div>
-          <button onClick={() => this.setState({ hasError: false, error: null })} style={{ padding: '8px 20px', background: 'var(--yellow)', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}>Try Again</button>
+          <button onClick={() => this.setState({ hasError: false, error: null })} style={{ padding: '8px 20px', background: 'var(--yellow)', border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontWeight: 600 }}>Try Again</button>
         </div>
       );
     }
@@ -368,15 +368,15 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
           <ModuleErrorBoundary><ModuleComponent module={module} onNext={handleNext} /></ModuleErrorBoundary>
           {module.playbookLinks?.length > 0 && (
             <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 16px 32px', boxSizing: 'border-box' }}>
-              <div style={{ padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>📖 Playbook Reading</div>
+              <div style={{ padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>📖 Playbook Reading</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {module.playbookLinks.map(link => (
                     <span
                       key={link.id}
                       onClick={() => onNavigate && onNavigate('playbook')}
                       title="Open Playbook"
-                      style={{ fontSize: 13, color: 'var(--accent)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 6, padding: '4px 10px', cursor: onNavigate ? 'pointer' : 'default', textDecoration: 'none', transition: 'opacity 0.15s' }}
+                      style={{ fontSize: '0.82rem', color: 'var(--accent)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', padding: '4px 10px', cursor: onNavigate ? 'pointer' : 'default', textDecoration: 'none', transition: 'opacity 0.15s' }}
                       onMouseEnter={e => { if (onNavigate) e.currentTarget.style.opacity = '0.75'; }}
                       onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
                     >

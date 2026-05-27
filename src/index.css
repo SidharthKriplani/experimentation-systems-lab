@@ -408,3 +408,203 @@ table { border-collapse: collapse; }
   font-weight: 600 !important;
   box-shadow: inset 2px 0 0 var(--accent) !important;
 }
+
+/* ── Tab bar ─────────────────────────────────────────────────────────────── */
+.pal-tabs {
+  display: inline-flex;
+  gap: 0.2rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.2rem;
+}
+.pal-tab {
+  padding: 0.32rem 0.9rem;
+  border-radius: calc(var(--radius) - 3px);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+  font-family: inherit;
+  letter-spacing: -0.005em;
+  line-height: 1.4;
+}
+.pal-tab:hover {
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+}
+.pal-tab.active {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Timer pill ──────────────────────────────────────────────────────────── */
+.pal-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+  font-weight: 500;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+.pal-timer.warning {
+  background: var(--red-bg);
+  border-color: var(--red-border);
+  color: var(--red);
+}
+
+/* ── Back button ─────────────────────────────────────────────────────────── */
+.pal-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0.9rem;
+  font-family: inherit;
+  letter-spacing: -0.005em;
+  transition: color var(--transition);
+  line-height: 1;
+}
+.pal-back-btn:hover {
+  color: var(--text);
+}
+
+/* ── Textarea wrap ───────────────────────────────────────────────────────── */
+.pal-textarea-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.pal-textarea-wrap:focus-within {
+  border-color: var(--accent-border);
+  box-shadow: var(--shadow-glow);
+}
+.pal-textarea-wrap textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+  min-height: 80px;
+}
+
+/* ── Progress track ──────────────────────────────────────────────────────── */
+.pal-progress-track {
+  height: 5px;
+  background: var(--surface-2);
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+.pal-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Section eyebrow label ───────────────────────────────────────────────── */
+.pal-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+/* ── Sort/filter button group ────────────────────────────────────────────── */
+.pal-sort-group {
+  display: inline-flex;
+  gap: 0.2rem;
+}
+.pal-sort-btn {
+  font-size: 0.78rem;
+  padding: 0.28rem 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: inherit;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+  letter-spacing: -0.005em;
+}
+.pal-sort-btn:hover {
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  border-color: var(--border-strong);
+}
+.pal-sort-btn.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-color: var(--accent-border);
+  font-weight: 600;
+}
+
+/* ── Gradient CTA button ─────────────────────────────────────────────────── */
+.pal-cta {
+  padding: 0.62rem 1.4rem;
+  background: var(--gradient-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  transition: opacity var(--transition), transform var(--transition-fast), box-shadow var(--transition);
+  box-shadow: 0 2px 12px rgba(99,102,241,0.25);
+}
+.pal-cta:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+}
+.pal-cta:active {
+  transform: translateY(0);
+  opacity: 1;
+}
+.pal-cta:disabled {
+  background: var(--surface-2);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  box-shadow: none;
+  cursor: default;
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Icon label row ──────────────────────────────────────────────────────── */
+.pal-icon-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}

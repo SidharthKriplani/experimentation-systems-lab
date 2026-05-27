@@ -165,7 +165,7 @@ export function Module24_SyntheticControl({ module, onNext }) {
             onClick={handleReveal}
             disabled={!selected}
             style={{
-              alignSelf: 'flex-start', padding: '0.4rem 1.1rem', borderRadius: 6, fontSize: '0.82rem',
+              alignSelf: 'flex-start', padding: '0.4rem 1.1rem', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem',
               fontWeight: 700, border: 'none',
               background: selected ? 'var(--accent)' : 'var(--border)',
               color: selected ? '#fff' : 'var(--text-muted)', cursor: selected ? 'pointer' : 'default',

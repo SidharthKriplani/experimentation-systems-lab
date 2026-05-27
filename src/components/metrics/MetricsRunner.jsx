@@ -3,6 +3,7 @@ import { MetricChoicePanel } from './MetricChoicePanel.jsx';
 import { MetricScoreReveal } from './MetricScoreReveal.jsx';
 import { MetricDebriefPanel } from './MetricDebriefPanel.jsx';
 import { DebriefCopyButton } from '../shared/DebriefCopyButton.jsx';
+import { Icon } from '../shared/Icon.jsx';
 import { saveMetricsAttempt, clearMetricsProgress } from '../../utils/metricsProgress.js';
 import { track } from '../../utils/analytics.js';
 
@@ -83,13 +84,10 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
       {/* Back nav */}
       <button
         onClick={onBack}
-        style={{
-          background: 'none', border: 'none', cursor: 'pointer',
-          fontSize: '0.82rem', color: 'var(--text-muted)', padding: '0 0 1.25rem',
-          display: 'flex', alignItems: 'center', gap: '0.3rem',
-        }}
+        className="pal-back-btn"
+        style={{ marginBottom: '1.25rem' }}
       >
-        ← Metrics Room
+        <Icon name="arrow-left" size={14} color="currentColor" />Metrics Room
       </button>
 
       {/* Case header */}
@@ -172,10 +170,10 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
       {/* Debrief view */}
       {view === 'debrief' && (
         <div style={{ marginTop: '1.25rem' }}>
-          <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+          <div className="pal-textarea-wrap" style={{ marginBottom: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: '0.4rem' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
-                ✏️ Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <Icon name="pen-line" size={12} color="currentColor" />Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
               </div>
               <DebriefCopyButton
                 title={metricCase.title}
@@ -192,8 +190,8 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
               placeholder="Jot your thinking — what stood out, what you missed, what to remember..."
               style={{
                 width: '100%', minHeight: 72, padding: '10px 12px', background: 'var(--bg)',
-                border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
-                fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+                border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)',
+                fontSize: '0.88rem', lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
                 boxSizing: 'border-box',
               }}
             />
@@ -202,7 +200,7 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
               style={{
                 marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
                 border: '1px solid ' + (noteSaved ? 'var(--green-border)' : 'var(--border)'),
-                borderRadius: 6, cursor: 'pointer', fontSize: 12,
+                borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.75rem',
                 color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
               }}
             >{noteSaved ? '✓ Saved' : 'Save note'}</button>

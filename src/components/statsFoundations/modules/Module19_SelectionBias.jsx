@@ -163,7 +163,7 @@ export function Module19_SelectionBias({ module, onNext }) {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
           {EXAMPLES.map((ex, i) => (
-            <div key={i} style={{ display: 'flex', gap: '0.75rem', padding: '0.6rem 0.75rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6 }}>
+            <div key={i} style={{ display: 'flex', gap: '0.75rem', padding: '0.6rem 0.75rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)' }}>
               <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{ex.icon}</span>
               <div>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.2rem' }}>{ex.title}</div>

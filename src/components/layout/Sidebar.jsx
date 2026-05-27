@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Icon } from './Icon.jsx';
 
 const ROOM_SUBGROUPS = [
   {
@@ -40,33 +41,33 @@ const FLAT_GROUPS = [
   {
     label: 'PRACTICE',
     items: [
-      { id: 'challenges',     label: '⚡ Challenges' },
-      { id: 'take-home',      label: '📝 Take-Home' },
-      { id: 'simulator',      label: 'Mock Interview' },
-      { id: 'ab-interpreter', label: 'Stats Calculator' },
+      { id: 'challenges',     label: 'Challenges',      icon: 'zap' },
+      { id: 'take-home',      label: 'Take-Home',       icon: 'file-text' },
+      { id: 'simulator',      label: 'Mock Interview',  icon: 'mic' },
+      { id: 'ab-interpreter', label: 'Stats Calc',      icon: 'calculator' },
     ],
   },
   {
     label: 'LEARN',
     items: [
-      { id: 'blog',     label: 'Deep Dives' },
-      { id: 'playbook', label: 'Frameworks' },
+      { id: 'blog',     label: 'Deep Dives',  icon: 'book-open' },
+      { id: 'playbook', label: 'Frameworks',  icon: 'layout' },
     ],
   },
   {
     label: 'TOOLS',
     items: [
-      { id: 'trainer',        label: '🎯 MCQ Quiz' },
-      { id: 'company-tracks', label: 'Companies' },
-      { id: 'defense-doc',    label: '🛡️ Defense Doc' },
-      { id: 'bookmarks',      label: '🔖 Saved' },
+      { id: 'trainer',        label: 'MCQ Quiz',      icon: 'target' },
+      { id: 'company-tracks', label: 'Companies',     icon: 'building-2' },
+      { id: 'defense-doc',    label: 'Defense Doc',   icon: 'shield' },
+      { id: 'bookmarks',      label: 'Saved',         icon: 'bookmark' },
     ],
   },
   {
     label: 'TRACK',
     items: [
-      { id: 'progress', label: 'Progress' },
-      { id: 'pricing',  label: 'Pricing' },
+      { id: 'progress', label: 'Progress', icon: 'bar-chart' },
+      { id: 'pricing',  label: 'Pricing',  icon: 'credit-card' },
     ],
   },
 ];
@@ -155,14 +156,17 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
       { id: 'foundations',           label: 'Theory Hub' },
       ...FLAT_GROUPS.flatMap(g => g.items),
     ];
-    const label = allItems.find(i => i.id === id)?.label || id;
+    const item = allItems.find(i => i.id === id);
+    const label = item?.label || id;
+    const icon = item?.icon;
 
     return (
       <button
         onClick={() => handleNav(id)}
         className={isActive ? (indent ? 'sidebar-nav-active-sub' : 'sidebar-nav-active') : ''}
         style={{
-          display: 'block', width: '100%', textAlign: 'left',
+          display: 'flex', alignItems: 'center', gap: '0.45rem',
+          width: '100%', textAlign: 'left',
           padding: indent ? '0.3rem 0.65rem 0.3rem 1.1rem' : '0.34rem 0.65rem',
           borderRadius: 'var(--radius-sm)',
           border: 'none',
@@ -188,7 +192,8 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
           }
         }}
       >
-        {label}
+        {icon && <Icon name={icon} size={13} color="currentColor" style={{ opacity: isActive ? 1 : 0.7, flexShrink: 0 }} />}
+        <span>{label}</span>
       </button>
     );
   }
@@ -246,9 +251,8 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
               background: 'var(--gradient-accent)',
               borderRadius: 7,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 13,
               boxShadow: '0 2px 10px rgba(99,102,241,0.4)',
-            }}>⚗</div>
+            }}><Icon name="flask" size={14} color="#fff" /></div>
             <span style={{
               fontWeight: 800,
               fontSize: '0.875rem',
@@ -405,12 +409,12 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
               e.currentTarget.style.boxShadow = 'none';
             }}
           >
-            <span style={{ fontSize: '0.82rem', lineHeight: 1, opacity: 0.65 }}>🔍</span>
+            <Icon name="search" size={14} color="currentColor" style={{ opacity: 0.65, flexShrink: 0 }} />
             <span style={{ flex: 1 }}>Search</span>
             <kbd style={{
               fontSize: '0.6rem', padding: '0.12rem 0.35rem',
               background: 'var(--surface)', border: '1px solid var(--border)',
-              borderRadius: 4, color: 'var(--text-muted)',
+              borderRadius: 'var(--radius-sm)', color: 'var(--text-muted)',
               fontFamily: 'inherit',
             }}>/</kbd>
           </button>

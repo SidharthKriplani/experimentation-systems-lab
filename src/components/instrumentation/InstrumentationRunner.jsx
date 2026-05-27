@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveInstrumentationProgress, getInstrumentationProgress } from '../../utils/instrumentationProgress.js';
 import { track } from '../../utils/analytics.js';
+import { Icon } from '../shared/Icon.jsx';
 
 const ROOM_KEY = 'instrumentation';
 const NOTES_KEY = 'pal-notes-v1';
@@ -208,11 +209,10 @@ function WorkScreen({ caseData, onReveal }) {
           </p>
         </div>
         <div style={{
-          fontSize: '0.85rem', fontWeight: 600, color: 'var(--teal)',
-          background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
-          borderRadius: '8px', padding: '0.35rem 0.75rem', fontVariantNumeric: 'tabular-nums',
         }}>
-          ⏱ {timerStr}
+          <span className="pal-timer" style={{ gap: '0.3rem' }}>
+            <Icon name="clock" size={12} color="currentColor" />{timerStr}
+          </span>
         </div>
       </div>
 
@@ -274,17 +274,7 @@ function WorkScreen({ caseData, onReveal }) {
       <button
         onClick={() => canReveal && onReveal(text)}
         disabled={!canReveal}
-        style={{
-          background: canReveal ? 'var(--teal)' : 'var(--surface-2)',
-          border: canReveal ? 'none' : '1px solid var(--border)',
-          borderRadius: '8px', padding: '0.85rem 1.75rem',
-          fontSize: '0.95rem', fontWeight: 700,
-          color: canReveal ? '#001a1a' : 'var(--text-dim)',
-          cursor: canReveal ? 'pointer' : 'not-allowed',
-          transition: 'opacity 0.1s',
-        }}
-        onMouseEnter={e => { if (canReveal) e.currentTarget.style.opacity = '0.88'; }}
-        onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+        className="pal-cta"
       >
         Submit Answer →
       </button>
@@ -502,31 +492,31 @@ function RevealScreen({ caseData, onBack, onNext }) {
         </ul>
       </div>
 
-      <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
-                ✏️ Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
-              </div>
-              <textarea
-                value={userNote}
-                onChange={e => { setUserNote(e.target.value); setNoteSaved(false); }}
-                placeholder="Jot your thinking..."
-                style={{
-                  width: '100%', minHeight: 72, padding: '10px 12px', background: 'var(--bg)',
-                  border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)',
-                  fontSize: 14, lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
-                  boxSizing: 'border-box',
-                }}
-              />
-              <button
-                onClick={() => { saveNote(ROOM_KEY, caseData.id, userNote); setNoteSaved(true); }}
-                style={{
-                  marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
-                  border: '1px solid ' + (noteSaved ? 'var(--green-border)' : 'var(--border)'),
-                  borderRadius: 6, cursor: 'pointer', fontSize: 12,
-                  color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
-                }}
-              >{noteSaved ? '✓ Saved' : 'Save note'}</button>
-            </div>
+      <div className="pal-textarea-wrap" style={{ marginBottom: 16 }}>
+        <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+          <Icon name="pen-line" size={12} color="currentColor" />Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
+        </div>
+        <textarea
+          value={userNote}
+          onChange={e => { setUserNote(e.target.value); setNoteSaved(false); }}
+          placeholder="Jot your thinking..."
+          style={{
+            width: '100%', minHeight: 72, padding: '10px 12px', background: 'var(--bg)',
+            border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)',
+            fontSize: '0.88rem', lineHeight: 1.5, resize: 'vertical', fontFamily: 'inherit',
+            boxSizing: 'border-box',
+          }}
+        />
+        <button
+          onClick={() => { saveNote(ROOM_KEY, caseData.id, userNote); setNoteSaved(true); }}
+          style={{
+            marginTop: 8, padding: '5px 14px', background: noteSaved ? 'var(--green-bg)' : 'var(--surface)',
+            border: '1px solid ' + (noteSaved ? 'var(--green-border)' : 'var(--border)'),
+            borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.75rem',
+            color: noteSaved ? 'var(--green)' : 'var(--text-muted)',
+          }}
+        >{noteSaved ? '✓ Saved' : 'Save note'}</button>
+      </div>
 
       {/* Star rating */}
       <div style={{
