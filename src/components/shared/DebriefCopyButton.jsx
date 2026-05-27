@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-// DebriefCopyButton — reusable clipboard export for any room runner.
+// DebriefCopyButton - reusable clipboard export for any room runner.
 // Props:
-//   title       (string)  — case / scenario title
-//   notes       (string)  — user\'s freeform notes from pal-notes-v1
-//   modelAnswer (string)  — model answer, senior debrief summary, or key insight
-//   tags        (array)   — string array of tags/topics
-//   difficulty  (string)  — \'analyst\' | \'senior\' | \'staff\'
-//   room        (string)  — display name, e.g. \'Review Room\' or \'RCA Room\'
+//   title       (string)  - case / scenario title
+//   notes       (string)  - user's freeform notes from pal-notes-v1
+//   modelAnswer (string)  - model answer, senior debrief summary, or key insight
+//   tags        (array)   - string array of tags/topics
+//   difficulty  (string)  - 'analyst' | 'senior' | 'staff'
+//   room        (string)  - display name, e.g. 'Review Room' or 'RCA Room'
 
 export function DebriefCopyButton({ title, notes, modelAnswer, tags, difficulty, room }) {
   const [copied, setCopied] = useState(false);
