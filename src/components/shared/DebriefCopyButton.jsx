@@ -14,24 +14,24 @@ export function DebriefCopyButton({ title, notes, modelAnswer, tags, difficulty,
 
   function buildMarkdown() {
     const tagLine = Array.isArray(tags) && tags.length > 0
-      ? tags.join(\', \')
-      : \'-\';
+      ? tags.join(', ')
+      : '-';
     const diffLabel = difficulty
       ? difficulty.charAt(0).toUpperCase() + difficulty.slice(1)
-      : \'-\';
-    const notesText = notes && notes.trim() ? notes.trim() : \'(none)\';
-    const answerText = modelAnswer && modelAnswer.trim() ? modelAnswer.trim() : \'(none)\';
+      : '-';
+    const notesText = notes && notes.trim() ? notes.trim() : '(none)';
+    const answerText = modelAnswer && modelAnswer.trim() ? modelAnswer.trim() : '(none)';
 
     return (
-      \'# \' + title + \'\\n\' +
-      \'**Room:** \' + (room || \'-\') + \' | **Difficulty:** \' + diffLabel + \'\\n\' +
-      \'**Tags:** \' + tagLine + \'\\n\' +
-      \'\\n\' +
-      \'## Model Answer\\n\' +
-      answerText + \'\\n\' +
-      \'\\n\' +
-      \'## My Notes\\n\' +
-      notesText + \'\\n\'
+      '# ' + title + '\\n' +
+      '**Room:** ' + (room || '-') + ' | **Difficulty:** ' + diffLabel + '\\n' +
+      '**Tags:** ' + tagLine + '\\n' +
+      '\\n' +
+      '## Model Answer\\n' +
+      answerText + '\\n' +
+      '\\n' +
+      '## My Notes\\n' +
+      notesText + '\\n'
     );
   }
 
@@ -49,13 +49,13 @@ export function DebriefCopyButton({ title, notes, modelAnswer, tags, difficulty,
 
   function fallbackCopy(text) {
     try {
-      const el = document.createElement(\'textarea\');
+      const el = document.createElement('textarea');
       el.value = text;
-      el.style.position = \'fixed\';
-      el.style.opacity = \'0\';
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
       document.body.appendChild(el);
       el.select();
-      document.execCommand(\'copy\');
+      document.execCommand('copy');
       document.body.removeChild(el);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -65,37 +65,37 @@ export function DebriefCopyButton({ title, notes, modelAnswer, tags, difficulty,
   return (
     <button
       onClick={handleCopy}
-      title={copied ? \'Copied to clipboard!\' : \'Copy debrief as markdown\'}
+      title={copied ? 'Copied to clipboard!' : 'Copy debrief as markdown'}
       style={{
-        display: \'inline-flex\',
-        alignItems: \'center\',
-        gap: \'0.35rem\',
-        background: copied ? \'var(--green-bg)\' : \'var(--surface-2)\',
-        border: \'1px solid \' + (copied ? \'var(--green-border)\' : \'var(--border)\'),
-        borderRadius: \'6px\',
-        padding: \'0.42rem 0.85rem\',
-        fontSize: \'0.8rem\',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '0.35rem',
+        background: copied ? 'var(--green-bg)' : 'var(--surface-2)',
+        border: '1px solid ' + (copied ? 'var(--green-border)' : 'var(--border)'),
+        borderRadius: '6px',
+        padding: '0.42rem 0.85rem',
+        fontSize: '0.8rem',
         fontWeight: 600,
-        color: copied ? \'var(--green)\' : \'var(--text-muted)\',
-        cursor: \'pointer\',
-        transition: \'all 0.15s\',
+        color: copied ? 'var(--green)' : 'var(--text-muted)',
+        cursor: 'pointer',
+        transition: 'all 0.15s',
         flexShrink: 0,
       }}
       onMouseEnter={e => {
         if (!copied) {
-          e.currentTarget.style.borderColor = \'var(--border-strong)\';
-          e.currentTarget.style.color = \'var(--text)\';
+          e.currentTarget.style.borderColor = 'var(--border-strong)';
+          e.currentTarget.style.color = 'var(--text)';
         }
       }}
       onMouseLeave={e => {
         if (!copied) {
-          e.currentTarget.style.borderColor = \'var(--border)\';
-          e.currentTarget.style.color = \'var(--text-muted)\';
+          e.currentTarget.style.borderColor = 'var(--border)';
+          e.currentTarget.style.color = 'var(--text-muted)';
         }
       }}
     >
-      <span style={{ fontSize: \'0.85rem\' }}>{copied ? \'✓\' : \'📋\'}</span>
-      <span>{copied ? \'Copied!\' : \'Copy debrief\'}</span>
+      <span style={{ fontSize: '0.85rem' }}>{copied ? '✓' : '📋'}</span>
+      <span>{copied ? 'Copied!' : 'Copy debrief'}</span>
     </button>
   );
 }

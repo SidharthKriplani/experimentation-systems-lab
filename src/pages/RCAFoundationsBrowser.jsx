@@ -56,7 +56,7 @@ export function RCAFoundationsBrowser({ onStart, unlocked, onNavigate }) {
           </h1>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0 0 1rem', lineHeight: 1.5 }}>
-          6 interactive modules covering the RCA framework, decomposition, data quality checks, seasonality, Simpson\'s Paradox, and recommendation structure.
+          6 interactive modules covering the RCA framework, decomposition, data quality checks, seasonality, Simpson's Paradox, and recommendation structure.
           Build the diagnostic discipline that makes every RCA case click.
         </p>
 

@@ -75,6 +75,24 @@ Four distinct navigation problems found and resolved across the V4.12.x builds:
 
 ---
 
+### 71. ✅ Build Safety Audit — `\'` Escape Sequences in JSX (V4.14.1)
+**Version:** V4.14.1
+**Type:** Build safety
+
+Vercel build failed with "Invalid Unicode escape sequence" at `src/components/shared/DebriefCopyButton.jsx:21:10` — line `: \'-\';`. Root cause: file was generated with `\'...\' ` used as string *delimiters* in expression context (e.g. `\'-\'`, `\'# \'`, `\'(none)\'`). Rolldown's strict ECMAScript parser rejects `\` before `'` outside an already-open string.
+
+**Systematic sweep performed:** All non-data JSX/JS files grepped for `\'`. Three distinct patterns found:
+
+1. **String delimiters in expression context** (`\'-\'`) — invalid. Found 36 instances in DebriefCopyButton.jsx. Fixed with `sed -i "s/\\\\'/'/g"`.
+2. **`\'` in JSX text content** (between `>` and `<` tags) — wrong (renders as literal backslash or parse error). Found in 6 files: TakehomeRunner.jsx, Module22_DiD.jsx, MetricsFoundationsRunner.jsx, RCAFoundationsBrowser.jsx, Home.jsx, CompanyTracks.jsx. Fixed with targeted `sed -i`.
+3. **`\'` inside already-open single-quoted strings** — valid, left untouched. 43 instances across component files; 511 in PlaybookBrowser.jsx; 300 in BlogBrowser.jsx; all in data files.
+
+**Rule added to CLAUDE.md:** Three-context rule for apostrophes — data files require `\'`; JS expression strings use `\'` only *inside* open strings; JSX text content uses plain apostrophes only.
+
+**Status:** ✅ Resolved
+
+---
+
 ## Part I — Architecture & Strategic Audits
 
 ### 1. ✅ Platform Architecture Audit (18 Questions)

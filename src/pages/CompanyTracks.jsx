@@ -333,7 +333,7 @@ function TrackDetail({ track, onBack, onNavigate }) {
               Track Complete!
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
-              You\'ve finished all {totalCases} cases in the {track.company} prep track.
+              You've finished all {totalCases} cases in the {track.company} prep track.
             </div>
           </div>
         </div>

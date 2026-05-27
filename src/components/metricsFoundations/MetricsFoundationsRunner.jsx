@@ -590,7 +590,7 @@ function Module_MF08({ module, onNext }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.92rem' }}>
-        A metric\'s <strong>sensitivity</strong> determines how large a sample you need to detect a real effect.
+        A metric's <strong>sensitivity</strong> determines how large a sample you need to detect a real effect.
         High-variance metrics (revenue, time on site) require enormous samples. Low-variance proxies (conversion rate, clicks) detect effects faster —
         but only if they are causally linked to the outcome you care about.
       </p>

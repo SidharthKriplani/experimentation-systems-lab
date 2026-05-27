@@ -111,7 +111,7 @@ export function Module22_DiD({ module, onNext }) {
 
       {/* Annotation */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.85rem 1rem', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-        <strong style={{ color: 'var(--text)' }}>Reading the result:</strong> Of the treatment group\'s {tDelta >= 0 ? '+' : ''}{tDelta}pp change, {cDelta >= 0 ? '+' : ''}{cDelta}pp would have happened anyway (the control group trend). The treatment\'s causal contribution is <strong style={{ color: didColor }}>{did >= 0 ? '+' : ''}{did}pp</strong>.
+        <strong style={{ color: 'var(--text)' }}>Reading the result:</strong> Of the treatment group's {tDelta >= 0 ? '+' : ''}{tDelta}pp change, {cDelta >= 0 ? '+' : ''}{cDelta}pp would have happened anyway (the control group trend). The treatment's causal contribution is <strong style={{ color: didColor }}>{did >= 0 ? '+' : ''}{did}pp</strong>.
         {did !== tDelta && (
           <span style={{ color: 'var(--red)' }}> Reporting the raw {tDelta >= 0 ? '+' : ''}{tDelta}pp as the treatment effect would be {did !== 0 ? `${Math.abs(tDelta - did)}pp wrong` : 'correct — but only because the control trend was zero'}.</span>
         )}

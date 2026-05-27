@@ -66,6 +66,16 @@ gridTemplateColumns: 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))'
 ```
 The inner `min()` prevents horizontal overflow on mobile. Never use `minmax(380px, 1fr)` bare.
 
+### Apostrophes and escape sequences — build-breaking if wrong
+
+Three distinct contexts; three different rules:
+
+1. **Data files (`src/data/*.js`)** — single-quoted strings: escape apostrophes as `\'` — e.g. `'product\'s metric'`. Required.
+2. **JSX/component files — JS string expressions** — `\'` is valid only *inside* an already-open single-quoted string. **Never use `\'` as string delimiters** (e.g. `\'-\'` or `\'# \'`). Rolldown throws "Invalid Unicode escape sequence" at build time.
+3. **JSX text content** (between `>` and `<` tags) — use **plain apostrophes only**. `\'` in JSX text renders as literal `\` + `'` or causes a parse error.
+
+This class of bug broke the Vercel build in V4.14.1 (DebriefCopyButton.jsx). Do not repeat it.
+
 ### Paywall
 `isUnlocked()` in `src/utils/unlock.js` returns `true` (beta). Do not change this. When Stripe goes live this will flip — it is marked with `// TODO: set to false when Stripe goes live`.
 

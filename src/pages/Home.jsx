@@ -335,7 +335,7 @@ export function Home({ onNavigate }) {
             onClick={() => onNavigate(todaysCase.room)}
           >
             <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)' }}>
-              ⚡ Today\'s Case
+              ⚡ Today's Case
             </div>
             <div style={{ fontWeight: 700, fontSize: '0.97rem', color: 'var(--text)', lineHeight: 1.35 }}>
               {todaysCase.title}
@@ -536,13 +536,13 @@ export function Home({ onNavigate }) {
                 onClick={() => { dismissOnboarding(); onNavigate('stat-foundations'); }}
                 style={{ background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius)', padding: '0.65rem 1rem', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', textAlign: 'left' }}
               >
-                I\'m a Data Scientist / Analyst →
+                I'm a Data Scientist / Analyst →
               </button>
               <button
                 onClick={() => { dismissOnboarding(); onNavigate('product-design'); }}
                 style={{ background: 'var(--surface-2)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.65rem 1rem', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', textAlign: 'left' }}
               >
-                I\'m a Product Manager →
+                I'm a Product Manager →
               </button>
               <button
                 onClick={dismissOnboarding}

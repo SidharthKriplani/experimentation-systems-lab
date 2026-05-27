@@ -317,7 +317,7 @@ export function TakehomeRunner({ caseData, onBack, onNext, unlocked }) {
               cursor: 'pointer',
             }}
           >
-            I\'m done — Show Rubric →
+            I'm done — Show Rubric →
           </button>
         </div>
       )}
