@@ -5,9 +5,9 @@ const ROOM_SUBGROUPS = [
     id: 'experiments',
     label: 'Experiments',
     items: [
-      { id: 'stats',        label: 'Stats' },
-      { id: 'design',       label: 'A/B Design' },
-      { id: 'browser',      label: 'Review' },
+      { id: 'stats',         label: 'Stats' },
+      { id: 'design',        label: 'A/B Design' },
+      { id: 'browser',       label: 'A/B Review' },
       { id: 'spot-the-flaw', label: 'Spot the Flaw' },
     ],
   },
@@ -15,20 +15,21 @@ const ROOM_SUBGROUPS = [
     id: 'analytics',
     label: 'Analytics',
     items: [
-      { id: 'metrics',         label: 'Metrics' },
-      { id: 'rca',             label: 'RCA' },
-      { id: 'cases',           label: 'Cases' },
+      { id: 'metrics',          label: 'Metrics' },
+      { id: 'rca',              label: 'RCA' },
+      { id: 'cases',            label: 'Cases' },
       { id: 'growth-analytics', label: 'Growth Analytics' },
-      { id: 'bi',              label: 'BI & Reporting' },
-      { id: 'instrumentation', label: 'Instrumentation' },
+      { id: 'bi',               label: 'BI & Reporting' },
+      { id: 'instrumentation',  label: 'Instrumentation' },
+      { id: 'code',             label: 'Code Lab' },
     ],
   },
   {
     id: 'product',
     label: 'Product',
     items: [
-      { id: 'product-design',  label: 'PM Design' },
-      { id: 'prioritization',  label: 'Prioritize' },
+      { id: 'product-design',  label: 'Product Design' },
+      { id: 'prioritization',  label: 'Prioritization' },
       { id: 'behavioral',      label: 'Behavioral' },
       { id: 'estimation',      label: 'Estimation' },
     ],
@@ -59,7 +60,7 @@ const FLAT_GROUPS = [
   {
     label: 'LEARN',
     items: [
-      { id: 'blog',        label: 'Learn' },
+      { id: 'blog',        label: 'Articles' },
       { id: 'playbook',    label: 'Playbook' },
       { id: 'foundations', label: 'Theory Hub' },
     ],
@@ -154,7 +155,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
       { id: 'stat-foundations', label: 'Stat Foundations' },
       { id: 'metrics-foundations', label: 'Metrics Foundations' },
       { id: 'rca-foundations',     label: 'RCA Foundations' },
-      { id: 'exp-foundations',     label: 'Exp Foundations' },
+      { id: 'exp-foundations',     label: 'A/B Foundations' },
       { id: 'foundations', label: 'Theory Hub' },
       ...FLAT_GROUPS.flatMap(g => g.items),
     ].find(i => i.id === id)?.label || id;
@@ -306,9 +307,6 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
               </div>
             );
           })}
-
-          {/* ── Code (flat, no accordion wrapper) ── */}
-          <NavItem id="code" />
 
           {/* ── FLAT GROUPS ── */}
           {FLAT_GROUPS.map(group => (
