@@ -6,9 +6,8 @@ Tiered build backlog. **In Progress** = actively being built this session. **Tie
 
 ## In Progress
 
-**P2 — New user experience** (V4.22, current session)
-- Nav IA cleanup: remove emojis from all nav items, fix "Instrum." truncation, remove Consult from nav, fix inconsistent labels
-- Pricing raise: $49 → $69 one-time (copy + Pricing.jsx + DECISIONS.md rationale)
+**P3 — Content depth** (V4.23, current session)
+- Challenges room: 6 → 16 cases (CHL07–CHL16 added: Spotify, Amazon, LinkedIn, DoorDash, Slack, Pinterest, Shopify, Duolingo, Figma, Instacart)
 
 ---
 

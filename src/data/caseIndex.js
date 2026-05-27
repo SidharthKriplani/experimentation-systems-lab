@@ -296,6 +296,16 @@ export const challengesIndex = [
   { id: 'CHL04', isFree: false, title: 'ML Model Update Causes Segment Regression' },
   { id: 'CHL05', isFree: false, title: 'New Market Expansion — Size It and Experiment' },
   { id: 'CHL06', isFree: false, title: 'Viral Feature with Network Effects Breaks A/B Testing' },
+  { id: 'CHL07', isFree: false, title: 'Discover Weekly CTR Up, Listening Hours Down' },
+  { id: 'CHL08', isFree: false, title: 'Prime Day Halo Effect Reversal' },
+  { id: 'CHL09', isFree: false, title: 'Job Apply Rate Up, Employer Response Rate Down' },
+  { id: 'CHL10', isFree: false, title: 'Better ETA Model, Worse Tail — CSAT Drops 12 Points' },
+  { id: 'CHL11', isFree: false, title: 'Thread UI: Message Send Rate Up, Collaboration Down' },
+  { id: 'CHL12', isFree: false, title: 'Visual Search CTR Decayed from +31% to +3%' },
+  { id: 'CHL13', isFree: false, title: 'Checkout Conversion Up, Repeat Purchase Rate Down' },
+  { id: 'CHL14', isFree: false, title: 'Streak Mechanic Drives DAU but Kills Learning Outcomes' },
+  { id: 'CHL15', isFree: false, title: 'Multiplayer UI Wins Teams, Drops Freelancer NPS' },
+  { id: 'CHL16', isFree: false, title: 'Weekend Peak Cancellations 3.2% → 8.7%' },
 ];
 
 export const biCaseIndex = [

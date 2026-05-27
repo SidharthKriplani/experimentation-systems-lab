@@ -43,7 +43,7 @@ More inventory in the highest-traffic rooms to keep returning users finding new 
 
 | Item | Description |
 |------|-------------|
-| Challenges room expansion: 6 → 20+ cases | The 6 existing cases get completed fast; returning users hit a dead end |
+| Challenges room expansion: 6 → 16 cases ✅ | CHL07–CHL16 added (Spotify, Amazon, LinkedIn, DoorDash, Slack, Pinterest, Shopify, Duolingo, Figma, Instacart) |
 | SQL live coding environment improvements | Code room is powerful but discovery is low |
 
 ### P4 — Architecture

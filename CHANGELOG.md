@@ -4,6 +4,34 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.23.0] — 2026-05-27
+
+### Changed — P3: Challenges room expansion 6 → 16 cases
+
+**challengesCases.js — CHL07–CHL16 added (10 new cases):**
+
+| ID | Company | Rooms | Topic |
+|---|---|---|---|
+| CHL07 | Spotify | stats, metrics, rca | Discover Weekly CTR +9%, listening hours −22% |
+| CHL08 | Amazon | rca, growth-analytics, metrics | Prime Day DAU spike → 2-week engagement cliff |
+| CHL09 | LinkedIn | metrics, stats, product-design | Job apply rate +15%, employer response rate −18% |
+| CHL10 | DoorDash | rca, metrics, estimation | Better average ETA model, worse tail — CSAT −12pts |
+| CHL11 | Slack | stats, product-design, metrics | Thread UI: +6% message send, −14% collaboration score |
+| CHL12 | Pinterest | stats, growth-analytics, rca | Visual search CTR decayed from +31% to +3% over 8 weeks |
+| CHL13 | Shopify | metrics, stats, rca | Checkout +11% conversion, −8% 30-day repeat purchase |
+| CHL14 | Duolingo | metrics, growth-analytics, product-design | Streaks drive DAU; 40% lower vocabulary retention at 90d |
+| CHL15 | Figma | product-design, stats, metrics | Multiplayer UI wins teams, drops freelancer NPS 11pts |
+| CHL16 | Instacart | estimation, rca, growth-analytics | Weekend peak cancellations 3.2% → 8.7% in 3 months |
+
+**caseIndex.js — challengesIndex updated** with all 10 new entries.
+
+Each case follows the full Challenges schema: 3 subQuestions (one per room), 250–400 word model answers, 3 key points each, synthesis paragraph, 5 key takeaways.
+
+### Files changed
+`src/data/challengesCases.js`, `src/data/caseIndex.js`, `IDEAS.md`
+
+---
+
 ## [4.22.0] — 2026-05-27
 
 ### Changed — P2: Nav IA cleanup + pricing raise
