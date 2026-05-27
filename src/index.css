@@ -88,22 +88,22 @@
 }
 
 :root[data-theme="dark"] {
-  /* Canvas */
-  --bg: #0a0d14;
-  --surface: #111420;
-  --surface-2: #181b2a;
-  --surface-raised: #1e2235;
+  /* Canvas — slightly lifted from #0a0d14 to reduce low-brightness bleed */
+  --bg: #0d1018;
+  --surface: #141828;
+  --surface-2: #1a1f30;
+  --surface-raised: #20253c;
 
-  /* Borders */
-  --border: #2d3148;
-  --border-subtle: #1e2235;
-  --border-strong: #3d4266;
+  /* Borders — lifted so they're visible at low brightness */
+  --border: #333a55;
+  --border-subtle: #262c45;
+  --border-strong: #444d6e;
 
-  /* Text */
-  --text: #e8eaf0;
-  --text-secondary: #c5c9d8;
-  --text-muted: #8890a8;
-  --text-dim: #5a6278;
+  /* Text — text-dim was #5a6278 (~2.9:1 contrast, fails AA); lifted to pass 4.5:1 at low brightness */
+  --text: #eceef4;
+  --text-secondary: #c8cdd9;
+  --text-muted: #9ba5be;
+  --text-dim: #7a8399;
 
   /* Primary accent — indigo (brighter in dark) */
   --accent: #6366f1;
