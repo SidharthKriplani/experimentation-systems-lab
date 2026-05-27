@@ -1,5 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { track } from '../../utils/analytics.js';
+
+const NOTES_KEY = 'pal-notes-v1';
+
+function getNotes(room, caseId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    return all[room + ':' + caseId] || '';
+  } catch { return ''; }
+}
+
+function saveNote(room, caseId, text) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    all[room + ':' + caseId] = text;
+    localStorage.setItem(NOTES_KEY, JSON.stringify(all));
+  } catch {}
+}
 import {
   savePhaseResponse,
   savePhaseRating,
@@ -276,6 +293,8 @@ export function ProductDesignRunner({ scenario, savedProgress, onBack, onNext })
   const [completedPhaseIds, setCompletedPhaseIds] = useState(savedProgress?.completedPhaseIds || []);
   const [view, setView] = useState(savedProgress?.result ? 'debrief' : 'writing'); // 'writing' | 'reveal' | 'debrief'
   const [result, setResult] = useState(savedProgress?.result || null);
+  const [note, setNote] = useState(() => getNotes('product-design', scenario.id));
+  useEffect(() => { setNote(getNotes('product-design', scenario.id)); }, [scenario.id]);
 
   const phases = scenario.phases;
   const currentPhase = phases[currentPhaseIndex];
@@ -388,15 +407,36 @@ export function ProductDesignRunner({ scenario, savedProgress, onBack, onNext })
 
       {/* ── Debrief view ── */}
       {view === 'debrief' && (
-        <DebriefView
-          scenario={scenario}
-          responses={responses}
-          ratings={ratings}
-          result={result}
-          onRetry={handleRetry}
-          onBack={onBack}
-          onNext={onNext}
-        />
+        <>
+          <DebriefView
+            scenario={scenario}
+            responses={responses}
+            ratings={ratings}
+            result={result}
+            onRetry={handleRetry}
+            onBack={onBack}
+            onNext={onNext}
+          />
+          <div style={{ marginTop: '1.5rem' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              My Notes
+            </div>
+            <textarea
+              value={note}
+              onChange={e => { setNote(e.target.value); saveNote('product-design', scenario.id, e.target.value); }}
+              placeholder="Add your own notes, reminders, or follow-up questions..."
+              rows={4}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: 'var(--surface-2)', border: '1px solid var(--border)',
+                borderRadius: '8px', padding: '0.65rem 0.85rem',
+                color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
+                resize: 'vertical', outline: 'none',
+                fontFamily: 'inherit',
+              }}
+            />
+          </div>
+        </>
       )}
 
       {/* ── Writing / Reveal views ── */}

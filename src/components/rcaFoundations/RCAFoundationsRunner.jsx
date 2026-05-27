@@ -1,7 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { rcaFoundationModules } from '../../data/rcaFoundationModules.js';
 import { saveRCAFoundationProgress } from '../../utils/rcaFoundationProgress.js';
 import { track } from '../../utils/analytics.js';
+
+const NOTES_KEY = 'pal-notes-v1';
+
+function getNotes(room, caseId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    return all[room + ':' + caseId] || '';
+  } catch { return ''; }
+}
+
+function saveNote(room, caseId, text) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    all[room + ':' + caseId] = text;
+    localStorage.setItem(NOTES_KEY, JSON.stringify(all));
+  } catch {}
+}
 
 // ── Shared helpers ──────────────────────────────────────────────────────────
 
@@ -691,6 +708,8 @@ const MODULE_COMPONENTS = {
 export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
   const module = rcaFoundationModules.find(m => m.id === moduleId);
   const [completed, setCompleted] = useState(false);
+  const [note, setNote] = useState(() => getNotes('rca-foundations', moduleId));
+  useEffect(() => { setNote(getNotes('rca-foundations', moduleId)); }, [moduleId]);
 
   if (!module) return null;
 
@@ -780,6 +799,27 @@ export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
           }}>
             {module.index < rcaFoundationModules.length ? 'Next module →' : 'Back to all modules'}
           </button>
+
+          {/* Notes */}
+          <div style={{ marginTop: '1.5rem' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              My Notes
+            </div>
+            <textarea
+              value={note}
+              onChange={e => { setNote(e.target.value); saveNote('rca-foundations', moduleId, e.target.value); }}
+              placeholder="Add your own notes, reminders, or follow-up questions..."
+              rows={4}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: 'var(--surface-2)', border: '1px solid var(--border)',
+                borderRadius: '8px', padding: '0.65rem 0.85rem',
+                color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
+                resize: 'vertical', outline: 'none',
+                fontFamily: 'inherit',
+              }}
+            />
+          </div>
         </div>
       )}
     </div>

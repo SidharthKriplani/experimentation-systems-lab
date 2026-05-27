@@ -47,6 +47,23 @@ import { Module24_SyntheticControl } from './modules/Module24_SyntheticControl.j
 import { Module25_IV } from './modules/Module25_IV.jsx';
 import { track } from '../../utils/analytics.js';
 
+const NOTES_KEY = 'pal-notes-v1';
+
+function getNotes(room, caseId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    return all[room + ':' + caseId] || '';
+  } catch { return ''; }
+}
+
+function saveNote(room, caseId, text) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    all[room + ':' + caseId] = text;
+    localStorage.setItem(NOTES_KEY, JSON.stringify(all));
+  } catch {}
+}
+
 const MODULE_COMPONENTS = {
   sf01: Module01_WhatIsData,
   sf02: Module02_CentralTendency,
@@ -92,6 +109,8 @@ export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked, onN
   });
   useEffect(() => { setBookmarked(isBookmarked('stat-foundations', moduleId)); }, [moduleId]);
   const [toastVisible, setToastVisible] = useState(false);
+  const [note, setNote] = useState(() => getNotes('stat-foundations', moduleId));
+  useEffect(() => { setNote(getNotes('stat-foundations', moduleId)); }, [moduleId]);
 
   if (!module || !ModuleComponent) {
     return (
@@ -391,6 +410,27 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
             >
               {bookmarked ? '🔖 Saved' : '🔖 Save'}
             </button>
+          </div>
+
+          {/* Notes */}
+          <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 16px 32px', boxSizing: 'border-box' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              My Notes
+            </div>
+            <textarea
+              value={note}
+              onChange={e => { setNote(e.target.value); saveNote('stat-foundations', moduleId, e.target.value); }}
+              placeholder="Add your own notes, reminders, or follow-up questions..."
+              rows={4}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: 'var(--surface-2)', border: '1px solid var(--border)',
+                borderRadius: '8px', padding: '0.65rem 0.85rem',
+                color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
+                resize: 'vertical', outline: 'none',
+                fontFamily: 'inherit',
+              }}
+            />
           </div>
         </>
       )}

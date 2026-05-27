@@ -1,9 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CaseStepPanel } from './CaseStepPanel.jsx';
 import { CaseScoreReveal } from './CaseScoreReveal.jsx';
 import { CaseDebriefPanel } from './CaseDebriefPanel.jsx';
 import { saveCaseAttempt, clearCaseProgress } from '../../utils/caseProgress.js';
 import { track } from '../../utils/analytics.js';
+
+const NOTES_KEY = 'pal-notes-v1';
+
+function getNotes(room, caseId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    return all[room + ':' + caseId] || '';
+  } catch { return ''; }
+}
+
+function saveNote(room, caseId, text) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    all[room + ':' + caseId] = text;
+    localStorage.setItem(NOTES_KEY, JSON.stringify(all));
+  } catch {}
+}
 
 // Phase labels for display
 const PHASE_LABELS = {
@@ -56,6 +73,8 @@ export function CaseRunner({ businessCase, savedProgress, unlocked, onBack, onNe
   const [submittedChoices, setSubmittedChoices] = useState({});  // phaseId → optionId (confirmed)
   const [view, setView] = useState(savedProgress ? 'debrief' : 'analysis');
   const [result, setResult] = useState(null);
+  const [note, setNote] = useState(() => getNotes('cases', businessCase.id));
+  useEffect(() => { setNote(getNotes('cases', businessCase.id)); }, [businessCase.id]);
 
   const phases = businessCase.phases;
   const currentPhase = phases[currentPhaseIndex];
@@ -228,6 +247,25 @@ export function CaseRunner({ businessCase, savedProgress, unlocked, onBack, onNe
             onBack={onBack}
             onNext={onNext}
           />
+          <div style={{ marginTop: '1.5rem' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              My Notes
+            </div>
+            <textarea
+              value={note}
+              onChange={e => { setNote(e.target.value); saveNote('cases', businessCase.id, e.target.value); }}
+              placeholder="Add your own notes, reminders, or follow-up questions..."
+              rows={4}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: 'var(--surface-2)', border: '1px solid var(--border)',
+                borderRadius: '8px', padding: '0.65rem 0.85rem',
+                color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
+                resize: 'vertical', outline: 'none',
+                fontFamily: 'inherit',
+              }}
+            />
+          </div>
         </div>
       )}
     </div>

@@ -1,6 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { saveChallengesProgress } from '../../utils/challengesProgress.js';
 import { track } from '../../utils/analytics.js';
+
+const NOTES_KEY = 'pal-notes-v1';
+
+function getNotes(room, caseId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    return all[room + ':' + caseId] || '';
+  } catch { return ''; }
+}
+
+function saveNote(room, caseId, text) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    all[room + ':' + caseId] = text;
+    localStorage.setItem(NOTES_KEY, JSON.stringify(all));
+  } catch {}
+}
 
 const ROOM_COLORS = {
   'stats':            { color: 'var(--accent)',    bg: 'var(--accent-bg)',    border: 'var(--accent-border)' },
@@ -58,6 +75,8 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
   const [checkedPoints, setCheckedPoints] = useState({}); // { [qId]: Set<number> }
   const [rating, setRating] = useState(null);
   const [hintOpen, setHintOpen] = useState({});
+  const [note, setNote] = useState(() => getNotes('challenges', caseData.id));
+  useEffect(() => { setNote(getNotes('challenges', caseData.id)); }, [caseData.id]);
 
   const subQs = caseData.subQuestions;
   const totalQs = subQs.length;
@@ -616,6 +635,27 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
               );
             })}
           </div>
+        </div>
+
+        {/* Notes */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            My Notes
+          </div>
+          <textarea
+            value={note}
+            onChange={e => { setNote(e.target.value); saveNote('challenges', caseData.id, e.target.value); }}
+            placeholder="Add your own notes, reminders, or follow-up questions..."
+            rows={4}
+            style={{
+              width: '100%', boxSizing: 'border-box',
+              background: 'var(--surface-2)', border: '1px solid var(--border)',
+              borderRadius: '8px', padding: '0.65rem 0.85rem',
+              color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
+              resize: 'vertical', outline: 'none',
+              fontFamily: 'inherit',
+            }}
+          />
         </div>
 
         {/* Playbook links */}

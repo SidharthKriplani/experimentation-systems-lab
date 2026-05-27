@@ -1,6 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { savePrioritizationAttempt, getPrioritizationProgress } from '../../utils/prioritizationProgress.js';
 import { track } from '../../utils/analytics.js';
+
+const NOTES_KEY = 'pal-notes-v1';
+
+function getNotes(room, caseId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    return all[room + ':' + caseId] || '';
+  } catch { return ''; }
+}
+
+function saveNote(room, caseId, text) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    all[room + ':' + caseId] = text;
+    localStorage.setItem(NOTES_KEY, JSON.stringify(all));
+  } catch {}
+}
 
 const RATINGS = [
   { id: 'strong',  label: 'Nailed it',       sub: 'Hit the framework, the tradeoffs, and the recommendation' },
@@ -21,6 +38,8 @@ export function PrioritizationRunner({ scenario, onBack, onNext }) {
   const [rating, setRating] = useState(existing?.rating || null);
   const [hintsOpen, setHintsOpen] = useState(false);
   const [frameworkOpen, setFrameworkOpen] = useState(false);
+  const [note, setNote] = useState(() => getNotes('prioritization', scenario.id));
+  useEffect(() => { setNote(getNotes('prioritization', scenario.id)); }, [scenario.id]);
 
   const canReveal = response.trim().length >= 40;
 
@@ -312,6 +331,27 @@ export function PrioritizationRunner({ scenario, onBack, onNext }) {
                 );
               })}
             </div>
+          </div>
+
+          {/* Notes */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              My Notes
+            </div>
+            <textarea
+              value={note}
+              onChange={e => { setNote(e.target.value); saveNote('prioritization', scenario.id, e.target.value); }}
+              placeholder="Add your own notes, reminders, or follow-up questions..."
+              rows={4}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: 'var(--surface-2)', border: '1px solid var(--border)',
+                borderRadius: '8px', padding: '0.65rem 0.85rem',
+                color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
+                resize: 'vertical', outline: 'none',
+                fontFamily: 'inherit',
+              }}
+            />
           </div>
 
           {/* Actions */}

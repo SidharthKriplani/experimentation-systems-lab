@@ -154,6 +154,7 @@ export function SearchPage({ onNavigate, allData }) {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [selectedRoom, setSelectedRoom] = useState(null);
   const inputRef = useRef(null);
   const cardRefs = useRef([]);
 
@@ -171,12 +172,20 @@ export function SearchPage({ onNavigate, allData }) {
   // Reset highlight when results change
   useEffect(() => {
     setHighlightedIndex(0);
-  }, [debouncedQuery]);
+  }, [debouncedQuery, selectedRoom]);
 
-  const resultGroups = useMemo(() => {
+  const allResultGroups = useMemo(() => {
     if (!debouncedQuery.trim()) return [];
     return buildResults(allData, debouncedQuery.trim());
   }, [debouncedQuery, allData]);
+
+  const resultGroups = useMemo(() => {
+    if (!selectedRoom) return allResultGroups;
+    return allResultGroups.filter(g => g.room.key === selectedRoom);
+  }, [allResultGroups, selectedRoom]);
+
+  // Rooms that actually have results — for filter chips
+  const activeRoomKeys = useMemo(() => new Set(allResultGroups.map(g => g.room.key)), [allResultGroups]);
 
   // Flatten all results for keyboard navigation
   const flatResults = useMemo(() => {
@@ -340,6 +349,42 @@ export function SearchPage({ onNavigate, allData }) {
 
       {debouncedQuery.trim() && totalCount > 0 && (
         <div>
+          {/* Room filter chips */}
+          {allResultGroups.length > 1 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '1rem' }}>
+              <button
+                onClick={() => setSelectedRoom(null)}
+                style={{
+                  padding: '0.22rem 0.65rem',
+                  borderRadius: '20px',
+                  border: '1px solid ' + (selectedRoom === null ? 'var(--purple)' : 'var(--border)'),
+                  background: selectedRoom === null ? 'var(--purple-bg)' : 'var(--surface-2)',
+                  color: selectedRoom === null ? 'var(--purple)' : 'var(--text-muted)',
+                  fontSize: '0.72rem', fontWeight: selectedRoom === null ? 700 : 400,
+                  cursor: 'pointer', transition: 'all 0.1s',
+                }}
+              >
+                All
+              </button>
+              {ROOMS.filter(r => activeRoomKeys.has(r.key)).map(r => (
+                <button
+                  key={r.key}
+                  onClick={() => setSelectedRoom(selectedRoom === r.key ? null : r.key)}
+                  style={{
+                    padding: '0.22rem 0.65rem',
+                    borderRadius: '20px',
+                    border: '1px solid ' + (selectedRoom === r.key ? 'var(--purple)' : 'var(--border)'),
+                    background: selectedRoom === r.key ? 'var(--purple-bg)' : 'var(--surface-2)',
+                    color: selectedRoom === r.key ? 'var(--purple)' : 'var(--text-muted)',
+                    fontSize: '0.72rem', fontWeight: selectedRoom === r.key ? 700 : 400,
+                    cursor: 'pointer', transition: 'all 0.1s',
+                  }}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+          )}
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
             {totalCount} result{totalCount !== 1 ? 's' : ''} across {resultGroups.length} room{resultGroups.length !== 1 ? 's' : ''}
           </div>

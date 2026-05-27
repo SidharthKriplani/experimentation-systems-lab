@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ContextPanel } from './ContextPanel.jsx';
 import { ExperimentDesign } from './ExperimentDesign.jsx';
 import { MetricTable } from './MetricTable.jsx';
@@ -9,6 +9,23 @@ import { ScoreReveal } from './ScoreReveal.jsx';
 import { DebriefPanel } from './DebriefPanel.jsx';
 import { saveAttempt } from '../../utils/progress.js';
 import { track } from '../../utils/analytics.js';
+
+const NOTES_KEY = 'pal-notes-v1';
+
+function getNotes(room, caseId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    return all[room + ':' + caseId] || '';
+  } catch { return ''; }
+}
+
+function saveNote(room, caseId, text) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    all[room + ':' + caseId] = text;
+    localStorage.setItem(NOTES_KEY, JSON.stringify(all));
+  } catch {}
+}
 
 function PanelHeader({ title, subtitle }) {
   return (
@@ -49,6 +66,8 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesign
   const [checkedFlags, setCheckedFlags] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [showDebrief, setShowDebrief] = useState(false);
+  const [note, setNote] = useState(() => getNotes('review', scenario.id));
+  useEffect(() => { setNote(getNotes('review', scenario.id)); }, [scenario.id]);
 
   function handleFlagToggle(flagId) {
     setCheckedFlags(prev =>
@@ -345,6 +364,27 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesign
             </div>
           </div>
           <DebriefPanel scenario={scenario} selectedDecisionId={selectedDecision} />
+
+          {/* Notes */}
+          <div style={{ marginTop: '1.5rem' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              My Notes
+            </div>
+            <textarea
+              value={note}
+              onChange={e => { setNote(e.target.value); saveNote('review', scenario.id, e.target.value); }}
+              placeholder="Add your own notes, reminders, or follow-up questions..."
+              rows={4}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: 'var(--surface-2)', border: '1px solid var(--border)',
+                borderRadius: '8px', padding: '0.65rem 0.85rem',
+                color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
+                resize: 'vertical', outline: 'none',
+                fontFamily: 'inherit',
+              }}
+            />
+          </div>
 
           {/* Paired Design Room CTA */}
           {pairedDesignId && onGoToDesign && (

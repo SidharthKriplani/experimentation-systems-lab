@@ -1,5 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { saveCodeAttempt } from '../../utils/codeProgress.js';
+
+const NOTES_KEY = 'pal-notes-v1';
+
+function getNotes(room, caseId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    return all[room + ':' + caseId] || '';
+  } catch { return ''; }
+}
+
+function saveNote(room, caseId, text) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+    all[room + ':' + caseId] = text;
+    localStorage.setItem(NOTES_KEY, JSON.stringify(all));
+  } catch {}
+}
 
 const RATING_OPTIONS = [
   { id: 'strong',  label: 'Nailed it',         color: 'var(--teal)',       bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
@@ -18,6 +35,8 @@ export function CodeRunner({ module, savedProgress, onBack, onNext }) {
   const [revealed, setRevealed]   = useState(!!savedProgress);
   const [rating, setRating]       = useState(savedProgress?.rating || null);
   const [showHints, setShowHints] = useState(false);
+  const [note, setNote] = useState(() => getNotes('code', module.id));
+  useEffect(() => { setNote(getNotes('code', module.id)); }, [module.id]);
 
   const canReveal  = response.trim().length >= 30;
   const trackColor = TRACK_COLOR[module.track] || 'var(--teal)';
@@ -214,6 +233,8 @@ export function CodeRunner({ module, savedProgress, onBack, onNext }) {
           onRate={handleRate}
           onRetry={handleRetry}
           onNext={onNext}
+          note={note}
+          onNoteChange={text => { setNote(text); saveNote('code', module.id, text); }}
         />
       )}
     </div>
@@ -259,7 +280,7 @@ function PartialCodePanel({ code, trackColor }) {
 }
 
 // ─── Model Answer Panel ───────────────────────────────────────────────────────
-function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry, onNext }) {
+function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry, onNext, note, onNoteChange }) {
   const [pyOutput, setPyOutput]     = useState('');
   const [pyError, setPyError]       = useState('');
   const [pyLoading, setPyLoading]   = useState('idle');
@@ -418,6 +439,27 @@ sys.stdout = _stdout_capture
           </ul>
         </div>
       )}
+
+      {/* Notes */}
+      <div>
+        <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          My Notes
+        </div>
+        <textarea
+          value={note || ''}
+          onChange={e => onNoteChange && onNoteChange(e.target.value)}
+          placeholder="Add your own notes, reminders, or follow-up questions..."
+          rows={4}
+          style={{
+            width: '100%', boxSizing: 'border-box',
+            background: 'var(--surface-2)', border: '1px solid var(--border)',
+            borderRadius: '8px', padding: '0.65rem 0.85rem',
+            color: 'var(--text)', fontSize: '0.85rem', lineHeight: 1.55,
+            resize: 'vertical', outline: 'none',
+            fontFamily: 'inherit',
+          }}
+        />
+      </div>
 
       {/* Self-rating */}
       <div>
