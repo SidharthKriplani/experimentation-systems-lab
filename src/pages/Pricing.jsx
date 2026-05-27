@@ -42,6 +42,10 @@ export function Pricing({ onShowUnlock, onBack }) {
           Practice the exact skills interviewers test — from A/B testing to metric design to root-cause analysis.
           One payment, lifetime access.
         </p>
+        <div style={{ marginTop: '1rem', fontSize: '0.83rem', color: 'var(--text-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+          <span style={{ color: 'var(--green)', fontWeight: 700 }}>✓</span>
+          <span>17 practice rooms · 150+ cases · 25 interactive foundation modules · No subscription</span>
+        </div>
       </div>
 
       {/* Tiers */}
@@ -95,7 +99,7 @@ export function Pricing({ onShowUnlock, onBack }) {
             </div>
           </div>
           <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', flex: 1 }}>
-            {featureItem('All 100+ practice cases across 9 rooms')}
+            {featureItem('All 150+ practice cases across 17 rooms')}
             {featureItem('Stat Foundations (20 modules)')}
             {featureItem('All learning paths')}
             {featureItem('Lifetime access, no subscription')}

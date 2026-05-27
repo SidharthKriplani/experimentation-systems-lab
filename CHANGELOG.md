@@ -4,6 +4,27 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.18.0] — 2026-05
+
+### Changed — "Take my money!" conversion audit: copy accuracy, trust signals, UX clarity
+
+**Pricing + Unlock stale copy fixed:** Both `Pricing.jsx` and `Unlock.jsx` had outdated counts ("100+ cases across 9 rooms"). Updated to accurate "150+ practice cases across 17 rooms" in all three instances. Added social proof stat line to Pricing hero: "17 practice rooms · 150+ cases · 25 interactive foundation modules · No subscription".
+
+**Footer developer jargon replaced:** "Static · No backend · No API calls · localStorage only" replaced with "Works offline · Private by design · No account required" — same technical truth, readable by non-developers. Footer version string updated to V4.17.
+
+**Brief card italic tldr removed:** `fontStyle: 'italic'` removed from The Brief tldr div. Plain `var(--text-muted)` on body text is correct; italic added visual noise without semantic meaning.
+
+**Today's Case dark mode button contrast:** Added `border: '1.5px solid rgba(0,0,0,0.18)'` to the yellow "Open case" chip — separates it from the `var(--yellow-bg)` card in dark mode where the contrast was near-zero.
+
+**Foundation browser emoji h1s replaced:** `🔍` in `RCAFoundationsBrowser.jsx` replaced with `<Icon name="search" size={20} color="var(--teal)" />`. `📊` in `MetricsFoundationsBrowser.jsx` replaced with `<Icon name="bar-chart" size={20} color="var(--green)" />`. Both files now import Icon from `../components/shared/Icon.jsx`.
+
+**START HERE chips — contextual subtitle added:** New one-line subtitle below the section label. New users see "Rooms picked for first-timers — each takes ~10 min". Returning users see "Continue where you left off". Removes the "why are these chips here?" ambiguity for first-time visitors.
+
+### Files changed
+`src/pages/Pricing.jsx`, `src/pages/Unlock.jsx`, `src/components/layout/Footer.jsx`, `src/pages/Home.jsx`, `src/pages/RCAFoundationsBrowser.jsx`, `src/pages/MetricsFoundationsBrowser.jsx`
+
+---
+
 ## [4.17.0] — 2026-05
 
 ### Changed — "Million dollar" UI pass: difficulty borders, banners, progress bars, sort buttons, type hierarchy, dark mode

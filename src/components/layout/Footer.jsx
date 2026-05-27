@@ -15,11 +15,11 @@ export function Footer({ onNavigate }) {
         gap: '0.75rem',
       }}>
         <span style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>
-          Product Analytics Lab — V4.16 · 150+ Playable Items
+          Product Analytics Lab — V4.17 · 150+ Playable Items
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <span style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>
-            Static · No backend · No API calls · localStorage only
+            Works offline · Private by design · No account required
           </span>
           {onNavigate && (
             <button

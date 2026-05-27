@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { metricsFoundationModules } from '../data/metricsFoundationModules.js';
 import { getAllMetricsFoundationProgress } from '../utils/metricsFoundationProgress.js';
+import { Icon } from '../components/shared/Icon.jsx';
 
 const DIFFICULTY_CONFIG = {
   Beginner:     { color: 'var(--green)',  bg: 'var(--green-bg)',  border: 'var(--green-border)' },
@@ -50,7 +51,7 @@ export function MetricsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
-          <span style={{ fontSize: '1.4rem' }}>📊</span>
+          <Icon name="bar-chart" size={20} color="var(--green)" />
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.03em', margin: 0 }}>
             Metrics Foundation
           </h1>

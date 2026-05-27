@@ -23,7 +23,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
         <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✓</div>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--green)', marginBottom: '0.75rem' }}>Beta Access Active</h1>
         <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-          All 100+ practice cases across 9 rooms are unlocked.
+          All 150+ practice cases across 17 rooms are unlocked.
         </p>
         <button
           onClick={() => onNavigate('progress')}
@@ -54,7 +54,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
             Private Beta Access
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-            Access all 100+ practice cases across 9 rooms.
+            Access all 150+ practice cases across 17 rooms.
             Progress is saved locally in your browser. No account required.
           </p>
           <p style={{ color: 'var(--text-dim)', fontSize: '0.8rem', marginTop: '0.5rem' }}>
