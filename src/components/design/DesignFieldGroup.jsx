@@ -104,7 +104,7 @@ function FieldItem({ field, value, onChange, onOpenConcept }) {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {selected && (
-                  <span style={{ color: '#fff', fontSize: '0.55rem', fontWeight: 900 }}>
+                  <span style={{ color: '#fff', fontSize: '0.68rem', fontWeight: 900 }}>
                     {isMulti ? '✓' : '●'}
                   </span>
                 )}

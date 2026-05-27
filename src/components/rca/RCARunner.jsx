@@ -375,6 +375,7 @@ export function RCARunner({ caseId, savedProgress, unlocked, onBack, onNext }) {
             position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
             background: 'var(--surface)', borderTop: '1px solid var(--border)',
             padding: '0.75rem 1.5rem',
+            paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem',
           }}>
             <span style={{ fontSize: '0.83rem', color: 'var(--text-muted)', fontWeight: 500 }}>

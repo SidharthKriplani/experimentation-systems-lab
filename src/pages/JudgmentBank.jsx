@@ -551,7 +551,7 @@ export function JudgmentBank({ onNavigate }) {
       {/* ── Card grid ──────────────────────────────────────────────────── */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(min(290px, 100%), 1fr))',
         gap: '0.65rem',
         marginBottom: '3rem',
       }}>
@@ -582,7 +582,7 @@ export function JudgmentBank({ onNavigate }) {
         <div className="label-caps" style={{ marginBottom: '0.875rem' }}>
           Scenario Families
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '0.3rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(230px, 100%), 1fr))', gap: '0.3rem' }}>
           {Object.entries(SCENARIO_FAMILIES).map(([key, label]) => {
             const count = allCards.filter(s => s.scenarioFamily === key).length;
             const playableCount = allPlayable.filter(s => s.scenarioFamily === key).length;

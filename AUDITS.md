@@ -880,7 +880,7 @@ Diagnosed institutional memory problem: every new session required expensive re-
 | 72 | UX Completeness — Next-Case Patterns (browser highlight + sticky CTA) ✅ | V4.25.0 | UX / Coverage |
 | 73 | Auth Layer Completeness — Header dead code, progress sync gap, mobile auth gap ✅ | V4.25.0 | BUILD / Dead code / UX |
 | 74 | Dark Mode Contrast — Low-Brightness Mobile Readability ✅ | V4.25.3–V4.25.4 | Visual Consistency / Accessibility |
-| 75 | Mobile Layout + UX Full Audit — grid overflow, safe-area, tap targets, heatmap ⚠️ | V4.26 target | UX / Visual / Accessibility |
+| 75 | Mobile Layout + UX Full Audit — grid overflow, safe-area, tap targets, heatmap ✅ | V4.26.0 | UX / Visual / Accessibility |
 
 ---
 
@@ -993,4 +993,4 @@ The mobile topbar uses `height: 46px` with `position: sticky, top: 0`. On iPhone
 | 75-H | QADashboard/JudgmentBank bare minmax | Low | Trivial |
 | 75-I | Topbar no safe-area-inset-top | Low | Low |
 
-**Total:** 9 findings. 75-A through 75-C are the priority — they cause real visible breakage on real iOS devices today.
+**Total:** 9 findings. All resolved in V4.26.0.

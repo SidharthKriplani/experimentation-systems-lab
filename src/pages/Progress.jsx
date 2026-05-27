@@ -595,8 +595,12 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
             )}
           </div>
           <div style={{
-            display: 'flex', flexWrap: 'wrap', gap: '2px',
-            width: 'fit-content',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(13, 7px)',
+            gridTemplateRows: 'repeat(7, 7px)',
+            gridAutoFlow: 'column',
+            gap: '2px',
+            overflowX: 'auto',
           }}>
             {heatmapDays.map(day => (
               <div
@@ -606,7 +610,6 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
                   width: '7px', height: '7px', borderRadius: '1px',
                   background: practiceDates.has(day) ? 'var(--yellow)' : 'var(--surface)',
                   border: practiceDates.has(day) ? 'none' : '1px solid var(--border)',
-                  flexShrink: 0,
                 }}
               />
             ))}

@@ -105,7 +105,7 @@ export function ScenarioBrowser({ allProgress, onSelect, unlocked, onUnlock, onO
       {!theoryActive && (
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(min(310px, 100%), 1fr))',
         gap: '0.875rem',
       }}>
         {filteredScenarios.map(scenario => (

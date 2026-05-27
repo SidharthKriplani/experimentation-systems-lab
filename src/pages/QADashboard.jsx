@@ -199,7 +199,7 @@ export function QADashboard({ onNavigate, onOpenItem, unlocked, onUnlock, onLock
         <div>
           {/* Count grid */}
           <SectionHeader title="Content Counts" />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '0.55rem', marginBottom: '1.75rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(140px, 100%), 1fr))', gap: '0.55rem', marginBottom: '1.75rem' }}>
             {[
               { label: 'Stats',   actual: audit.counts.stats,   expected: 8 },
               { label: 'Metrics', actual: audit.counts.metrics, expected: 6 },

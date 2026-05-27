@@ -39,6 +39,18 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
 
+      {/* Mobile notice — Code Room requires desktop */}
+      <div style={{
+        display: typeof window !== 'undefined' && window.innerWidth < 768 ? 'flex' : 'none',
+        alignItems: 'center', gap: '0.6rem',
+        background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
+        borderRadius: 'var(--radius-sm)', padding: '0.65rem 0.9rem', marginBottom: '1.25rem',
+        fontSize: '0.78rem', color: 'var(--yellow-text)', lineHeight: 1.5,
+      }}>
+        <span style={{ fontSize: '1rem', flexShrink: 0 }}>💻</span>
+        <span>This room runs live code and is optimised for desktop. For the best experience, open on a laptop or tablet.</span>
+      </div>
+
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--yellow)', marginBottom: '0.4rem' }}>
@@ -111,7 +123,7 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
 
       {/* Module cards */}
       {!theoryActive && (
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(300px, 100%), 1fr))', gap: '1rem' }}>
         {filtered.map(module => {
           const progress    = allProgress[module.id];
           const isLocked    = !module.isFree && !unlocked;

@@ -4,6 +4,35 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.26.0] — 2026-05-27
+
+### Fixed — Audit #75: All 9 mobile layout + UX findings resolved
+
+**75-A — Grid overflow (5 files, Critical):**
+Bare `minmax(Npx, 1fr)` grids without `min()` wrapper caused horizontal scroll on 375px iPhones. Fixed in: CodeBrowser, ScenarioBrowser, JudgmentBank (×2), Module13_ExperimentDesigner, ConsultationSpace, QADashboard.
+
+**75-B — Safe-area-inset on sticky bottom bars (High):**
+All 4 sticky bars (RCARunner, CaseRunner, BIRunner, ChallengesRunner) now use `paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))'`. The "Next →" button no longer gets covered by the iPhone home indicator. `viewport-fit=cover` added to `index.html` viewport meta tag to activate the safe-area APIs.
+
+**75-C — WebkitTapHighlightColor (High):**
+Added `-webkit-tap-highlight-color: transparent` to the global `*` CSS reset in `index.css`. Removes the grey flash on every tap on iOS Safari.
+
+**75-D — Heatmap proper grid layout (Medium):**
+Progress.jsx 91-day heatmap replaced `display: flex, flexWrap: wrap` with `display: grid, gridTemplateColumns: repeat(13, 7px), gridTemplateRows: repeat(7, 7px), gridAutoFlow: column`. Now renders as a proper 13-week calendar grid on all screen sizes instead of an arbitrarily-wrapped blob.
+
+**75-E — Font size floor (Medium):**
+One real violation found: `DesignFieldGroup.jsx` had `fontSize: '0.55rem'` — lifted to `0.68rem`. The 24-instance count in the audit was a false positive from matching `marginBottom` values; actual fontSize violations were 1.
+
+**75-F — Code Room mobile notice (Medium):**
+Added a yellow info banner at the top of CodeBrowser that shows only on viewports under 768px: "This room runs live code and is optimised for desktop."
+
+**75-I — Topbar safe-area-inset-top (Low):**
+Mobile topbar height updated to `calc(46px + env(safe-area-inset-top, 0px))` with matching `padding-top`. Covers notch and Dynamic Island iPhones.
+
+**Files touched:** `src/index.css`, `index.html`, `src/pages/CodeBrowser.jsx`, `src/pages/ScenarioBrowser.jsx`, `src/pages/JudgmentBank.jsx`, `src/pages/ConsultationSpace.jsx`, `src/pages/QADashboard.jsx`, `src/pages/Progress.jsx`, `src/components/rca/RCARunner.jsx`, `src/components/cases/CaseRunner.jsx`, `src/components/bi/BIRunner.jsx`, `src/components/challenges/ChallengesRunner.jsx`, `src/components/design/DesignFieldGroup.jsx`, `src/components/statsFoundations/modules/Module13_ExperimentDesigner.jsx`
+
+---
+
 ## [4.25.5] — 2026-05-27
 
 ### Audit #75 — Mobile Layout + UX Full Audit (documented, not yet fixed)
