@@ -118,7 +118,6 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
     return new Set(active ? [active] : ['experiments']);
   });
 
-  // Auto-expand the sub-group containing the newly active room
   useEffect(() => {
     const active = getActiveSubGroup(currentPage);
     if (active) {
@@ -147,31 +146,34 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
 
   function NavItem({ id, indent }) {
     const isActive = getIsActive(id, currentPage);
-    const label = [
+    const allItems = [
       ...ROOM_SUBGROUPS.flatMap(sg => sg.items),
-      { id: 'stat-foundations', label: 'Stat Foundations' },
-      { id: 'metrics-foundations', label: 'Metrics Foundations' },
-      { id: 'rca-foundations',     label: 'RCA Foundations' },
-      { id: 'exp-foundations',     label: 'A/B Foundations' },
-      { id: 'foundations', label: 'Theory Hub' },
+      { id: 'stat-foundations',      label: 'Stat Foundations' },
+      { id: 'metrics-foundations',   label: 'Metrics Foundations' },
+      { id: 'rca-foundations',       label: 'RCA Foundations' },
+      { id: 'exp-foundations',       label: 'A/B Foundations' },
+      { id: 'foundations',           label: 'Theory Hub' },
       ...FLAT_GROUPS.flatMap(g => g.items),
-    ].find(i => i.id === id)?.label || id;
+    ];
+    const label = allItems.find(i => i.id === id)?.label || id;
 
     return (
       <button
         onClick={() => handleNav(id)}
+        className={isActive ? (indent ? 'sidebar-nav-active-sub' : 'sidebar-nav-active') : ''}
         style={{
           display: 'block', width: '100%', textAlign: 'left',
-          padding: indent ? '0.28rem 0.6rem 0.28rem 1.1rem' : '0.32rem 0.6rem',
+          padding: indent ? '0.3rem 0.65rem 0.3rem 1.1rem' : '0.34rem 0.65rem',
           borderRadius: 'var(--radius-sm)',
           border: 'none',
-          background: isActive ? 'var(--accent-bg)' : 'none',
-          color: isActive ? 'var(--accent)' : 'var(--text-muted)',
-          fontWeight: isActive ? 600 : 400,
-          fontSize: indent ? '0.8rem' : '0.82rem',
+          background: isActive ? undefined : 'transparent',
+          color: isActive ? undefined : 'var(--text-muted)',
+          fontWeight: isActive ? undefined : 400,
+          fontSize: indent ? '0.795rem' : '0.825rem',
           cursor: 'pointer',
-          transition: 'background 0.1s, color 0.1s',
+          transition: 'background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast)',
           lineHeight: 1.5,
+          letterSpacing: '-0.005em',
         }}
         onMouseEnter={e => {
           if (!isActive) {
@@ -181,7 +183,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
         }}
         onMouseLeave={e => {
           if (!isActive) {
-            e.currentTarget.style.background = 'none';
+            e.currentTarget.style.background = 'transparent';
             e.currentTarget.style.color = 'var(--text-muted)';
           }
         }}
@@ -194,9 +196,9 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
   function SectionLabel({ label }) {
     return (
       <div style={{
-        fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em',
-        color: 'var(--text-muted)', opacity: 0.55,
-        padding: '0.6rem 0.5rem 0.2rem',
+        fontSize: '0.595rem', fontWeight: 700, letterSpacing: '0.11em',
+        color: 'var(--text-muted)', opacity: 0.48,
+        padding: '0.65rem 0.6rem 0.2rem',
         textTransform: 'uppercase', userSelect: 'none',
       }}>
         {label}
@@ -209,79 +211,115 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
       {isOpen && (
         <div
           onClick={onClose}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', zIndex: 49 }}
+          style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.42)',
+            zIndex: 49,
+            backdropFilter: 'blur(2px)',
+          }}
         />
       )}
 
       <aside className={`app-sidebar${isOpen ? ' open' : ''}`}>
-        {/* Logo + theme toggle */}
-        <div style={{ padding: '1rem 0.75rem 0.5rem', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+
+        {/* ── Logo + theme toggle ── */}
+        <div style={{
+          padding: '1rem 0.8rem 0.65rem',
+          flexShrink: 0,
+          display: 'flex', alignItems: 'center', gap: '0.4rem',
+        }}>
           <button
             onClick={() => handleNav('home')}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: '0.5rem',
-              padding: '0.3rem 0.25rem', borderRadius: 'var(--radius-sm)',
+              display: 'flex', alignItems: 'center', gap: '0.6rem',
+              padding: '0.3rem 0.25rem',
+              borderRadius: 'var(--radius-sm)',
               flex: 1,
+              transition: 'opacity var(--transition)',
             }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = '0.75'; }}
+            onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
           >
             <div style={{
-              width: 22, height: 22, flexShrink: 0,
-              background: 'linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%)',
-              borderRadius: 5,
+              width: 26, height: 26, flexShrink: 0,
+              background: 'var(--gradient-accent)',
+              borderRadius: 7,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 11,
+              fontSize: 13,
+              boxShadow: '0 2px 10px rgba(99,102,241,0.4)',
             }}>⚗</div>
-            <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', letterSpacing: '-0.02em' }}>
+            <span style={{
+              fontWeight: 800,
+              fontSize: '0.875rem',
+              color: 'var(--text)',
+              letterSpacing: '-0.03em',
+            }}>
               Analytics Lab
             </span>
           </button>
+
           <button
             onClick={onToggleTheme}
             title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             style={{
-              background: 'none', border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-sm)', padding: '0.26rem 0.5rem',
-              color: 'var(--text-muted)', fontSize: '0.8rem',
-              cursor: 'pointer', lineHeight: 1, flexShrink: 0,
+              background: 'none',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '0.27rem 0.52rem',
+              color: 'var(--text-muted)',
+              fontSize: '0.78rem',
+              cursor: 'pointer',
+              lineHeight: 1,
+              flexShrink: 0,
+              transition: 'border-color var(--transition), background var(--transition)',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = 'var(--border-strong)';
+              e.currentTarget.style.background = 'var(--surface-2)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'var(--border)';
+              e.currentTarget.style.background = 'none';
             }}
           >
             {theme === 'dark' ? '☀' : '🌙'}
           </button>
         </div>
 
-        <nav style={{ flex: 1, overflowY: 'auto', padding: '0.25rem 0.5rem 0.75rem', scrollbarWidth: 'none' }}>
+        {/* ── Nav ── */}
+        <nav style={{ flex: 1, overflowY: 'auto', padding: '0.1rem 0.5rem 0.75rem', scrollbarWidth: 'none' }}>
 
-          {/* ── FOUNDATIONS ── */}
+          {/* FOUNDATIONS */}
           <SectionLabel label="FOUNDATIONS" />
           <NavItem id="stat-foundations" />
           <NavItem id="metrics-foundations" />
           <NavItem id="rca-foundations" />
           <NavItem id="exp-foundations" />
 
-          {/* ── PRACTICE ROOMS (accordion) ── */}
+          {/* PRACTICE ROOMS (accordion) */}
           <SectionLabel label="PRACTICE ROOMS" />
           {ROOM_SUBGROUPS.map(sg => {
             const isExpanded = expandedSubGroups.has(sg.id);
             const hasActive = sg.items.some(item => getIsActive(item.id, currentPage));
             return (
               <div key={sg.id}>
-                {/* Sub-group header */}
                 <button
                   onClick={() => toggleSubGroup(sg.id)}
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     width: '100%', textAlign: 'left',
-                    padding: '0.28rem 0.6rem',
+                    padding: '0.3rem 0.65rem',
                     borderRadius: 'var(--radius-sm)',
                     border: 'none',
                     background: 'none',
                     color: hasActive ? 'var(--text-secondary)' : 'var(--text-muted)',
                     fontWeight: hasActive ? 600 : 500,
-                    fontSize: '0.82rem',
+                    fontSize: '0.825rem',
+                    letterSpacing: '-0.005em',
                     cursor: 'pointer',
-                    transition: 'background 0.1s, color 0.1s',
-                    opacity: hasActive ? 1 : 0.75,
+                    transition: 'background var(--transition-fast), color var(--transition-fast)',
+                    opacity: hasActive ? 1 : 0.68,
                   }}
                   onMouseEnter={e => {
                     e.currentTarget.style.background = 'var(--surface-2)';
@@ -291,20 +329,26 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
                   onMouseLeave={e => {
                     e.currentTarget.style.background = 'none';
                     e.currentTarget.style.color = hasActive ? 'var(--text-secondary)' : 'var(--text-muted)';
-                    e.currentTarget.style.opacity = hasActive ? '1' : '0.75';
+                    e.currentTarget.style.opacity = hasActive ? '1' : '0.68';
                   }}
                 >
                   <span>{sg.label}</span>
-                  <span style={{ fontSize: '0.6rem', opacity: 0.5, flexShrink: 0 }}>
-                    {isExpanded ? '▾' : '▸'}
+                  <span style={{
+                    fontSize: '0.58rem',
+                    opacity: 0.4,
+                    flexShrink: 0,
+                    display: 'inline-block',
+                    transition: 'transform var(--transition)',
+                    transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
+                  }}>
+                    ▾
                   </span>
                 </button>
 
-                {/* Sub-group items */}
                 {isExpanded && (
                   <div style={{
                     borderLeft: '1px solid var(--border)',
-                    marginLeft: '0.85rem',
+                    marginLeft: '0.9rem',
                     paddingLeft: '0.1rem',
                     marginBottom: '0.1rem',
                   }}>
@@ -317,9 +361,9 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
             );
           })}
 
-          {/* ── FLAT GROUPS ── */}
+          {/* FLAT GROUPS */}
           {FLAT_GROUPS.map(group => (
-            <div key={group.label} style={{ marginBottom: '0.15rem' }}>
+            <div key={group.label} style={{ marginBottom: '0.1rem' }}>
               <SectionLabel label={group.label} />
               {group.items.map(item => (
                 <NavItem key={item.id} id={item.id} />
@@ -329,10 +373,10 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
 
         </nav>
 
-        {/* Bottom: search */}
+        {/* ── Bottom: search ── */}
         <div style={{
-          padding: '0.6rem 0.75rem',
-          borderTop: '1px solid var(--border)',
+          padding: '0.65rem 0.8rem',
+          borderTop: '1px solid var(--border-subtle)',
           flexShrink: 0,
         }}>
           <button
@@ -340,23 +384,38 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               width: '100%', textAlign: 'left',
-              background: 'var(--surface-2)', border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-sm)', padding: '0.4rem 0.65rem',
-              color: 'var(--text-muted)', fontSize: '0.8rem',
-              cursor: 'pointer', transition: 'border-color 0.1s',
+              background: 'var(--surface-2)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '0.42rem 0.7rem',
+              color: 'var(--text-muted)',
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              transition: 'border-color var(--transition), color var(--transition), box-shadow var(--transition)',
+              letterSpacing: '-0.005em',
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--text)'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = 'var(--accent-border)';
+              e.currentTarget.style.color = 'var(--text)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-glow)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'var(--border)';
+              e.currentTarget.style.color = 'var(--text-muted)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
           >
-            <span style={{ fontSize: '0.85rem', lineHeight: 1 }}>🔍</span>
+            <span style={{ fontSize: '0.82rem', lineHeight: 1, opacity: 0.65 }}>🔍</span>
             <span style={{ flex: 1 }}>Search</span>
             <kbd style={{
-              fontSize: '0.6rem', padding: '0.1rem 0.3rem',
+              fontSize: '0.6rem', padding: '0.12rem 0.35rem',
               background: 'var(--surface)', border: '1px solid var(--border)',
-              borderRadius: 3, color: 'var(--text-muted)', fontFamily: 'inherit',
+              borderRadius: 4, color: 'var(--text-muted)',
+              fontFamily: 'inherit',
             }}>/</kbd>
           </button>
         </div>
+
       </aside>
     </>
   );

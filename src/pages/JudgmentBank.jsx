@@ -88,7 +88,7 @@ function ReviewCard({ scenario, onClick }) {
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border)';
-        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+        e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
@@ -140,7 +140,7 @@ function DesignCard({ scenario, onClick }) {
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border)';
-        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+        e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
@@ -192,7 +192,7 @@ function StatsCard({ module, onClick }) {
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border)';
-        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+        e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
@@ -246,7 +246,7 @@ function MetricsCard({ metricCase, onClick }) {
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border)';
-        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+        e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
@@ -297,7 +297,7 @@ function RCACard({ rcaCase, onClick }) {
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border)';
-        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+        e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
@@ -352,7 +352,7 @@ function CasesCard({ businessCase, onClick }) {
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border)';
-        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+        e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.4rem' }}>
@@ -459,7 +459,7 @@ export function JudgmentBank({ onNavigate }) {
       borderRadius: 'var(--radius-sm)', padding: '0.28rem 0.65rem',
       color: active ? '#fff' : 'var(--text-muted)',
       fontWeight: active ? 700 : 400, fontSize: '0.78rem', cursor: 'pointer',
-      transition: 'all 0.12s',
+      transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
     }}>{children}</button>
   );
 

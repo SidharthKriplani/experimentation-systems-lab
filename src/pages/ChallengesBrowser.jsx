@@ -260,7 +260,7 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
                     padding: '0.35rem 0.85rem',
                     fontSize: '0.78rem', fontWeight: 600,
                     cursor: 'pointer',
-                    transition: 'all 0.12s',
+                    transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
                   }}
                 >
                   Start Challenge →

@@ -233,11 +233,11 @@ function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCas
       }}
       onMouseEnter={e => {
         e.currentTarget.style.borderColor = 'var(--yellow-border)';
-        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+        e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border)';
-        e.currentTarget.style.boxShadow = 'none';
+        e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
       {/* Top row: tags + status */}

@@ -4,6 +4,43 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.15.0] — 2026-05
+
+### Changed — Visual overhaul: typography, shadows, gradients, micro-interactions
+
+**Design system upgrade (index.css):** Full visual pass across the CSS variable layer.
+- **Typography**: Switched body font to Inter (Google Fonts import), base size 15px, Inter OpenType features enabled. Heading letter-spacing tightened (-0.035em on h1, -0.025em on h2, -0.02em on h3).
+- **Shadow system expanded**: Added `--shadow-lg`, `--shadow-xl`, `--shadow-glow` (accent ring). All shadow levels deepened in both light and dark themes. Dark mode shadows significantly richer.
+- **Dark mode surfaces**: `--bg` darkened to `#0a0d14`, `--surface` to `#111420`, `--surface-2` to `#181b2a` — more distinct layering, truer dark.
+- **Gradient variables**: `--gradient-accent` (indigo→violet), `--gradient-warm` (amber→orange), `--gradient-teal`, `--gradient-hero` added. Dark mode gradients tuned to be brighter on dark bg.
+- **Transition variables**: `--transition-fast` (0.1s), `--transition` (0.16s), `--transition-slow` (0.26s).
+- **Radius bump**: `--radius` 9px, `--radius-sm` 5px, `--radius-lg` 13px, `--radius-xl` 18px.
+- **Sidebar width**: 210px → 222px.
+- **Sidebar shadow**: Added right-side depth shadow (`4px 0 20px rgba(0,0,0,0.05)`).
+- **Utility classes added**: `.pal-card-hover` (translateY(-2px) lift + shadow-md on hover), `.pal-gradient-text` (gradient clip text), `.pal-btn-primary` (gradient button), `.pal-badge-accent`, `.pal-focus`, `.sidebar-nav-active`, `.sidebar-nav-active-sub`.
+
+**Sidebar redesign:** Logo mark now uses `--gradient-accent` background with accent glow shadow. Active nav items use `.sidebar-nav-active` class — `accent-bg` fill + `inset 3px 0 0 accent` left bar (the premium indicator pattern). Sub-item active uses 2px left bar. Accordion arrow now animates rotation (▾ rotates -90deg when collapsed). Search button gets `--shadow-glow` on hover. Theme toggle hover adds surface-2 fill. All transitions wired to `--transition-fast`.
+
+**Home.jsx polish:** "Today" heading uses `.pal-gradient-text` (gradient clip). Today's Case card and The Brief card both get `borderTop: 3px solid [color]` accent stripe + `--shadow-sm`. Learning path cards get `borderTop` stripe + `.pal-card-hover` class. Jump-back-in room chips get full hover lift (translateY(-1px) + shadow upgrade + border-strong). Onboarding modal gains backdrop blur, `--shadow-xl`, rounded-xl. Primary onboarding CTA uses `.pal-btn-primary` gradient button.
+
+**Card hover lift across all room browsers:** 17 browser/page files upgraded from `boxShadow: shadow-sm` hover to `boxShadow: shadow + translateY(-2px)`. Transition strings updated to use `--transition` variable. Files: StatsBrowser, MetricsBrowser, RCABrowser, CasesBrowser, DesignBrowser, ProductDesignBrowser, StatsFoundationsBrowser, JudgmentBank, SpotTheFlawBrowser, BIBrowser, InstrumentationBrowser, GrowthAnalyticsBrowser, MetricsFoundationsBrowser, ChallengesBrowser, CodeBrowser, ScenarioBrowser, Trainer.
+
+### Files changed
+`src/index.css` (full variable + utility class overhaul), `src/components/layout/Sidebar.jsx` (logo, active state, transitions), `src/pages/Home.jsx` (gradient heading, card stripes, hover lifts, modal polish), `src/pages/StatsBrowser.jsx`, `src/pages/MetricsBrowser.jsx`, `src/pages/RCABrowser.jsx`, `src/pages/CasesBrowser.jsx`, `src/pages/DesignBrowser.jsx`, `src/pages/ProductDesignBrowser.jsx`, `src/pages/StatsFoundationsBrowser.jsx`, `src/pages/JudgmentBank.jsx`, `src/pages/SpotTheFlawBrowser.jsx`, `src/pages/BIBrowser.jsx`, `src/pages/InstrumentationBrowser.jsx`, `src/pages/GrowthAnalyticsBrowser.jsx`, `src/pages/MetricsFoundationsBrowser.jsx`, `src/pages/ChallengesBrowser.jsx`, `src/pages/CodeBrowser.jsx`, `src/pages/ScenarioBrowser.jsx`, `src/pages/Trainer.jsx`
+
+---
+
+## [4.14.1] — 2026-05
+
+### Fixed — `\'` escape sequence build errors across JSX files
+
+**Rolldown parse error sweep:** V4.14.0 deploy failed at DebriefCopyButton.jsx:21 with "Invalid Unicode escape sequence". Systematic audit of all non-data JSX/JS files for three distinct `\'` patterns. Fixed 36 delimiter instances in DebriefCopyButton.jsx (sed replacement). Fixed 8 JSX text content instances across TakehomeRunner.jsx, Module22_DiD.jsx, MetricsFoundationsRunner.jsx, RCAFoundationsBrowser.jsx, Home.jsx, CompanyTracks.jsx. Safe instances left untouched. Rule and audit (#71) added.
+
+### Files changed
+`src/components/shared/DebriefCopyButton.jsx`, `src/components/takehome/TakehomeRunner.jsx`, `src/components/statsFoundations/modules/Module22_DiD.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, `src/pages/RCAFoundationsBrowser.jsx`, `src/pages/Home.jsx`, `src/pages/CompanyTracks.jsx`, `CLAUDE.md`, `AUDITS.md`
+
+---
+
 ## [4.14.0] — 2026-05
 
 ### Changed — Frameworks page redesign, Consult removed, company track completion badges

@@ -93,7 +93,7 @@ function SetupScreen({ onStart }) {
     cursor: 'pointer',
     fontSize: '0.82rem',
     fontWeight: 500,
-    transition: 'all 0.15s',
+    transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
     userSelect: 'none',
   };
   const pillActive = {
@@ -256,7 +256,7 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
       fontSize: '0.9rem',
       textAlign: 'left',
       cursor: answered ? 'default' : 'pointer',
-      transition: 'all 0.15s',
+      transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
       marginBottom: 8,
     };
     if (!answered) return base;
@@ -354,7 +354,7 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
                 fontSize: '0.75rem',
                 fontWeight: 700,
                 flexShrink: 0,
-                transition: 'all 0.15s',
+                transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
               }}>
                 {OPTION_LETTERS[i]}
               </span>

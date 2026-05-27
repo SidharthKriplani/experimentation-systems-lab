@@ -308,10 +308,10 @@ export function Home({ onNavigate }) {
 
       {/* ── Page header ─────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '1.75rem', paddingBottom: '1.1rem', borderBottom: '1px solid var(--border-subtle)' }}>
-        <h1 style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text)', margin: 0 }}>
+        <h1 className="pal-gradient-text" style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: '-0.035em', margin: 0, display: 'inline-block' }}>
           Today
         </h1>
-        <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+        <div style={{ fontSize: '0.81rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
           {todayDate}
         </div>
       </div>
@@ -325,16 +325,20 @@ export function Home({ onNavigate }) {
 
           {/* Today's Case */}
           <div
+            className="pal-card-hover"
             style={{
               flex: '0 0 calc(36% - 0.5rem)', minWidth: '180px',
-              padding: '1rem 1.25rem',
-              background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
+              padding: '1.1rem 1.25rem',
+              background: 'var(--yellow-bg)',
+              border: '1px solid var(--yellow-border)',
+              borderTop: '3px solid var(--yellow)',
               borderRadius: 10, cursor: 'pointer',
               display: 'flex', flexDirection: 'column', gap: '0.25rem',
+              boxShadow: 'var(--shadow-sm)',
             }}
             onClick={() => onNavigate(todaysCase.room)}
           >
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)' }}>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--yellow)' }}>
               ⚡ Today's Case
             </div>
             <div style={{ fontWeight: 700, fontSize: '0.97rem', color: 'var(--text)', lineHeight: 1.35 }}>
@@ -343,7 +347,7 @@ export function Home({ onNavigate }) {
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
               {todaysCase.subtitle} Room
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--yellow)', fontWeight: 600, marginTop: 'auto', paddingTop: '0.5rem' }}>
+            <div style={{ fontSize: '0.75rem', color: 'var(--yellow)', fontWeight: 700, marginTop: 'auto', paddingTop: '0.5rem' }}>
               Open →
             </div>
           </div>
@@ -353,9 +357,10 @@ export function Home({ onNavigate }) {
             flex: '1 1 55%', minWidth: '240px',
             background: 'var(--surface)',
             border: '1px solid var(--border)',
-            borderLeft: '4px solid var(--accent)',
+            borderTop: '3px solid var(--accent)',
             borderRadius: 10,
-            padding: '1rem 1.2rem',
+            padding: '1.1rem 1.2rem',
+            boxShadow: 'var(--shadow-sm)',
           }}>
             <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent)', marginBottom: 5 }}>
               📰 The Brief · Daily Concept
@@ -451,15 +456,26 @@ export function Home({ onNavigate }) {
               onClick={() => onNavigate(room.nav)}
               style={{
                 background: 'var(--surface)', border: '1px solid var(--border)',
-                borderRadius: 'var(--radius)', padding: '0.5rem 0.9rem',
+                borderRadius: 'var(--radius)', padding: '0.52rem 0.95rem',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.45rem',
                 boxShadow: 'var(--shadow-sm)',
+                transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition), background var(--transition)',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface)'; }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'var(--surface-raised)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = 'var(--shadow)';
+                e.currentTarget.style.borderColor = 'var(--border-strong)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'var(--surface)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                e.currentTarget.style.borderColor = 'var(--border)';
+              }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: room.color, flexShrink: 0 }} />
-              <span style={{ fontWeight: 600, fontSize: '0.83rem', color: 'var(--text)' }}>{room.label}</span>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: room.color, flexShrink: 0 }} />
+              <span style={{ fontWeight: 600, fontSize: '0.83rem', color: 'var(--text)', letterSpacing: '-0.01em' }}>{room.label}</span>
               {room.lastVisit && (
                 <span style={{ fontSize: '0.69rem', color: 'var(--text-dim)' }}>{room.lastVisit}</span>
               )}
@@ -485,13 +501,15 @@ export function Home({ onNavigate }) {
           {learningPaths.slice(0, 4).map(path => (
             <div
               key={path.id}
+              className="pal-card-hover"
               role="button"
               tabIndex={0}
               onClick={() => onNavigate('progress')}
               onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onNavigate('progress'); } }}
               style={{
                 background: 'var(--surface)', border: '1px solid ' + path.border,
-                borderRadius: 'var(--radius)', padding: '0.85rem 1rem',
+                borderTop: '3px solid ' + path.color,
+                borderRadius: 'var(--radius)', padding: '0.9rem 1rem',
                 cursor: 'pointer', boxShadow: 'var(--shadow-sm)',
               }}
             >
@@ -516,37 +534,42 @@ export function Home({ onNavigate }) {
 
       {/* ── Onboarding modal ──────────────────────────────────────────────── */}
       {showOnboarding && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '2rem', maxWidth: 420, width: '90%', position: 'relative' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)', padding: '2rem', maxWidth: 420, width: '90%', position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
             <button
               onClick={dismissOnboarding}
-              style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: 1, padding: '0.2rem 0.4rem' }}
+              style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: 1, padding: '0.2rem 0.4rem', borderRadius: 'var(--radius-sm)', transition: 'color var(--transition)' }}
               aria-label="Close"
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
             >
               ×
             </button>
-            <div style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--text)', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
+            <div style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--text)', marginBottom: '0.5rem', letterSpacing: '-0.03em' }}>
               Welcome to Product Analytics Lab
             </div>
-            <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+            <div style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: 1.65 }}>
               150+ practice cases for DS and PM interviews. Where should we start?
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
               <button
                 onClick={() => { dismissOnboarding(); onNavigate('stat-foundations'); }}
-                style={{ background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius)', padding: '0.65rem 1rem', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', textAlign: 'left' }}
+                className="pal-btn-primary"
+                style={{ textAlign: 'left', padding: '0.7rem 1rem', fontSize: '0.9rem', borderRadius: 'var(--radius)' }}
               >
                 I'm a Data Scientist / Analyst →
               </button>
               <button
                 onClick={() => { dismissOnboarding(); onNavigate('product-design'); }}
-                style={{ background: 'var(--surface-2)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.65rem 1rem', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', textAlign: 'left' }}
+                style={{ background: 'var(--surface-2)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.7rem 1rem', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', transition: 'background var(--transition), border-color var(--transition)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-raised)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
               >
                 I'm a Product Manager →
               </button>
               <button
                 onClick={dismissOnboarding}
-                style={{ background: 'none', color: 'var(--text-muted)', border: 'none', borderRadius: 'var(--radius)', padding: '0.5rem 1rem', fontWeight: 500, fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left' }}
+                style={{ background: 'none', color: 'var(--text-muted)', border: 'none', borderRadius: 'var(--radius)', padding: '0.5rem 1rem', fontWeight: 500, fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
               >
                 Explore on my own
               </button>

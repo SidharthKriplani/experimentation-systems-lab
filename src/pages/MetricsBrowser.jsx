@@ -136,16 +136,16 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
                 borderRadius: 'var(--radius)',
                 padding: '1.25rem',
                 cursor: 'pointer',
-                transition: 'all 0.12s',
+                transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
                 display: 'flex', flexDirection: 'column', gap: '0.6rem',
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderColor = 'var(--green-border)';
-                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border)';
-                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               {/* Badges row */}

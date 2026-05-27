@@ -154,7 +154,7 @@ export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
                 fontWeight: isActive ? 700 : 500,
                 color: isActive ? 'var(--yellow)' : 'var(--text-muted)',
                 cursor: 'pointer',
-                transition: 'all 0.12s',
+                transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
               }}
             >
               {chip.label}
@@ -201,7 +201,7 @@ export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border)';
-                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               {/* Badge row */}

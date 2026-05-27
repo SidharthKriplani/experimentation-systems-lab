@@ -125,7 +125,7 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
                 fontWeight: isActive ? 700 : 500,
                 color: isActive ? 'var(--red)' : 'var(--text-muted)',
                 cursor: 'pointer',
-                transition: 'all 0.12s',
+                transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
               }}
             >
               {flawType === 'All' ? 'All' : FLAW_TYPE_LABEL[flawType]}
@@ -164,7 +164,7 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border)';
-                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>

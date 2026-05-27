@@ -150,7 +150,7 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, 
                 fontWeight: isActive ? 700 : 500,
                 color: isActive ? 'var(--teal)' : 'var(--text-muted)',
                 cursor: 'pointer',
-                transition: 'all 0.12s',
+                transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
               }}
             >
               {domain === 'All' ? 'All' : (DOMAIN_LABEL[domain] || domain)}
@@ -192,7 +192,7 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, 
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border)';
-                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               {/* Bookmark indicator (top-right corner, non-interactive) */}

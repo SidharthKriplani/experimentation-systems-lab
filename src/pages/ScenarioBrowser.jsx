@@ -27,7 +27,7 @@ export function ScenarioBrowser({ scenarios, allProgress, onSelect, unlocked, on
       borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.8rem',
       color: active ? '#fff' : 'var(--text-muted)',
       fontWeight: active ? 700 : 400, fontSize: '0.8rem', cursor: 'pointer',
-      transition: 'all 0.12s',
+      transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
     }}>{label}</button>
   );
 

@@ -128,7 +128,7 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
                 background: 'var(--surface)',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',
-                transition: 'all 0.12s',
+                transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
                 opacity: isLocked ? 0.7 : 1,
                 position: 'relative',
               }}
@@ -136,12 +136,12 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
               onMouseEnter={e => {
                 if (!isLocked) {
                   e.currentTarget.style.borderColor = 'var(--purple-border)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
                 }
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border)';
-                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               {/* Badges row */}

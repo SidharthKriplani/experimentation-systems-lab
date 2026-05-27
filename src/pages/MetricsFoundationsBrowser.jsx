@@ -30,7 +30,7 @@ function StepCircle({ index, completed, isCurrent }) {
       width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
       background: bg, border: '2px solid ' + border,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: '0.75rem', fontWeight: 800, color, transition: 'all 0.15s',
+      fontSize: '0.75rem', fontWeight: 800, color, transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
     }}>
       {completed ? '✓' : index}
     </div>

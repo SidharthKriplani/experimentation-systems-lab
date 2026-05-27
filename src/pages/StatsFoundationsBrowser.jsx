@@ -81,7 +81,7 @@ function FilterChip({ label, active, onClick, activeStyle }) {
         fontWeight: active ? 600 : 400,
         cursor: 'pointer',
         whiteSpace: 'nowrap',
-        transition: 'all 0.12s',
+        transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
       }}
     >
       {label}
@@ -262,7 +262,7 @@ export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
                 padding: '0.9rem 1.1rem',
                 cursor: isLocked ? 'default' : 'pointer',
                 opacity: isLocked && !isCompleted ? 0.72 : 1,
-                transition: 'all 0.12s',
+                transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
               }}
                 onClick={() => {
                   if (!isLocked) onStart?.(module.id);
@@ -270,12 +270,12 @@ export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
                 onMouseEnter={e => {
                   if (!isLocked) {
                     e.currentTarget.style.borderColor = 'var(--yellow)';
-                    e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                    e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
                   }
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.borderColor = isCurrent ? 'var(--yellow-border)' : 'var(--border)';
-                  e.currentTarget.style.boxShadow = 'none';
+                  e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
                 {/* Badges row */}
@@ -354,7 +354,7 @@ export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
                         fontSize: '0.75rem', fontWeight: 700,
                         padding: '0.25rem 0.75rem',
                         cursor: 'pointer',
-                        transition: 'all 0.12s',
+                        transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
                       }}
                     >
                       {isCompleted ? 'Review' : isCurrent ? 'Start →' : 'Start'}
