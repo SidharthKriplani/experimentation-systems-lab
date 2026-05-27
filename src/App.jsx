@@ -994,18 +994,29 @@ export default function App() {
               onNavigate={(targetPage, itemId) => {
                 if (itemId) {
                   switch (targetPage) {
+                    case 'browser':          openScenario(itemId); break;
+                    case 'design':           openDesignScenario(itemId); break;
+                    case 'cases':            openBusinessCase(itemId); break;
+                    case 'product-design':   openPDScenario(itemId); break;
+                    case 'stats':            openStatsModule(itemId); break;
+                    case 'metrics':          openMetricsCase(itemId); break;
+                    case 'rca':              openRCACase(itemId); break;
+                    case 'code':             openCodeModule(itemId); break;
+                    case 'prioritization':   openPrioritizationScenario(itemId); break;
+                    case 'behavioral':       openBehavioralQuestion(itemId); break;
+                    case 'estimation':       openEstimationProblem(itemId); break;
                     case 'stat-foundations': openStatFoundationsModule(itemId); break;
                     case 'growth-analytics': openGrowthAnalyticsCase(itemId); break;
-                    case 'metrics': openMetricsCase(itemId); break;
-                    case 'rca': openRCACase(itemId); break;
-                    case 'code': openCodeModule(itemId); break;
-                    case 'behavioral': openBehavioralQuestion(itemId); break;
-                    default: setPage(targetPage);
+                    case 'spot-the-flaw':    openSTFCase(itemId); break;
+                    case 'bi':               openBICase(itemId); break;
+                    case 'instrumentation':  openInstrumentationCase(itemId); break;
+                    default:                 setPage(targetPage);
                   }
                 } else {
                   setPage(targetPage);
                 }
               }}
+              allData={{ scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases }}
             />
           </Suspense>
         )}

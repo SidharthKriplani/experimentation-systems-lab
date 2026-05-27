@@ -139,8 +139,56 @@ function buildPlan(scores) {
   ];
 }
 
+// ─── Room → allData mapping ───────────────────────────────────────────────────
+var ROOM_DATA_MAP = {
+  'browser':          { key: 'scenarios',               titleField: 'title', idField: 'id' },
+  'stats':            { key: 'statsModules',             titleField: 'title', idField: 'id' },
+  'metrics':          { key: 'metricCases',              titleField: 'title', idField: 'id' },
+  'design':           { key: 'designScenarios',          titleField: 'title', idField: 'id' },
+  'rca':              { key: 'rcaCases',                 titleField: 'title', idField: 'id' },
+  'cases':            { key: 'businessCases',            titleField: 'title', idField: 'id' },
+  'product-design':   { key: 'productDesignScenarios',   titleField: 'title', idField: 'id' },
+  'code':             { key: 'codeModules',              titleField: 'title', idField: 'id' },
+  'prioritization':   { key: 'prioritizationScenarios',  titleField: 'title', idField: 'id' },
+  'behavioral':       { key: 'behavioralQuestions',      titleField: 'title', idField: 'id' },
+  'estimation':       { key: 'estimationProblems',       titleField: 'title', idField: 'id' },
+  'stat-foundations': { key: 'statsFoundationsModules',  titleField: 'title', idField: 'id' },
+  'growth-analytics': { key: 'growthAnalyticsCases',     titleField: 'title', idField: 'id' },
+};
+
+// ─── Top-case scorer ──────────────────────────────────────────────────────────
+function getTopCases(roomId, allData, jdText, limit) {
+  if (!allData) return [];
+  var mapping = ROOM_DATA_MAP[roomId];
+  if (!mapping) return [];
+  var arr = allData[mapping.key];
+  if (!arr || arr.length === 0) return [];
+  var text = jdText.toLowerCase();
+  var scored = arr.map(function(item, idx) {
+    var score = 0;
+    var title = (item[mapping.titleField] || '').toLowerCase();
+    var tags = item.tags || [];
+    tags.forEach(function(tag) {
+      if (text.includes(tag.toLowerCase())) score += 2;
+    });
+    title.split(/\s+/).forEach(function(word) {
+      if (word.length > 3 && text.includes(word)) score += 1;
+    });
+    return { item: item, score: score, idx: idx };
+  });
+  scored.sort(function(a, b) {
+    if (b.score !== a.score) return b.score - a.score;
+    return a.idx - b.idx;
+  });
+  return scored.slice(0, limit).map(function(s) { return s.item; });
+}
+
+function truncateTitle(title) {
+  return title.length > 45 ? title.slice(0, 42) + '...' : title;
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
-export function DefenseDocGenerator({ onBack, onNavigate }) {
+export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
   const [jdText, setJdText]   = useState('');
   const [plan,   setPlan]     = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -332,6 +380,32 @@ export function DefenseDocGenerator({ onBack, onNavigate }) {
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No specific room match — paste a fuller JD.</span>
                     )}
                   </div>
+
+                  {/* Suggested cases */}
+                  {plan && allData && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginBottom: '0.5rem' }}>
+                      {(dayObj.rooms || []).map(function(roomId) {
+                        var meta = ROOM_META[roomId];
+                        if (!meta) return null;
+                        var topCases = getTopCases(roomId, allData, jdText, 2);
+                        if (topCases.length === 0) return null;
+                        return topCases.map(function(c) {
+                          return (
+                            <button
+                              key={roomId + '-' + c.id}
+                              onClick={function() { if (onNavigate) onNavigate(meta.page, c.id); }}
+                              style={{ background: 'var(--surface-2)', border: 'none', borderRadius: 5, padding: '0.22rem 0.6rem', fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer', transition: 'color 0.12s, background 0.12s' }}
+                              onMouseEnter={function(e) { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.background = 'var(--surface-3)'; }}
+                              onMouseLeave={function(e) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'var(--surface-2)'; }}
+                              title={'Open: ' + (c.title || '')}
+                            >
+                              {'▸ ' + truncateTitle(c.title || '')}
+                            </button>
+                          );
+                        });
+                      })}
+                    </div>
+                  )}
 
                   {/* Day note */}
                   {dayObj.note && (
