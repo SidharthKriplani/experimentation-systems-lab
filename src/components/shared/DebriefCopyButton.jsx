@@ -15,16 +15,16 @@ export function DebriefCopyButton({ title, notes, modelAnswer, tags, difficulty,
   function buildMarkdown() {
     const tagLine = Array.isArray(tags) && tags.length > 0
       ? tags.join(\', \')
-      : \'—\';
+      : \'-\';
     const diffLabel = difficulty
       ? difficulty.charAt(0).toUpperCase() + difficulty.slice(1)
-      : \'—\';
+      : \'-\';
     const notesText = notes && notes.trim() ? notes.trim() : \'(none)\';
     const answerText = modelAnswer && modelAnswer.trim() ? modelAnswer.trim() : \'(none)\';
 
     return (
       \'# \' + title + \'\\n\' +
-      \'**Room:** \' + (room || \'—\') + \' | **Difficulty:** \' + diffLabel + \'\\n\' +
+      \'**Room:** \' + (room || \'-\') + \' | **Difficulty:** \' + diffLabel + \'\\n\' +
       \'**Tags:** \' + tagLine + \'\\n\' +
       \'\\n\' +
       \'## Model Answer\\n\' +
