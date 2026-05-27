@@ -4,6 +4,40 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.25.2] — 2026-05-27
+
+### Changed — Idea intake from sibling repos + feature pause decision
+
+**ML Systems Lab real-repo inspection:**
+Fetched and read the live README and CLAUDE.md from `github.com/SidharthKriplani/ml-systems-lab`. Added 4 items to IDEAS.md that were not previously captured: Playbook → practice direct linking (∇ Gradient pattern), timed exam lock mechanic (Combinator), production bug debugging room (Code Bugs), and a note that previously cited ML Systems Lab items were directionally correct even though the prior agent inspection had not fetched the real repo.
+
+**Feature pause decision recorded:**
+- `DECISIONS.md` — new "Current priority (V4.25+)" section: feature building suspended until PostHog baseline is established and real session behavior is observed. Sequence: confirm PostHog live → watch 20 sessions → decide on paywall flip based on data.
+- `IDEAS.md` — "In Progress" section updated to reflect pause and list the 3 pre-feature steps.
+
+**Files touched:** `IDEAS.md`, `DECISIONS.md`
+
+---
+
+## [4.25.1] — 2026-05-27
+
+### Changed — GenAI Lab real-repo ideas + field intelligence workflow
+
+**GenAI Systems Lab real-repo inspection:**
+Fetched the actual CLAUDE.md from `github.com/SidharthKriplani/genai-systems-lab`. Prior session used an Explore subagent that hallucinated the repo contents. Real fetch revealed: `gated: true` per-question paywall flag (163 questions pre-tagged), single forward pointer principle, field intelligence workflow, three front doors IA (Build/Prove/Navigate), PARKED.md pattern, ELI5 mode toggle, Quiz Me auto-generation, AI Product tab analog, PWA + offline support.
+
+Added to IDEAS.md:
+- Tier 1 Features: `gated: true` per-case paywall flag
+- Tier 2 Features: Quiz Me on Playbook articles, PM Practitioner tab, single forward pointer principle
+- Tier 2 Platform: three front doors IA audit, Create PARKED.md
+- Tier 3 Features: ELI5 mode toggle, PWA + offline support
+
+**CLAUDE.md:** field intelligence workflow formalized as a 5-step process under "When external content arrives."
+
+**Files touched:** `IDEAS.md`, `CLAUDE.md`
+
+---
+
 ## [4.25.0] — 2026-05-27
 
 ### Changed — Audit #72 + #73: Full UX consistency pass + auth hardening
