@@ -4,6 +4,142 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.13.1] — 2026-05
+
+### Fixed — Em dash parse error in DebriefCopyButton
+
+**Rolldown parse error fix:** `src/components/shared/DebriefCopyButton.jsx` contained 3 em dash (—) Unicode characters inside JS string literals used as ternary fallback values. Rolldown raised "Invalid Character —" at line 18, blocking the Vercel build. Replaced all 3 with ASCII hyphens (-). Rule added to AUDITS.md: never use em dash, en dash, or other Unicode punctuation inside JS string literals in any .js/.jsx file.
+
+### Files changed
+`src/components/shared/DebriefCopyButton.jsx` (3 em dash → hyphen), `AUDITS.md`, `CHANGELOG.md`
+
+---
+
+## [4.13.0] — 2026-05
+
+### Added — Defense Doc upgrade, Take-Home model answers, DebriefCopyButton
+
+**Defense Doc upgraded:** `DefenseDocGenerator.jsx` now accepts an `allData` prop and surfaces 2 specific clickable cases per room per day, scored by tag and title match against the pasted job description. `onNavigate` expanded to cover all 16 rooms so clicking a recommended case routes directly to that room. Previously the doc showed generic room names only — now it delivers real case recommendations.
+
+**Take-Home model answers:** Full prose `modelAnswer` field added to all 10 Take-Home cases (TH01–TH10) in `takehomeCases.js`. Answers render in `TakehomeRunner.jsx` after the rubric section, giving users a benchmark to compare their work against.
+
+**DebriefCopyButton — new shared component:** `src/components/shared/DebriefCopyButton.jsx` copies a markdown-formatted debrief summary (title, model answer, notes, tags, difficulty) to clipboard. Wired into `ScenarioRunner`, `RCARunner`, `MetricsRunner`, and `TakehomeRunner`. Enables interview debrief export without requiring a backend.
+
+**LEARN moved above TOOLS in sidebar:** Information hierarchy corrected — learning content (Deep Dives, Frameworks, FOUNDATIONS) now appears before utility tools.
+
+### Files changed
+`src/pages/DefenseDocGenerator.jsx` (allData prop, clickable cases, 16-room onNavigate), `src/data/takehomeCases.js` (modelAnswer on TH01–TH10), `src/components/shared/DebriefCopyButton.jsx` (new), `src/components/review/ScenarioRunner.jsx` (DebriefCopyButton), `src/components/rca/RCARunner.jsx` (DebriefCopyButton), `src/components/metrics/MetricsRunner.jsx` (DebriefCopyButton), `src/components/takehome/TakehomeRunner.jsx` (DebriefCopyButton + modelAnswer render), `src/components/layout/Header.jsx` (LEARN above TOOLS), `CHANGELOG.md`
+
+---
+
+## [4.12.3] — 2026-05
+
+### Changed — Sidebar UI overhaul
+
+- Theme toggle moved to top logo row
+- Beta badge removed from bottom
+- Search removed from TOOLS section — now a persistent bottom bar with `/` shortcut hint
+- Theory Hub removed from LEARN (superseded by FOUNDATIONS section)
+- Simulator renamed to Mock Interview
+- Trainer renamed to MCQ Quiz
+- A/B Interpreter renamed to Stats Calculator
+
+### Files changed
+`src/components/layout/Header.jsx` (all above), `CHANGELOG.md`
+
+---
+
+## [4.12.2] — 2026-05
+
+### Changed — Sidebar naming overhaul
+
+- Section label ROOMS → PRACTICE ROOMS
+- Room label Review → A/B Review
+- Room label PM Design → Product Design
+- Room label Prioritize → Prioritization
+- Room label Exp Foundations → A/B Foundations (id stays `exp-foundations`)
+- Articles → Deep Dives, Playbook → Frameworks
+- Code moved into Analytics accordion as Code Lab (no longer an orphaned flat item)
+
+### Files changed
+`src/components/layout/Header.jsx` (all label changes), `CHANGELOG.md`
+
+---
+
+## [4.12.1] — 2026-05
+
+### Fixed — Exp Foundations practice room links
+
+'Ready to practice?' links on the Exp Foundations browser page were built as `<a href>` tags pointing to hash routes, which do not trigger React SPA navigation — they reloaded the page to `#ab-design` etc. and state was lost. Replaced with `onNavigate` prop calls so links route within the SPA correctly.
+
+### Files changed
+`src/pages/ExpFoundationsBrowser.jsx` (onNavigate calls replacing dead anchor tags), `CHANGELOG.md`
+
+---
+
+## [4.12.0] — 2026-05
+
+### Added — Experimentation Foundations room (ef01–ef07) + Foundation→Practice interlinks + Template literal audit
+
+**Experimentation Foundations room:** 7 interactive modules covering the core statistical concepts behind A/B testing:
+- ef01 — Causality and the Experiment Ideal: observational vs. RCT framing, confound identification
+- ef02 — Randomization Unit: user vs. session vs. page unit choice, SUTVA violations, network effects
+- ef03 — Power and MDE: sample size determinants, MDE practical definition, underpowered experiment cost
+- ef04 — P-values and Confidence Intervals: p-value interpretation, CI construction, common misreadings
+- ef05 — Sample Ratio Mismatch (SRM): detection, root causes, invalidation decision rule
+- ef06 — Novelty Effects and Long-Run Treatment Effects: novelty vs. primacy, washout period, holdout design
+- ef07 — Multiple Testing and FWER: family-wise error rate, Bonferroni correction, sequential testing
+
+Blue `var(--accent)` theme. Wired into App.jsx (lazy import, state, open function, routing), Header.jsx (A/B Foundations nav item), Progress.jsx (completionMap, heatmap dates, getNextSuggested). localStorage key: `pal-exp-foundation-progress-v1`.
+
+**Foundation → Practice interlinks:** Each Foundation browser page now has a 'Ready to practice?' section at the bottom linking to the relevant practice rooms. Exp Foundations links to A/B Design, A/B Review, and Spot the Flaw. Same pattern applied across all Foundation browsers.
+
+**Template literal audit:** All 26 data files checked for backtick template literals. No new violations found — all files already clean. Audit #64 status updated to resolved.
+
+### Files changed
+`src/data/expFoundationModules.js` (new — ef01–ef07), `src/utils/expFoundationProgress.js` (new), `src/pages/ExpFoundationsBrowser.jsx` (new), `src/components/expFoundations/ExpFoundationsRunner.jsx` (new), `src/App.jsx` (lazy import, state, open, routing, reset key), `src/components/layout/Header.jsx` (A/B Foundations nav), `src/pages/Progress.jsx` (completionMap, heatmap, getNextSuggested), `public/sitemap.xml` (exp-foundations route), `CHANGELOG.md`
+
+---
+
+## [4.11.0] — 2026-05
+
+### Added — Room filter chips in SearchPage + per-case notes in all remaining runners
+
+**Room filter chips in SearchPage:** Global search results now show filter chips (All + one per room) below the search bar. Chips only render when 2 or more rooms have results for the current query. Clicking a chip filters results to that room only. State resets to 'All' on each new query.
+
+**Per-case notes now in all runners:** `pal-notes-v1` persistent notes (textarea + Save button) added to the 11 runners that were missing it: `CaseRunner`, `ChallengesRunner`, `CodeRunner`, `DesignRunner`, `MetricsFoundationsRunner`, `PrioritizationRunner`, `ProductDesignRunner`, `RCAFoundationsRunner`, `ScenarioRunner`, `StatsFoundationsRunner`, `TakehomeRunner`. All runners now have per-case notes.
+
+### Files changed
+`src/pages/SearchPage.jsx` (room filter chips), `src/components/cases/CaseRunner.jsx`, `src/components/challenges/ChallengesRunner.jsx`, `src/components/code/CodeRunner.jsx`, `src/components/design/DesignRunner.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, `src/components/prioritization/PrioritizationRunner.jsx`, `src/components/productDesign/ProductDesignRunner.jsx`, `src/components/rcaFoundations/RCAFoundationsRunner.jsx`, `src/components/review/ScenarioRunner.jsx`, `src/components/statsFoundations/StatsFoundationsRunner.jsx`, `src/components/takehome/TakehomeRunner.jsx` (notes added), `CHANGELOG.md`
+
+---
+
+## [4.10.0] — 2026-05
+
+### Added — BI expanded to 16 cases, Instrumentation expanded to 12 cases
+
+**BI Room expanded:** 4 new cases (bi13–bi16) added to `biCases.js`. Cases cover real-time dashboards, Looker/Tableau workflows, and advanced BI scenarios.
+
+**Instrumentation Room expanded:** 4 new cases (inst09–inst12) added to `instrumentationCases.js`. Cases cover dbt data models, data lineage, and schema migration scenarios.
+
+### Files changed
+`src/data/biCases.js` (bi13–bi16), `src/data/instrumentationCases.js` (inst09–inst12), `CHANGELOG.md`
+
+---
+
+## [4.9.0] — 2026-05
+
+### Added — Metrics Foundations room (mf01–mf06) + RCA Foundations room (rf01–rf06)
+
+**Metrics Foundations room:** 6 interactive modules (mf01–mf06) covering foundational metrics concepts. Uses green `var(--green)` theme (matching Metrics Room). Wired into App.jsx, Header.jsx (sidebar), and Progress.jsx (completionMap, heatmap, getNextSuggested).
+
+**RCA Foundations room:** 6 interactive modules (rf01–rf06) covering root cause analysis fundamentals. Uses teal `var(--teal)` theme (matching RCA Room). Wired into App.jsx, Header.jsx (sidebar), and Progress.jsx (completionMap, heatmap, getNextSuggested).
+
+### Files changed
+`src/data/metricsFoundationModules.js` (new — mf01–mf06), `src/utils/metricsFoundationProgress.js` (new), `src/pages/MetricsFoundationsBrowser.jsx` (new), `src/components/metricsFoundations/MetricsFoundationsRunner.jsx` (new), `src/data/rcaFoundationModules.js` (new — rf01–rf06), `src/utils/rcaFoundationProgress.js` (new), `src/pages/RCAFoundationsBrowser.jsx` (new), `src/components/rcaFoundations/RCAFoundationsRunner.jsx` (new), `src/App.jsx` (both rooms: lazy import, state, open, routing, reset keys), `src/components/layout/Header.jsx` (both rooms in sidebar), `src/pages/Progress.jsx` (both rooms: completionMap, heatmap, getNextSuggested), `public/sitemap.xml` (2 new routes), `CHANGELOG.md`
+
+---
+
 ## [4.8.4] — 2026-05
 
 ### Fixed + Audited — Progress heatmap keys, Growth Analytics expansion, Spot the Flaw audit

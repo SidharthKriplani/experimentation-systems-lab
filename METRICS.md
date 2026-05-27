@@ -43,6 +43,7 @@ Events fire from `src/App.jsx` (navigation events) and directly from runner comp
 - Interview Simulator session completed
 - MCQ Trainer session scored
 - Defense Doc generated
+- Debrief copied to clipboard (`DebriefCopyButton` — V4.13.0) — clipboard copy fires but no PostHog event wired; `debrief_copied` event would be worth adding in a future pass to measure export behaviour
 
 ---
 
@@ -111,6 +112,7 @@ All progress state lives in localStorage. Every key must be included in `onReset
 | `pal-notes-v1` | Active Recall textarea | per-room notes string |
 | `pal-role-toggle` | Home page DS/PM role filter | `'DS + PM' \| 'Product DS' \| 'Product PM'` |
 | `pal-first-visit` | First-run onboarding modal shown flag | boolean |
+| `pal-exp-foundation-progress-v1` | Experimentation Foundations Room | per-module object (`completedAt` per moduleId) |
 | `pal-last-visited-*` | Last visited timestamp per room | ISO timestamp |
 
 ---

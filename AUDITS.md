@@ -39,6 +39,42 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XV — V4.9–V4.13 Session Audits
+
+### 69. ✅ Navigation & Discoverability Audit — V4.12.x
+**Version:** V4.12.0–V4.13.0
+**Type:** Navigation & Discoverability
+
+Four distinct navigation problems found and resolved across the V4.12.x builds:
+
+1. **Dead SPA links on Exp Foundations browser page** — 'Ready to practice?' section linked to `#ab-design`, `#ab-review`, `#spot-the-flaw` using `<a href>` anchor tags. In a React SPA these cause a full page reload and state loss instead of routing within the app. Fixed in V4.12.1: replaced with `onNavigate` prop calls.
+
+2. **Code room orphaned in sidebar** — Code room was a flat nav item sitting between PRACTICE ROOMS and PRACTICE sections with no accordion group. Visually lost, easy to miss. Fixed in V4.12.2: Code moved into Analytics accordion as Code Lab.
+
+3. **Ambiguous room labels** — 'Review' had no A/B prefix; 'PM Design' was inconsistent with other room names (full noun); 'Prioritize' used a verb instead of the noun format used everywhere else; 'Exp Foundations' did not signal A/B testing. All four relabeled in V4.12.2.
+
+4. **LEARN section buried below TOOLS** — Wrong information hierarchy for a learning platform. Learning content should be discoverable before utility tools. Fixed in V4.13.0: LEARN section moved above TOOLS in sidebar order.
+
+**Status:** ✅ Resolved
+
+---
+
+### 70. ✅ Build Safety Audit — DebriefCopyButton Em Dash (V4.13.1)
+**Version:** V4.13.1
+**Type:** Build safety
+
+`src/components/shared/DebriefCopyButton.jsx` contained 3 em dash (—) Unicode characters inside JS string literals used as ternary fallback values (e.g. `case.difficulty || '—'`). Rolldown raised "Invalid Character —" at line 18 during the Vercel build, blocking deployment.
+
+**Root cause:** Agent-generated code used the typographic em dash as a display fallback value inside a JS string. The character is not valid as a token in Rolldown's JS parser.
+
+**Fix:** All 3 em dash instances replaced with ASCII hyphens (-).
+
+**Rule added:** Never use em dash (—), en dash (–), or other Unicode punctuation characters inside JS string literals in any .js/.jsx file. Use ASCII hyphen (-) or write out the word. This extends the existing apostrophe safety rule to the full class of problematic Unicode punctuation.
+
+**Status:** ✅ Resolved
+
+---
+
 ## Part I — Architecture & Strategic Audits
 
 ### 1. ✅ Platform Architecture Audit (18 Questions)
@@ -743,3 +779,5 @@ Diagnosed institutional memory problem: every new session required expensive re-
 | 66 | SF Module Button Labels + Duplicate Playbook Sections ✅ | V4.6.2 | Visual consistency / BUILD |
 | 67 | Stats Room Comprehensive Audit (6 findings, 5 fixed) ✅ | V4.7.2 | BUILD / Visual / Content / Build safety |
 | 68 | Five-Perspective Comprehensive Audit (15 findings, all fixed) ✅ | V4.8.0–V4.8.1 | Build safety / Config completeness / Component reg / Content / Routing |
+| 69 | Navigation & Discoverability Audit — dead SPA links, orphaned Code room, label ambiguity, LEARN ordering ✅ | V4.12.0–V4.13.0 | Navigation & Discoverability |
+| 70 | Build Safety — DebriefCopyButton em dash parse error ✅ | V4.13.1 | Build safety |

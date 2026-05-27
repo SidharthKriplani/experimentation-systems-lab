@@ -13,19 +13,19 @@ _(nothing active — update this at session start when pulling from Tier 1)_
 ## Tier 1 — High impact, buildable now
 
 ### Content
-- Playbook articles for BI, Instrumentation, and Take-Home rooms (these rooms have no linked articles yet — breaks the learn→practice loop)
-- More BI cases (BI13+): real-time dashboards, Looker/Tableau case studies
-- More Instrumentation cases: dbt data models, data lineage, schema migration
+- ~~Playbook articles for BI, Instrumentation, and Take-Home rooms~~ — ✅ shipped V4.8.2
+- ~~More BI cases (BI13+): real-time dashboards, Looker/Tableau case studies~~ — ✅ shipped V4.10.0 (bi13–bi16)
+- ~~More Instrumentation cases: dbt data models, data lineage, schema migration~~ — ✅ shipped V4.10.0 (inst09–inst12)
 
 ### Features
 - ~~`case_completed` PostHog event~~ — ✅ shipped V4.6 (all 18 runners instrumented)
-- Interview debrief export (PDF of session answers + model answers) — high-value, users want to share results
-- Per-case notes that persist across sessions (currently one global textarea) — `pal-notes-v1` key exists in StatsRunner; other runners need the same pattern
-- Search within a single room (room-level filter on global search)
-
-### Infrastructure
+- ~~Interview debrief export (PDF of session answers + model answers)~~ — ✅ shipped V4.13.0 (DebriefCopyButton — markdown copy to clipboard, wired into 4 runners)
+- ~~Per-case notes that persist across sessions (currently one global textarea)~~ — ✅ shipped V4.11.0 (all runners now have pal-notes-v1 notes)
+- ~~Search within a single room (room-level filter on global search)~~ — ✅ shipped V4.11.0 (room filter chips in SearchPage)
+- Frameworks (Playbook) page redesign — currently looks identical to Deep Dives; needs reference-card layout, not article list
+- Consult page — overlaps with Search; evaluate cutting or differentiating
+- Stripe paywall activation — flip isUnlocked() → false, test end-to-end
 - Confirm `VITE_POSTHOG_KEY` is live in Vercel prod and establish WAU baseline
-- `isUnlocked()` → false when Stripe is live; flip the gate and test the paywall flow end-to-end
 
 ### Bugs
 - ~~**`onResetAllProgress` missing 9 keys** (audit #62)~~ — ✅ fixed V4.6.1 (8 keys added, reset now covers all rooms)
@@ -34,7 +34,7 @@ _(nothing active — update this at session start when pulling from Tier 1)_
 - ~~**Home.jsx daily drill — wrong BEH case** (audit #65)~~ — ✅ fixed V4.6.1 (BEH01→BEH05, title corrected)
 - ~~**Stats Room DIFFICULTY_CFG missing intermediate/advanced/staff entries** (audit #67)~~ — ✅ fixed V4.7.2 (STAT09/STAT10-12 showed "Foundational" badge incorrectly)
 - ~~**STAT08 claim references seller data not shown in setup** (audit #67)~~ — ✅ fixed V4.7.2 (seller conversion data added to observedResult)
-- **Template literals in 9 data files** (audit #64) — latent build risk; any unescaped apostrophe in a backtick string causes a silent Vercel parse failure
+- ~~**Template literals in 9 data files** (audit #64)~~ — ✅ resolved V4.12.0 (all 26 data files audited, all clean, no changes needed)
 
 ---
 
@@ -43,7 +43,7 @@ _(nothing active — update this at session start when pulling from Tier 1)_
 ### Content
 - STAT17–20+: more causal inference (IV estimation, synthetic control, geo holdout) — partially done in V3.4, extend further
 - Cases Room expansion: pricing strategy, international expansion (C13+)
-- Growth Analytics Room expansion: GA09+ — supply-side metrics, marketplace health
+- ~~Growth Analytics Room expansion: GA09+ — supply-side metrics, marketplace health~~ — ✅ shipped V4.8.4 (GA09–GA12)
 
 ### Features
 - Stripe payment flow activation (link already scaffolded in `VITE_STRIPE_PAYMENT_LINK`) — requires flipping paywall gate + end-to-end test

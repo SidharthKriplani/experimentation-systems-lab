@@ -21,7 +21,7 @@ The job is to build a good product, not to make every session feel productive.
 
 ## What this project is (5 lines)
 
-**Product Analytics Lab (PAL)** is a browser-based interview prep platform for product analysts and PMs. Users practice judgment calls — not recall — across 16 rooms covering stats, experimentation, RCA, metrics, SQL/Python, product design, prioritization, behavioral, estimation, and analytics instrumentation. Zero backend. React + Vite SPA, localStorage only. Deployed on Vercel. Repo: `github.com/SidharthKriplani/experimentation-systems-lab`.
+**Product Analytics Lab (PAL)** is a browser-based interview prep platform for product analysts and PMs. Users practice judgment calls — not recall — across 17 rooms covering stats, experimentation, RCA, metrics, SQL/Python, product design, prioritization, behavioral, estimation, analytics instrumentation, and A/B foundations. Zero backend. React + Vite SPA, localStorage only. Deployed on Vercel. Repo: `github.com/SidharthKriplani/experimentation-systems-lab`.
 
 ---
 
@@ -48,10 +48,10 @@ Never use static imports for room pages/runners. `<Suspense>` wraps the entire `
 
 ### CSS — always use variables, never hardcode
 ```css
-var(--accent)        /* blue — Review Room */
-var(--teal)          /* teal — Instrumentation, Stat Foundations */
+var(--accent)        /* blue — Review Room, Experimentation Foundations */
+var(--teal)          /* teal — Instrumentation, Stat Foundations, RCA Foundations */
 var(--yellow)        /* yellow — Challenges, BI, Take-Home */
-var(--green)         /* green — Metrics */
+var(--green)         /* green — Metrics, Metrics Foundations */
 var(--red)           /* red — Spot the Flaw */
 var(--purple)        /* purple — Product Design, Leadership Lens */
 var(--surface)       /* card background */
@@ -78,16 +78,22 @@ src/
   App.jsx                     — routing, state, track() calls for every room
   index.css                   — full CSS variable theme system
   data/                       — all case/scenario/module data files
+                                (includes expFoundationModules.js, metricsFoundationModules.js,
+                                 rcaFoundationModules.js and all other room data files)
   pages/                      — browser pages (one per room)
   components/
-    layout/Header.jsx          — nav (grouped: ROOMS / PRACTICE / TOOLS / LEARN / TRACK)
+    layout/Header.jsx          — nav (PRACTICE ROOMS / PRACTICE / LEARN / TOOLS / TRACK)
+    expFoundations/            — Experimentation Foundations runner
+    metricsFoundations/        — Metrics Foundations runner
+    rcaFoundations/            — RCA Foundations runner
+    shared/                    — shared components (e.g. DebriefCopyButton.jsx)
     [room]/[Room]Runner.jsx    — case runner components
   utils/
     analytics.js               — PostHog wrapper (env-var gated, PII-stripped)
     unlock.js                  — beta gate (always true right now)
     [room]Progress.js          — localStorage progress per room
 public/
-  sitemap.xml                 — 13+ URLs, update when adding routes
+  sitemap.xml                 — 25+ URLs, update when adding routes
   robots.txt
   og-image.png
 docs/
@@ -148,9 +154,9 @@ Make a product + engineering call first. Not everything belongs. Ask: does this 
 |---|---|
 | `CLAUDE.md` | This file. Read every session. |
 | `DECISIONS.md` | Prescriptive rulebook — architectural + product standing rules. Check before making any structural choice. |
-| `LINEAGE.md` / `CHANGELOG.md` | Build history. `CHANGELOG.md` is terse (version + bullets). Full narrative lineage is embedded in `CHANGELOG.md` as detailed entries. |
+| `LINEAGE.md` / `CHANGELOG.md` | Build history. `CHANGELOG.md` is terse (version + bullets). Full narrative lineage is embedded in `CHANGELOG.md` as detailed entries. Covers V1.0 through V4.13.1. |
 | `IDEAS.md` | Tiered backlog — In Progress / Tier 1 / Tier 2 / Tier 3 / Retired. |
-| `AUDITS.md` | Health log — 64 audits to date, with ✅ resolved / ⚠️ open status. |
+| `AUDITS.md` | Health log — 70 audits to date, with ✅ resolved / ⚠️ open status. |
 | `METRICS.md` | Tracked events, user funnel, success metrics, localStorage keys. |
 | `docs/CONTENT_QUALITY_BAR.md` | 8-dimension standard every case must pass before shipping. |
 | `docs/SCENARIO_BANK_TAXONOMY.md` | 15 scenario families for the Review Room. |
