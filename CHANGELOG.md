@@ -4,6 +4,50 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.24.0] — 2026-05-27
+
+### Added — UX pass (P4/P5) + Supabase auth
+
+**ChallengesBrowser.jsx — difficulty filter bar:** Pills for All (16) / Senior (10) / Staff (6). Active state uses `var(--yellow)` for Senior, `var(--red)` for Staff, `var(--text)` for All. Filters `filteredCases` array via derived state. Addresses the blank-page problem for returning users who've already done the senior-level set.
+
+**StatsBrowser.jsx — next-case highlight:** First unstarted case gets `borderLeft: '3px solid var(--accent)'` + absolute "Next →" badge (accent bg). Removes the "where do I start?" friction for every session.
+
+**ChallengesRunner.jsx — sticky bottom bar:** Fixed bar (position: fixed, bottom: 0) shown when `rating !== null`. Contains "Case complete" label, "← Back to list" secondary button, "Next challenge →" primary button (`var(--red)` bg). Keeps forward momentum after debrief.
+
+**Home.jsx — deferred onboarding modal:** Split `showOnboarding` (intent flag, set on first visit) from `showOnboardingModal` (render gate, delayed 4 seconds via `useEffect` + `setTimeout`). Modal no longer fires on page load before the user has seen any content.
+
+**Home.jsx — filled hero CTA:** "Try it live →" changed from ghost link to filled accent button (`var(--accent)` bg, white text, `fontWeight: 700`). Higher visual weight to match primary CTA intent.
+
+**Supabase auth layer:**
+- `src/utils/supabase.js` — `createClient` guarded behind `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` env vars; exports `null` when not set so all downstream code falls back gracefully
+- `src/utils/auth.js` — `signInWithEmail`, `signInWithGoogle`, `signOut`, `getUser`, `onAuthStateChange` — all null-guarded
+- `src/utils/syncProgress.js` — `pushProgressToSupabase` + `pullProgressFromSupabase` over 18 `pal-*` localStorage keys; upserts to `user_progress` table with RLS
+- `src/components/auth/AuthModal.jsx` — two-step modal: Google OAuth + magic link input → "check your inbox" confirmation
+- `src/components/layout/Header.jsx` — sign-in button (no user) and avatar + email + sign-out dropdown (user present)
+- `src/App.jsx` — `onAuthStateChange` useEffect: SIGNED_IN → push local progress → pull remote → setUser; AuthModal lazy-loaded and rendered on `showAuth`
+- `package.json` — `@supabase/supabase-js ^2.39.0` added
+- `SETUP_AUTH.md` — step-by-step: create Supabase project, run SQL schema, enable Google OAuth, add Vercel env vars
+
+**Supabase SQL schema (run in Supabase SQL editor):**
+```sql
+create table user_progress (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade not null,
+  key text not null,
+  value jsonb not null,
+  updated_at timestamptz default now(),
+  unique(user_id, key)
+);
+alter table user_progress enable row level security;
+create policy "Users can manage own progress" on user_progress
+  for all using (auth.uid() = user_id);
+```
+
+### Files changed
+`src/pages/ChallengesBrowser.jsx`, `src/pages/StatsBrowser.jsx`, `src/components/challenges/ChallengesRunner.jsx`, `src/pages/Home.jsx`, `src/utils/supabase.js` (new), `src/utils/auth.js` (new), `src/utils/syncProgress.js` (new), `src/components/auth/AuthModal.jsx` (new), `src/components/layout/Header.jsx`, `src/App.jsx`, `package.json`, `SETUP_AUTH.md` (new)
+
+---
+
 ## [4.23.0] — 2026-05-27
 
 ### Changed — P3: Challenges room expansion 6 → 16 cases

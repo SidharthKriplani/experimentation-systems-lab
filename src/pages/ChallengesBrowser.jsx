@@ -43,6 +43,14 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
   const allProgress = getAllChallengesProgress();
   const completedCount = Object.keys(allProgress).length;
   const [hoveredId, setHoveredId] = useState(null);
+  const [filterDiff, setFilterDiff] = useState('all');
+
+  const seniorCount = sortedCases.filter(c => c.difficulty === 'senior').length;
+  const staffCount = sortedCases.filter(c => c.difficulty === 'staff').length;
+
+  const filteredCases = filterDiff === 'all'
+    ? sortedCases
+    : sortedCases.filter(c => c.difficulty === filterDiff);
 
   return (
     <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem' }}>
@@ -99,13 +107,43 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
         </div>
       </div>
 
+      {/* Difficulty filter bar */}
+      <div style={{ display: 'flex', gap: '0.45rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+        {[
+          { key: 'all',    label: 'All (' + (seniorCount + staffCount) + ')',  activeColor: 'var(--text)',   activeBg: 'var(--surface-2)',  activeBorder: 'var(--border-strong)' },
+          { key: 'senior', label: 'Senior (' + seniorCount + ')',              activeColor: 'var(--yellow)', activeBg: 'var(--yellow-bg)',  activeBorder: 'var(--yellow-border)' },
+          { key: 'staff',  label: 'Staff (' + staffCount + ')',                activeColor: 'var(--red)',    activeBg: 'var(--red-bg)',     activeBorder: 'var(--red-border)' },
+        ].map(f => {
+          const active = filterDiff === f.key;
+          return (
+            <button
+              key={f.key}
+              onClick={() => setFilterDiff(f.key)}
+              style={{
+                padding: '0.32rem 0.85rem',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid ' + (active ? f.activeBorder : 'var(--border)'),
+                background: active ? f.activeBg : 'none',
+                color: active ? f.activeColor : 'var(--text-muted)',
+                fontWeight: active ? 700 : 400,
+                fontSize: '0.82rem',
+                cursor: 'pointer',
+                transition: 'background 0.12s, border-color 0.12s, color 0.12s',
+              }}
+            >
+              {f.label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Challenge grid */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(min(400px, 100%), 1fr))',
         gap: '1rem',
       }}>
-        {sortedCases.map(c => {
+        {filteredCases.map(c => {
           const prog = allProgress[c.id];
           const isLocked = !c.isFree && !unlocked;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.senior;

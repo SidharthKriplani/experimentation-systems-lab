@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { learningPaths } from '../data/learningPaths.js';
 import { Icon } from '../components/shared/Icon.jsx';
 
@@ -281,11 +281,21 @@ export function Home({ onNavigate }) {
   const [showOnboarding, setShowOnboarding] = useState(() => {
     try { return !localStorage.getItem('pal-onboarded-v1'); } catch { return false; }
   });
+  const [showOnboardingModal, setShowOnboardingModal] = useState(false);
   const [briefExpanded, setBriefExpanded] = useState(false);
+
+  useEffect(() => {
+    if (!showOnboarding) return;
+    const timer = setTimeout(() => {
+      setShowOnboardingModal(true);
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [showOnboarding]);
 
   function switchRole(r) { setRole(r); saveRole(r); }
   function dismissOnboarding() {
     localStorage.setItem('pal-onboarded-v1', '1');
+    setShowOnboardingModal(false);
     setShowOnboarding(false);
   }
 
@@ -474,7 +484,11 @@ export function Home({ onNavigate }) {
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>1 of 25 cases in this room</span>
                 <button
                   onClick={() => onNavigate('stats')}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontSize: '0.75rem', fontWeight: 700, padding: 0 }}
+                  style={{
+                    background: 'var(--accent)', color: '#fff', border: 'none',
+                    borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.8rem',
+                    fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                  }}
                 >
                   Try it live →
                 </button>
@@ -729,7 +743,7 @@ export function Home({ onNavigate }) {
       </div>
 
       {/* ── Onboarding modal ──────────────────────────────────────────────── */}
-      {showOnboarding && (
+      {showOnboardingModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
           <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)', padding: '2rem', maxWidth: 420, width: '90%', position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
             <button

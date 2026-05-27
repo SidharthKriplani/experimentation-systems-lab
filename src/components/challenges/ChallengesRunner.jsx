@@ -681,7 +681,7 @@ export function ChallengesRunner({ caseId, onBack, onNext, unlocked }) {
         )}
 
         {/* Action buttons */}
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: rating ? '4rem' : 0 }}>
           <button
             onClick={onBack}
             style={{
@@ -716,6 +716,47 @@ export function ChallengesRunner({ caseId, onBack, onNext, unlocked }) {
             </button>
           )}
         </div>
+
+        {/* Sticky bottom bar — shown after rating is selected */}
+        {rating && (
+          <div style={{
+            position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
+            background: 'var(--surface)', borderTop: '1px solid var(--border)',
+            padding: '0.75rem 1.5rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem',
+          }}>
+            <span style={{ fontSize: '0.83rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+              Case complete
+            </span>
+            <div style={{ display: 'flex', gap: '0.6rem' }}>
+              <button
+                onClick={onBack}
+                style={{
+                  background: 'var(--surface-2)', border: '1px solid var(--border)',
+                  borderRadius: '7px', padding: '0.45rem 1rem',
+                  color: 'var(--text-muted)', fontSize: '0.83rem', fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                ← Back to list
+              </button>
+              {onNext && (
+                <button
+                  onClick={onNext}
+                  style={{
+                    background: 'var(--red)', color: '#fff',
+                    border: 'none', borderRadius: '7px',
+                    padding: '0.45rem 1.1rem',
+                    fontSize: '0.83rem', fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Next challenge →
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

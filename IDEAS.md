@@ -6,8 +6,7 @@ Tiered build backlog. **In Progress** = actively being built this session. **Tie
 
 ## In Progress
 
-**P3 — Content depth** (V4.23, current session)
-- Challenges room: 6 → 16 cases (CHL07–CHL16 added: Spotify, Amazon, LinkedIn, DoorDash, Slack, Pinterest, Shopify, Duolingo, Figma, Instacart)
+_(nothing active — update at session start when pulling from priority list)_
 
 ---
 

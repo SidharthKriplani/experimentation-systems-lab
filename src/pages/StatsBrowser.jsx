@@ -28,9 +28,13 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
   const allProgress = getAllStatsProgress();
   const completedCount = Object.keys(allProgress).length;
 
+  const completedIds = new Set(Object.keys(allProgress));
+
   const displayModules = sortBy === 'difficulty'
     ? [...statsModules].sort((a, b) => (DIFF_ORDER[a.difficulty] ?? 1) - (DIFF_ORDER[b.difficulty] ?? 1))
     : statsModules;
+
+  const firstUnstartedId = displayModules.find(m => !completedIds.has(m.id))?.id;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
@@ -123,6 +127,7 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
           const progress = allProgress[module.id];
           const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
           const diffCfg = DIFF_CFG[module.difficulty] || DIFF_CFG.foundational;
+          const isNextUnstarted = module.id === firstUnstartedId;
 
           return (
             <div
@@ -134,12 +139,13 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
               style={{
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',
-                borderLeft: `3px solid ${diffCfg.color}`,
+                borderLeft: isNextUnstarted ? '3px solid var(--accent)' : `3px solid ${diffCfg.color}`,
                 borderRadius: 'var(--radius)',
                 padding: '1.1rem 1.25rem',
                 cursor: 'pointer',
                 transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
                 display: 'flex', alignItems: 'flex-start', gap: '1rem',
+                position: 'relative',
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderColor = 'var(--accent-border)';
@@ -150,6 +156,17 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
                 e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
+              {isNextUnstarted && (
+                <span style={{
+                  position: 'absolute', top: '0.6rem', right: '0.7rem',
+                  fontSize: '0.68rem', fontWeight: 700,
+                  color: 'var(--accent)', background: 'var(--accent-bg)',
+                  border: '1px solid var(--accent-border)',
+                  borderRadius: 4, padding: '0.1rem 0.4rem',
+                }}>
+                  Next →
+                </span>
+              )}
               {/* Module number */}
               <div style={{
                 width: '2rem', height: '2rem', flexShrink: 0,

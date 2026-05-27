@@ -38,13 +38,13 @@ The experience for someone who shows up, doesn't know where to start, and might 
 | Nav IA cleanup — remove emojis from nav items, fix "Instrum." truncation, remove Consult, clean group labels | ⬜ pending | 15-item ROOMS group is paralyzing; nav emojis are inconsistent |
 | Pricing raise — $49 → $69 one-time | ⬜ pending | $49 underprices a product with 150+ cases and 25 foundation modules; $69 is still under-$100 but signals quality |
 
-### P3 — Content depth
+### P3 — Content depth ✅ DONE (V4.23)
 More inventory in the highest-traffic rooms to keep returning users finding new material.
 
-| Item | Description |
-|------|-------------|
-| Challenges room expansion: 6 → 16 cases ✅ | CHL07–CHL16 added (Spotify, Amazon, LinkedIn, DoorDash, Slack, Pinterest, Shopify, Duolingo, Figma, Instacart) |
-| SQL live coding environment improvements | Code room is powerful but discovery is low |
+| Item | Status | Notes |
+|------|--------|-------|
+| Challenges room: 6 → 16 cases | ✅ done | CHL07–CHL16: Spotify, Amazon, LinkedIn, DoorDash, Slack, Pinterest, Shopify, Duolingo, Figma, Instacart |
+| SQL live coding environment improvements | ⬜ deferred | Code room is powerful but discovery is low — lower priority than P4 architecture |
 
 ### P4 — Architecture
 Backend work that unlocks features currently impossible with localStorage-only.

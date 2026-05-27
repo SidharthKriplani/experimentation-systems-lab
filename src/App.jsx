@@ -1,6 +1,8 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts.js';
 import { track } from './utils/analytics.js';
+import { onAuthStateChange } from './utils/auth.js';
+import { pushProgressToSupabase, pullProgressFromSupabase } from './utils/syncProgress.js';
 // Slim index — id, isFree, title only (for routing and paywall checks)
 import {
   scenarioIndex, designScenarioIndex, statsModuleIndex, metricCaseIndex,
@@ -97,6 +99,7 @@ const RCAFoundationsBrowser     = lazy(() => import('./pages/RCAFoundationsBrows
 const RCAFoundationsRunner      = lazy(() => import('./components/rcaFoundations/RCAFoundationsRunner.jsx').then(m => ({ default: m.RCAFoundationsRunner })));
 const ExpFoundationsBrowser     = lazy(() => import('./pages/ExpFoundationsBrowser.jsx').then(m => ({ default: m.ExpFoundationsBrowser })));
 const ExpFoundationsRunner      = lazy(() => import('./components/expFoundations/ExpFoundationsRunner.jsx').then(m => ({ default: m.ExpFoundationsRunner })));
+const AuthModal                 = lazy(() => import('./components/auth/AuthModal.jsx').then(m => ({ default: m.AuthModal })));
 
 function getInitialTheme() {
   try {
@@ -134,11 +137,31 @@ export default function App() {
   const [progressSnapshot, setProgressSnapshot] = useState(() => ({ ...getAllProgress(), challengesProgress: getAllChallengesProgress(), biProgress: getAllBIProgress(), stfProgress: getAllSTFProgress(), takehomeProgress: getAllTakehomeProgress(), instrumentationProgress: getAllInstrumentationProgress() }));
   const [theme, setTheme] = useState(getInitialTheme);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : '');
     try { localStorage.setItem('exp-lab-theme', theme); } catch (e) {}
   }, [theme]);
+
+  useEffect(() => {
+    const { data } = onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        pushProgressToSupabase(session.user);
+        pullProgressFromSupabase(session.user).then(() => {
+          setUser(session.user);
+          refreshProgress();
+        });
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+      }
+    });
+    return () => {
+      data?.subscription?.unsubscribe?.();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const titles = {
@@ -610,6 +633,8 @@ export default function App() {
         onToggleTheme={toggleTheme}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        user={user}
+        onShowAuth={() => setShowAuth(true)}
       />
       <div className="app-main-wrapper">
         {/* Mobile top bar */}
@@ -1222,6 +1247,14 @@ export default function App() {
       </main>
       <Footer onNavigate={navigate} />
     </div>
+    {showAuth && (
+      <Suspense fallback={null}>
+        <AuthModal
+          onClose={() => setShowAuth(false)}
+          onSuccess={() => setShowAuth(false)}
+        />
+      </Suspense>
+    )}
   </div>
   );
 }

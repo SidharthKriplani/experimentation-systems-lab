@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Icon } from '../shared/Icon.jsx';
+import { signOut } from '../../utils/auth.js';
 
 const ROOM_SUBGROUPS = [
   {
@@ -113,7 +114,7 @@ function getActiveSubGroup(currentPage) {
   return null;
 }
 
-export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme, isOpen, onClose }) {
+export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onToggleTheme, isOpen, onClose, user, onShowAuth }) {
   const [expandedSubGroups, setExpandedSubGroups] = useState(() => {
     const active = getActiveSubGroup(currentPage);
     return new Set(active ? [active] : ['experiments']);
@@ -388,6 +389,62 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
           ))}
 
         </nav>
+
+        {/* ── Bottom: auth ── */}
+        <div style={{ padding: '0 0.8rem 0.5rem', flexShrink: 0 }}>
+          {!user && (
+            <button
+              onClick={() => { onShowAuth && onShowAuth(); onClose(); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                width: '100%', textAlign: 'left',
+                background: 'none',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '0.42rem 0.7rem',
+                color: 'var(--text-muted)',
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                transition: 'border-color var(--transition), color var(--transition)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-border)'; e.currentTarget.style.color = 'var(--text)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+            >
+              <Icon name="user" size={13} color="currentColor" style={{ opacity: 0.65, flexShrink: 0 }} />
+              <span>Sign in</span>
+            </button>
+          )}
+          {user && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.3rem 0.25rem' }}>
+              <div style={{
+                width: '24px', height: '24px', borderRadius: '50%',
+                background: 'var(--accent-bg, var(--surface-2))',
+                border: '1px solid var(--border)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--accent)',
+                fontSize: '0.7rem', fontWeight: 700,
+                flexShrink: 0,
+                textTransform: 'uppercase',
+              }}>
+                {user.email ? user.email[0] : '?'}
+              </div>
+              <span style={{ flex: 1, fontSize: '0.75rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {user.email}
+              </span>
+              <button
+                onClick={async () => { await signOut(); onClose(); }}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: '0.72rem', color: 'var(--text-muted)',
+                  padding: '0.2rem 0.3rem', flexShrink: 0,
+                }}
+                title="Sign out"
+              >
+                Sign out
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* ── Bottom: search ── */}
         <div style={{
