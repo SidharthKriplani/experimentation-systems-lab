@@ -22,8 +22,8 @@ _(nothing active — update this at session start when pulling from Tier 1)_
 - ~~Interview debrief export (PDF of session answers + model answers)~~ — ✅ shipped V4.13.0 (DebriefCopyButton — markdown copy to clipboard, wired into 4 runners)
 - ~~Per-case notes that persist across sessions (currently one global textarea)~~ — ✅ shipped V4.11.0 (all runners now have pal-notes-v1 notes)
 - ~~Search within a single room (room-level filter on global search)~~ — ✅ shipped V4.11.0 (room filter chips in SearchPage)
-- Frameworks (Playbook) page redesign — currently looks identical to Deep Dives; needs reference-card layout, not article list
-- Consult page — overlaps with Search; evaluate cutting or differentiating
+- ~~Frameworks (Playbook) page redesign~~ — ✅ shipped V4.14.0 (reference-card layout, 3-col grid, category filter tabs, distinct from Deep Dives)
+- ~~Consult page — overlaps with Search~~ — ✅ cut V4.14.0
 - Stripe paywall activation — flip isUnlocked() → false, test end-to-end
 - Confirm `VITE_POSTHOG_KEY` is live in Vercel prod and establish WAU baseline
 
@@ -47,8 +47,8 @@ _(nothing active — update this at session start when pulling from Tier 1)_
 
 ### Features
 - Stripe payment flow activation (link already scaffolded in `VITE_STRIPE_PAYMENT_LINK`) — requires flipping paywall gate + end-to-end test
-- Company track completion badges
-- Dark/light mode persistence fix (survives hard refresh without flash)
+- ~~Company track completion badges~~ — ✅ shipped V4.14.0 (green Complete badge on card + 🎉 banner in TrackDetail)
+- ~~Dark/light mode persistence fix~~ — ✅ already in place via index.html inline script (was pre-existing)
 - Difficulty progression lock (must complete junior before senior unlocks) — opt-in mode only
 
 ### Platform

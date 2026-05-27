@@ -144,18 +144,23 @@ function CompanyCard({ track, onSelect }) {
             Role: {track.role}
           </div>
         </div>
-        {completedCount > 0 && (
+        {completedCount > 0 && completedCount < totalCases && (
           <div style={{
-            fontSize: '0.72rem',
-            fontWeight: 600,
-            color: 'var(--green)',
-            background: 'var(--green-bg)',
-            border: '1px solid var(--green-border)',
-            borderRadius: '999px',
-            padding: '2px 8px',
-            whiteSpace: 'nowrap',
+            fontSize: '0.72rem', fontWeight: 600, color: 'var(--green)',
+            background: 'var(--green-bg)', border: '1px solid var(--green-border)',
+            borderRadius: '999px', padding: '2px 8px', whiteSpace: 'nowrap',
           }}>
             {completedCount}/{totalCases} done
+          </div>
+        )}
+        {completedCount > 0 && completedCount === totalCases && (
+          <div style={{
+            fontSize: '0.72rem', fontWeight: 700, color: '#fff',
+            background: 'var(--green)', border: '1px solid var(--green)',
+            borderRadius: '999px', padding: '2px 10px', whiteSpace: 'nowrap',
+            display: 'flex', alignItems: 'center', gap: '0.25rem',
+          }}>
+            <span>✓</span> Complete
           </div>
         )}
       </div>
@@ -314,6 +319,25 @@ function TrackDetail({ track, onBack, onNavigate }) {
           </div>
         </div>
       </div>
+
+      {/* Completion celebration */}
+      {progressPct === 100 && (
+        <div style={{
+          background: 'var(--green-bg)', border: '1.5px solid var(--green-border)',
+          borderRadius: '10px', padding: '1rem 1.25rem', marginBottom: '1.5rem',
+          display: 'flex', alignItems: 'center', gap: '0.75rem',
+        }}>
+          <span style={{ fontSize: '1.5rem' }}>🎉</span>
+          <div>
+            <div style={{ fontWeight: 700, color: 'var(--green)', fontSize: '0.95rem' }}>
+              Track Complete!
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
+              You\'ve finished all {totalCases} cases in the {track.company} prep track.
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Cases grouped by room */}
       <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.75rem' }}>

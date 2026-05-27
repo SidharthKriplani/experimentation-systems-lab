@@ -4759,14 +4759,26 @@ function isFoundationPost(p) {
 
 const CATEGORIES = Object.keys(CATEGORY_CONFIG);
 
+// Categories available in the Playbook (non-foundation)
+const PLAYBOOK_CATS = [
+  'Ambiguous Problems', 'Company Questions', 'Mental Models',
+  'Career & Interview', 'The Big Picture', 'Product Sense',
+  'SQL & Data', 'PM Strategy', 'PM Career', 'GenAI Analytics',
+];
+
 export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
   const [activePost, setActivePost] = useState(() =>
     initialArticleId ? (POSTS.find(p => p.id === initialArticleId) || null) : null
   );
+  const [activeCat, setActiveCat] = useState(null);
+
   const playbookPosts = POSTS.filter(p => !isFoundationPost(p));
-  const total = playbookPosts.length;
-  const companyCat = playbookPosts.filter(p => p.category === 'Company Questions').length;
-  const writtenCount = playbookPosts.filter(p => p.content).length;
+  const livePosts = playbookPosts.filter(p => p.content);
+  const catsWithPosts = PLAYBOOK_CATS.filter(c => playbookPosts.some(p => p.category === c));
+
+  const visiblePosts = activeCat
+    ? playbookPosts.filter(p => p.category === activeCat)
+    : playbookPosts;
 
   if (activePost) {
     return (
@@ -4779,203 +4791,200 @@ export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
   }
 
   return (
-    <div style={{ maxWidth: '980px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div style={{ maxWidth: '1040px', margin: '0 auto', padding: '1.75rem 1rem 3rem' }}>
 
-      {/* Header */}
-      <div style={{ marginBottom: '2.25rem' }}>
-        <div style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
-          color: 'var(--accent)', marginBottom: '0.4rem',
-        }}>
-          The Playbook
-        </div>
-        <h1 style={{ fontSize: '1.65rem', fontWeight: 900, color: 'var(--text)', margin: '0 0 0.5rem', letterSpacing: '-0.02em' }}>
-          Learn the framework. Then go practice it.
+      {/* Header — compact, reference-framing */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '1.45rem', fontWeight: 900, color: 'var(--text)', margin: '0 0 0.3rem', letterSpacing: '-0.02em' }}>
+          Frameworks
         </h1>
-        <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: '600px', margin: '0 0 1rem' }}>
-          Every topic is a complete unit — framework, real examples, common mistakes, and direct links
-          to practice problems in the rooms. Read → apply in one flow.
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0 0 1rem', lineHeight: 1.5 }}>
+          Quick-reference for every pattern that comes up in interviews.
+          {' '}<span style={{ color: 'var(--green)', fontWeight: 600 }}>{livePosts.length} live</span>
+          {' '}· {playbookPosts.length - livePosts.length} coming soon.
         </p>
 
-        {/* Stats row */}
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          {[
-            { n: writtenCount, label: 'articles live', color: 'var(--green)' },
-            { n: total, label: 'topics total' },
-            { n: companyCat, label: 'real company Qs', color: 'var(--red)' },
-            { n: CATEGORIES.length, label: 'categories' },
-          ].map(({ n, label, color }) => (
-            <div key={label} style={{
-              background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
-              borderRadius: 'var(--radius-sm)', padding: '0.28rem 0.65rem',
-              display: 'flex', alignItems: 'baseline', gap: '0.3rem',
-            }}>
-              <span style={{ fontSize: '0.95rem', fontWeight: 800, color: color || 'var(--accent)', lineHeight: 1 }}>{n}</span>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{label}</span>
-            </div>
-          ))}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-            background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
-            borderRadius: 'var(--radius-sm)', padding: '0.28rem 0.6rem',
-            fontSize: '0.73rem', color: 'var(--yellow)', fontWeight: 600,
-          }}>
-            ⏳ Articles coming soon
-          </div>
+        {/* Category filter tabs */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+          <button
+            onClick={() => setActiveCat(null)}
+            style={{
+              padding: '0.28rem 0.7rem',
+              borderRadius: 'var(--radius-sm)',
+              border: '1px solid ' + (activeCat === null ? 'var(--accent)' : 'var(--border)'),
+              background: activeCat === null ? 'var(--accent-bg)' : 'var(--surface-2)',
+              color: activeCat === null ? 'var(--accent)' : 'var(--text-muted)',
+              fontSize: '0.75rem', fontWeight: activeCat === null ? 700 : 400,
+              cursor: 'pointer', transition: 'all 0.1s',
+            }}
+          >
+            All
+          </button>
+          {catsWithPosts.map(cat => {
+            const cfg = CATEGORY_CONFIG[cat];
+            const isActive = activeCat === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCat(isActive ? null : cat)}
+                style={{
+                  padding: '0.28rem 0.7rem',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '1px solid ' + (isActive ? cfg.border : 'var(--border)'),
+                  background: isActive ? cfg.bg : 'var(--surface-2)',
+                  color: isActive ? cfg.color : 'var(--text-muted)',
+                  fontSize: '0.75rem', fontWeight: isActive ? 700 : 400,
+                  cursor: 'pointer', transition: 'all 0.1s',
+                  display: 'flex', alignItems: 'center', gap: '0.3rem',
+                }}
+              >
+                <span style={{ fontSize: '0.8rem' }}>{cfg.icon}</span>
+                {cat}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Category sections */}
-      {CATEGORIES.map(cat => {
-        const cfg = CATEGORY_CONFIG[cat];
-        const posts = playbookPosts.filter(p => p.category === cat);
-        if (!posts.length) return null;
-        return (
-          <div key={cat} style={{ marginBottom: '2.75rem' }}>
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '0.6rem',
-              marginBottom: '1rem', paddingBottom: '0.55rem',
-              borderBottom: '1px solid var(--border-subtle)',
-            }}>
-              <span style={{ fontSize: '1.05rem' }}>{cfg.icon}</span>
-              <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.01em' }}>{cat}</span>
-              <span style={{
-                fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
-                color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
-                borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.42rem',
-              }}>{posts.length}</span>
-            </div>
+      {/* Reference card grid — 3 columns, compact */}
+      {activeCat ? (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
+          gap: '0.55rem',
+        }}>
+          {visiblePosts.map(post => {
+            const cfg = CATEGORY_CONFIG[post.category] || CATEGORY_CONFIG['Ambiguous Problems'];
+            return (
+              <RefCard key={post.id} post={post} cfg={cfg} onOpenItem={onOpenItem} onRead={setActivePost} />
+            );
+          })}
+        </div>
+      ) : (
+        catsWithPosts.map(cat => {
+          const cfg = CATEGORY_CONFIG[cat];
+          const posts = visiblePosts.filter(p => p.category === cat);
+          if (!posts.length) return null;
+          return (
+            <div key={cat} style={{ marginBottom: '2rem' }}>
+              {/* Section header with jump anchor */}
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                marginBottom: '0.65rem',
+              }}>
+                <span style={{ fontSize: '0.95rem' }}>{cfg.icon}</span>
+                <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.01em' }}>{cat}</span>
+                <span style={{
+                  fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
+                  color: cfg.color, background: cfg.bg, border: '1px solid ' + cfg.border,
+                  borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.38rem',
+                }}>{posts.filter(p => p.content).length}/{posts.length}</span>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)', marginLeft: '0.25rem' }} />
+              </div>
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))',
-              gap: '0.8rem',
-            }}>
-              {posts.map(post => (
-                <PostCard key={post.id} post={post} cfg={cfg} onOpenItem={onOpenItem} onRead={setActivePost} />
-              ))}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
+                gap: '0.55rem',
+              }}>
+                {posts.map(post => (
+                  <RefCard key={post.id} post={post} cfg={cfg} onOpenItem={onOpenItem} onRead={setActivePost} />
+                ))}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      )}
     </div>
   );
 }
 
-function PostCard({ post, cfg, onOpenItem, onRead }) {
+function RefCard({ post, cfg, onOpenItem, onRead }) {
   const hasContent = !!post.content;
   return (
     <div
       onClick={hasContent ? () => onRead(post) : undefined}
       style={{
-        background: 'var(--surface)',
-        border: '1.5px solid var(--border)',
+        background: hasContent ? 'var(--surface)' : 'var(--surface-2)',
+        border: '1px solid var(--border)',
         borderRadius: 'var(--radius)',
-        padding: '1.1rem 1.2rem',
-        display: 'flex', flexDirection: 'column', gap: '0.5rem',
+        padding: '0.75rem 0.9rem',
+        display: 'flex', flexDirection: 'column', gap: '0.35rem',
         cursor: hasContent ? 'pointer' : 'default',
-        transition: 'border-color 0.12s',
+        opacity: hasContent ? 1 : 0.65,
+        transition: 'border-color 0.1s, opacity 0.1s',
+        minHeight: '90px',
       }}
-      onMouseEnter={e => { if (hasContent) e.currentTarget.style.borderColor = cfg.color; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+      onMouseEnter={e => { if (hasContent) { e.currentTarget.style.borderColor = cfg.color; e.currentTarget.style.opacity = '1'; } }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.opacity = hasContent ? '1' : '0.65'; }}
     >
-
-      {/* Top badges */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
-        <span style={{
-          fontSize: '0.56rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-          color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
-          borderRadius: 'var(--radius-sm)', padding: '0.07rem 0.32rem',
-        }}>{post.category}</span>
-        <span style={{
-          fontSize: '0.56rem', color: 'var(--text-dim)',
-          background: 'var(--surface-2)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-sm)', padding: '0.07rem 0.32rem',
-        }}>{post.readMin} min read</span>
-        {post.source && (
+      {/* Title row */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.4rem' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{
+            fontSize: '0.82rem', fontWeight: 700, color: hasContent ? 'var(--text)' : 'var(--text-muted)',
+            lineHeight: 1.35, letterSpacing: '-0.01em',
+          }}>
+            {post.title}
+          </div>
+        </div>
+        {hasContent && (
           <span style={{
-            fontSize: '0.54rem', color: 'var(--red)', background: 'var(--red-bg)',
-            border: '1px solid var(--red-border)',
-            borderRadius: 'var(--radius-sm)', padding: '0.07rem 0.32rem',
-            maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          }} title={post.source}>🏢 {post.source}</span>
-        )}
-        {hasContent ? (
-          <span style={{
-            fontSize: '0.55rem', fontWeight: 700, textTransform: 'uppercase',
-            color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
-            borderRadius: 'var(--radius-sm)', padding: '0.07rem 0.32rem', marginLeft: 'auto',
-          }}>Read →</span>
-        ) : (
-          <span style={{
-            fontSize: '0.55rem', fontWeight: 700, textTransform: 'uppercase',
-            color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
-            borderRadius: 'var(--radius-sm)', padding: '0.07rem 0.32rem', marginLeft: 'auto',
-          }}>Coming Soon</span>
+            fontSize: '0.58rem', fontWeight: 700, flexShrink: 0,
+            color: cfg.color, marginTop: '0.1rem',
+          }}>→</span>
         )}
       </div>
 
-      {/* Title */}
-      <h3 style={{
-        fontSize: '0.89rem', fontWeight: 800, color: 'var(--text)',
-        margin: 0, letterSpacing: '-0.01em', lineHeight: 1.35,
-      }}>
-        {post.title}
-      </h3>
-
-      {/* Summary */}
-      <p style={{
-        fontSize: '0.78rem', color: 'var(--text-secondary)',
-        margin: 0, lineHeight: 1.55, flex: 1,
-      }}>
-        {post.summary}
-      </p>
-
-      {/* Practice links */}
-      {post.relatedItems?.length > 0 && (
+      {/* Summary — compact, 2 lines max */}
+      {post.summary && (
         <div style={{
-          marginTop: '0.35rem', paddingTop: '0.55rem',
-          borderTop: '1px solid var(--border-subtle)',
+          fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.4,
+          overflow: 'hidden', display: '-webkit-box',
+          WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+          flex: 1,
         }}>
-          <div style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
-            color: 'var(--text-dim)', marginBottom: '0.4rem',
-          }}>
-            Practice now →
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
-            {post.relatedItems.map(item => {
-              const rc = ROOM_CONFIG[item.room];
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => onOpenItem && onOpenItem(item.room, item.id)}
-                  style={{
-                    background: 'var(--surface-2)', border: `1px solid var(--border)`,
-                    borderRadius: 'var(--radius-sm)', padding: '0.2rem 0.5rem',
-                    fontSize: '0.7rem', color: rc?.color || 'var(--text-muted)',
-                    cursor: onOpenItem ? 'pointer' : 'default',
-                    fontWeight: 500, transition: 'all 0.1s',
-                    textAlign: 'left',
-                  }}
-                  onMouseEnter={e => {
-                    if (onOpenItem) {
-                      e.currentTarget.style.borderColor = rc?.color || 'var(--border)';
-                      e.currentTarget.style.background = 'var(--surface)';
-                    }
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = 'var(--border)';
-                    e.currentTarget.style.background = 'var(--surface-2)';
-                  }}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-          </div>
+          {post.summary}
         </div>
       )}
+
+      {/* Footer: company badge + practice rooms */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap', marginTop: '0.1rem' }}>
+        {post.source && (
+          <span style={{
+            fontSize: '0.58rem', color: 'var(--red)', background: 'var(--red-bg)',
+            border: '1px solid var(--red-border)',
+            borderRadius: 'var(--radius-sm)', padding: '0.05rem 0.3rem',
+          }}>🏢 {post.source}</span>
+        )}
+        {!hasContent && (
+          <span style={{
+            fontSize: '0.58rem', color: 'var(--yellow)', background: 'var(--yellow-bg)',
+            border: '1px solid var(--yellow-border)',
+            borderRadius: 'var(--radius-sm)', padding: '0.05rem 0.3rem',
+          }}>soon</span>
+        )}
+        {hasContent && post.relatedItems?.length > 0 && post.relatedItems.slice(0, 2).map(item => {
+          const rc = ROOM_CONFIG[item.room];
+          return (
+            <button
+              key={item.id}
+              onClick={e => { e.stopPropagation(); onOpenItem && onOpenItem(item.room, item.id); }}
+              style={{
+                background: 'none', border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-sm)', padding: '0.05rem 0.3rem',
+                fontSize: '0.6rem', color: rc?.color || 'var(--text-muted)',
+                cursor: onOpenItem ? 'pointer' : 'default', fontWeight: 500,
+                transition: 'border-color 0.1s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = rc?.color || 'var(--border)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+            >
+              {item.label}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

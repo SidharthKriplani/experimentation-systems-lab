@@ -57,7 +57,6 @@ const FLAT_GROUPS = [
     label: 'TOOLS',
     items: [
       { id: 'trainer',        label: '🎯 MCQ Quiz' },
-      { id: 'consult',        label: '💬 Consult' },
       { id: 'company-tracks', label: 'Companies' },
       { id: 'defense-doc',    label: '🛡️ Defense Doc' },
       { id: 'bookmarks',      label: '🔖 Saved' },

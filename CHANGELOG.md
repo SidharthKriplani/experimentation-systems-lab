@@ -4,6 +4,23 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.14.0] — 2026-05
+
+### Changed — Frameworks page redesign, Consult removed, company track completion badges
+
+**Frameworks (PlaybookBrowser) redesigned as reference index:** Replaced the article-list card layout with compact 3-column reference cards grouped by category, with category filter tabs at the top. Each card shows title, 2-line summary, and up to 2 inline practice links. "Coming soon" items are visually dimmed and de-emphasized. Category sections show a live/total count badge. The page is now clearly distinct from Deep Dives — it\'s a scannable reference index, not a reading list. `src/pages/PlaybookBrowser.jsx`.
+
+**Consult removed from sidebar:** The Consult page was causing confusion with Search and didn\'t justify its space. Removed `{ id: \'consult\', label: \'💬 Consult\' }` from TOOLS in Sidebar.jsx.
+
+**Company track completion badges:** CompanyCard now shows a green "✓ Complete" badge (replacing the "X/Y done" progress badge) when all cases in a track are finished. TrackDetail shows a 🎉 celebration banner at 100% progress. `src/pages/CompanyTracks.jsx`.
+
+**Existing but untracked:** Cases Room already has C13–C22 (22 total), STAT17–20 causal inference modules (DID, RDD, Synthetic Control, IV) shipped in V4.8. Dark mode flash prevention already in place via `index.html` inline script. All logged for record.
+
+### Files changed
+`src/components/layout/Sidebar.jsx` (Consult removed), `src/pages/PlaybookBrowser.jsx` (RefCard component, filter tabs, 3-col grid), `src/pages/CompanyTracks.jsx` (completion badge + banner), `CHANGELOG.md`, `IDEAS.md`
+
+---
+
 ## [4.13.1] — 2026-05
 
 ### Fixed — Em dash parse error in DebriefCopyButton
