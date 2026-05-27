@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Icon } from './Icon.jsx';
+import { Icon } from '../shared/Icon.jsx';
 
 const ROOM_SUBGROUPS = [
   {
