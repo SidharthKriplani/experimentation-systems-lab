@@ -354,7 +354,7 @@ export function Home({ onNavigate }) {
                 background: 'var(--yellow)', color: '#1a1a1a',
                 fontSize: '0.73rem', fontWeight: 800,
                 padding: '0.28rem 0.65rem', borderRadius: 'var(--radius-sm)',
-                border: '1.5px solid rgba(0,0,0,0.18)',
+                border: '2px solid rgba(0,0,0,0.45)',
               }}>
                 Open case <Icon name="chevron-right" size={11} color="currentColor" />
               </span>
@@ -377,7 +377,12 @@ export function Home({ onNavigate }) {
             <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text)', marginBottom: 3, letterSpacing: '-0.01em' }}>
               {todaysBrief.concept}
             </div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 8, lineHeight: 1.5 }}>
+            <div style={{
+              fontSize: '0.83rem', color: 'var(--text-secondary)', marginBottom: 10, lineHeight: 1.55,
+              borderLeft: '3px solid var(--accent-border)', paddingLeft: '0.65rem',
+              background: 'var(--accent-bg)', borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
+              padding: '0.45rem 0.65rem',
+            }}>
               {todaysBrief.tldr}
             </div>
 
@@ -457,7 +462,7 @@ export function Home({ onNavigate }) {
             </div>
           )}
         </div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '0.55rem' }}>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.55rem' }}>
           {visitedRooms.length === 0 ? 'Rooms picked for first-timers — each takes ~10 min' : 'Continue where you left off'}
         </div>
 
