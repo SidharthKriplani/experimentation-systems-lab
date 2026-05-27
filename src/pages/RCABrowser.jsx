@@ -53,7 +53,7 @@ function Tag({ label, color, bg, border }) {
 
 const DIFF_ORDER = { analyst: 0, foundational: 0, intermediate: 1, senior: 1, advanced: 2, staff: 2 };
 
-export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle }) {
+export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, onNavigate }) {
   const [sortBy, setSortBy] = useState('default');
   const [theoryActive, setTheoryActive] = useState(false);
   const completedCount = rcaCases.filter(c => getRCAProgress(c.id)).length;
@@ -93,6 +93,26 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle }) 
           </span>
         </div>
       </div>
+
+      {/* Theory hint */}
+      {onNavigate && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.5rem',
+          padding: '0.5rem 0.85rem',
+          background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+          borderRadius: '6px', marginBottom: '1.25rem',
+          fontSize: '0.78rem', color: 'var(--teal)',
+        }}>
+          <span>📖</span>
+          <span>New to this? Start with</span>
+          <button onClick={() => onNavigate('rca-foundations')} style={{
+            background: 'none', border: 'none', padding: 0,
+            color: 'var(--teal)', fontWeight: 700, cursor: 'pointer',
+            fontSize: '0.78rem', textDecoration: 'underline',
+          }}>RCA Foundations</button>
+          <span>first.</span>
+        </div>
+      )}
 
       {/* Theory / Cases tab bar */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>

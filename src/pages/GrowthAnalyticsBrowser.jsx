@@ -28,7 +28,7 @@ const RATING_COLOR = {
 // Collect unique domains from cases in order of first appearance
 const ALL_DOMAINS = ['All', ...Array.from(new Set(growthAnalyticsCases.map(c => c.domain)))];
 
-export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle }) {
+export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, onNavigate }) {
   const allProgress = getAllGrowthAnalyticsProgress();
   const completedCount = Object.keys(allProgress).length;
   const [activeDomain, setActiveDomain] = useState('All');
@@ -89,6 +89,26 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle }
           </span>
         </div>
       </div>
+
+      {/* Theory hint */}
+      {onNavigate && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.5rem',
+          padding: '0.5rem 0.85rem',
+          background: 'var(--green-bg)', border: '1px solid var(--green-border)',
+          borderRadius: '6px', marginBottom: '1.25rem',
+          fontSize: '0.78rem', color: 'var(--green)',
+        }}>
+          <span>📖</span>
+          <span>New to this? Start with</span>
+          <button onClick={() => onNavigate('metrics-foundations')} style={{
+            background: 'none', border: 'none', padding: 0,
+            color: 'var(--green)', fontWeight: 700, cursor: 'pointer',
+            fontSize: '0.78rem', textDecoration: 'underline',
+          }}>Metrics Foundation</button>
+          <span>first.</span>
+        </div>
+      )}
 
       {/* Theory / Cases tab bar */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>

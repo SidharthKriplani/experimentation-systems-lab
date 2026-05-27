@@ -27,7 +27,7 @@ const RATING_COLOR = {
   'missed it': 'var(--red)',
 };
 
-export function SpotTheFlawBrowser({ onSelectCase, unlocked }) {
+export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
   const allProgress = getAllSTFProgress();
   const completedCount = Object.keys(allProgress).length;
   const [activeFlawType, setActiveFlawType] = useState('All');
@@ -87,6 +87,26 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked }) {
           </span>
         </div>
       </div>
+
+      {/* Theory hint */}
+      {onNavigate && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.5rem',
+          padding: '0.5rem 0.85rem',
+          background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+          borderRadius: '6px', marginBottom: '1.25rem',
+          fontSize: '0.78rem', color: 'var(--teal)',
+        }}>
+          <span>📖</span>
+          <span>New to this? Start with</span>
+          <button onClick={() => onNavigate('stat-foundations')} style={{
+            background: 'none', border: 'none', padding: 0,
+            color: 'var(--teal)', fontWeight: 700, cursor: 'pointer',
+            fontSize: '0.78rem', textDecoration: 'underline',
+          }}>Stat Foundations</button>
+          <span>first.</span>
+        </div>
+      )}
 
       {/* Flaw type filter chips */}
       <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>

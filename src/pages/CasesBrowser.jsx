@@ -1,7 +1,7 @@
 import { businessCases } from '../data/businessCases.js';
 import { getCaseProgress } from '../utils/caseProgress.js';
 
-export function CasesBrowser({ onSelectCase, unlocked, onUnlock }) {
+export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
@@ -29,6 +29,26 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock }) {
           <span>Cases · {businessCases.length} Cases</span>
         </div>
       </div>
+
+      {/* Theory hint */}
+      {onNavigate && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.5rem',
+          padding: '0.5rem 0.85rem',
+          background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+          borderRadius: '6px', marginBottom: '1.25rem',
+          fontSize: '0.78rem', color: 'var(--teal)',
+        }}>
+          <span>📖</span>
+          <span>New to this? Start with</span>
+          <button onClick={() => onNavigate('rca-foundations')} style={{
+            background: 'none', border: 'none', padding: 0,
+            color: 'var(--teal)', fontWeight: 700, cursor: 'pointer',
+            fontSize: '0.78rem', textDecoration: 'underline',
+          }}>RCA Foundations</button>
+          <span>first.</span>
+        </div>
+      )}
 
       {/* Case cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>

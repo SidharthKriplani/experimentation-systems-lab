@@ -21,7 +21,7 @@ const LEVEL_CFG = {
 
 const DIFF_ORDER = { analyst: 0, foundational: 0, intermediate: 1, senior: 1, advanced: 2, staff: 2 };
 
-export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle }) {
+export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, onNavigate }) {
   const [sortBy, setSortBy] = useState('default');
   const [theoryActive, setTheoryActive] = useState(false);
   const completedCount = metricCases.filter(c => getMetricsProgress(c.id)).length;
@@ -53,6 +53,26 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
           <StatPill n={completedCount} label="completed" color="var(--green)" />
         </div>
       </div>
+
+      {/* Theory hint */}
+      {onNavigate && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.5rem',
+          padding: '0.5rem 0.85rem',
+          background: 'var(--green-bg)', border: '1px solid var(--green-border)',
+          borderRadius: '6px', marginBottom: '1.25rem',
+          fontSize: '0.78rem', color: 'var(--green)',
+        }}>
+          <span>📖</span>
+          <span>New to this? Start with</span>
+          <button onClick={() => onNavigate('metrics-foundations')} style={{
+            background: 'none', border: 'none', padding: 0,
+            color: 'var(--green)', fontWeight: 700, cursor: 'pointer',
+            fontSize: '0.78rem', textDecoration: 'underline',
+          }}>Metrics Foundation</button>
+          <span>first.</span>
+        </div>
+      )}
 
       {/* Theory / Cases tab bar */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>

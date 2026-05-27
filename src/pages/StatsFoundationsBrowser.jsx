@@ -89,7 +89,7 @@ function FilterChip({ label, active, onClick, activeStyle }) {
   );
 }
 
-export function StatsFoundationsBrowser({ onStart, unlocked }) {
+export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
   const [allProgress] = useState(() => getAllStatFoundationsProgress());
   const [activeTag, setActiveTag] = useState('All');
   const [activeDifficulty, setActiveDifficulty] = useState('All');
@@ -394,6 +394,40 @@ export function StatsFoundationsBrowser({ onStart, unlocked }) {
       }}>
         <strong style={{ color: 'var(--yellow)' }}>How it works:</strong> Each module builds on the previous. Work through them in order — every concept connects to a specific experiment design or interpretation decision you will face in product analytics.
       </div>
+
+      {/* Ready to practice CTA */}
+      {onNavigate && (
+        <div style={{
+          marginTop: '2.5rem',
+          padding: '1.25rem 1.5rem',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '10px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: '0.75rem',
+        }}>
+          <div>
+            <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text)', marginBottom: '0.2rem' }}>
+              Ready to practice?
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              Apply what you learned in the practice rooms.
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button onClick={() => onNavigate('stats')} style={{
+              padding: '0.45rem 1rem', borderRadius: '6px',
+              background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+              color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
+            }}>Stats Room →</button>
+            <button onClick={() => onNavigate('spot-the-flaw')} style={{
+              padding: '0.45rem 1rem', borderRadius: '6px',
+              background: 'var(--red-bg)', border: '1px solid var(--red-border)',
+              color: 'var(--red)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
+            }}>Spot the Flaw →</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

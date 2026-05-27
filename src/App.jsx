@@ -23,6 +23,7 @@ import { instrumentationCases, instrumentationCasesById } from './data/instrumen
 import { getAllInstrumentationProgress } from './utils/instrumentationProgress.js';
 import { metricsFoundationModules } from './data/metricsFoundationModules.js';
 import { rcaFoundationModules } from './data/rcaFoundationModules.js';
+import { expFoundationModules } from './data/expFoundationModules.js';
 // Layout (always needed — not lazy)
 import { Sidebar } from './components/layout/Sidebar.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -107,6 +108,8 @@ const MetricsFoundationsBrowser = lazy(() => import('./pages/MetricsFoundationsB
 const MetricsFoundationsRunner  = lazy(() => import('./components/metricsFoundations/MetricsFoundationsRunner.jsx').then(m => ({ default: m.MetricsFoundationsRunner })));
 const RCAFoundationsBrowser     = lazy(() => import('./pages/RCAFoundationsBrowser.jsx').then(m => ({ default: m.RCAFoundationsBrowser })));
 const RCAFoundationsRunner      = lazy(() => import('./components/rcaFoundations/RCAFoundationsRunner.jsx').then(m => ({ default: m.RCAFoundationsRunner })));
+const ExpFoundationsBrowser     = lazy(() => import('./pages/ExpFoundationsBrowser.jsx').then(m => ({ default: m.ExpFoundationsBrowser })));
+const ExpFoundationsRunner      = lazy(() => import('./components/expFoundations/ExpFoundationsRunner.jsx').then(m => ({ default: m.ExpFoundationsRunner })));
 
 function getInitialTheme() {
   try {
@@ -138,6 +141,7 @@ export default function App() {
   const [activeInstrumentationCaseId, setActiveInstrumentationCaseId] = useState(null);
   const [activeMetricsFoundationId, setActiveMetricsFoundationId] = useState(null);
   const [activeRCAFoundationId, setActiveRCAFoundationId] = useState(null);
+  const [activeExpFoundationId, setActiveExpFoundationId] = useState(null);
   const [playbookInitialArticle, setPlaybookInitialArticle] = useState(null);
   const [unlocked, setUnlocked] = useState(() => isUnlocked());
   const [progressSnapshot, setProgressSnapshot] = useState(() => ({ ...getAllProgress(), challengesProgress: getAllChallengesProgress(), biProgress: getAllBIProgress(), stfProgress: getAllSTFProgress(), takehomeProgress: getAllTakehomeProgress(), instrumentationProgress: getAllInstrumentationProgress() }));
@@ -190,6 +194,8 @@ export default function App() {
       'metrics-foundations-runner': 'Metrics Foundations — Product Analytics Lab',
       'rca-foundations': 'RCA Foundations — Product Analytics Lab',
       'rca-foundations-runner': 'RCA Foundations — Product Analytics Lab',
+      'exp-foundations': 'Experimentation Foundations — Product Analytics Lab',
+      'exp-foundations-runner': 'Experimentation Foundations — Product Analytics Lab',
     };
     document.title = titles[page] || 'Product Analytics Lab';
   }, [page]);
@@ -553,6 +559,23 @@ export default function App() {
     return accessible[idx + 1].id;
   }
 
+  function openExpFoundationModule(id) {
+    const m = expFoundationModules.find(m => m.id === id);
+    if (!m) return;
+    if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'exp-foundations', id }); setPage('unlock'); return; }
+    track('case_opened', { room: 'exp-foundations', id, title: m.title });
+    setActiveExpFoundationId(id);
+    setPage('exp-foundations-runner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function getNextExpFoundationId(currentId) {
+    const accessible = expFoundationModules.filter(m => m.isFree || unlocked);
+    const idx = accessible.findIndex(m => m.id === currentId);
+    if (idx < 0 || idx >= accessible.length - 1) return null;
+    return accessible[idx + 1].id;
+  }
+
   function getNextMetricsFoundationId(currentId) {
     const accessible = metricsFoundationModules.filter(m => m.isFree || unlocked);
     const idx = accessible.findIndex(m => m.id === currentId);
@@ -643,7 +666,7 @@ export default function App() {
 
         {/* ── Stats Room ── */}
         {page === 'stats' && (
-          <StatsBrowser onSelectModule={openStatsModule} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} />
+          <StatsBrowser onSelectModule={openStatsModule} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} onNavigate={navigate} />
         )}
         {page === 'stats-runner' && activeStatsModule && (
           <StatsRunner
@@ -659,7 +682,7 @@ export default function App() {
 
         {/* ── Metrics Room ── */}
         {page === 'metrics' && (
-          <MetricsBrowser onSelectCase={openMetricsCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} />
+          <MetricsBrowser onSelectCase={openMetricsCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} onNavigate={navigate} />
         )}
         {page === 'metrics-runner' && activeMetricsCase && (
           <MetricsRunner
@@ -714,7 +737,7 @@ export default function App() {
 
         {/* ── RCA Room ── */}
         {page === 'rca' && (
-          <RCABrowser onSelectCase={openRCACase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} />
+          <RCABrowser onSelectCase={openRCACase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} onNavigate={navigate} />
         )}
         {page === 'rca-runner' && activeRCACase && (
           <RCARunner
@@ -729,7 +752,7 @@ export default function App() {
 
         {/* ── Cases Room ── */}
         {page === 'cases' && (
-          <CasesBrowser onSelectCase={openBusinessCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} />
+          <CasesBrowser onSelectCase={openBusinessCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onNavigate={navigate} />
         )}
         {page === 'cases-runner' && activeBusinessCase && (
           <CaseRunner
@@ -829,6 +852,7 @@ export default function App() {
           <StatsFoundationsBrowser
             onStart={openStatFoundationsModule}
             unlocked={unlocked}
+            onNavigate={navigate}
           />
         )}
         {page === 'stat-foundations-runner' && activeStatFoundationsModule && (
@@ -850,6 +874,7 @@ export default function App() {
             onSelectCase={openGrowthAnalyticsCase}
             unlocked={unlocked}
             onOpenArticle={openPlaybookArticle}
+            onNavigate={navigate}
           />
         )}
         {page === 'growth-analytics-runner' && activeGrowthAnalyticsCase && (
@@ -913,7 +938,7 @@ export default function App() {
         {/* ── Spot the Flaw Room ── */}
         {page === 'spot-the-flaw' && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
-            <SpotTheFlawBrowser onSelectCase={openSTFCase} unlocked={unlocked} />
+            <SpotTheFlawBrowser onSelectCase={openSTFCase} unlocked={unlocked} onNavigate={navigate} />
           </Suspense>
         )}
         {page === 'stf-runner' && activeSTFCaseId && (
@@ -1028,7 +1053,7 @@ export default function App() {
         )}
         {/* ── RCA Foundations ── */}
         {page === 'rca-foundations' && (
-          <RCAFoundationsBrowser onStart={openRCAFoundationModule} unlocked={unlocked} />
+          <RCAFoundationsBrowser onStart={openRCAFoundationModule} unlocked={unlocked} onNavigate={navigate} />
         )}
         {page === 'rca-foundations-runner' && activeRCAFoundationId && (
           <RCAFoundationsRunner
@@ -1040,9 +1065,23 @@ export default function App() {
           />
         )}
 
+        {/* ── Experimentation Foundations ── */}
+        {page === 'exp-foundations' && (
+          <ExpFoundationsBrowser onStart={openExpFoundationModule} unlocked={unlocked} onNavigate={navigate} />
+        )}
+        {page === 'exp-foundations-runner' && activeExpFoundationId && (
+          <ExpFoundationsRunner
+            key={activeExpFoundationId}
+            moduleId={activeExpFoundationId}
+            onBack={() => setPage('exp-foundations')}
+            onNext={(() => { const n = getNextExpFoundationId(activeExpFoundationId); return n ? () => openExpFoundationModule(n) : () => setPage('exp-foundations'); })()}
+            unlocked={unlocked}
+          />
+        )}
+
         {/* ── Metrics Foundations ── */}
         {page === 'metrics-foundations' && (
-          <MetricsFoundationsBrowser onStart={openMetricsFoundationModule} unlocked={unlocked} />
+          <MetricsFoundationsBrowser onStart={openMetricsFoundationModule} unlocked={unlocked} onNavigate={navigate} />
         )}
         {page === 'metrics-foundations-runner' && activeMetricsFoundationId && (
           <MetricsFoundationsRunner
@@ -1187,7 +1226,8 @@ export default function App() {
                'pal-instrumentation-progress-v1', 'pal-growth-analytics-progress-v1',
                'pal-challenges-progress-v1', 'pal-bookmarks-v1', 'pal-notes-v1',
                'pal-metrics-foundation-progress-v1',
-               'pal-rca-foundation-progress-v1'
+               'pal-rca-foundation-progress-v1',
+               'pal-exp-foundation-progress-v1'
               ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
               // Clear per-scenario product-design progress (prefix: pd-progress-)
               try {

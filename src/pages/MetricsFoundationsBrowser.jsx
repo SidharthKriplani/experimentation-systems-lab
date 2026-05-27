@@ -37,7 +37,7 @@ function StepCircle({ index, completed, isCurrent }) {
   );
 }
 
-export function MetricsFoundationsBrowser({ onStart, unlocked }) {
+export function MetricsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
   const progress = getAllMetricsFoundationProgress();
   const completedIds = new Set(Object.keys(progress));
   const firstIncomplete = metricsFoundationModules.find(m => !completedIds.has(m.id));
@@ -117,7 +117,7 @@ export function MetricsFoundationsBrowser({ onStart, unlocked }) {
       )}
 
       {/* Module list */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '0' }}>
         {metricsFoundationModules.map((m, idx) => {
           const completed = completedIds.has(m.id);
           const isCurrent = firstIncomplete?.id === m.id;
@@ -160,6 +160,40 @@ export function MetricsFoundationsBrowser({ onStart, unlocked }) {
           );
         })}
       </div>
+
+      {/* Ready to practice CTA */}
+      {onNavigate && (
+        <div style={{
+          marginTop: '2.5rem',
+          padding: '1.25rem 1.5rem',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '10px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: '0.75rem',
+        }}>
+          <div>
+            <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text)', marginBottom: '0.2rem' }}>
+              Ready to practice?
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              Apply what you learned in the practice rooms.
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button onClick={() => onNavigate('metrics')} style={{
+              padding: '0.45rem 1rem', borderRadius: '6px',
+              background: 'var(--green-bg)', border: '1px solid var(--green-border)',
+              color: 'var(--green)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
+            }}>Metrics Room →</button>
+            <button onClick={() => onNavigate('growth-analytics')} style={{
+              padding: '0.45rem 1rem', borderRadius: '6px',
+              background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+              color: 'var(--teal)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
+            }}>Growth Analytics →</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
