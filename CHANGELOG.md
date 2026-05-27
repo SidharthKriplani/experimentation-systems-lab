@@ -4,6 +4,16 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.26.1] — 2026-05-27
+
+### Fixed — Duplicate sign-in UI
+
+Sign-in button appeared in two places on mobile: the persistent topbar and the sidebar menu. Removed the redundant sign-in button from Sidebar.jsx. The topbar "Sign in" is the canonical CTA. The sidebar now only shows auth state when signed in (email + sign-out).
+
+**File:** `src/components/layout/Sidebar.jsx`
+
+---
+
 ## [4.26.0] — 2026-05-27
 
 ### Fixed — Audit #75: All 9 mobile layout + UX findings resolved

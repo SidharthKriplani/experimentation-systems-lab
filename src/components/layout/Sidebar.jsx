@@ -392,28 +392,6 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
 
         {/* ── Bottom: auth ── */}
         <div style={{ padding: '0 0.8rem 0.5rem', flexShrink: 0 }}>
-          {!user && (
-            <button
-              onClick={() => { onShowAuth && onShowAuth(); onClose(); }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                width: '100%', textAlign: 'left',
-                background: 'none',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '0.42rem 0.7rem',
-                color: 'var(--text-muted)',
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                transition: 'border-color var(--transition), color var(--transition)',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-border)'; e.currentTarget.style.color = 'var(--text)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
-            >
-              <Icon name="user" size={13} color="currentColor" style={{ opacity: 0.65, flexShrink: 0 }} />
-              <span>Sign in</span>
-            </button>
-          )}
           {user && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.3rem 0.25rem' }}>
               <div style={{
