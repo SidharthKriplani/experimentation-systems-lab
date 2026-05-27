@@ -37,7 +37,7 @@ function StepCircle({ index, completed, isCurrent }) {
   );
 }
 
-export function ExpFoundationsBrowser({ onStart, unlocked }) {
+export function ExpFoundationsBrowser({ onStart, unlocked, onNavigate }) {
   const progress = getAllExpFoundationProgress();
   const completedIds = new Set(
     Object.keys(progress).filter(k => progress[k] && progress[k].completedAt)
@@ -161,6 +161,51 @@ export function ExpFoundationsBrowser({ onStart, unlocked }) {
             </button>
           );
         })}
+      </div>
+
+      {/* Practice room links */}
+      <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)' }}>
+        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
+          Ready to practice? Apply this in →
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+          {[
+            { id: 'design',       label: 'A/B Design',    desc: 'Design experiments end-to-end' },
+            { id: 'browser',      label: 'Review Room',   desc: 'Evaluate real experiment results' },
+            { id: 'spot-the-flaw', label: 'Spot the Flaw', desc: 'Catch errors in broken experiments' },
+          ].map(room => (
+            <button
+              key={room.id}
+              onClick={() => onNavigate && onNavigate(room.id)}
+              style={{
+                display: 'flex', flexDirection: 'column',
+                padding: '0.65rem 1rem',
+                borderRadius: 'var(--radius)',
+                border: '1px solid var(--accent-border)',
+                background: 'var(--accent-bg)',
+                textDecoration: 'none',
+                minWidth: '150px', flex: '1 1 150px',
+                transition: 'background 0.1s, border-color 0.1s',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'var(--surface-2)';
+                e.currentTarget.style.borderColor = 'var(--accent)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'var(--accent-bg)';
+                e.currentTarget.style.borderColor = 'var(--accent-border)';
+              }}
+            >
+              <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--accent)', marginBottom: '0.2rem' }}>
+                {room.label} →
+              </span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                {room.desc}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
