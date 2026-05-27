@@ -83,6 +83,12 @@ Never use `minmax(Xpx, 1fr)` bare — the minimum will overflow on narrow viewpo
 **Touch targets minimum 44px height on interactive nav elements.**
 Matches Apple HIG minimum.
 
+**Dark mode palette must maintain visible surface elevation at low screen brightness.**
+The bg→surface luminance gap must be large enough to distinguish layers at 30% screen brightness. A gap of <10 luminance units collapses to identical black on dimmed mobile screens. Minimum values (V4.25.4): `--bg: #111520`, `--surface: #191e30`, `--surface-2: #1f2538`. Semantic bg colors (accent-bg, teal-bg, red-bg, etc.) must be visibly tinted, not the same shade as `--bg`. Do not "safely" nudge these values — the V4.25.3 incremental pass was invisible on real devices. Go far enough.
+
+**Sign-in has one canonical entry point per layout mode.**
+Desktop: Header.jsx right slot. Mobile: mobile topbar right slot. Do not add a second sign-in CTA to the sidebar or any overlay — it creates duplicate auth affordances. The sidebar shows auth state only when signed in (email + sign out). This was fixed in V4.26.1 (Audit #76).
+
 ---
 
 ## Paywall + monetization

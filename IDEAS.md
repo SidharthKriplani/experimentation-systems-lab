@@ -48,6 +48,8 @@ _No new features until PostHog baseline is established._
 - ~~**Stats Room DIFFICULTY_CFG missing intermediate/advanced/staff entries** (audit #67)~~ — ✅ fixed V4.7.2 (STAT09/STAT10-12 showed "Foundational" badge incorrectly)
 - ~~**STAT08 claim references seller data not shown in setup** (audit #67)~~ — ✅ fixed V4.7.2 (seller conversion data added to observedResult)
 - ~~**Template literals in 9 data files** (audit #64)~~ — ✅ resolved V4.12.0 (all 26 data files audited, all clean, no changes needed)
+- ~~**Dark mode palette low-brightness readability** (audit #74)~~ — ✅ shipped V4.25.3/V4.25.4 (full palette rebuild: bg #111520, surface #191e30, lifted semantic bg colors; incremental V4.25.3 pass was not visible on real devices, required full rebuild in V4.25.4)
+- ~~**Duplicate sign-in CTA in sidebar and topbar** (audit #76)~~ — ✅ fixed V4.26.1 (removed sign-in button from Sidebar.jsx; topbar is canonical mobile sign-in location)
 
 ---
 
