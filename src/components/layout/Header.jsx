@@ -17,15 +17,15 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
         { id: 'estimation', label: 'Estimation' },
         { id: 'growth-analytics', label: 'Growth' },
         { id: 'bi', label: 'BI' },
-        { id: 'instrumentation', label: '📡 Instrum.' },
+        { id: 'instrumentation', label: 'Instrumentation' },
       ],
     },
     {
       label: 'PRACTICE',
       items: [
-        { id: 'challenges', label: '⚡ Challenges' },
-        { id: 'spot-the-flaw', label: '🐛 Spot Flaw' },
-        { id: 'take-home', label: '📝 Take-Home' },
+        { id: 'challenges', label: 'Challenges' },
+        { id: 'spot-the-flaw', label: 'Spot Flaw' },
+        { id: 'take-home', label: 'Take-Home' },
         { id: 'simulator', label: 'Simulate' },
         { id: 'ab-interpreter', label: 'A/B Tool' },
       ],
@@ -33,12 +33,11 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
     {
       label: 'TOOLS',
       items: [
-        { id: 'search', label: '🔍 Search' },
-        { id: 'trainer', label: '🎯 Trainer' },
-        { id: 'consult', label: '💬 Consult' },
+        { id: 'search', label: 'Search' },
+        { id: 'trainer', label: 'Trainer' },
         { id: 'company-tracks', label: 'Companies' },
-        { id: 'defense-doc', label: '🛡️ Defense' },
-        { id: 'bookmarks', label: '🔖 Saved' },
+        { id: 'defense-doc', label: 'Defense' },
+        { id: 'bookmarks', label: 'Saved' },
       ],
     },
     {

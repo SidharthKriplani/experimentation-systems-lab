@@ -1,8 +1,66 @@
 # Product Analytics Lab — Roadmap
 
-**Current version:** V4.5  
+**Current version:** V4.21  
 **Last updated:** 2026-05  
 **Status:** Active development — beta access open
+
+---
+
+## Active Sprint: V4.20–V4.23 — Conversion + Quality pass
+
+Priority levels defined during the "take my money?" audit (2026-05-27). Work through them in order.
+
+### P0 — Build integrity / credibility killers ✅ DONE (V4.20)
+Items that would embarrass the product in front of a technical user or break trust immediately.
+
+| Item | Status | Version |
+|------|--------|---------|
+| App.jsx static data imports (~1MB initial bundle) — replace with caseIndex.js slim arrays, move full data into each runner | ✅ done | V4.20 |
+| "Junior Miss" label in Progress.jsx — replace with "Junior-Ready" | ✅ done | V4.20 |
+| Font size floor: 0.68rem minimum across all JSX — accessibility threshold | ✅ done | V4.20 |
+
+### P1 — Conversion delta ✅ DONE (V4.21)
+The gap between "interesting" and "I want this." Visitors who read the hero but don't start a case.
+
+| Item | Status | Version |
+|------|--------|---------|
+| Full Pricing page rewrite — outcome copy, risk reversal (30-day guarantee), "what's inside" chips, free tier reframe | ✅ done | V4.18 |
+| First-visit hero on Home — headline + subtitle + CTAs + trust line, hidden after first room opened | ✅ done | V4.19 |
+| Product preview mockup in hero — live Stats Room case card (question + MCQ options + debrief) shows the product before any click | ✅ done | V4.21 |
+| Sticky "Next case" CTA in runners — after debrief, keep the forward momentum | ⬜ pending | — |
+| Room browser "next case" highlight — visually call out the first unstarted case | ⬜ pending | — |
+
+### P2 — New user experience (CURRENT)
+The experience for someone who shows up, doesn't know where to start, and might leave without trying a single case.
+
+| Item | Status | Description |
+|------|--------|-------------|
+| Nav IA cleanup — remove emojis from nav items, fix "Instrum." truncation, remove Consult, clean group labels | ⬜ pending | 15-item ROOMS group is paralyzing; nav emojis are inconsistent |
+| Pricing raise — $49 → $69 one-time | ⬜ pending | $49 underprices a product with 150+ cases and 25 foundation modules; $69 is still under-$100 but signals quality |
+
+### P3 — Content depth
+More inventory in the highest-traffic rooms to keep returning users finding new material.
+
+| Item | Description |
+|------|-------------|
+| Challenges room expansion: 6 → 20+ cases | The 6 existing cases get completed fast; returning users hit a dead end |
+| SQL live coding environment improvements | Code room is powerful but discovery is low |
+
+### P4 — Architecture
+Backend work that unlocks features currently impossible with localStorage-only.
+
+| Item | Description |
+|------|-------------|
+| Supabase progress sync | Cross-device access; prerequisite for team/org plans |
+| Paywall backend verification | Before Stripe goes live, server-side receipt validation prevents code sharing |
+
+### P5 — Distribution
+Without users, none of the above matters. This is the highest-leverage unlocked item.
+
+| Item | Description |
+|------|-------------|
+| Build one real distribution channel | LinkedIn content engine, Reddit (r/datascience, r/ProductManagement), or direct outreach to bootcamps |
+| Referral mechanic | "Share your score / share a case" viral loop |
 
 ---
 

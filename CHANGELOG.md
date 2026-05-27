@@ -4,6 +4,57 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.22.0] — 2026-05-27
+
+### Changed — P2: Nav IA cleanup + pricing raise
+
+**Header.jsx — nav emoji removal:** All emoji prefixes stripped (`⚡ Challenges` → `Challenges`, `🐛 Spot Flaw` → `Spot Flaw`, `📝 Take-Home` → `Take-Home`, `🔍 Search` → `Search`, `🎯 Trainer` → `Trainer`, `🛡️ Defense` → `Defense`, `🔖 Saved` → `Saved`, `📡 Instrum.` → `Instrumentation`). Nav emojis were inconsistent (only some items had them), added visual noise to an analytical workspace, and contradicted the Linear/PostHog aesthetic PAL targets.
+
+**Header.jsx — Consult removed from nav:** Had lingered in TOOLS group after being cut from the sidebar in V4.12. Overlaps with Search, adds nav clutter.
+
+**Header.jsx — "Instrum." → "Instrumentation":** Labels must never be truncated with a period. Full word fits in scrollable nav.
+
+**Pricing.jsx — $49 → $69:** $49 underpriced a product with 150+ cases, 25 interactive foundation modules, and lifetime access. $69 stays sub-$100 (low friction), signals quality, still far below any structured interview prep course ($200–500). 30-day guarantee absorbs the risk increase.
+
+**Home.jsx — trust line updated to $69.**
+
+**docs/ROADMAP.md — P0–P5 sprint priorities documented in full detail with status table.**
+
+**DECISIONS.md — Monetization and Navigation sections added:** Pricing rationale, subscription deferral, free gate policy, nav emoji rule, Consult nav removal, label conventions.
+
+### Files changed
+`src/components/layout/Header.jsx`, `src/pages/Pricing.jsx`, `src/pages/Home.jsx`, `docs/ROADMAP.md`, `DECISIONS.md`, `IDEAS.md`
+
+---
+
+## [4.21.0] — 2026-05-27
+
+### Changed — P1: Product preview mockup in first-visit hero
+
+**Home.jsx — hero two-column layout:** First-visit hero restructured from single-column to two-column flex (collapses to stacked on mobile via `flexWrap: wrap`). Left: existing badge + headline + subtitle + CTAs + trust line. Right: static Stats Room case card mockup.
+
+**Product preview mockup:** Realistic case card showing the actual product interface. Header: "Stats Room · Case Preview" + green "Free" badge. Question: "p = 0.04. Your PM wants to ship. What do you check first?" Four MCQ options — option A (Check for SRM) highlighted green with ✓. Debrief strip with green left border. Footer: "1 of 25 cases · Try it live →" links to Stats Room. Static, no interaction — shows the product before any click.
+
+### Files changed
+`src/pages/Home.jsx`
+
+---
+
+## [4.20.0] — 2026-05-27
+
+### Changed — P0: Bundle refactor, label fix, font floor
+
+**App.jsx — data import bundle refactor:** Removed static imports of all 21 data files (~1MB from initial bundle). Created `src/data/caseIndex.js` with slim `{id, isFree, title}` index arrays for all 21 rooms. All `openXxx()` and `getNextXxx()` functions updated to use index arrays. All 17 runner components updated to self-import full data and accept `caseId` prop instead of `caseData`. SearchPage, DefenseDocGenerator, Progress, ScenarioBrowser, CodeBrowser also updated to import own data directly.
+
+**Progress.jsx — "Junior Miss" → "Junior-Ready":** Both LEVEL_LABELS entries corrected. "Junior Miss" was never a valid label.
+
+**Global 0.68rem font floor:** 147 occurrences updated across all JSX files — any `fontSize` below `0.68rem` raised to `0.68rem`. Two intentional exceptions: decorative `●` dot symbols in MetricChoicePanel.jsx and DesignFieldGroup.jsx.
+
+### Files changed
+`src/data/caseIndex.js` (new), `src/App.jsx`, 17 runner components, `src/pages/SearchPage.jsx`, `src/pages/DefenseDocGenerator.jsx`, `src/pages/Progress.jsx`, `src/pages/ScenarioBrowser.jsx`, `src/pages/CodeBrowser.jsx`, all JSX files (font floor)
+
+---
+
 ## [4.19.0] — 2026-05
 
 ### Changed — First-visit hero + Pricing page overhaul

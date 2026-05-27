@@ -399,7 +399,7 @@ export function Home({ onNavigate }) {
                 display: 'flex', gap: '0.5rem', flexWrap: 'wrap',
                 alignItems: 'center', position: 'relative',
               }}>
-                {['Free to start', 'No account required', 'Works offline', 'Full access $49 one-time'].map((item, i) => (
+                {['Free to start', 'No account required', 'Works offline', 'Full access $69 one-time'].map((item, i) => (
                   <span key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     {i > 0 && <span style={{ opacity: 0.4 }}>·</span>}
                     {item}

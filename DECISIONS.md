@@ -130,3 +130,36 @@ No implicit data collection. Every tracked event is a deliberate `track()` call 
 
 **Event naming convention: `snake_case`.**
 Current events: `page_viewed`, `case_opened`, `paywall_hit`, `unlocked`, `open_challenge`. New events follow the same pattern. Document in `METRICS.md`.
+
+---
+
+## Monetization
+
+**Price: $69 one-time. No subscription.**
+Rationale: $49 underprices 150+ cases + 25 interactive foundation modules + lifetime access. $69 is still sub-$100 (low friction), signals quality over a prep course, and is below any meaningful competitor. A subscription would require backend infrastructure (usage tracking, billing webhooks) — not viable until V5.
+
+**No subscription tier until V5.**
+Recurring billing requires usage metering, cancellation flows, and dunning — backend-only problems. Everything through V4.x is a one-time purchase or free. Do not introduce subscription logic.
+
+**30-day money-back guarantee. No questions asked.**
+Stated on Pricing page. Reduces purchase friction more than any discount. Non-negotiable — do not remove this from Pricing copy.
+
+**Free tier gates: 2 Stat Foundation modules + 2 Stats Room cases + full Playbook.**
+These are the most convincing samples. Stats Room cases show the MCQ+debrief format. Stat Foundations shows the interactive module format. Playbook shows depth. Do not change the free gate without re-evaluating conversion.
+
+---
+
+## Navigation
+
+**No emojis in nav labels.**
+Emojis in nav items are inconsistent (some rooms have them, most don't) and add visual noise to an analytical tool. Icon components (Icon.jsx) are the correct approach for nav decoration. Do not add emojis to nav item labels.
+
+**Consult is not in the nav.**
+Consult (ConsultationSpace) was cut from nav in V4.12 — it overlaps with Search and adds nav clutter. It remains accessible via Search Room but is not surfaced in the header.
+
+**Nav label conventions:**
+- Room labels: short, noun-form, no emoji (Stats, Metrics, RCA, Cases, Growth, BI)
+- Tools group: Search, Trainer, Companies, Defense, Saved
+- Learn group: Learn, Playbook
+- Track group: Pricing, Progress
+- "Instrumentation" not "Instrum." — never truncate labels with a period

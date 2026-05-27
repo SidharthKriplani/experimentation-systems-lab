@@ -6,7 +6,9 @@ Tiered build backlog. **In Progress** = actively being built this session. **Tie
 
 ## In Progress
 
-_(nothing active — update this at session start when pulling from Tier 1)_
+**P2 — New user experience** (V4.22, current session)
+- Nav IA cleanup: remove emojis from all nav items, fix "Instrum." truncation, remove Consult from nav, fix inconsistent labels
+- Pricing raise: $49 → $69 one-time (copy + Pricing.jsx + DECISIONS.md rationale)
 
 ---
 

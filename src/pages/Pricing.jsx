@@ -122,7 +122,7 @@ export function Pricing({ onShowUnlock, onBack, onNavigate }) {
               Full Access
             </div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
-              <span style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text)' }}>$49</span>
+              <span style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text)' }}>$69</span>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>one-time</span>
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>Lifetime access, no subscription</div>
