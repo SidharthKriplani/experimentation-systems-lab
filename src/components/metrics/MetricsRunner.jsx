@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { MetricChoicePanel } from './MetricChoicePanel.jsx';
 import { MetricScoreReveal } from './MetricScoreReveal.jsx';
 import { MetricDebriefPanel } from './MetricDebriefPanel.jsx';
+import { DebriefCopyButton } from '../shared/DebriefCopyButton.jsx';
 import { saveMetricsAttempt, clearMetricsProgress } from '../../utils/metricsProgress.js';
 import { track } from '../../utils/analytics.js';
 
@@ -172,8 +173,18 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
       {view === 'debrief' && (
         <div style={{ marginTop: '1.25rem' }}>
           <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 8 }}>
-              ✏️ Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: '0.4rem' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
+                ✏️ Your notes <span style={{ fontWeight: 400, opacity: 0.6 }}>(saved locally)</span>
+              </div>
+              <DebriefCopyButton
+                title={metricCase.title}
+                notes={userNote}
+                modelAnswer={metricCase.seniorMetricDesign ? metricCase.seniorMetricDesign.summary : ''}
+                tags={metricCase.tags || []}
+                difficulty={metricCase.difficulty}
+                room={'Metrics Room'}
+              />
             </div>
             <textarea
               value={userNote}

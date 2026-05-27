@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { RCAStepPanel } from './RCAStepPanel.jsx';
 import { RCAScoreReveal } from './RCAScoreReveal.jsx';
 import { RCADebriefPanel } from './RCADebriefPanel.jsx';
+import { DebriefCopyButton } from '../shared/DebriefCopyButton.jsx';
 import { saveRCAAttempt } from '../../utils/rcaProgress.js';
 import { track } from '../../utils/analytics.js';
 
@@ -325,12 +326,25 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
             onBack={onBack}
             onNext={onNext}
           />
-          {userNote && (
-            <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 6 }}>Your notes</div>
-              <div style={{ fontSize: 14, color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
+          <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6, flexWrap: 'wrap', gap: '0.4rem' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Your notes</div>
+              <DebriefCopyButton
+                title={rcaCase.title}
+                notes={userNote}
+                modelAnswer={rcaCase.seniorDiagnosis ? rcaCase.seniorDiagnosis.reasoning : ''}
+                tags={rcaCase.tags || []}
+                difficulty={rcaCase.difficulty}
+                room={'RCA Room'}
+              />
             </div>
-          )}
+            {userNote && (
+              <div style={{ fontSize: 14, color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{userNote}</div>
+            )}
+            {!userNote && (
+              <div style={{ fontSize: 13, color: 'var(--text-dim)', fontStyle: 'italic' }}>No notes added.</div>
+            )}
+          </div>
 
           {/* SQL Step CTA — only if the case has a sqlStep */}
           {rcaCase.sqlStep && (

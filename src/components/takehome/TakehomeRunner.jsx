@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { saveTakehomeProgress } from '../../utils/takehomeProgress.js';
 import { track } from '../../utils/analytics.js';
+import { DebriefCopyButton } from '../shared/DebriefCopyButton.jsx';
 
 const NOTES_KEY = 'pal-notes-v1';
 
@@ -441,6 +442,37 @@ export function TakehomeRunner({ caseData, onBack, onNext, unlocked }) {
               </div>
             )}
           </div>
+
+          {/* Model Answer */}
+          {caseData.modelAnswer && (
+            <div style={{ marginBottom: '1.75rem' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                marginBottom: '0.6rem', flexWrap: 'wrap', gap: '0.5rem',
+              }}>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  Model Answer
+                </div>
+                <DebriefCopyButton
+                  title={caseData.title}
+                  notes={note}
+                  modelAnswer={caseData.modelAnswer}
+                  tags={caseData.tags}
+                  difficulty={caseData.difficulty}
+                  room={'Take-Home'}
+                />
+              </div>
+              <div style={{
+                background: 'var(--surface)', border: '1px solid var(--border)',
+                borderLeft: '3px solid var(--yellow)',
+                borderRadius: '8px', padding: '1.1rem 1.25rem',
+                fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.75,
+                whiteSpace: 'pre-wrap',
+              }}>
+                {caseData.modelAnswer}
+              </div>
+            </div>
+          )}
 
           {/* Key Takeaways */}
           <div style={{ marginBottom: '1.75rem' }}>

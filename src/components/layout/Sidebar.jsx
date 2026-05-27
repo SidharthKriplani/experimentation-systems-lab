@@ -40,10 +40,17 @@ const FLAT_GROUPS = [
   {
     label: 'PRACTICE',
     items: [
-      { id: 'challenges',    label: '⚡ Challenges' },
-      { id: 'take-home',     label: '📝 Take-Home' },
-      { id: 'simulator',     label: 'Mock Interview' },
+      { id: 'challenges',     label: '⚡ Challenges' },
+      { id: 'take-home',      label: '📝 Take-Home' },
+      { id: 'simulator',      label: 'Mock Interview' },
       { id: 'ab-interpreter', label: 'Stats Calculator' },
+    ],
+  },
+  {
+    label: 'LEARN',
+    items: [
+      { id: 'blog',     label: 'Deep Dives' },
+      { id: 'playbook', label: 'Frameworks' },
     ],
   },
   {
@@ -54,13 +61,6 @@ const FLAT_GROUPS = [
       { id: 'company-tracks', label: 'Companies' },
       { id: 'defense-doc',    label: '🛡️ Defense Doc' },
       { id: 'bookmarks',      label: '🔖 Saved' },
-    ],
-  },
-  {
-    label: 'LEARN',
-    items: [
-      { id: 'blog',     label: 'Deep Dives' },
-      { id: 'playbook', label: 'Frameworks' },
     ],
   },
   {

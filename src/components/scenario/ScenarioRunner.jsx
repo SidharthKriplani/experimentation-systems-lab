@@ -7,6 +7,7 @@ import { FlagChecklist } from './FlagChecklist.jsx';
 import { DecisionPanel } from './DecisionPanel.jsx';
 import { ScoreReveal } from './ScoreReveal.jsx';
 import { DebriefPanel } from './DebriefPanel.jsx';
+import { DebriefCopyButton } from '../shared/DebriefCopyButton.jsx';
 import { saveAttempt } from '../../utils/progress.js';
 import { track } from '../../utils/analytics.js';
 
@@ -367,8 +368,21 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesign
 
           {/* Notes */}
           <div style={{ marginTop: '1.5rem' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              My Notes
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem',
+            }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                My Notes
+              </div>
+              <DebriefCopyButton
+                title={scenario.title}
+                notes={note}
+                modelAnswer={scenario.debrief || ''}
+                tags={scenario.tags || []}
+                difficulty={scenario.difficulty}
+                room={'Review Room'}
+              />
             </div>
             <textarea
               value={note}
