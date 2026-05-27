@@ -4,6 +4,19 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.19.0] — 2026-05
+
+### Changed — First-visit hero + Pricing page overhaul
+
+**Home.jsx — first-visit hero:** New visitors (no rooms opened yet) now see a bold hero section above the dashboard. Two-line headline: "You know the framework. / Can you diagnose the drop?" in the style of ML/GenAI Systems Lab siblings. Indigo accent gradient bg, two CTAs ("Start practicing →" → stat-foundations, "See what's inside" → pricing), trust line ("Free to start · No account required · Works offline · Full access $49 one-time"). Hero collapses automatically once any room is opened — returning users see the dashboard as before.
+
+**Pricing.jsx — full rewrite:** (1) Hero copy: replaced vague "practice the exact skills" with specific outcome framing — Google, Meta, Airbnb, Stripe named explicitly; judgment-under-pressure framing. (2) Risk reversal: "30-day money-back guarantee. No questions asked." added below the CTA button. (3) "What's inside" room grid: all 17 rooms listed as color-coded chips with dot indicators. (4) Free tier reframe: "No card required" tagline added, feature bullets rewritten to sound like a gift ("2 Stats cases — real scenarios, full debrief") not a gated trial, CTA changed from "Current plan" to active "Start free →". (5) Added `onNavigate` prop (future use).
+
+### Files changed
+`src/pages/Home.jsx`, `src/pages/Pricing.jsx`
+
+---
+
 ## [4.18.0] — 2026-05
 
 ### Changed — "Take my money!" conversion audit: copy accuracy, trust signals, UX clarity

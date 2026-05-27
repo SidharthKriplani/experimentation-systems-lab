@@ -307,6 +307,103 @@ export function Home({ onNavigate }) {
   return (
     <div style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem 5rem', width: '100%', boxSizing: 'border-box' }}>
 
+      {/* ── First-visit hero (hidden once any room is opened) ─────────────── */}
+      {visitedRooms.length === 0 && (
+        <div style={{
+          marginBottom: '2.25rem',
+          padding: '2.5rem 2.25rem',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-md)',
+          position: 'relative', overflow: 'hidden',
+        }}>
+          {/* Subtle bg gradient */}
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: 'var(--gradient-hero)', borderRadius: 'inherit',
+          }} />
+
+          {/* Badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+            background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+            borderRadius: 20, padding: '0.22rem 0.8rem',
+            fontSize: '0.72rem', fontWeight: 700, color: 'var(--accent)',
+            marginBottom: '1.35rem', letterSpacing: '0.02em',
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
+            150+ practice cases · Free to start
+          </div>
+
+          {/* Headline */}
+          <div style={{ marginBottom: '1.1rem' }}>
+            <div style={{
+              fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 900,
+              lineHeight: 1.1, letterSpacing: '-0.04em', color: 'var(--text)',
+            }}>
+              You know the framework.
+            </div>
+            <div style={{
+              fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 900,
+              lineHeight: 1.1, letterSpacing: '-0.04em', color: 'var(--accent)',
+            }}>
+              Can you diagnose the drop?
+            </div>
+          </div>
+
+          {/* Subtitle */}
+          <p style={{
+            fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.65,
+            maxWidth: 500, margin: '0 0 1.75rem', position: 'relative',
+          }}>
+            Interview prep for product analysts and PMs. 17 practice rooms — A/B testing,
+            metric diagnosis, RCA, growth analytics, and more. Each case puts you in a real
+            scenario and tests your judgment, not your memory.
+          </p>
+
+          {/* CTAs */}
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.1rem', position: 'relative' }}>
+            <button
+              onClick={() => onNavigate('stat-foundations')}
+              style={{
+                background: 'var(--accent)', color: '#fff', border: 'none',
+                borderRadius: 'var(--radius)', padding: '0.75rem 1.6rem',
+                fontSize: '0.95rem', fontWeight: 700, cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(67,56,202,0.35)',
+              }}
+            >
+              Start practicing →
+            </button>
+            <button
+              onClick={() => onNavigate('pricing')}
+              style={{
+                background: 'var(--surface-2)', color: 'var(--text)',
+                border: '1px solid var(--border)', borderRadius: 'var(--radius)',
+                padding: '0.75rem 1.6rem', fontSize: '0.95rem', fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              See what's inside
+            </button>
+          </div>
+
+          {/* Trust line */}
+          <div style={{
+            fontSize: '0.76rem', color: 'var(--text-dim)',
+            display: 'flex', gap: '0.5rem', flexWrap: 'wrap',
+            alignItems: 'center', position: 'relative',
+          }}>
+            {['Free to start', 'No account required', 'Works offline', 'Full access $49 one-time'].map((item, i) => (
+              <span key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                {i > 0 && <span style={{ opacity: 0.4 }}>·</span>}
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── Page header ─────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '1.75rem', paddingBottom: '1.1rem', borderBottom: '1px solid var(--border-subtle)' }}>
         <h1 className="pal-gradient-text" style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: '-0.035em', margin: 0, display: 'inline-block' }}>
