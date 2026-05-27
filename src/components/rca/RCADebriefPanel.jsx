@@ -14,7 +14,7 @@ export function RCADebriefPanel({ rcaCase, onRetry, onBack, onNext }) {
         borderRadius: 'var(--radius)',
         padding: '1.1rem 1.25rem',
       }}>
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)', marginBottom: '0.35rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)', marginBottom: '0.35rem' }}>
           Senior Diagnosis
         </div>
         <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text)', lineHeight: 1.4 }}>
@@ -66,7 +66,7 @@ export function RCADebriefPanel({ rcaCase, onRetry, onBack, onNext }) {
         borderRadius: 'var(--radius)',
         padding: '1rem 1.25rem',
       }}>
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)', marginBottom: '0.5rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)', marginBottom: '0.5rem' }}>
           Interview Phrase
         </div>
         <blockquote style={{
@@ -108,7 +108,7 @@ export function RCADebriefPanel({ rcaCase, onRetry, onBack, onNext }) {
               marginTop: '0.25rem',
             }}>
               <div style={{
-                fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase',
+                fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
                 letterSpacing: '0.08em', color: 'var(--purple)', marginBottom: '0.45rem',
               }}>
                 💼 How a Staff DS thinks about this
@@ -190,7 +190,7 @@ function Section({ title, children }) {
       padding: '1rem 1.25rem',
     }}>
       <div style={{
-        fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em',
+        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em',
         color: 'var(--text-muted)', marginBottom: '0.6rem',
       }}>
         {title}

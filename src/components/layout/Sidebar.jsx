@@ -264,7 +264,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
                 Product Analytics
               </span>
               <span style={{
-                fontSize: '0.6rem',
+                fontSize: '0.68rem',
                 fontWeight: 600,
                 color: 'var(--text-dim)',
                 letterSpacing: '0.06em',
@@ -350,7 +350,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
                 >
                   <span>{sg.label}</span>
                   <span style={{
-                    fontSize: '0.58rem',
+                    fontSize: '0.68rem',
                     opacity: 0.4,
                     flexShrink: 0,
                     display: 'inline-block',
@@ -424,7 +424,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
             <Icon name="search" size={14} color="currentColor" style={{ opacity: 0.65, flexShrink: 0 }} />
             <span style={{ flex: 1 }}>Search</span>
             <kbd style={{
-              fontSize: '0.6rem', padding: '0.12rem 0.35rem',
+              fontSize: '0.68rem', padding: '0.12rem 0.35rem',
               background: 'var(--surface)', border: '1px solid var(--border)',
               borderRadius: 'var(--radius-sm)', color: 'var(--text-muted)',
               fontFamily: 'inherit',

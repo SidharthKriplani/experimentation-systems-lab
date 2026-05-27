@@ -20,7 +20,7 @@ export function StatsDecisionCard({ module, selectedId, onSelect, submitted }) {
               background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
               borderRadius: 'var(--radius-sm)', padding: '0.5rem 0.65rem',
             }}>
-              <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--yellow)', marginBottom: '0.2rem' }}>Business pressure</div>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--yellow)', marginBottom: '0.2rem' }}>Business pressure</div>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>{module.situation.decisionPressure}</p>
             </div>
           )}
@@ -45,7 +45,7 @@ export function StatsDecisionCard({ module, selectedId, onSelect, submitted }) {
               borderLeft: '3px solid var(--accent-border)',
               borderRadius: 'var(--radius-sm)', padding: '0.5rem 0.65rem',
             }}>
-              <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-dim)', marginBottom: '0.2rem' }}>Also note</div>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-dim)', marginBottom: '0.2rem' }}>Also note</div>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>{module.setup.caveat}</p>
             </div>
           )}
@@ -59,7 +59,7 @@ export function StatsDecisionCard({ module, selectedId, onSelect, submitted }) {
           borderRadius: 'var(--radius)', padding: '1rem 1.2rem',
         }}>
           <div style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
             letterSpacing: '0.09em', color: 'var(--teal)', marginBottom: '0.5rem',
           }}>Claim to evaluate</div>
           <p style={{
@@ -150,7 +150,7 @@ export function StatsDecisionCard({ module, selectedId, onSelect, submitted }) {
 function SituationLabel({ children }) {
   return (
     <div style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
       letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.6rem',
     }}>{children}</div>
   );

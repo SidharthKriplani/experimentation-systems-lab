@@ -44,7 +44,7 @@ export function MetricDebriefPanel({ metricCase, onRetry, onBack, onNext }) {
                 }}
               >
                 <span style={{
-                  fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
                   color: roleCfg.color, background: 'transparent',
                   border: `1px solid ${roleCfg.border}`,
                   borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
@@ -162,7 +162,7 @@ export function MetricDebriefPanel({ metricCase, onRetry, onBack, onNext }) {
 function SectionLabel({ children, color }) {
   return (
     <div style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
       letterSpacing: '0.09em', color: color || 'var(--text-dim)',
       marginBottom: '0.65rem',
     }}>{children}</div>

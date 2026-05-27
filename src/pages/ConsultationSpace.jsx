@@ -230,7 +230,7 @@ export function ConsultationSpace({ onBack, onNavigate }) {
           </span>
           <div>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.1em', color: 'var(--purple)', marginBottom: '0.15rem',
             }}>
               Consultation Space
@@ -474,7 +474,7 @@ function ArticleCard({ article, onNavigate }) {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginTop: '0.4rem' }}>
             {article.tags.slice(0, 3).map((tag, i) => (
               <span key={i} style={{
-                fontSize: '0.67rem', padding: '1px 7px', borderRadius: '20px',
+                fontSize: '0.68rem', padding: '1px 7px', borderRadius: '20px',
                 background: 'var(--purple-bg)', border: '1px solid var(--purple-border)',
                 color: 'var(--purple)',
               }}>
@@ -520,7 +520,7 @@ function CaseCard({ item, onNavigate }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text)' }}>{item.title}</span>
           <span style={{
-            fontSize: '0.67rem', fontWeight: 600, padding: '1px 7px', borderRadius: '20px',
+            fontSize: '0.68rem', fontWeight: 600, padding: '1px 7px', borderRadius: '20px',
             color: roomCfg.color, background: roomCfg.bg, border: `1px solid ${roomCfg.border}`,
           }}>
             {roomCfg.label}
@@ -533,7 +533,7 @@ function CaseCard({ item, onNavigate }) {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginTop: '0.4rem' }}>
             {item.tags.slice(0, 3).map((tag, i) => (
               <span key={i} style={{
-                fontSize: '0.67rem', padding: '1px 7px', borderRadius: '20px',
+                fontSize: '0.68rem', padding: '1px 7px', borderRadius: '20px',
                 background: 'var(--surface)', border: '1px solid var(--border)',
                 color: 'var(--text-dim)',
               }}>

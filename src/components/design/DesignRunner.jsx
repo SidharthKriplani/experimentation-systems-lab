@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { designScenarios } from '../../data/designScenarios.js';
 import { DesignPhaseNav } from './DesignPhaseNav.jsx';
 import { DesignFieldGroup } from './DesignFieldGroup.jsx';
 import { DesignScoreReveal } from './DesignScoreReveal.jsx';
@@ -29,7 +30,8 @@ import {
 
 // Three views: 'form' | 'reveal' | 'debrief'
 
-export function DesignRunner({ scenario, savedProgress, onBack, onGoToReview, onNext }) {
+export function DesignRunner({ caseId, savedProgress, onBack, onGoToReview, onNext }) {
+  const scenario = designScenarios.find(s => s.id === caseId);
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
   const [answers, setAnswers] = useState(savedProgress?.answers || {});
   const [completedPhaseIds, setCompletedPhaseIds] = useState(savedProgress?.completedPhaseIds || []);
@@ -121,7 +123,7 @@ export function DesignRunner({ scenario, savedProgress, onBack, onGoToReview, on
               <IndustryBadge industry={scenario.industry} />
               {!scenario.isFree && (
                 <span style={{
-                  fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
                   color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
                   borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
                 }}>Beta</span>
@@ -208,7 +210,7 @@ export function DesignRunner({ scenario, savedProgress, onBack, onGoToReview, on
           padding: '1.5rem', background: 'var(--surface)', marginBottom: '1.5rem',
         }}>
           <div style={{
-            fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
             color: 'var(--text-dim)', marginBottom: '1rem',
           }}>
             Design scored
@@ -228,7 +230,7 @@ export function DesignRunner({ scenario, savedProgress, onBack, onGoToReview, on
           padding: '1.5rem', background: 'var(--surface)',
         }}>
           <div style={{
-            fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
             color: 'var(--text-dim)', marginBottom: '1rem',
           }}>
             Design debrief
@@ -280,7 +282,7 @@ function ContextCard({ context }) {
       marginBottom: '1.25rem',
     }}>
       <div style={{
-        fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
         color: 'var(--text-dim)', marginBottom: '0.75rem',
       }}>
         Scenario brief
@@ -291,11 +293,11 @@ function ContextCard({ context }) {
         <ContextRow label="Product" value={context.product} />
         <ContextRow label="Team" value={context.team} />
         <div>
-          <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-dim)', marginBottom: '0.25rem' }}>Background</div>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-dim)', marginBottom: '0.25rem' }}>Background</div>
           <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.6 }}>{context.background}</p>
         </div>
         <div>
-          <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-dim)', marginBottom: '0.25rem' }}>Feature proposal</div>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-dim)', marginBottom: '0.25rem' }}>Feature proposal</div>
           <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.6 }}>{context.featureProposal}</p>
         </div>
         {context.businessPressure && (
@@ -303,13 +305,13 @@ function ContextCard({ context }) {
             background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
             borderRadius: 'var(--radius-sm)', padding: '0.5rem 0.65rem',
           }}>
-            <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--yellow)', marginBottom: '0.2rem' }}>Business pressure</div>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--yellow)', marginBottom: '0.2rem' }}>Business pressure</div>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>{context.businessPressure}</p>
           </div>
         )}
         {context.constraints?.length > 0 && (
           <div>
-            <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-dim)', marginBottom: '0.35rem' }}>Constraints</div>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-dim)', marginBottom: '0.35rem' }}>Constraints</div>
             <ul style={{ margin: 0, paddingLeft: '1.1rem' }}>
               {context.constraints.map((c, i) => (
                 <li key={i} style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '0.2rem' }}>{c}</li>
@@ -340,7 +342,7 @@ function DifficultyBadge({ difficulty }) {
 
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
     }}>{cfg.label}</span>
@@ -350,7 +352,7 @@ function DifficultyBadge({ difficulty }) {
 function IndustryBadge({ industry }) {
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
     }}>{industry}</span>

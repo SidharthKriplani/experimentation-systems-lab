@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { rcaCases } from '../../data/rcaCases.js';
 import { RCAStepPanel } from './RCAStepPanel.jsx';
 import { RCAScoreReveal } from './RCAScoreReveal.jsx';
 import { RCADebriefPanel } from './RCADebriefPanel.jsx';
@@ -63,7 +64,8 @@ const SQL_RATINGS = [
 ];
 
 // ─── Main Runner ─────────────────────────────────────────────────────────────
-export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) {
+export function RCARunner({ caseId, savedProgress, unlocked, onBack, onNext }) {
+  const rcaCase = rcaCases.find(r => r.id === caseId);
   const startView = savedProgress ? 'debrief' : 'diagnosis';
   const [view, setView] = useState(startView);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -167,7 +169,7 @@ export function RCARunner({ rcaCase, savedProgress, unlocked, onBack, onNext }) 
       {/* Case title */}
       <div style={{ marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.3rem' }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)' }}>
             {rcaCase.subtitle}
           </div>
           <span className={`pal-timer${elapsed > 600 ? ' warning' : ''}`} style={{ marginLeft: 'auto' }}>
@@ -395,7 +397,7 @@ function ContextPanel({ context }) {
       padding: '1rem 1.25rem',
       marginBottom: '1.25rem',
     }}>
-      <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+      <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
         Case Context
       </div>
 
@@ -408,7 +410,7 @@ function ContextPanel({ context }) {
         marginBottom: '0.75rem',
         fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.5,
       }}>
-        <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginRight: '0.5rem' }}>
+        <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginRight: '0.5rem' }}>
           Metric
         </span>
         {context.metricMovement}
@@ -422,7 +424,7 @@ function ContextPanel({ context }) {
 
       {/* Known facts */}
       <div>
-        <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
           Known Facts
         </div>
         <ul style={{ margin: 0, paddingLeft: '1.1rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
@@ -440,7 +442,7 @@ function ContextPanel({ context }) {
 function MetaItem({ label, value }) {
   return (
     <div>
-      <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.15rem' }}>{label}</div>
+      <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.15rem' }}>{label}</div>
       <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{value}</div>
     </div>
   );
@@ -473,11 +475,11 @@ function SQLValidationStep({ sqlStep, response, onResponseChange, revealed, onRe
         padding: '1rem 1.25rem',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem' }}>
-          <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)' }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)' }}>
             Step 6 · SQL Validation
           </span>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
             color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
           }}>
@@ -497,7 +499,7 @@ function SQLValidationStep({ sqlStep, response, onResponseChange, revealed, onRe
           borderRadius: 'var(--radius-sm)',
           padding: '0.75rem 1rem',
         }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
             Schema hints
           </div>
           <ul style={{ margin: 0, paddingLeft: '1.1rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
@@ -510,7 +512,7 @@ function SQLValidationStep({ sqlStep, response, onResponseChange, revealed, onRe
 
       {/* Textarea */}
       <div>
-        <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
           Your SQL query
         </div>
         <textarea
@@ -573,7 +575,7 @@ function SQLValidationStep({ sqlStep, response, onResponseChange, revealed, onRe
           padding: '1.25rem',
           display: 'flex', flexDirection: 'column', gap: '1rem',
         }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--teal)' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--teal)' }}>
             Model Query
           </div>
 
@@ -596,7 +598,7 @@ function SQLValidationStep({ sqlStep, response, onResponseChange, revealed, onRe
 
           {/* Annotation */}
           <div>
-            <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
               Annotation
             </div>
             <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
@@ -606,7 +608,7 @@ function SQLValidationStep({ sqlStep, response, onResponseChange, revealed, onRe
 
           {/* Self-rating */}
           <div>
-            <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
               How did you do?
             </div>
             <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
@@ -694,7 +696,7 @@ function CompletedStepCard({ step, stepNumber, chosenOption }) {
           )}
         </div>
         {levelLabel && (
-          <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: dotColor, flexShrink: 0 }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: dotColor, flexShrink: 0 }}>
             {levelLabel}
           </span>
         )}
@@ -716,7 +718,7 @@ function CompletedStepCard({ step, stepNumber, chosenOption }) {
           {/* Your choice */}
           {chosenOption && (
             <div>
-              <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: dotColor, marginBottom: '0.25rem' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: dotColor, marginBottom: '0.25rem' }}>
                 Your answer
               </div>
               <div style={{ fontSize: '0.82rem', color: 'var(--text)', lineHeight: 1.5 }}>{chosenOption.label}</div>
@@ -731,7 +733,7 @@ function CompletedStepCard({ step, stepNumber, chosenOption }) {
               background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
               borderRadius: 'var(--radius-sm)', padding: '0.5rem 0.7rem',
             }}>
-              <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.2rem' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.2rem' }}>
                 Strongest answer
               </div>
               <div style={{ fontSize: '0.8rem', color: 'var(--text)', lineHeight: 1.5 }}>{bestOption.label}</div>

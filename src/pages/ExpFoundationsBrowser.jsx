@@ -12,7 +12,7 @@ function DifficultyBadge({ difficulty }) {
   const cfg = DIFFICULTY_CONFIG[difficulty] || DIFFICULTY_CONFIG.Beginner;
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: cfg.color, background: cfg.bg, border: '1px solid ' + cfg.border,
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.45rem',
     }}>

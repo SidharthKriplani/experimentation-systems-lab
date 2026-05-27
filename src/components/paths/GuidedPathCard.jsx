@@ -27,7 +27,7 @@ export function GuidedPathCard({ path, completionMap, onNavigate }) {
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.75rem', gap: '0.75rem', flexWrap: 'wrap' }}>
         <div>
           <div style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em',
             color: path.color, marginBottom: '0.3rem',
           }}>Guided path</div>
           <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.01em' }}>{path.title}</div>
@@ -77,7 +77,7 @@ export function GuidedPathCard({ path, completionMap, onNavigate }) {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flex: 1, minWidth: 0 }}>
                 <span style={{
-                  fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em',
+                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em',
                   color: 'var(--text-dim)', flexShrink: 0,
                 }}>{item.room}</span>
                 <span style={{
@@ -88,7 +88,7 @@ export function GuidedPathCard({ path, completionMap, onNavigate }) {
                 }}>{item.label}</span>
                 {isNext && (
                   <span style={{
-                    fontSize: '0.55rem', fontWeight: 700, textTransform: 'uppercase',
+                    fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
                     color: path.color, background: path.bg, border: `1px solid ${path.border}`,
                     borderRadius: '3px', padding: '0.05rem 0.3rem', flexShrink: 0,
                   }}>Next</span>

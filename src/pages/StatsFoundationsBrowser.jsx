@@ -13,7 +13,7 @@ function DifficultyBadge({ difficulty }) {
   const cfg = DIFFICULTY_CONFIG[difficulty] || DIFFICULTY_CONFIG.Beginner;
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.45rem',
     }}>
@@ -118,7 +118,7 @@ export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--yellow)', marginBottom: '0.4rem',
         }}>
           Stat Foundations
@@ -283,7 +283,7 @@ export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
                   <DifficultyBadge difficulty={module.difficulty} />
                   {module.isFree && (
                     <span style={{
-                      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
                       color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
                       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
                     }}>
@@ -295,14 +295,14 @@ export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
                   )}
                   {isLocked && (
                     <span style={{
-                      fontSize: '0.65rem', color: 'var(--text-muted)', marginLeft: 'auto',
+                      fontSize: '0.68rem', color: 'var(--text-muted)', marginLeft: 'auto',
                     }}>
                       🔒 Unlock to access
                     </span>
                   )}
                   {isCompleted && (
                     <span style={{
-                      fontSize: '0.65rem', fontWeight: 700,
+                      fontSize: '0.68rem', fontWeight: 700,
                       color: 'var(--yellow)', marginLeft: 'auto',
                     }}>
                       Completed

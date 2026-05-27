@@ -19,7 +19,7 @@ export function RCAScoreReveal({ score, maxScore, level, stepChoices, rcaCase, o
     }}>
       {/* Score */}
       <div style={{ marginBottom: '1rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
           Diagnosis Score
         </div>
         <div style={{ fontSize: '3rem', fontWeight: 900, color: cfg.color, lineHeight: 1, letterSpacing: '-0.03em' }}>

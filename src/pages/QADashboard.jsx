@@ -33,7 +33,7 @@ function StatusBadge({ status }) {
   const c = STATUS_COLORS[status] || STATUS_COLORS.warning;
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: c.color, background: c.bg, border: `1px solid ${c.border}`,
       borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
     }}>{status}</span>
@@ -44,7 +44,7 @@ function RoomBadge({ room }) {
   const c = ROOM_COLORS[room] || {};
   return (
     <span style={{
-      fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
       color: c.color, background: c.bg, border: `1px solid ${c.border}`,
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.35rem',
     }}>{room}</span>
@@ -166,7 +166,7 @@ export function QADashboard({ onNavigate, onOpenItem, unlocked, onUnlock, onLock
             QA Dashboard
           </h1>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
             color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
             borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.5rem',
           }}>Internal · V2.1</span>
@@ -222,7 +222,7 @@ export function QADashboard({ onNavigate, onOpenItem, unlocked, onUnlock, onLock
                   <div style={{ fontSize: '1.5rem', fontWeight: 800, color: ok ? 'var(--text)' : 'var(--red, #e53e3e)', lineHeight: 1 }}>{actual}</div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{label}</div>
                   {expected !== null && (
-                    <div style={{ fontSize: '0.6rem', color: ok ? 'var(--green)' : 'var(--red, #e53e3e)', marginTop: '0.2rem' }}>
+                    <div style={{ fontSize: '0.68rem', color: ok ? 'var(--green)' : 'var(--red, #e53e3e)', marginTop: '0.2rem' }}>
                       {ok ? `✓ expected ${expected}` : `✗ expected ${expected}`}
                     </div>
                   )}
@@ -371,10 +371,10 @@ export function QADashboard({ onNavigate, onOpenItem, unlocked, onUnlock, onLock
                     <td style={{ padding: '0.45rem 0.65rem', color: 'var(--text)', fontWeight: 500, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</td>
                     <td style={{ padding: '0.45rem 0.65rem', color: 'var(--text-dim)', whiteSpace: 'nowrap' }}>{item.difficulty}</td>
                     <td style={{ padding: '0.45rem 0.65rem', textAlign: 'center' }}>
-                      <span style={{ fontSize: '0.65rem', fontWeight: 700, color: item.isFree ? 'var(--accent)' : 'var(--teal)' }}>{item.isFree ? 'Free' : 'Beta'}</span>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 700, color: item.isFree ? 'var(--accent)' : 'var(--teal)' }}>{item.isFree ? 'Free' : 'Beta'}</span>
                     </td>
                     <td style={{ padding: '0.45rem 0.65rem', textAlign: 'center', color: item.linkedConceptsCount ? 'var(--text)' : 'var(--text-dim)' }}>{item.linkedConceptsCount}</td>
-                    <td style={{ padding: '0.45rem 0.65rem', fontFamily: 'monospace', fontSize: '0.65rem', color: 'var(--text-dim)', whiteSpace: 'nowrap' }}>{item.pairedItem || '—'}</td>
+                    <td style={{ padding: '0.45rem 0.65rem', fontFamily: 'monospace', fontSize: '0.68rem', color: 'var(--text-dim)', whiteSpace: 'nowrap' }}>{item.pairedItem || '—'}</td>
                     <td style={{ padding: '0.45rem 0.65rem', textAlign: 'center' }}><Tick val={item.hasSeniorDebrief} /></td>
                     <td style={{ padding: '0.45rem 0.65rem', textAlign: 'center' }}><Tick val={item.hasCommonMistakes} /></td>
                     <td style={{ padding: '0.45rem 0.65rem', textAlign: 'center' }}><Tick val={item.hasInterviewPhrase} /></td>
@@ -424,12 +424,12 @@ export function QADashboard({ onNavigate, onOpenItem, unlocked, onUnlock, onLock
                       border: `1px solid ${item.exists ? 'transparent' : '#fed7d7'}`,
                       borderRadius: 'var(--radius-sm)',
                     }}>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', width: '1.2rem', flexShrink: 0 }}>{i + 1}.</span>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-dim)', width: '1.2rem', flexShrink: 0 }}>{i + 1}.</span>
                       <RoomBadge room={item.room} />
                       <span style={{ fontFamily: 'monospace', fontSize: '0.7rem', color: item.exists ? 'var(--text-dim)' : 'var(--red, #e53e3e)' }}>{item.itemId}</span>
                       <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', flex: 1 }}>{item.label}</span>
                       {item.isFree !== null && (
-                        <span style={{ fontSize: '0.6rem', fontWeight: 700, color: item.isFree ? 'var(--accent)' : 'var(--teal)', flexShrink: 0 }}>
+                        <span style={{ fontSize: '0.68rem', fontWeight: 700, color: item.isFree ? 'var(--accent)' : 'var(--teal)', flexShrink: 0 }}>
                           {item.isFree ? 'Free' : 'Beta'}
                         </span>
                       )}

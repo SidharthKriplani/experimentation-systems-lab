@@ -40,7 +40,7 @@ export function DesignScoreReveal({ result, onContinue, continueLabel = 'View fu
       {/* Dimension bars */}
       <div>
         <div style={{
-          fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
           color: 'var(--text-dim)', marginBottom: '0.75rem',
         }}>
           Dimension breakdown
@@ -69,14 +69,14 @@ export function DesignScoreReveal({ result, onContinue, continueLabel = 'View fu
                     </span>
                     {isStrongest && (
                       <span style={{
-                        fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
+                        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
                         color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
                         borderRadius: 'var(--radius-sm)', padding: '0.05rem 0.35rem',
                       }}>strongest</span>
                     )}
                     {isWeakest && !isStrongest && (
                       <span style={{
-                        fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
+                        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
                         color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
                         borderRadius: 'var(--radius-sm)', padding: '0.05rem 0.35rem',
                       }}>focus area</span>
@@ -115,7 +115,7 @@ export function DesignScoreReveal({ result, onContinue, continueLabel = 'View fu
         borderRadius: 'var(--radius-sm)', padding: '0.75rem 0.9rem',
       }}>
         <div style={{
-          fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
           color: 'var(--text-dim)', marginBottom: '0.35rem',
         }}>
           What separates you from the next level

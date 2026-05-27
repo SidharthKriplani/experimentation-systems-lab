@@ -55,7 +55,7 @@ function FieldItem({ field, value, onChange, onOpenConcept }) {
         ))}
         {isMulti && (
           <span style={{
-            fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
             color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
           }}>Select all that apply</span>

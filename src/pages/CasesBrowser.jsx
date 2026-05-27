@@ -9,7 +9,7 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
         <div style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--purple)', marginBottom: '0.4rem',
         }}>
           Business Cases
@@ -43,7 +43,7 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
           }}>
             <Icon name="book-open" size={14} color="var(--teal)" style={{ flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
                 <button onClick={() => onNavigate('rca-foundations')} style={{
                   background: 'none', border: 'none', padding: 0,
@@ -114,7 +114,7 @@ function CaseCard({ businessCase: bc, progress, isLocked, onSelect, onUnlock }) 
         <DifficultyBadge difficulty={bc.difficulty} />
         {levelCfg && (
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
             color: levelCfg.color, background: levelCfg.bg, border: `1px solid ${levelCfg.border}`,
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
           }}>{levelCfg.label}</span>
@@ -138,7 +138,7 @@ function CaseCard({ businessCase: bc, progress, isLocked, onSelect, onUnlock }) 
         marginBottom: '0.5rem',
       }}>
         <div style={{
-          fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
           color: 'var(--purple)', marginBottom: '0.25rem',
         }}>
           The Question
@@ -203,7 +203,7 @@ function DifficultyBadge({ difficulty }) {
 
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
     }}>{cfg.label}</span>
@@ -213,7 +213,7 @@ function DifficultyBadge({ difficulty }) {
 function DomainBadge({ domain }) {
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
     }}>{domain}</span>

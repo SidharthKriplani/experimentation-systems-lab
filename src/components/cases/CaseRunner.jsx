@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { businessCases } from '../../data/businessCases.js';
 import { CaseStepPanel } from './CaseStepPanel.jsx';
 import { CaseScoreReveal } from './CaseScoreReveal.jsx';
 import { CaseDebriefPanel } from './CaseDebriefPanel.jsx';
@@ -67,7 +68,8 @@ function computeScore(businessCase, phaseChoices) {
 
 // ─── Main Runner ───
 
-export function CaseRunner({ businessCase, savedProgress, unlocked, onBack, onNext }) {
+export function CaseRunner({ caseId, savedProgress, unlocked, onBack, onNext }) {
+  const businessCase = businessCases.find(b => b.id === caseId);
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
   const [phaseChoices, setPhaseChoices] = useState({});          // phaseId → optionId (pending)
   const [submittedChoices, setSubmittedChoices] = useState({});  // phaseId → optionId (confirmed)
@@ -219,7 +221,7 @@ export function CaseRunner({ businessCase, savedProgress, unlocked, onBack, onNe
           padding: '1.5rem', background: 'var(--surface)', marginBottom: '1.5rem',
         }}>
           <div style={{
-            fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
             color: 'var(--text-dim)', marginBottom: '1rem',
           }}>
             Case scored
@@ -282,7 +284,7 @@ function CaseContextPanel({ context }) {
       marginBottom: '1.25rem',
     }}>
       <div style={{
-        fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
         color: 'var(--text-dim)', marginBottom: '0.75rem',
       }}>
         Case brief
@@ -302,7 +304,7 @@ function CaseContextPanel({ context }) {
         marginBottom: '0.75rem',
       }}>
         <div style={{
-          fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--purple)', marginBottom: '0.35rem',
         }}>
           The Question
@@ -322,7 +324,7 @@ function CaseContextPanel({ context }) {
           borderRadius: 'var(--radius-sm)', padding: '0.5rem 0.7rem',
           marginBottom: '0.6rem',
         }}>
-          <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginBottom: '0.15rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginBottom: '0.15rem' }}>
             Pressure
           </div>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
@@ -365,7 +367,7 @@ function CompletedPhasesBar({ phases, submittedChoices, currentPhaseIndex }) {
       borderRadius: 'var(--radius-sm)',
     }}>
       <div style={{
-        fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
         color: 'var(--text-dim)', marginBottom: '0.45rem',
       }}>
         Completed phases
@@ -411,7 +413,7 @@ function DifficultyBadge({ difficulty }) {
 
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
     }}>{cfg.label}</span>
@@ -421,7 +423,7 @@ function DifficultyBadge({ difficulty }) {
 function DomainBadge({ domain }) {
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
     }}>{domain}</span>

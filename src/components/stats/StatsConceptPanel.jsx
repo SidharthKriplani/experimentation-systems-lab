@@ -24,7 +24,7 @@ export function StatsConceptPanel({
           borderRadius: 'var(--radius-sm)', padding: '0.9rem 1rem',
           marginBottom: '0.75rem',
         }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.3rem' }}>Short answer</div>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.3rem' }}>Short answer</div>
           <p style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text)', margin: 0, lineHeight: 1.5 }}>{sr.shortAnswer}</p>
         </div>
 
@@ -33,7 +33,7 @@ export function StatsConceptPanel({
           borderRadius: 'var(--radius-sm)', padding: '0.9rem 1rem',
           marginBottom: '0.75rem',
         }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.35rem' }}>Why</div>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.35rem' }}>Why</div>
           <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.7, margin: 0, whiteSpace: 'pre-wrap' }}>{sr.why}</p>
         </div>
 
@@ -42,7 +42,7 @@ export function StatsConceptPanel({
           borderRadius: 'var(--radius-sm)', padding: '0.75rem 0.9rem',
           marginBottom: '0.75rem',
         }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginBottom: '0.3rem' }}>Common mistake</div>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginBottom: '0.3rem' }}>Common mistake</div>
           <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>{sr.commonMistake}</p>
         </div>
 
@@ -51,7 +51,7 @@ export function StatsConceptPanel({
           borderLeft: '3px solid var(--teal)',
           borderRadius: 'var(--radius-sm)', padding: '0.75rem 0.9rem',
         }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.3rem' }}>Interview phrasing</div>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.3rem' }}>Interview phrasing</div>
           <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>{sr.interviewPhrase}</p>
         </div>
       </section>
@@ -77,7 +77,7 @@ export function StatsConceptPanel({
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
               }}>
                 <div>
-                  <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--accent)', marginBottom: '0.2rem' }}>Review Room</div>
+                  <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--accent)', marginBottom: '0.2rem' }}>Review Room</div>
                   <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0 }}>Read a messy experiment where this concept determines the call.</p>
                 </div>
                 <button
@@ -97,7 +97,7 @@ export function StatsConceptPanel({
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap',
               }}>
                 <div>
-                  <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--teal)', marginBottom: '0.2rem' }}>Design Room</div>
+                  <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--teal)', marginBottom: '0.2rem' }}>Design Room</div>
                   <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0 }}>Design an experiment where this concept is the key decision.</p>
                 </div>
                 <button
@@ -137,7 +137,7 @@ export function StatsConceptPanel({
 function SectionLabel({ children }) {
   return (
     <div style={{
-      fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
       letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.65rem',
     }}>{children}</div>
   );

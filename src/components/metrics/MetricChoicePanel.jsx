@@ -11,7 +11,7 @@ export function MetricChoicePanel({ field, selectedId, onSelect, submitted }) {
     }}>
       {/* Field label */}
       <div style={{
-        fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
         letterSpacing: '0.09em', color: 'var(--teal)',
       }}>{field.label}</div>
 
@@ -98,7 +98,7 @@ export function MetricChoicePanel({ field, selectedId, onSelect, submitted }) {
                     borderTop: `1px solid ${borderColor}`,
                   }}>
                     <div style={{
-                      fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase',
+                      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
                       letterSpacing: '0.07em', color: textColor, marginBottom: '0.3rem',
                     }}>
                       {opt.scoreValue === 2 ? 'Strong choice' : opt.scoreValue === 1 ? 'Partial credit' : 'Weak choice'}

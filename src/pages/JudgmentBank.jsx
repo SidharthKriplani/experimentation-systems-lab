@@ -18,7 +18,7 @@ function DiffBadge({ difficulty }) {
   const c = DIFFICULTY_COLORS[difficulty] || DIFFICULTY_COLORS.analyst;
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: c.color, background: c.bg, border: `1px solid ${c.border}`,
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
     }}>{difficulty}</span>
@@ -28,7 +28,7 @@ function DiffBadge({ difficulty }) {
 function PairedBadge() {
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: 'var(--accent)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
     }}>◆ Paired</span>
@@ -48,7 +48,7 @@ function PlannedCard({ scenario }) {
           {scenario.title}
         </span>
         <span style={{
-          flexShrink: 0, fontSize: '0.6rem', fontWeight: 600,
+          flexShrink: 0, fontSize: '0.68rem', fontWeight: 600,
           color: 'var(--text-dim)', background: 'var(--surface-2)',
           border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)',
           padding: '0.1rem 0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em',
@@ -60,7 +60,7 @@ function PlannedCard({ scenario }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
         <DiffBadge difficulty={scenario.difficulty} />
         <span style={{
-          fontSize: '0.6rem', color: 'var(--text-dim)',
+          fontSize: '0.68rem', color: 'var(--text-dim)',
           background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{scenario.industry}</span>
@@ -97,7 +97,7 @@ function ReviewCard({ scenario, onClick }) {
         </span>
         <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
+            fontSize: '0.68rem', fontWeight: 700, color: '#fff',
             background: scenario.isFree ? 'var(--accent)' : 'var(--teal)',
             borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
             textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -110,7 +110,7 @@ function ReviewCard({ scenario, onClick }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
         <DiffBadge difficulty={scenario.difficulty} />
         <span style={{
-          fontSize: '0.6rem', color: 'var(--text-dim)',
+          fontSize: '0.68rem', color: 'var(--text-dim)',
           background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{scenario.industry}</span>
@@ -149,7 +149,7 @@ function DesignCard({ scenario, onClick }) {
         </span>
         <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
+            fontSize: '0.68rem', fontWeight: 700, color: '#fff',
             background: scenario.isFree ? 'var(--accent)' : 'var(--teal)',
             borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
             textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -162,7 +162,7 @@ function DesignCard({ scenario, onClick }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
         <DiffBadge difficulty={scenario.difficulty} />
         <span style={{
-          fontSize: '0.6rem', color: 'var(--text-dim)',
+          fontSize: '0.68rem', color: 'var(--text-dim)',
           background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{scenario.industry}</span>
@@ -201,7 +201,7 @@ function StatsCard({ module, onClick }) {
         </span>
         <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
+            fontSize: '0.68rem', fontWeight: 700, color: '#fff',
             background: module.isFree ? 'var(--accent)' : 'var(--teal)',
             borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
             textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -216,7 +216,7 @@ function StatsCard({ module, onClick }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
         <DiffBadge difficulty={module.difficulty} />
         <span style={{
-          fontSize: '0.6rem', color: 'var(--text-dim)',
+          fontSize: '0.68rem', color: 'var(--text-dim)',
           background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
           textTransform: 'uppercase', letterSpacing: '0.03em',
@@ -255,7 +255,7 @@ function MetricsCard({ metricCase, onClick }) {
         </span>
         <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
+            fontSize: '0.68rem', fontWeight: 700, color: '#fff',
             background: metricCase.isFree ? 'var(--accent)' : 'var(--teal)',
             borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
             textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -268,7 +268,7 @@ function MetricsCard({ metricCase, onClick }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
         <DiffBadge difficulty={metricCase.difficulty} />
         <span style={{
-          fontSize: '0.6rem', color: 'var(--text-dim)',
+          fontSize: '0.68rem', color: 'var(--text-dim)',
           background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{metricCase.domain}</span>
@@ -306,7 +306,7 @@ function RCACard({ rcaCase, onClick }) {
         </span>
         <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
+            fontSize: '0.68rem', fontWeight: 700, color: '#fff',
             background: rcaCase.isFree ? 'var(--accent)' : 'var(--teal)',
             borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
             textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -323,7 +323,7 @@ function RCACard({ rcaCase, onClick }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
         <DiffBadge difficulty={rcaCase.difficulty} />
         <span style={{
-          fontSize: '0.6rem', color: 'var(--text-dim)',
+          fontSize: '0.68rem', color: 'var(--text-dim)',
           background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{rcaCase.domain}</span>
@@ -361,7 +361,7 @@ function CasesCard({ businessCase, onClick }) {
         </span>
         <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, color: '#fff',
+            fontSize: '0.68rem', fontWeight: 700, color: '#fff',
             background: businessCase.isFree ? 'var(--accent)' : 'var(--teal)',
             borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.4rem',
             textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -374,7 +374,7 @@ function CasesCard({ businessCase, onClick }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center' }}>
         <DiffBadge difficulty={businessCase.difficulty} />
         <span style={{
-          fontSize: '0.6rem', color: 'var(--text-dim)',
+          fontSize: '0.68rem', color: 'var(--text-dim)',
           background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{businessCase.domain}</span>

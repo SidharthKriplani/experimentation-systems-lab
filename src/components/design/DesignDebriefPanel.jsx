@@ -146,7 +146,7 @@ export function DesignDebriefPanel({
           borderRadius: 'var(--radius)', padding: '1rem 1.1rem',
         }}>
           <div style={{
-            fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
             color: 'var(--accent)', marginBottom: '0.4rem',
           }}>
             You designed this test. Now see what happened.
@@ -209,7 +209,7 @@ export function DesignDebriefPanel({
 function SectionLabel({ children }) {
   return (
     <div style={{
-      fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
       color: 'var(--text-dim)', marginBottom: '0.65rem',
     }}>
       {children}
@@ -287,7 +287,7 @@ function MultiAnswerRow({ field, opts, totalEarned, maxValue, onOpenConcept }) {
         {opts.map(opt => (
           <div key={opt.id} style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
             <span style={{
-              fontSize: '0.62rem', fontWeight: 700, color: opt.scoreValue >= 2 ? 'var(--teal)' : opt.scoreValue === 1 ? 'var(--accent)' : 'var(--yellow)',
+              fontSize: '0.68rem', fontWeight: 700, color: opt.scoreValue >= 2 ? 'var(--teal)' : opt.scoreValue === 1 ? 'var(--accent)' : 'var(--yellow)',
               marginTop: '0.1rem', flexShrink: 0,
             }}>
               {opt.scoreValue >= 2 ? '✓' : opt.scoreValue === 1 ? '~' : '✕'}

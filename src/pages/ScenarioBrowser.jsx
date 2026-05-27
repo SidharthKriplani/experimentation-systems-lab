@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { ScenarioCard } from '../components/scenario/ScenarioCard.jsx';
 import { FOUNDATION_DOMAINS } from '../data/foundationMeta.js';
+import { scenarios } from '../data/scenarios.js';
 
-export function ScenarioBrowser({ scenarios, allProgress, onSelect, unlocked, onUnlock, onOpenArticle }) {
+export function ScenarioBrowser({ allProgress, onSelect, unlocked, onUnlock, onOpenArticle }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [theoryActive, setTheoryActive] = useState(false);
   const [diffFilter, setDiffFilter] = useState('all');

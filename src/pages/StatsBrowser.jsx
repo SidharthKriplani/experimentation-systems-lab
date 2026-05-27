@@ -38,7 +38,7 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
         <div style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--accent)', marginBottom: '0.4rem',
         }}>
           Stats Room
@@ -73,7 +73,7 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
           }}>
             <Icon name="book-open" size={14} color="var(--teal)" style={{ flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
                 <button onClick={() => onNavigate('stat-foundations')} style={{
                   background: 'none', border: 'none', padding: 0,
@@ -167,18 +167,18 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
                   <span style={{
-                    fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                    fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
                     color: diffCfg.color, background: diffCfg.bg, border: `1px solid ${diffCfg.border}`,
                     borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
                   }}>{diffCfg.label}</span>
                   <span style={{
-                    fontSize: '0.58rem', fontWeight: 600,
+                    fontSize: '0.68rem', fontWeight: 600,
                     color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
                     borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em',
                   }}>{module.concept}</span>
                   {levelCfg && (
                     <span style={{
-                      fontSize: '0.58rem', fontWeight: 700,
+                      fontSize: '0.68rem', fontWeight: 700,
                       color: levelCfg.color, background: levelCfg.bg, border: `1px solid ${levelCfg.border}`,
                       borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em',
                     }}>{levelCfg.label}</span>

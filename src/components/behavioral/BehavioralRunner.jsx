@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveBehavioralAttempt, getBehavioralProgress } from '../../utils/behavioralProgress.js';
 import { track } from '../../utils/analytics.js';
+import { behavioralQuestions } from '../../data/behavioralQuestions.js';
 import { Icon } from '../shared/Icon.jsx';
 
 const ROOM_KEY = 'behavioral';
@@ -45,7 +46,8 @@ const STAR_LABEL = {
   result:    'Result',
 };
 
-export function BehavioralRunner({ question, onBack, onNext }) {
+export function BehavioralRunner({ caseId, onBack, onNext }) {
+  const question = behavioralQuestions.find(q => q.id === caseId);
   const existing = getBehavioralProgress(question.id);
   const [response, setResponse] = useState(existing?.response || '');
   const [revealed, setRevealed] = useState(!!existing?.rating);

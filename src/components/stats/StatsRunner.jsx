@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { statsModules } from '../../data/statsModules.js';
 import { StatsDecisionCard } from './StatsDecisionCard.jsx';
 import { StatsScoreReveal } from './StatsScoreReveal.jsx';
 import { StatsConceptPanel } from './StatsConceptPanel.jsx';
@@ -34,7 +35,8 @@ const DIFFICULTY_CFG = {
   staff:        { label: 'Staff',        color: 'var(--red)',       bg: 'var(--red-bg)',     border: 'var(--red-border)' },
 };
 
-export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoToDesign, onNext }) {
+export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoToDesign, onNext }) {
+  const module = statsModules.find(m => m.id === caseId);
   const [view, setView] = useState(savedProgress?.selectedOptionId ? 'debrief' : 'question');
   const [selectedId, setSelectedId] = useState(savedProgress?.selectedOptionId || null);
   const [submitted, setSubmitted] = useState(!!savedProgress?.selectedOptionId);
@@ -100,19 +102,19 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
           <span style={{
-            fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
             color: diffCfg.color, background: diffCfg.bg, border: `1px solid ${diffCfg.border}`,
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
           }}>{diffCfg.label}</span>
           {!module.isFree && (
             <span style={{
-              fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
               color: 'var(--teal)', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
               borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
             }}>Beta</span>
           )}
           <span style={{
-            fontSize: '0.58rem', fontWeight: 600,
+            fontSize: '0.68rem', fontWeight: 600,
             color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>{module.concept}</span>
@@ -199,7 +201,7 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
           background: 'var(--surface)', padding: '1.5rem',
         }}>
           <div style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
             letterSpacing: '0.1em', color: 'var(--text-dim)', marginBottom: '1rem',
           }}>
             Your answer
@@ -218,7 +220,7 @@ export function StatsRunner({ module, savedProgress, onBack, onGoToReview, onGoT
           background: 'var(--surface)', padding: '1.5rem',
         }}>
           <div style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
             letterSpacing: '0.1em', color: 'var(--text-dim)', marginBottom: '1rem',
           }}>
             Stats Room debrief

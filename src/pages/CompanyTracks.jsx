@@ -400,7 +400,7 @@ function TrackDetail({ track, onBack, onNavigate }) {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '0.65rem',
+                      fontSize: '0.68rem',
                       color: 'var(--green)',
                       flexShrink: 0,
                     }}>

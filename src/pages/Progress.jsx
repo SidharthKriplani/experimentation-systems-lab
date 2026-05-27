@@ -42,23 +42,24 @@ import { getAllExpFoundationProgress } from '../utils/expFoundationProgress.js';
 import { expFoundationModules } from '../data/expFoundationModules.js';
 import { learningPaths } from '../data/learningPaths.js';
 import { GuidedPathCard } from '../components/paths/GuidedPathCard.jsx';
+import { scenarios } from '../data/scenarios.js';
 
 const LEVEL_ORDER = ['junior', 'analyst', 'senior', 'staff'];
 const LEVEL_LABELS = {
-  junior: { label: 'Junior Miss', color: 'var(--yellow)', bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
+  junior: { label: 'Junior-Ready', color: 'var(--yellow)', bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
   analyst: { label: 'Analyst-Ready', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
   senior: { label: 'Senior-Ready', color: 'var(--teal)', bg: 'var(--teal-bg)', border: 'var(--teal-border)' },
   staff: { label: 'Staff-Level', color: 'var(--purple)', bg: 'var(--purple-bg)', border: 'var(--purple-border)' },
   partial: { label: 'Analyst-Ready', color: 'var(--blue-text)', bg: 'var(--blue-bg)', border: 'var(--blue-border)' },
   strong: { label: 'Senior-Ready', color: 'var(--teal)', bg: 'var(--teal-bg)', border: 'var(--teal-border)' },
-  wrong: { label: 'Junior Miss', color: 'var(--yellow)', bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
+  wrong: { label: 'Junior-Ready', color: 'var(--yellow)', bg: 'var(--yellow-bg)', border: 'var(--yellow-border)' },
 };
 
 function LevelBadge({ level }) {
   const cfg = LEVEL_LABELS[level] || LEVEL_LABELS.analyst;
   return (
     <span style={{
-      fontSize: '0.65rem', fontWeight: 700,
+      fontSize: '0.68rem', fontWeight: 700,
       color: cfg.color, background: cfg.bg,
       border: `1px solid ${cfg.border}`,
       borderRadius: '4px', padding: '0.15rem 0.4rem',
@@ -81,18 +82,18 @@ function RoomReadinessBar({ label, color, bg, border, completed, total, bestLeve
           {completed > 0 && onReset && !confirmingReset && (
             <button
               onClick={() => setConfirmingReset(true)}
-              style={{ fontSize: '0.62rem', color: 'var(--text-dim)', background: 'none', border: '1px solid var(--border)', borderRadius: '4px', padding: '0.08rem 0.35rem', cursor: 'pointer' }}
+              style={{ fontSize: '0.68rem', color: 'var(--text-dim)', background: 'none', border: '1px solid var(--border)', borderRadius: '4px', padding: '0.08rem 0.35rem', cursor: 'pointer' }}
             >Reset</button>
           )}
           {confirmingReset && (
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
               <button
                 onClick={() => { onReset(); setConfirmingReset(false); }}
-                style={{ fontSize: '0.62rem', color: 'var(--red)', background: 'none', border: '1px solid var(--red)', borderRadius: '4px', padding: '0.08rem 0.35rem', cursor: 'pointer', fontWeight: 700 }}
+                style={{ fontSize: '0.68rem', color: 'var(--red)', background: 'none', border: '1px solid var(--red)', borderRadius: '4px', padding: '0.08rem 0.35rem', cursor: 'pointer', fontWeight: 700 }}
               >Yes, reset</button>
               <button
                 onClick={() => setConfirmingReset(false)}
-                style={{ fontSize: '0.62rem', color: 'var(--text-dim)', background: 'none', border: '1px solid var(--border)', borderRadius: '4px', padding: '0.08rem 0.35rem', cursor: 'pointer' }}
+                style={{ fontSize: '0.68rem', color: 'var(--text-dim)', background: 'none', border: '1px solid var(--border)', borderRadius: '4px', padding: '0.08rem 0.35rem', cursor: 'pointer' }}
               >Cancel</button>
             </span>
           )}
@@ -142,7 +143,7 @@ function SectionCard({ icon, title, open, onToggle, badge, children }) {
           <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)' }}>{title}</span>
           {badge != null && (
             <span style={{
-              fontSize: '0.62rem', fontWeight: 700,
+              fontSize: '0.68rem', fontWeight: 700,
               background: 'var(--yellow-bg)', color: 'var(--yellow)',
               border: '1px solid var(--yellow-border)',
               borderRadius: '10px', padding: '0.1rem 0.45rem',
@@ -158,7 +159,7 @@ function SectionCard({ icon, title, open, onToggle, badge, children }) {
   );
 }
 
-export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate, unlocked }) {
+export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked }) {
   const completed = scenarios.filter(s => allProgress[s.id]?.attempts?.length > 0);
   const notStarted = scenarios.filter(s => !allProgress[s.id]?.attempts?.length);
   const totalAttempts = Object.values(allProgress).reduce((sum, p) => sum + (p.attempts?.length || 0), 0);
@@ -468,7 +469,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
             {readinessDesc}
           </div>
           <div style={{
-            fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-dim)',
+            fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-dim)',
             background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: '20px', padding: '0.2rem 0.6rem', whiteSpace: 'nowrap',
           }}>{totalCompleted} completed</div>
@@ -483,7 +484,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
             order: totalCompleted === 0 ? 2 : 1,
           }}>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '1.1rem',
             }}>Readiness by room</div>
 
@@ -554,7 +555,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
           {/* Guided Paths */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', order: totalCompleted === 0 ? 1 : 2 }}>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.25rem',
             }}>Guided paths</div>
             {learningPaths.map(path => (
@@ -576,12 +577,12 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.9rem' }}>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--text-dim)',
             }}>Practice Streak</div>
             {streak > 0 && (
               <span style={{
-                fontSize: '0.65rem', fontWeight: 700,
+                fontSize: '0.68rem', fontWeight: 700,
                 background: 'var(--yellow-bg)', color: 'var(--yellow)',
                 border: '1px solid var(--yellow-border)',
                 borderRadius: '10px', padding: '0.1rem 0.5rem',
@@ -589,7 +590,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
             )}
             {streak === 0 && (
               <span style={{
-                fontSize: '0.65rem', color: 'var(--text-dim)',
+                fontSize: '0.68rem', color: 'var(--text-dim)',
               }}>Practice today to start a streak</span>
             )}
           </div>
@@ -610,7 +611,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
               />
             ))}
           </div>
-          <div style={{ marginTop: '0.5rem', fontSize: '0.65rem', color: 'var(--text-dim)' }}>
+          <div style={{ marginTop: '0.5rem', fontSize: '0.68rem', color: 'var(--text-dim)' }}>
             Last 13 weeks
           </div>
         </div>
@@ -822,7 +823,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
               <div>
                 <div style={{
-                  fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
                   letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.2rem',
                 }}>Study Plan</div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
@@ -831,7 +832,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
               </div>
               {topRecs.length > 0 && (
                 <span style={{
-                  fontSize: '0.65rem', fontWeight: 700,
+                  fontSize: '0.68rem', fontWeight: 700,
                   background: 'var(--accent-bg)', color: 'var(--accent)',
                   border: '1px solid var(--accent-border)',
                   borderRadius: '10px', padding: '0.1rem 0.5rem',
@@ -886,7 +887,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
                       {/* Rank + content */}
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', flex: 1, minWidth: 0 }}>
                         <span style={{
-                          fontSize: '0.62rem', fontWeight: 800,
+                          fontSize: '0.68rem', fontWeight: 800,
                           color: ts.color, background: ts.bg,
                           border: `1px solid ${ts.border}`,
                           borderRadius: '4px', padding: '0.1rem 0.35rem',
@@ -1049,7 +1050,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
                       {/* Room label chip */}
                       <span style={{
-                        fontSize: '0.62rem', fontWeight: 600,
+                        fontSize: '0.68rem', fontWeight: 600,
                         color: 'var(--text-dim)', background: 'var(--surface-2)',
                         border: '1px solid var(--border)',
                         borderRadius: '4px', padding: '0.1rem 0.4rem',
@@ -1063,7 +1064,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
                         </span>
                       ) : (
                         <span style={{
-                          fontSize: '0.62rem', fontWeight: 700,
+                          fontSize: '0.68rem', fontWeight: 700,
                           color: 'var(--yellow)', background: 'var(--yellow-bg)',
                           border: '1px solid var(--yellow-border)',
                           borderRadius: '4px', padding: '0.1rem 0.4rem',
@@ -1089,7 +1090,7 @@ export function Progress({ scenarios, allProgress, onSelect, onClear, onNavigate
         {completed.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.5rem',
             }}>Review Room — completed scenarios</div>
             {completed.map(scenario => {

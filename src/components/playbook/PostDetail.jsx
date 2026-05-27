@@ -69,7 +69,7 @@ function Section({ section }) {
         }}>
           {section.label && (
             <div style={{
-              fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--accent)', marginBottom: '0.4rem',
             }}>
               {section.label}
@@ -103,7 +103,7 @@ function Section({ section }) {
         }}>
           {section.label && (
             <div style={{
-              fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.7rem',
             }}>
               {section.label}
@@ -130,7 +130,7 @@ function Section({ section }) {
         }}>
           {section.label && (
             <div style={{
-              fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--text-muted)', marginBottom: '0.55rem',
             }}>
               {section.label}
@@ -180,7 +180,7 @@ function KeyTakeaways({ items, catColor }) {
       borderRadius: 'var(--radius)', padding: '1.1rem 1.2rem', margin: '2rem 0',
     }}>
       <div style={{
-        fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
         letterSpacing: '0.09em', color: catColor || 'var(--text-dim)', marginBottom: '0.75rem',
       }}>
         ✦ Key Takeaways
@@ -209,7 +209,7 @@ function References({ refs }) {
       borderTop: '1px solid var(--border-subtle)',
     }}>
       <div style={{
-        fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
         letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.75rem',
       }}>
         Further Reading & Sources
@@ -304,21 +304,21 @@ export function PostDetail({ post, onBack, onOpenItem }) {
         {/* Meta row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
             color: catColor, background: cfg.bg, border: `1px solid ${cfg.border}`,
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
           }}>
             {post.category}
           </span>
           <span style={{
-            fontSize: '0.6rem', color: 'var(--text-dim)', background: 'var(--surface-2)',
+            fontSize: '0.68rem', color: 'var(--text-dim)', background: 'var(--surface-2)',
             border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
           }}>
             {post.readMin} min read
           </span>
           {post.source && (
             <span style={{
-              fontSize: '0.58rem', color: 'var(--red)', background: 'var(--red-bg)',
+              fontSize: '0.68rem', color: 'var(--red)', background: 'var(--red-bg)',
               border: '1px solid var(--red-border)', borderRadius: 'var(--radius-sm)',
               padding: '0.1rem 0.4rem',
             }}>
@@ -361,7 +361,7 @@ export function PostDetail({ post, onBack, onOpenItem }) {
             borderTop: '1.5px solid var(--border-subtle)',
           }}>
             <div style={{
-              fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.75rem',
             }}>
               Now practice it →

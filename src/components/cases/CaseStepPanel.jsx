@@ -39,7 +39,7 @@ export function CaseStepPanel({ phase, selectedId, onSelect, submitted, stepNumb
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
           <span style={{
-            fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
             color: 'var(--purple)',
             background: 'var(--purple-bg)', border: '1px solid var(--purple-border)',
             borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem',
@@ -52,7 +52,7 @@ export function CaseStepPanel({ phase, selectedId, onSelect, submitted, stepNumb
         </div>
         {submitted && chosenLevel && (
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
             color: chosenLevel.color, background: chosenLevel.bg, border: `1px solid ${chosenLevel.border}`,
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
           }}>

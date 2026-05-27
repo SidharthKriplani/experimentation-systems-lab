@@ -52,7 +52,7 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
           </span>
           <div>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.1em', color: 'var(--red)', marginBottom: '0.15rem',
             }}>
               Spot the Flaw Room
@@ -101,7 +101,7 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
           }}>
             <Icon name="book-open" size={14} color="var(--teal)" style={{ flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
                 <button onClick={() => onNavigate('stat-foundations')} style={{
                   background: 'none', border: 'none', padding: 0,

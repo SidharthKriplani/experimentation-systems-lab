@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { savePrioritizationAttempt, getPrioritizationProgress } from '../../utils/prioritizationProgress.js';
 import { track } from '../../utils/analytics.js';
+import { prioritizationScenarios } from '../../data/prioritizationScenarios.js';
 
 const NOTES_KEY = 'pal-notes-v1';
 
@@ -31,7 +32,8 @@ const RATING_STYLE = {
   miss:    { color: 'var(--red)',    bg: 'var(--red-bg)',    border: 'var(--red-border)' },
 };
 
-export function PrioritizationRunner({ scenario, onBack, onNext }) {
+export function PrioritizationRunner({ caseId, onBack, onNext }) {
+  const scenario = prioritizationScenarios.find(s => s.id === caseId);
   const existing = getPrioritizationProgress(scenario.id);
   const [response, setResponse] = useState(existing?.response || '');
   const [revealed, setRevealed] = useState(!!existing?.rating);

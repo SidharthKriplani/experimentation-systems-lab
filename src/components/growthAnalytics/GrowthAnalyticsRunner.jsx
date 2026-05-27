@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { saveGrowthAnalyticsProgress, getGrowthAnalyticsProgress } from '../../utils/growthAnalyticsProgress.js';
 import { addBookmark, removeBookmark, isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
 import { track } from '../../utils/analytics.js';
+import { growthAnalyticsCases } from '../../data/growthAnalyticsCases.js';
 
 const ROOM_KEY = 'growth-analytics';
 const NOTES_KEY = 'pal-notes-v1';
@@ -449,7 +450,8 @@ ${takeaways}
 `;
 }
 
-export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
+export function GrowthAnalyticsRunner({ caseId, onBack, onNext, unlocked }) {
+  const caseData = growthAnalyticsCases.find(c => c.id === caseId);
   const existing = getGrowthAnalyticsProgress(caseData.id);
   const missedKey = `growth-analytics:${caseData.id}`;
 
@@ -958,7 +960,7 @@ export function GrowthAnalyticsRunner({ caseData, onBack, onNext, unlocked }) {
                   marginTop: '0.25rem',
                 }}>
                   <div style={{
-                    fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase',
+                    fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
                     letterSpacing: '0.08em', color: 'var(--purple)', marginBottom: '0.45rem',
                   }}>
                     💼 How a Staff DS thinks about this

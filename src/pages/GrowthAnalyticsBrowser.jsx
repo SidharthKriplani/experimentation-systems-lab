@@ -55,7 +55,7 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, 
           </span>
           <div>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.1em', color: 'var(--teal)', marginBottom: '0.15rem',
             }}>
               Growth Analytics Room
@@ -104,7 +104,7 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, 
           }}>
             <Icon name="book-open" size={14} color="var(--green)" style={{ flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--green)', marginBottom: '0.15rem' }}>Recommended starting point</div>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--green)', marginBottom: '0.15rem' }}>Recommended starting point</div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
                 <button onClick={() => onNavigate('metrics-foundations')} style={{
                   background: 'none', border: 'none', padding: 0,

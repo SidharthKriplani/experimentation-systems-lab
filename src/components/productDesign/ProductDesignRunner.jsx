@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { productDesignScenarios } from '../../data/productDesignScenarios.js';
 import { track } from '../../utils/analytics.js';
 
 const NOTES_KEY = 'pal-notes-v1';
@@ -51,7 +52,7 @@ function PhaseNav({ phases, currentIndex, completedIds }) {
           <div key={phase.id} style={{
             padding: '0.2rem 0.55rem',
             borderRadius: 'var(--radius-sm)',
-            fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
             background: isActive ? 'var(--purple-bg)' : isDone ? 'var(--surface-2)' : 'transparent',
             color: isActive ? 'var(--purple)' : isDone ? 'var(--text-muted)' : 'var(--border)',
             border: `1px solid ${isActive ? 'var(--purple-border)' : isDone ? 'var(--border)' : 'var(--border)'}`,
@@ -82,7 +83,7 @@ function ModelAnswerPanel({ phase, onRate, currentRating }) {
         borderBottom: '1px solid var(--purple-border)',
         display: 'flex', alignItems: 'center', gap: '0.5rem',
       }}>
-        <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--purple)' }}>
+        <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--purple)' }}>
           ◆ Model Answer
         </span>
       </div>
@@ -92,7 +93,7 @@ function ModelAnswerPanel({ phase, onRate, currentRating }) {
         {/* Criteria checklist */}
         {phase.criteria && phase.criteria.length > 0 && (
           <div style={{ marginBottom: '1rem' }}>
-            <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
               Strong answers include:
             </div>
             <ul style={{ margin: 0, padding: '0 0 0 1.1rem', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
@@ -118,7 +119,7 @@ function ModelAnswerPanel({ phase, onRate, currentRating }) {
 
       {/* Self-rating */}
       <div style={{ padding: '0.85rem 1rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
           How did your answer compare?
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -161,7 +162,7 @@ function DebriefView({ scenario, responses, ratings, result, onRetry, onBack, on
         marginBottom: '1.5rem',
         textAlign: 'center',
       }}>
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: levelCfg.color, marginBottom: '0.4rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: levelCfg.color, marginBottom: '0.4rem' }}>
           Overall Assessment
         </div>
         <div style={{ fontSize: '1.5rem', fontWeight: 900, color: levelCfg.color, marginBottom: '0.25rem' }}>
@@ -201,7 +202,7 @@ function DebriefView({ scenario, responses, ratings, result, onRetry, onBack, on
                   <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text)' }}>{phase.label}</span>
                   {ratingCfg && (
                     <span style={{
-                      fontSize: '0.65rem', fontWeight: 700,
+                      fontSize: '0.68rem', fontWeight: 700,
                       color: ratingCfg.color, background: ratingCfg.bg,
                       border: `1px solid ${ratingCfg.border}`,
                       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
@@ -219,7 +220,7 @@ function DebriefView({ scenario, responses, ratings, result, onRetry, onBack, on
                 <div style={{ borderTop: '1px solid var(--border)', padding: '0.9rem 1rem' }}>
                   {responses?.[phase.id] && (
                     <div style={{ marginBottom: '1rem' }}>
-                      <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
                         Your answer
                       </div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.65, whiteSpace: 'pre-wrap', fontStyle: 'italic' }}>
@@ -228,7 +229,7 @@ function DebriefView({ scenario, responses, ratings, result, onRetry, onBack, on
                     </div>
                   )}
                   <div>
-                    <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--purple)', marginBottom: '0.4rem' }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--purple)', marginBottom: '0.4rem' }}>
                       Model answer
                     </div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
@@ -286,7 +287,8 @@ function DebriefView({ scenario, responses, ratings, result, onRetry, onBack, on
 }
 
 // ─── Main Runner ──────────────────────────────────────────────────────────────
-export function ProductDesignRunner({ scenario, savedProgress, onBack, onNext }) {
+export function ProductDesignRunner({ caseId, savedProgress, onBack, onNext }) {
+  const scenario = productDesignScenarios.find(s => s.id === caseId);
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
   const [responses, setResponses] = useState(savedProgress?.responses || {});
   const [ratings, setRatings] = useState(savedProgress?.ratings || {});
@@ -373,7 +375,7 @@ export function ProductDesignRunner({ scenario, savedProgress, onBack, onNext })
       <div style={{ marginBottom: '1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem', flexWrap: 'wrap' }}>
           <span style={{
-            fontSize: '0.65rem', fontWeight: 700,
+            fontSize: '0.68rem', fontWeight: 700,
             color: scenario.companyColor || 'var(--purple)',
             background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.45rem',
@@ -381,7 +383,7 @@ export function ProductDesignRunner({ scenario, savedProgress, onBack, onNext })
             {scenario.company}
           </span>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
             color: 'var(--text-muted)',
           }}>
             {scenario.category}
@@ -451,7 +453,7 @@ export function ProductDesignRunner({ scenario, savedProgress, onBack, onNext })
           {/* Phase header */}
           <div style={{ marginBottom: '0.85rem' }}>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--purple)', marginBottom: '0.25rem',
             }}>
               Phase {currentPhaseIndex + 1} of {phases.length}

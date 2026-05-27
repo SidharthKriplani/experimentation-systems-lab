@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveInstrumentationProgress, getInstrumentationProgress } from '../../utils/instrumentationProgress.js';
 import { track } from '../../utils/analytics.js';
+import { instrumentationCases } from '../../data/instrumentationCases.js';
 import { Icon } from '../shared/Icon.jsx';
 
 const ROOM_KEY = 'instrumentation';
@@ -583,7 +584,8 @@ function RevealScreen({ caseData, onBack, onNext }) {
 }
 
 // Main runner
-export function InstrumentationRunner({ caseData, onBack, onNext, unlocked }) {
+export function InstrumentationRunner({ caseId, onBack, onNext, unlocked }) {
+  const caseData = instrumentationCases.find(c => c.id === caseId);
   const [screen, setScreen] = useState('situation');
 
   function handleBegin() {

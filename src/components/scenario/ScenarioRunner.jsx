@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { scenarios } from '../../data/scenarios.js';
+import { designScenarios } from '../../data/designScenarios.js';
 import { ContextPanel } from './ContextPanel.jsx';
 import { ExperimentDesign } from './ExperimentDesign.jsx';
 import { MetricTable } from './MetricTable.jsx';
@@ -31,7 +33,7 @@ function saveNote(room, caseId, text) {
 function PanelHeader({ title, subtitle }) {
   return (
     <div style={{ marginBottom: '1rem', paddingBottom: '0.7rem', borderBottom: '1px solid var(--border-subtle)' }}>
-      <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-dim)', marginBottom: '0.15rem' }}>
+      <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-dim)', marginBottom: '0.15rem' }}>
         {subtitle}
       </div>
       <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text)', margin: 0 }}>{title}</h3>
@@ -61,7 +63,9 @@ const TABS = [
   { id: 'Flags',   label: 'Flags',   hint: 'Warning signs' },
 ];
 
-export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesignId, onGoToDesign }) {
+export function ScenarioRunner({ caseId, onBack, onNext, hasNext, onGoToDesign }) {
+  const scenario = scenarios.find(s => s.id === caseId);
+  const pairedDesignId = scenario ? (designScenarios.find(d => d.pairedReviewScenarioId === caseId)?.id || null) : null;
   const [leftTab, setLeftTab] = useState('Context');
   const [selectedDecision, setSelectedDecision] = useState(null);
   const [checkedFlags, setCheckedFlags] = useState([]);
@@ -121,14 +125,14 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesign
               {scenario.title}
             </h1>
             <span style={{
-              fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
               color: scenario.isFree ? 'var(--accent)' : 'var(--teal)',
               background: scenario.isFree ? 'var(--accent-bg)' : 'var(--teal-bg)',
               border: `1px solid ${scenario.isFree ? 'var(--accent-border)' : 'var(--teal-border)'}`,
               borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.45rem',
             }}>{scenario.isFree ? 'Free' : 'Private Beta'}</span>
             <span style={{
-              fontSize: '0.62rem', fontWeight: 600, color: 'var(--text-dim)',
+              fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-dim)',
               background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.45rem',
             }}>{difficultyLabel}</span>
@@ -202,7 +206,7 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesign
                     background: 'var(--red-bg)', color: 'var(--red)',
                     border: '1px solid var(--red-border)',
                     borderRadius: '10px', padding: '0 4px',
-                    fontSize: '0.6rem', fontWeight: 800, verticalAlign: 'middle',
+                    fontSize: '0.68rem', fontWeight: 800, verticalAlign: 'middle',
                   }}>{scenario.warningFlags.length}</span>
                 )}
               </button>
@@ -408,7 +412,7 @@ export function ScenarioRunner({ scenario, onBack, onNext, hasNext, pairedDesign
               borderRadius: 'var(--radius)', padding: '1rem 1.1rem',
             }}>
               <div style={{
-                fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+                fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
                 color: 'var(--teal)', marginBottom: '0.4rem',
               }}>
                 Paired Design Room scenario

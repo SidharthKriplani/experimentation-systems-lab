@@ -53,7 +53,7 @@ export function MetricScoreReveal({ score, maxScore, level, onContinue }) {
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       }}>
         <span style={{ fontSize: '1.5rem', fontWeight: 900, color: cfg.color, lineHeight: 1 }}>{pct}</span>
-        <span style={{ fontSize: '0.6rem', color: cfg.color, fontWeight: 700 }}>%</span>
+        <span style={{ fontSize: '0.68rem', color: cfg.color, fontWeight: 700 }}>%</span>
       </div>
 
       {/* Level badge */}

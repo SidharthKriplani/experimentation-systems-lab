@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { saveSTFProgress, getSTFProgress } from '../../utils/spotTheFlawProgress.js';
 import { track } from '../../utils/analytics.js';
+import { spotTheFlawCases } from '../../data/spotTheFlawCases.js';
 
 const ROOM_KEY = 'spot-the-flaw';
 function loadNote(id) { try { const d = JSON.parse(localStorage.getItem('pal-notes-v1') || '{}'); return d[ROOM_KEY + ':' + id] || ''; } catch { return ''; } }
@@ -29,7 +30,8 @@ const STEP_SETUP  = 'setup';
 const STEP_WORK   = 'work';
 const STEP_REVEAL = 'reveal';
 
-export function SpotTheFlawRunner({ caseData, onBack, onNext, unlocked }) {
+export function SpotTheFlawRunner({ caseId, onBack, onNext, unlocked }) {
+  const caseData = spotTheFlawCases.find(c => c.id === caseId);
   const existing = getSTFProgress(caseData.id);
 
   const [step, setStep]           = useState(existing?.rating ? STEP_REVEAL : STEP_SETUP);

@@ -1,4 +1,17 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { scenarios } from '../data/scenarios.js';
+import { designScenarios } from '../data/designScenarios.js';
+import { statsModules } from '../data/statsModules.js';
+import { metricCases } from '../data/metricCases.js';
+import { rcaCases } from '../data/rcaCases.js';
+import { businessCases } from '../data/businessCases.js';
+import { productDesignScenarios } from '../data/productDesignScenarios.js';
+import { codeModules } from '../data/codeModules.js';
+import { prioritizationScenarios } from '../data/prioritizationScenarios.js';
+import { behavioralQuestions } from '../data/behavioralQuestions.js';
+import { estimationProblems } from '../data/estimationProblems.js';
+import { statsFoundationsModules } from '../data/statsFoundationsModules.js';
+import { growthAnalyticsCases } from '../data/growthAnalyticsCases.js';
 
 const ROOMS = [
   { key: 'scenarios',               label: 'Review Scenarios',  page: 'browser',                   idField: 'id', titleField: 'title' },
@@ -63,7 +76,7 @@ function DifficultyBadge({ difficulty }) {
   const style = getDiffStyle(difficulty);
   return (
     <span style={{
-      fontSize: '0.65rem',
+      fontSize: '0.68rem',
       fontWeight: 600,
       padding: '0.15rem 0.45rem',
       borderRadius: '4px',
@@ -116,7 +129,7 @@ function ResultCard({ item, room, isHighlighted, onNavigate, cardRef }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
           {item.difficulty && <DifficultyBadge difficulty={item.difficulty} />}
           <span style={{
-            fontSize: '0.62rem',
+            fontSize: '0.68rem',
             fontWeight: 600,
             padding: '0.15rem 0.45rem',
             borderRadius: '4px',
@@ -150,7 +163,8 @@ function ResultCard({ item, room, isHighlighted, onNavigate, cardRef }) {
   );
 }
 
-export function SearchPage({ onNavigate, allData }) {
+export function SearchPage({ onNavigate }) {
+  const allData = { scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases };
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -406,7 +420,7 @@ export function SearchPage({ onNavigate, allData }) {
                     {room.label}
                   </span>
                   <span style={{
-                    fontSize: '0.65rem', color: 'var(--text-muted)',
+                    fontSize: '0.68rem', color: 'var(--text-muted)',
                     background: 'var(--surface-2)', border: '1px solid var(--border)',
                     borderRadius: '10px', padding: '0.05rem 0.4rem',
                   }}>

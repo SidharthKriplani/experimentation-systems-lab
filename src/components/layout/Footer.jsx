@@ -26,7 +26,7 @@ export function Footer({ onNavigate }) {
               onClick={() => onNavigate('qa')}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: 'var(--border)', fontSize: '0.65rem',
+                color: 'var(--border)', fontSize: '0.68rem',
                 fontFamily: 'monospace', padding: '0',
                 transition: 'color 0.1s',
               }}

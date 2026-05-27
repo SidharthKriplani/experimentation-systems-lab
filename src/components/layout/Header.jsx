@@ -88,7 +88,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
   }
 
   const groupLabelStyle = {
-    fontSize: '0.55rem',
+    fontSize: '0.68rem',
     letterSpacing: '0.08em',
     color: 'var(--text-muted)',
     opacity: 0.7,

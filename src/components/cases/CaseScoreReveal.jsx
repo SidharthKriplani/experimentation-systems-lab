@@ -57,7 +57,7 @@ export function CaseScoreReveal({ score, maxScore, level, phaseChoices, business
       {/* Phase-by-phase summary */}
       <div>
         <div style={{
-          fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
           color: 'var(--text-dim)', marginBottom: '0.65rem',
         }}>
           Phase breakdown

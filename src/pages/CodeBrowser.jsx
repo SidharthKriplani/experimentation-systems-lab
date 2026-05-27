@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getAllCodeProgress } from '../utils/codeProgress.js';
 import { FOUNDATION_DOMAINS } from '../data/foundationMeta.js';
+import { codeModules } from '../data/codeModules.js';
 
 const TRACK_CONFIG = {
   sql:    { label: 'SQL',    color: 'var(--teal)',   bg: 'var(--teal-bg)',   border: 'var(--teal-border)' },
@@ -18,7 +19,8 @@ const RATING_COLORS = {
   miss:    'var(--text-muted)',
 };
 
-export function CodeBrowser({ modules, onSelectModule, unlocked, onUnlock, onOpenArticle }) {
+export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle }) {
+  const modules = codeModules;
   const [trackFilter, setTrackFilter] = useState('all');
   const [theoryActive, setTheoryActive] = useState(false);
   const allProgress = getAllCodeProgress();
@@ -36,7 +38,7 @@ export function CodeBrowser({ modules, onSelectModule, unlocked, onUnlock, onOpe
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--yellow)', marginBottom: '0.4rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--yellow)', marginBottom: '0.4rem' }}>
           Code Room
         </div>
         <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.1rem)', fontWeight: 800, color: 'var(--text)', margin: '0 0 0.6rem', letterSpacing: '-0.03em', lineHeight: 1.15 }}>
@@ -136,21 +138,21 @@ export function CodeBrowser({ modules, onSelectModule, unlocked, onUnlock, onOpe
               {/* Track + difficulty badges */}
               <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
                 <span style={{
-                  fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
                   color: trackCfg.color, background: trackCfg.bg, border: `1px solid ${trackCfg.border}`,
                   borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem',
                 }}>
                   {trackCfg.label}
                 </span>
                 <span style={{
-                  fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
                   color: diffCfg.color, background: diffCfg.bg, border: `1px solid ${diffCfg.border}`,
                   borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem',
                 }}>
                   {diffCfg.label}
                 </span>
                 {module.isFree && (
-                  <span style={{ fontSize: '0.58rem', fontWeight: 700, color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem' }}>
+                  <span style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem' }}>
                     Free
                   </span>
                 )}
@@ -178,7 +180,7 @@ export function CodeBrowser({ modules, onSelectModule, unlocked, onUnlock, onOpe
               <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
                 {(module.tags || []).slice(0, 3).map(tag => (
                   <span key={tag} style={{
-                    fontSize: '0.62rem', fontWeight: 600,
+                    fontSize: '0.68rem', fontWeight: 600,
                     color: 'var(--text-muted)', background: 'var(--surface-2)',
                     border: '1px solid var(--border-subtle)',
                     borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',

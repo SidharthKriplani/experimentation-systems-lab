@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { codeModules } from '../../data/codeModules.js';
 import { saveCodeAttempt } from '../../utils/codeProgress.js';
 
 const NOTES_KEY = 'pal-notes-v1';
@@ -29,7 +30,8 @@ const TRACK_COLOR = {
   python: 'var(--purple)',
 };
 
-export function CodeRunner({ module, savedProgress, onBack, onNext }) {
+export function CodeRunner({ caseId, savedProgress, onBack, onNext }) {
+  const module = codeModules.find(m => m.id === caseId);
   const [view, setView]           = useState(savedProgress ? 'reveal' : 'writing');
   const [response, setResponse]   = useState(savedProgress?.response || '');
   const [revealed, setRevealed]   = useState(!!savedProgress);
@@ -78,7 +80,7 @@ export function CodeRunner({ module, savedProgress, onBack, onNext }) {
 
       {/* Header */}
       <div style={{ marginBottom: '1.25rem' }}>
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: trackColor, marginBottom: '0.3rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: trackColor, marginBottom: '0.3rem' }}>
           {module.subtitle}
         </div>
         <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>
@@ -94,7 +96,7 @@ export function CodeRunner({ module, savedProgress, onBack, onNext }) {
         padding: '1rem 1.25rem',
         marginBottom: '1.25rem',
       }}>
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
           Scenario — {module.scenario.company}
         </div>
         <p style={{ margin: '0 0 1rem', fontSize: '0.87rem', color: 'var(--text)', lineHeight: 1.65 }}>
@@ -104,7 +106,7 @@ export function CodeRunner({ module, savedProgress, onBack, onNext }) {
         {/* Schema */}
         {module.scenario.schema && module.scenario.schema.filter(s => s.table !== '—').length > 0 && (
           <div style={{ marginBottom: '0.75rem' }}>
-            <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
               Schema
             </div>
             {module.scenario.schema.map((s, i) => (
@@ -134,7 +136,7 @@ export function CodeRunner({ module, savedProgress, onBack, onNext }) {
           padding: '0.6rem 0.85rem',
           fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.5,
         }}>
-          <span style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginRight: '0.5rem' }}>Task</span>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginRight: '0.5rem' }}>Task</span>
           {module.scenario.task}
         </div>
       </div>
@@ -166,7 +168,7 @@ export function CodeRunner({ module, savedProgress, onBack, onNext }) {
       {/* Writing area */}
       <div style={{ marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.4rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
             Starter code — complete the blanks
           </div>
           {!revealed && (
@@ -351,7 +353,7 @@ sys.stdout = _stdout_capture
       marginBottom: '1.5rem',
     }}>
       {/* Model answer header */}
-      <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: trackColor }}>
+      <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: trackColor }}>
         Model Answer
       </div>
 
@@ -427,7 +429,7 @@ sys.stdout = _stdout_capture
       {/* Key insights */}
       {module.keyInsights && module.keyInsights.length > 0 && (
         <div>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
             Key Insights
           </div>
           <ul style={{ margin: 0, paddingLeft: '1.1rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
@@ -463,7 +465,7 @@ sys.stdout = _stdout_capture
 
       {/* Self-rating */}
       <div>
-        <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
           How did you do?
         </div>
         <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>

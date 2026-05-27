@@ -50,7 +50,7 @@ export function MetricTable({ metrics }) {
               <tr key={i} style={{ background: rowBg, borderBottom: '1px solid var(--border-subtle)' }}>
                 <td style={{ padding: '0.5rem 0.6rem', whiteSpace: 'nowrap' }}>
                   <span style={{
-                    fontSize: '0.64rem', fontWeight: 700, padding: '0.15rem 0.4rem',
+                    fontSize: '0.68rem', fontWeight: 700, padding: '0.15rem 0.4rem',
                     borderRadius: '3px', color: typeInfo.color, background: typeInfo.bg, letterSpacing: '0.04em',
                   }}>{typeInfo.label}</span>
                 </td>

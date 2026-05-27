@@ -37,7 +37,7 @@ export function StatsScoreReveal({ option, onContinue }) {
         borderLeft: `3px solid ${cfg.border}`,
         borderRadius: 'var(--radius-sm)', padding: '0.75rem 0.9rem',
       }}>
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.35rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.35rem' }}>
           Why
         </div>
         <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0 }}>

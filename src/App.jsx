@@ -1,29 +1,16 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts.js';
 import { track } from './utils/analytics.js';
-// Data
-import { scenarios } from './data/scenarios.js';
-import { designScenarios } from './data/designScenarios.js';
-import { statsModules } from './data/statsModules.js';
-import { metricCases } from './data/metricCases.js';
-import { rcaCases } from './data/rcaCases.js';
-import { businessCases } from './data/businessCases.js';
-import { productDesignScenarios } from './data/productDesignScenarios.js';
-import { codeModules } from './data/codeModules.js';
-import { prioritizationScenarios } from './data/prioritizationScenarios.js';
-import { behavioralQuestions } from './data/behavioralQuestions.js';
-import { estimationProblems } from './data/estimationProblems.js';
-import { statsFoundationsModules } from './data/statsFoundationsModules.js';
-import { growthAnalyticsCases } from './data/growthAnalyticsCases.js';
-import { challengesCases, challengesCasesById } from './data/challengesCases.js';
-import { biCases, biCasesById } from './data/biCases.js';
-import { spotTheFlawCases, spotTheFlawCasesById } from './data/spotTheFlawCases.js';
-import { takehomeCases, takehomeCasesById } from './data/takehomeCases.js';
-import { instrumentationCases, instrumentationCasesById } from './data/instrumentationCases.js';
+// Slim index — id, isFree, title only (for routing and paywall checks)
+import {
+  scenarioIndex, designScenarioIndex, statsModuleIndex, metricCaseIndex,
+  rcaCaseIndex, businessCaseIndex, productDesignIndex, codeModuleIndex,
+  prioritizationIndex, behavioralIndex, estimationIndex, statsFoundationsIndex,
+  growthAnalyticsIndex, challengesIndex, biCaseIndex, stfCaseIndex,
+  takehomeCaseIndex, instrumentationIndex, metricsFoundationIndex,
+  rcaFoundationIndex, expFoundationIndex
+} from './data/caseIndex.js';
 import { getAllInstrumentationProgress } from './utils/instrumentationProgress.js';
-import { metricsFoundationModules } from './data/metricsFoundationModules.js';
-import { rcaFoundationModules } from './data/rcaFoundationModules.js';
-import { expFoundationModules } from './data/expFoundationModules.js';
 // Layout (always needed — not lazy)
 import { Sidebar } from './components/layout/Sidebar.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -228,7 +215,7 @@ export default function App() {
   }
 
   function openStatsModule(id) {
-    const module = statsModules.find(m => m.id === id);
+    const module = statsModuleIndex.find(m => m.id === id);
     if (!module) return;
     if (!module.isFree && !unlocked) { track('paywall_hit', { room: 'stats', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'stats', id, title: module.title });
@@ -238,7 +225,7 @@ export default function App() {
   }
 
   function openDesignScenario(id) {
-    const scenario = designScenarios.find(s => s.id === id);
+    const scenario = designScenarioIndex.find(s => s.id === id);
     if (!scenario) return;
     if (!scenario.isFree && !unlocked) { track('paywall_hit', { room: 'design', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'design', id, title: scenario.title });
@@ -248,7 +235,7 @@ export default function App() {
   }
 
   function openScenario(id) {
-    const scenario = scenarios.find(s => s.id === id);
+    const scenario = scenarioIndex.find(s => s.id === id);
     if (!scenario) return;
     if (!scenario.isFree && !unlocked) { track('paywall_hit', { room: 'review', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'review', id, title: scenario.title });
@@ -258,7 +245,7 @@ export default function App() {
   }
 
   function openMetricsCase(id) {
-    const c = metricCases.find(m => m.id === id);
+    const c = metricCaseIndex.find(m => m.id === id);
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'metrics', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'metrics', id, title: c.title });
@@ -268,7 +255,7 @@ export default function App() {
   }
 
   function openRCACase(id) {
-    const c = rcaCases.find(r => r.id === id);
+    const c = rcaCaseIndex.find(r => r.id === id);
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'rca', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'rca', id, title: c.title });
@@ -278,7 +265,7 @@ export default function App() {
   }
 
   function openBusinessCase(id) {
-    const c = businessCases.find(b => b.id === id);
+    const c = businessCaseIndex.find(b => b.id === id);
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'cases', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'cases', id, title: c.title });
@@ -288,7 +275,7 @@ export default function App() {
   }
 
   function openCodeModule(id) {
-    const m = codeModules.find(m => m.id === id);
+    const m = codeModuleIndex.find(m => m.id === id);
     if (!m) return;
     if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'code', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'code', id, title: m.title });
@@ -298,7 +285,7 @@ export default function App() {
   }
 
   function openPrioritizationScenario(id) {
-    const s = prioritizationScenarios.find(s => s.id === id);
+    const s = prioritizationIndex.find(s => s.id === id);
     if (!s) return;
     if (!s.isFree && !unlocked) { track('paywall_hit', { room: 'prioritization', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'prioritization', id, title: s.title });
@@ -308,7 +295,7 @@ export default function App() {
   }
 
   function openBehavioralQuestion(id) {
-    const q = behavioralQuestions.find(q => q.id === id);
+    const q = behavioralIndex.find(q => q.id === id);
     if (!q) return;
     if (!q.isFree && !unlocked) { track('paywall_hit', { room: 'behavioral', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'behavioral', id, title: q.title });
@@ -318,7 +305,7 @@ export default function App() {
   }
 
   function openEstimationProblem(id) {
-    const p = estimationProblems.find(p => p.id === id);
+    const p = estimationIndex.find(p => p.id === id);
     if (!p) return;
     if (!p.isFree && !unlocked) { track('paywall_hit', { room: 'estimation', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'estimation', id, title: p.title });
@@ -328,7 +315,7 @@ export default function App() {
   }
 
   function openStatFoundationsModule(id) {
-    const m = statsFoundationsModules.find(m => m.id === id);
+    const m = statsFoundationsIndex.find(m => m.id === id);
     if (!m) return;
     if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'stat-foundations', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'stat-foundations', id, title: m.title });
@@ -338,7 +325,7 @@ export default function App() {
   }
 
   function openGrowthAnalyticsCase(id) {
-    const c = growthAnalyticsCases.find(c => c.id === id);
+    const c = growthAnalyticsIndex.find(c => c.id === id);
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'growth-analytics', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'growth-analytics', id, title: c.title });
@@ -348,7 +335,7 @@ export default function App() {
   }
 
   function openChallenge(id) {
-    const c = challengesCasesById[id];
+    const c = challengesIndex.find(c => c.id === id);
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'challenges', id }); setPage('unlock'); return; }
     setActiveChallengeId(id);
@@ -357,12 +344,12 @@ export default function App() {
   }
 
   function getNextChallengeId(currentId) {
-    const idx = challengesCases.findIndex(c => c.id === currentId);
-    return idx >= 0 && idx < challengesCases.length - 1 ? challengesCases[idx + 1].id : null;
+    const idx = challengesIndex.findIndex(c => c.id === currentId);
+    return idx >= 0 && idx < challengesIndex.length - 1 ? challengesIndex[idx + 1].id : null;
   }
 
   function openBICase(id) {
-    const c = biCasesById[id];
+    const c = biCaseIndex.find(c => c.id === id);
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'bi', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'bi', id, title: c.title });
@@ -371,12 +358,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   function getNextBICaseId(currentId) {
-    const idx = biCases.findIndex(c => c.id === currentId);
-    return idx >= 0 && idx < biCases.length - 1 ? biCases[idx + 1].id : null;
+    const idx = biCaseIndex.findIndex(c => c.id === currentId);
+    return idx >= 0 && idx < biCaseIndex.length - 1 ? biCaseIndex[idx + 1].id : null;
   }
 
   function openSTFCase(id) {
-    const c = spotTheFlawCasesById[id];
+    const c = stfCaseIndex.find(c => c.id === id);
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'spot-the-flaw', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'spot-the-flaw', id, title: c.title });
@@ -385,12 +372,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   function getNextSTFCaseId(currentId) {
-    const idx = spotTheFlawCases.findIndex(c => c.id === currentId);
-    return idx >= 0 && idx < spotTheFlawCases.length - 1 ? spotTheFlawCases[idx + 1].id : null;
+    const idx = stfCaseIndex.findIndex(c => c.id === currentId);
+    return idx >= 0 && idx < stfCaseIndex.length - 1 ? stfCaseIndex[idx + 1].id : null;
   }
 
   function openTakehomeCase(id) {
-    const c = takehomeCasesById[id];
+    const c = takehomeCaseIndex.find(c => c.id === id);
     if (!c) return;
     if (!c.isFree && !unlocked) { track('paywall_hit', { room: 'take-home', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'take-home', id, title: c.title });
@@ -399,8 +386,8 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   function getNextTakehomeCaseId(currentId) {
-    const idx = takehomeCases.findIndex(c => c.id === currentId);
-    return idx >= 0 && idx < takehomeCases.length - 1 ? takehomeCases[idx + 1].id : null;
+    const idx = takehomeCaseIndex.findIndex(c => c.id === currentId);
+    return idx >= 0 && idx < takehomeCaseIndex.length - 1 ? takehomeCaseIndex[idx + 1].id : null;
   }
 
   function openPlaybookArticle(id) {
@@ -410,7 +397,7 @@ export default function App() {
   }
 
   function openInstrumentationCase(id) {
-    const c = instrumentationCasesById[id];
+    const c = instrumentationIndex.find(c => c.id === id);
     if (!c) return;
     if (!unlocked && !c.isFree) { navigate('unlock'); return; }
     track('case_opened', { room: 'instrumentation', id, title: c.title });
@@ -420,7 +407,7 @@ export default function App() {
   }
 
   function openRCAFoundationModule(id) {
-    const m = rcaFoundationModules.find(m => m.id === id);
+    const m = rcaFoundationIndex.find(m => m.id === id);
     if (!m) return;
     if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'rca-foundations', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'rca-foundations', id, title: m.title });
@@ -430,7 +417,7 @@ export default function App() {
   }
 
   function openMetricsFoundationModule(id) {
-    const m = metricsFoundationModules.find(m => m.id === id);
+    const m = metricsFoundationIndex.find(m => m.id === id);
     if (!m) return;
     if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'metrics-foundations', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'metrics-foundations', id, title: m.title });
@@ -440,7 +427,7 @@ export default function App() {
   }
 
   function openPDScenario(id) {
-    const s = productDesignScenarios.find(s => s.id === id);
+    const s = productDesignIndex.find(s => s.id === id);
     if (!s) return;
     if (!s.isFree && !unlocked) { track('paywall_hit', { room: 'product-design', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'product-design', id, title: s.title });
@@ -469,98 +456,98 @@ export default function App() {
   ]);
 
   function getNextScenarioId(currentId) {
-    const accessible = scenarios.filter(s => s.isFree || unlocked);
+    const accessible = scenarioIndex.filter(s => s.isFree || unlocked);
     const idx = accessible.findIndex(s => s.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextMetricsCaseId(currentId) {
-    const accessible = metricCases.filter(c => c.isFree || unlocked);
+    const accessible = metricCaseIndex.filter(c => c.isFree || unlocked);
     const idx = accessible.findIndex(c => c.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextRCACaseId(currentId) {
-    const accessible = rcaCases.filter(c => c.isFree || unlocked);
+    const accessible = rcaCaseIndex.filter(c => c.isFree || unlocked);
     const idx = accessible.findIndex(c => c.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextBusinessCaseId(currentId) {
-    const accessible = businessCases.filter(c => c.isFree || unlocked);
+    const accessible = businessCaseIndex.filter(c => c.isFree || unlocked);
     const idx = accessible.findIndex(c => c.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextDesignScenarioId(currentId) {
-    const accessible = designScenarios.filter(s => s.isFree || unlocked);
+    const accessible = designScenarioIndex.filter(s => s.isFree || unlocked);
     const idx = accessible.findIndex(s => s.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextPDScenarioId(currentId) {
-    const accessible = productDesignScenarios.filter(s => s.isFree || unlocked);
+    const accessible = productDesignIndex.filter(s => s.isFree || unlocked);
     const idx = accessible.findIndex(s => s.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextCodeModuleId(currentId) {
-    const accessible = codeModules.filter(m => m.isFree || unlocked);
+    const accessible = codeModuleIndex.filter(m => m.isFree || unlocked);
     const idx = accessible.findIndex(m => m.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextBehavioralId(currentId) {
-    const accessible = behavioralQuestions.filter(q => q.isFree || unlocked);
+    const accessible = behavioralIndex.filter(q => q.isFree || unlocked);
     const idx = accessible.findIndex(q => q.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextEstimationId(currentId) {
-    const accessible = estimationProblems.filter(p => p.isFree || unlocked);
+    const accessible = estimationIndex.filter(p => p.isFree || unlocked);
     const idx = accessible.findIndex(p => p.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextPrioritizationId(currentId) {
-    const accessible = prioritizationScenarios.filter(s => s.isFree || unlocked);
+    const accessible = prioritizationIndex.filter(s => s.isFree || unlocked);
     const idx = accessible.findIndex(s => s.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextStatFoundationsId(currentId) {
-    const accessible = statsFoundationsModules.filter(m => m.isFree || unlocked);
+    const accessible = statsFoundationsIndex.filter(m => m.isFree || unlocked);
     const idx = accessible.findIndex(m => m.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextGrowthAnalyticsId(currentId) {
-    const accessible = growthAnalyticsCases.filter(c => c.isFree || unlocked);
+    const accessible = growthAnalyticsIndex.filter(c => c.isFree || unlocked);
     const idx = accessible.findIndex(c => c.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextRCAFoundationId(currentId) {
-    const accessible = rcaFoundationModules.filter(m => m.isFree || unlocked);
+    const accessible = rcaFoundationIndex.filter(m => m.isFree || unlocked);
     const idx = accessible.findIndex(m => m.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function openExpFoundationModule(id) {
-    const m = expFoundationModules.find(m => m.id === id);
+    const m = expFoundationIndex.find(m => m.id === id);
     if (!m) return;
     if (!m.isFree && !unlocked) { track('paywall_hit', { room: 'exp-foundations', id }); setPage('unlock'); return; }
     track('case_opened', { room: 'exp-foundations', id, title: m.title });
@@ -570,59 +557,46 @@ export default function App() {
   }
 
   function getNextExpFoundationId(currentId) {
-    const accessible = expFoundationModules.filter(m => m.isFree || unlocked);
+    const accessible = expFoundationIndex.filter(m => m.isFree || unlocked);
     const idx = accessible.findIndex(m => m.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextMetricsFoundationId(currentId) {
-    const accessible = metricsFoundationModules.filter(m => m.isFree || unlocked);
+    const accessible = metricsFoundationIndex.filter(m => m.isFree || unlocked);
     const idx = accessible.findIndex(m => m.id === currentId);
     if (idx < 0 || idx >= accessible.length - 1) return null;
     return accessible[idx + 1].id;
   }
 
   function getNextStatsId(currentId) {
-    const accessible = statsModules.filter(m => m.isFree || unlocked);
+    const accessible = statsModuleIndex.filter(m => m.isFree || unlocked);
     const idx = accessible.findIndex(m => m.id === currentId);
     return idx >= 0 && idx < accessible.length - 1 ? accessible[idx + 1].id : null;
   }
 
-  const activeScenario = scenarios.find(s => s.id === activeScenarioId);
+  // Runners need the active ID passed as caseId — they import full data internally.
+  // For rooms that pass full data objects (scenario, metricCase etc.), the runners
+  // still receive those via their browser pages which import the full data.
+  // Runners that previously received caseData from App.jsx now look up data themselves.
+
   const nextScenarioId = activeScenarioId ? getNextScenarioId(activeScenarioId) : null;
-  const activeDesignScenario = designScenarios.find(s => s.id === activeDesignScenarioId);
   const nextDesignScenarioId = activeDesignScenarioId ? getNextDesignScenarioId(activeDesignScenarioId) : null;
-  const activeStatsModule = statsModules.find(m => m.id === activeStatsModuleId);
   const nextStatsModuleId = activeStatsModuleId ? getNextStatsId(activeStatsModuleId) : null;
-  const activeMetricsCase = metricCases.find(m => m.id === activeMetricsCaseId);
   const nextMetricsCaseId = activeMetricsCaseId ? getNextMetricsCaseId(activeMetricsCaseId) : null;
-  const activeRCACase = rcaCases.find(r => r.id === activeRCACaseId);
   const nextRCACaseId = activeRCACaseId ? getNextRCACaseId(activeRCACaseId) : null;
-  const activeBusinessCase = businessCases.find(b => b.id === activeBusinessCaseId);
   const nextBusinessCaseId = activeBusinessCaseId ? getNextBusinessCaseId(activeBusinessCaseId) : null;
-  const activePDScenario = productDesignScenarios.find(s => s.id === activePDScenarioId);
   const nextPDScenarioId = activePDScenarioId ? getNextPDScenarioId(activePDScenarioId) : null;
-  const activeCodeModule = codeModules.find(m => m.id === activeCodeModuleId);
   const nextCodeModuleId = activeCodeModuleId ? getNextCodeModuleId(activeCodeModuleId) : null;
-  const activePrioritizationScenario = prioritizationScenarios.find(s => s.id === activePrioritizationId);
   const nextPrioritizationId = activePrioritizationId ? getNextPrioritizationId(activePrioritizationId) : null;
-  const activeBehavioralQuestion = behavioralQuestions.find(q => q.id === activeBehavioralId);
   const nextBehavioralId = activeBehavioralId ? getNextBehavioralId(activeBehavioralId) : null;
-  const activeEstimationProblem = estimationProblems.find(p => p.id === activeEstimationId);
   const nextEstimationId = activeEstimationId ? getNextEstimationId(activeEstimationId) : null;
-  const activeStatFoundationsModule = statsFoundationsModules.find(m => m.id === activeStatFoundationsId);
   const nextStatFoundationsId = activeStatFoundationsId ? getNextStatFoundationsId(activeStatFoundationsId) : null;
-  const activeGrowthAnalyticsCase = growthAnalyticsCases.find(c => c.id === activeGrowthAnalyticsId);
   const nextGrowthAnalyticsId = activeGrowthAnalyticsId ? getNextGrowthAnalyticsId(activeGrowthAnalyticsId) : null;
 
-  const instrIdx = activeInstrumentationCaseId ? instrumentationCases.findIndex(c => c.id === activeInstrumentationCaseId) : -1;
-  const nextInstrumentationCaseId = instrIdx >= 0 && instrIdx < instrumentationCases.length - 1 ? instrumentationCases[instrIdx + 1].id : null;
-
-  function getPairedDesignId(reviewScenarioId) {
-    const d = designScenarios.find(s => s.pairedReviewScenarioId === reviewScenarioId);
-    return d?.id || null;
-  }
+  const instrIdx = activeInstrumentationCaseId ? instrumentationIndex.findIndex(c => c.id === activeInstrumentationCaseId) : -1;
+  const nextInstrumentationCaseId = instrIdx >= 0 && instrIdx < instrumentationIndex.length - 1 ? instrumentationIndex[instrIdx + 1].id : null;
 
   const isFocusMode = page === 'runner' || page.endsWith('-runner');
 
@@ -668,10 +642,10 @@ export default function App() {
         {page === 'stats' && (
           <StatsBrowser onSelectModule={openStatsModule} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} onNavigate={navigate} />
         )}
-        {page === 'stats-runner' && activeStatsModule && (
+        {page === 'stats-runner' && activeStatsModuleId && (
           <StatsRunner
             key={activeStatsModuleId}
-            module={activeStatsModule}
+            caseId={activeStatsModuleId}
             savedProgress={getStatsProgress(activeStatsModuleId)}
             onBack={() => navigate('stats')}
             onGoToReview={id => openScenario(id)}
@@ -684,10 +658,10 @@ export default function App() {
         {page === 'metrics' && (
           <MetricsBrowser onSelectCase={openMetricsCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} onNavigate={navigate} />
         )}
-        {page === 'metrics-runner' && activeMetricsCase && (
+        {page === 'metrics-runner' && activeMetricsCaseId && (
           <MetricsRunner
             key={activeMetricsCaseId}
-            metricCase={activeMetricsCase}
+            caseId={activeMetricsCaseId}
             savedProgress={getMetricsProgress(activeMetricsCaseId)}
             unlocked={unlocked}
             onBack={() => navigate('metrics')}
@@ -701,10 +675,10 @@ export default function App() {
         {page === 'design' && (
           <DesignBrowser onSelectScenario={openDesignScenario} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} />
         )}
-        {page === 'design-runner' && activeDesignScenario && (
+        {page === 'design-runner' && activeDesignScenarioId && (
           <DesignRunner
             key={activeDesignScenarioId}
-            scenario={activeDesignScenario}
+            caseId={activeDesignScenarioId}
             savedProgress={getDesignProgress(activeDesignScenarioId)}
             onBack={() => navigate('design')}
             onGoToReview={id => openScenario(id)}
@@ -715,7 +689,6 @@ export default function App() {
         {/* ── Review Room ── */}
         {page === 'browser' && (
           <ScenarioBrowser
-            scenarios={scenarios}
             allProgress={progressSnapshot}
             onSelect={id => { openScenario(id); refreshProgress(); }}
             unlocked={unlocked}
@@ -723,14 +696,13 @@ export default function App() {
             onOpenArticle={openPlaybookArticle}
           />
         )}
-        {page === 'runner' && activeScenario && (
+        {page === 'runner' && activeScenarioId && (
           <ScenarioRunner
             key={activeScenarioId}
-            scenario={activeScenario}
+            caseId={activeScenarioId}
             onBack={() => { navigate('browser'); refreshProgress(); }}
             onNext={nextScenarioId ? () => { openScenario(nextScenarioId); refreshProgress(); } : null}
             hasNext={!!nextScenarioId}
-            pairedDesignId={getPairedDesignId(activeScenarioId)}
             onGoToDesign={openDesignScenario}
           />
         )}
@@ -739,10 +711,10 @@ export default function App() {
         {page === 'rca' && (
           <RCABrowser onSelectCase={openRCACase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onOpenArticle={openPlaybookArticle} onNavigate={navigate} />
         )}
-        {page === 'rca-runner' && activeRCACase && (
+        {page === 'rca-runner' && activeRCACaseId && (
           <RCARunner
             key={activeRCACaseId}
-            rcaCase={activeRCACase}
+            caseId={activeRCACaseId}
             savedProgress={getRCAProgress(activeRCACaseId)}
             unlocked={unlocked}
             onBack={() => navigate('rca')}
@@ -754,10 +726,10 @@ export default function App() {
         {page === 'cases' && (
           <CasesBrowser onSelectCase={openBusinessCase} unlocked={unlocked} onUnlock={() => navigate('unlock')} onNavigate={navigate} />
         )}
-        {page === 'cases-runner' && activeBusinessCase && (
+        {page === 'cases-runner' && activeBusinessCaseId && (
           <CaseRunner
             key={activeBusinessCaseId}
-            businessCase={activeBusinessCase}
+            caseId={activeBusinessCaseId}
             savedProgress={getCaseProgress(activeBusinessCaseId)}
             unlocked={unlocked}
             onBack={() => navigate('cases')}
@@ -774,10 +746,10 @@ export default function App() {
             onOpenArticle={openPlaybookArticle}
           />
         )}
-        {page === 'product-design-runner' && activePDScenario && (
+        {page === 'product-design-runner' && activePDScenarioId && (
           <ProductDesignRunner
             key={activePDScenarioId}
-            scenario={activePDScenario}
+            caseId={activePDScenarioId}
             savedProgress={getProductDesignProgress(activePDScenarioId)}
             onBack={() => navigate('product-design')}
             onNext={nextPDScenarioId ? () => openPDScenario(nextPDScenarioId) : undefined}
@@ -787,17 +759,16 @@ export default function App() {
         {/* ── Code Room ── */}
         {page === 'code' && (
           <CodeBrowser
-            modules={codeModules}
             onSelectModule={openCodeModule}
             unlocked={unlocked}
             onUnlock={() => navigate('unlock')}
             onOpenArticle={openPlaybookArticle}
           />
         )}
-        {page === 'code-runner' && activeCodeModule && (
+        {page === 'code-runner' && activeCodeModuleId && (
           <CodeRunner
             key={activeCodeModuleId}
-            module={activeCodeModule}
+            caseId={activeCodeModuleId}
             savedProgress={getCodeProgress(activeCodeModuleId)}
             onBack={() => navigate('code')}
             onNext={nextCodeModuleId ? () => openCodeModule(nextCodeModuleId) : undefined}
@@ -812,10 +783,10 @@ export default function App() {
             onOpenArticle={openPlaybookArticle}
           />
         )}
-        {page === 'prioritization-runner' && activePrioritizationScenario && (
+        {page === 'prioritization-runner' && activePrioritizationId && (
           <PrioritizationRunner
             key={activePrioritizationId}
-            scenario={activePrioritizationScenario}
+            caseId={activePrioritizationId}
             onBack={() => navigate('prioritization')}
             onNext={nextPrioritizationId ? () => openPrioritizationScenario(nextPrioritizationId) : undefined}
           />
@@ -825,10 +796,10 @@ export default function App() {
         {page === 'behavioral' && (
           <BehavioralBrowser onStart={openBehavioralQuestion} unlocked={unlocked} />
         )}
-        {page === 'behavioral-runner' && activeBehavioralQuestion && (
+        {page === 'behavioral-runner' && activeBehavioralId && (
           <BehavioralRunner
             key={activeBehavioralId}
-            question={activeBehavioralQuestion}
+            caseId={activeBehavioralId}
             onBack={() => navigate('behavioral')}
             onNext={nextBehavioralId ? () => openBehavioralQuestion(nextBehavioralId) : undefined}
           />
@@ -838,10 +809,10 @@ export default function App() {
         {page === 'estimation' && (
           <EstimationBrowser onStart={openEstimationProblem} unlocked={unlocked} />
         )}
-        {page === 'estimation-runner' && activeEstimationProblem && (
+        {page === 'estimation-runner' && activeEstimationId && (
           <EstimationRunner
             key={activeEstimationId}
-            problem={activeEstimationProblem}
+            caseId={activeEstimationId}
             onBack={() => navigate('estimation')}
             onNext={nextEstimationId ? () => openEstimationProblem(nextEstimationId) : undefined}
           />
@@ -855,7 +826,7 @@ export default function App() {
             onNavigate={navigate}
           />
         )}
-        {page === 'stat-foundations-runner' && activeStatFoundationsModule && (
+        {page === 'stat-foundations-runner' && activeStatFoundationsId && (
           <StatsFoundationsRunner
             key={activeStatFoundationsId}
             moduleId={activeStatFoundationsId}
@@ -877,10 +848,10 @@ export default function App() {
             onNavigate={navigate}
           />
         )}
-        {page === 'growth-analytics-runner' && activeGrowthAnalyticsCase && (
+        {page === 'growth-analytics-runner' && activeGrowthAnalyticsId && (
           <GrowthAnalyticsRunner
             key={activeGrowthAnalyticsId}
-            caseData={activeGrowthAnalyticsCase}
+            caseId={activeGrowthAnalyticsId}
             unlocked={unlocked}
             onBack={() => navigate('growth-analytics')}
             onNext={nextGrowthAnalyticsId ? () => openGrowthAnalyticsCase(nextGrowthAnalyticsId) : undefined}
@@ -913,7 +884,6 @@ export default function App() {
                   setPage(targetPage);
                 }
               }}
-              allData={{ scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases }}
             />
           </Suspense>
         )}
@@ -927,7 +897,7 @@ export default function App() {
         {page === 'bi-runner' && activeBICaseId && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
             <BIRunner
-              caseData={biCasesById[activeBICaseId]}
+              caseId={activeBICaseId}
               onBack={() => setPage('bi')}
               onNext={() => { const n = getNextBICaseId(activeBICaseId); if (n) openBICase(n); else setPage('bi'); }}
               unlocked={unlocked}
@@ -944,7 +914,7 @@ export default function App() {
         {page === 'stf-runner' && activeSTFCaseId && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
             <SpotTheFlawRunner
-              caseData={spotTheFlawCasesById[activeSTFCaseId]}
+              caseId={activeSTFCaseId}
               onBack={() => setPage('spot-the-flaw')}
               onNext={() => { const n = getNextSTFCaseId(activeSTFCaseId); if (n) openSTFCase(n); else setPage('spot-the-flaw'); }}
               unlocked={unlocked}
@@ -961,7 +931,7 @@ export default function App() {
         {page === 'takehome-runner' && activeTakehomeCaseId && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
             <TakehomeRunner
-              caseData={takehomeCasesById[activeTakehomeCaseId]}
+              caseId={activeTakehomeCaseId}
               onBack={() => setPage('take-home')}
               onNext={() => { const n = getNextTakehomeCaseId(activeTakehomeCaseId); if (n) openTakehomeCase(n); else setPage('take-home'); }}
               unlocked={unlocked}
@@ -978,7 +948,7 @@ export default function App() {
         {page === 'instrumentation-runner' && activeInstrumentationCaseId && (
           <Suspense fallback={<div style={{ padding: '2rem', color: 'var(--text-muted)' }}>Loading...</div>}>
             <InstrumentationRunner
-              caseData={instrumentationCasesById[activeInstrumentationCaseId]}
+              caseId={activeInstrumentationCaseId}
               onBack={() => navigate('instrumentation')}
               onNext={nextInstrumentationCaseId ? () => openInstrumentationCase(nextInstrumentationCaseId) : null}
               unlocked={unlocked}
@@ -1016,7 +986,6 @@ export default function App() {
                   setPage(targetPage);
                 }
               }}
-              allData={{ scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases }}
             />
           </Suspense>
         )}
@@ -1025,7 +994,6 @@ export default function App() {
         {page === 'pricing' && <Pricing onShowUnlock={() => setPage('unlock')} onBack={() => setPage('home')} />}
         {page === 'progress' && (
           <Progress
-            scenarios={scenarios}
             allProgress={progressSnapshot}
             onSelect={openScenario}
             onClear={refreshProgress}
@@ -1171,7 +1139,7 @@ export default function App() {
         {page === 'challenges-runner' && activeChallengeId && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
             <ChallengesRunner
-              caseData={challengesCasesById[activeChallengeId]}
+              caseId={activeChallengeId}
               onBack={() => setPage('challenges')}
               onNext={() => {
                 const nextId = getNextChallengeId(activeChallengeId);

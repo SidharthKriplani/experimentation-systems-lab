@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { saveEstimationAttempt, getEstimationProgress } from '../../utils/estimationProgress.js';
 import { track } from '../../utils/analytics.js';
+import { estimationProblems } from '../../data/estimationProblems.js';
 import { Icon } from '../shared/Icon.jsx';
 
 const ROOM_KEY = 'estimation';
@@ -56,7 +57,8 @@ const CATEGORY_LABEL = {
   'capacity':        'Capacity',
 };
 
-export function EstimationRunner({ problem, onBack, onNext }) {
+export function EstimationRunner({ caseId, onBack, onNext }) {
+  const problem = estimationProblems.find(p => p.id === caseId);
   const existing = getEstimationProgress(problem.id);
   const [response, setResponse] = useState(existing?.response || '');
   const [revealed, setRevealed] = useState(!!existing?.rating);

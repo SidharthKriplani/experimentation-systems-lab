@@ -43,7 +43,7 @@ const LEVEL_BG = {
 function Tag({ label, color, bg, border }) {
   return (
     <span style={{
-      fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
       color, background: bg, border: `1px solid ${border || color}`,
       borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem',
     }}>
@@ -69,7 +69,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
         <div style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--yellow)', marginBottom: '0.4rem',
         }}>
           RCA Room
@@ -83,7 +83,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
           <span style={{
-            fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
             color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
             borderRadius: 'var(--radius-sm)', padding: '0.2rem 0.55rem',
           }}>
@@ -110,7 +110,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
           }}>
             <Icon name="book-open" size={14} color="var(--teal)" style={{ flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.15rem' }}>Recommended starting point</div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
                 <button onClick={() => onNavigate('rca-foundations')} style={{
                   background: 'none', border: 'none', padding: 0,
@@ -251,7 +251,7 @@ function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCas
         <Tag label={diffCfg.label} color={diffCfg.color} bg={diffCfg.bg} border={diffCfg.border} />
         {progress && !isLocked && (
           <span style={{
-            marginLeft: 'auto', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            marginLeft: 'auto', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
             color: levelColor, background: levelBg, border: `1px solid ${levelColor}`,
             borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem',
           }}>
@@ -280,7 +280,7 @@ function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCas
         color: 'var(--text)',
         lineHeight: 1.5,
       }}>
-        <span style={{ fontWeight: 700, color: 'var(--yellow)', marginRight: '0.4rem', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        <span style={{ fontWeight: 700, color: 'var(--yellow)', marginRight: '0.4rem', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
           Movement
         </span>
         {rcaCase.context.metricMovement}

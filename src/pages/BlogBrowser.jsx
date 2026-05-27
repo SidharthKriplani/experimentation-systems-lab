@@ -1727,12 +1727,12 @@ function PostReader({ post, cfg, onBack, onNavigate }) {
       {/* Category + read time */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.8rem' }}>
         <span style={{
-          fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
           color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{post.category}</span>
         <span style={{
-          fontSize: '0.62rem', color: 'var(--text-dim)',
+          fontSize: '0.68rem', color: 'var(--text-dim)',
           background: 'var(--surface-2)', border: '1px solid var(--border)',
           borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
         }}>{post.readMin} min read</span>
@@ -1787,7 +1787,7 @@ function PostReader({ post, cfg, onBack, onNavigate }) {
                 borderRadius: 'var(--radius)', padding: '1rem 1.2rem',
               }}>
                 <div style={{
-                  fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
                   letterSpacing: '0.08em', color: 'var(--accent)', marginBottom: '0.5rem',
                 }}>
                   {block.label}
@@ -1811,7 +1811,7 @@ function PostReader({ post, cfg, onBack, onNavigate }) {
                 borderLeft: '3px solid var(--accent)',
               }}>
                 <div style={{
-                  fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase',
+                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
                   letterSpacing: '0.08em', color: 'var(--accent)', marginBottom: '0.45rem',
                 }}>
                   {block.label}
@@ -1902,7 +1902,7 @@ export function BlogBrowser({ onNavigate }) {
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--accent)', marginBottom: '0.4rem',
         }}>
           Learn
@@ -1963,7 +1963,7 @@ export function BlogBrowser({ onNavigate }) {
                 fontSize: '0.88rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.01em',
               }}>{cat}</span>
               <span style={{
-                fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+                fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
                 color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
                 borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.45rem',
               }}>{posts.length} articles</span>
@@ -2017,24 +2017,24 @@ function PostCard({ post, cfg, onClick }) {
       {/* Badges */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
         <span style={{
-          fontSize: '0.56rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
           color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
           borderRadius: 'var(--radius-sm)', padding: '0.07rem 0.32rem',
         }}>{post.category}</span>
         <span style={{
-          fontSize: '0.56rem', color: 'var(--text-dim)',
+          fontSize: '0.68rem', color: 'var(--text-dim)',
           background: 'var(--surface-2)', border: '1px solid var(--border)',
           borderRadius: 'var(--radius-sm)', padding: '0.07rem 0.32rem',
         }}>{post.readMin} min read</span>
         {hasContent ? (
           <span style={{
-            fontSize: '0.56rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
             color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
             borderRadius: 'var(--radius-sm)', padding: '0.07rem 0.32rem', marginLeft: 'auto',
           }}>Read Now</span>
         ) : (
           <span style={{
-            fontSize: '0.56rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
             color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
             borderRadius: 'var(--radius-sm)', padding: '0.07rem 0.32rem', marginLeft: 'auto',
           }}>Coming Soon</span>

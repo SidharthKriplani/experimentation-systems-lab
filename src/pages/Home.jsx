@@ -324,82 +324,163 @@ export function Home({ onNavigate }) {
             background: 'var(--gradient-hero)', borderRadius: 'inherit',
           }} />
 
-          {/* Badge */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-            background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
-            borderRadius: 20, padding: '0.22rem 0.8rem',
-            fontSize: '0.72rem', fontWeight: 700, color: 'var(--accent)',
-            marginBottom: '1.35rem', letterSpacing: '0.02em',
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
-            150+ practice cases · Free to start
-          </div>
+          <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexWrap: 'wrap', position: 'relative' }}>
 
-          {/* Headline */}
-          <div style={{ marginBottom: '1.1rem' }}>
-            <div style={{
-              fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 900,
-              lineHeight: 1.1, letterSpacing: '-0.04em', color: 'var(--text)',
-            }}>
-              You know the framework.
+            {/* LEFT: copy */}
+            <div style={{ flex: '1 1 280px', minWidth: 240 }}>
+
+              {/* Badge */}
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+                borderRadius: 20, padding: '0.22rem 0.8rem',
+                fontSize: '0.72rem', fontWeight: 700, color: 'var(--accent)',
+                marginBottom: '1.35rem', letterSpacing: '0.02em',
+              }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
+                150+ practice cases · Free to start
+              </div>
+
+              {/* Headline */}
+              <div style={{ marginBottom: '1.1rem' }}>
+                <div style={{
+                  fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 900,
+                  lineHeight: 1.1, letterSpacing: '-0.04em', color: 'var(--text)',
+                }}>
+                  You know the framework.
+                </div>
+                <div style={{
+                  fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 900,
+                  lineHeight: 1.1, letterSpacing: '-0.04em', color: 'var(--accent)',
+                }}>
+                  Can you diagnose the drop?
+                </div>
+              </div>
+
+              {/* Subtitle */}
+              <p style={{
+                fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.65,
+                maxWidth: 500, margin: '0 0 1.75rem', position: 'relative',
+              }}>
+                Interview prep for product analysts and PMs. 17 practice rooms — A/B testing,
+                metric diagnosis, RCA, growth analytics, and more. Each case puts you in a real
+                scenario and tests your judgment, not your memory.
+              </p>
+
+              {/* CTAs */}
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.1rem', position: 'relative' }}>
+                <button
+                  onClick={() => onNavigate('stat-foundations')}
+                  style={{
+                    background: 'var(--accent)', color: '#fff', border: 'none',
+                    borderRadius: 'var(--radius)', padding: '0.75rem 1.6rem',
+                    fontSize: '0.95rem', fontWeight: 700, cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(67,56,202,0.35)',
+                  }}
+                >
+                  Start practicing →
+                </button>
+                <button
+                  onClick={() => onNavigate('pricing')}
+                  style={{
+                    background: 'var(--surface-2)', color: 'var(--text)',
+                    border: '1px solid var(--border)', borderRadius: 'var(--radius)',
+                    padding: '0.75rem 1.6rem', fontSize: '0.95rem', fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  See what's inside
+                </button>
+              </div>
+
+              {/* Trust line */}
+              <div style={{
+                fontSize: '0.76rem', color: 'var(--text-dim)',
+                display: 'flex', gap: '0.5rem', flexWrap: 'wrap',
+                alignItems: 'center', position: 'relative',
+              }}>
+                {['Free to start', 'No account required', 'Works offline', 'Full access $49 one-time'].map((item, i) => (
+                  <span key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    {i > 0 && <span style={{ opacity: 0.4 }}>·</span>}
+                    {item}
+                  </span>
+                ))}
+              </div>
+
             </div>
+
+            {/* RIGHT: product preview mockup */}
             <div style={{
-              fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 900,
-              lineHeight: 1.1, letterSpacing: '-0.04em', color: 'var(--accent)',
+              flex: '0 1 300px', minWidth: 260, maxWidth: 320,
+              background: 'var(--surface-2)', border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)', overflow: 'hidden',
+              boxShadow: 'var(--shadow)',
             }}>
-              Can you diagnose the drop?
+              {/* Mockup header */}
+              <div style={{
+                background: 'var(--surface)', borderBottom: '1px solid var(--border)',
+                padding: '0.6rem 0.9rem',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>Stats Room · Case Preview</span>
+                </div>
+                <span style={{ fontSize: '0.68rem', color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 4, padding: '0.1rem 0.4rem', fontWeight: 700 }}>Free</span>
+              </div>
+
+              {/* Scenario question */}
+              <div style={{ padding: '0.85rem 0.9rem 0' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1.45, marginBottom: '0.7rem' }}>
+                  p = 0.04. Your PM wants to ship. What do you check first?
+                </div>
+
+                {/* Options */}
+                {[
+                  { letter: 'A', text: 'Check for Sample Ratio Mismatch (SRM)', correct: true },
+                  { letter: 'B', text: 'Ship — p < 0.05 is the standard threshold' },
+                  { letter: 'C', text: 'Extend the test to reach 95% power' },
+                  { letter: 'D', text: 'Segment results by device and OS first' },
+                ].map(opt => (
+                  <div key={opt.letter} style={{
+                    display: 'flex', alignItems: 'flex-start', gap: '0.5rem',
+                    padding: '0.4rem 0.55rem', marginBottom: '0.28rem',
+                    borderRadius: 6,
+                    background: opt.correct ? 'var(--green-bg)' : 'var(--surface)',
+                    border: '1px solid ' + (opt.correct ? 'var(--green-border)' : 'var(--border)'),
+                  }}>
+                    <span style={{ fontWeight: 800, fontSize: '0.72rem', flexShrink: 0, marginTop: 1, color: opt.correct ? 'var(--green)' : 'var(--text-muted)' }}>{opt.letter}</span>
+                    <span style={{ fontSize: '0.78rem', color: opt.correct ? 'var(--green)' : 'var(--text-muted)', lineHeight: 1.4, flex: 1 }}>{opt.text}</span>
+                    {opt.correct && <span style={{ color: 'var(--green)', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>✓</span>}
+                  </div>
+                ))}
+              </div>
+
+              {/* Debrief strip */}
+              <div style={{
+                margin: '0.65rem 0.9rem 0.8rem',
+                background: 'var(--surface)', border: '1px solid var(--border)',
+                borderLeft: '3px solid var(--green)',
+                borderRadius: '0 6px 6px 0', padding: '0.5rem 0.65rem',
+              }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Debrief</div>
+                <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                  SRM means your randomization is broken — p-values are invalid until you rule it out. Always check SRM before interpreting any result.
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div style={{ borderTop: '1px solid var(--border)', padding: '0.5rem 0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>1 of 25 cases in this room</span>
+                <button
+                  onClick={() => onNavigate('stats')}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontSize: '0.75rem', fontWeight: 700, padding: 0 }}
+                >
+                  Try it live →
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Subtitle */}
-          <p style={{
-            fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.65,
-            maxWidth: 500, margin: '0 0 1.75rem', position: 'relative',
-          }}>
-            Interview prep for product analysts and PMs. 17 practice rooms — A/B testing,
-            metric diagnosis, RCA, growth analytics, and more. Each case puts you in a real
-            scenario and tests your judgment, not your memory.
-          </p>
-
-          {/* CTAs */}
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.1rem', position: 'relative' }}>
-            <button
-              onClick={() => onNavigate('stat-foundations')}
-              style={{
-                background: 'var(--accent)', color: '#fff', border: 'none',
-                borderRadius: 'var(--radius)', padding: '0.75rem 1.6rem',
-                fontSize: '0.95rem', fontWeight: 700, cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(67,56,202,0.35)',
-              }}
-            >
-              Start practicing →
-            </button>
-            <button
-              onClick={() => onNavigate('pricing')}
-              style={{
-                background: 'var(--surface-2)', color: 'var(--text)',
-                border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-                padding: '0.75rem 1.6rem', fontSize: '0.95rem', fontWeight: 600,
-                cursor: 'pointer',
-              }}
-            >
-              See what's inside
-            </button>
-          </div>
-
-          {/* Trust line */}
-          <div style={{
-            fontSize: '0.76rem', color: 'var(--text-dim)',
-            display: 'flex', gap: '0.5rem', flexWrap: 'wrap',
-            alignItems: 'center', position: 'relative',
-          }}>
-            {['Free to start', 'No account required', 'Works offline', 'Full access $49 one-time'].map((item, i) => (
-              <span key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                {i > 0 && <span style={{ opacity: 0.4 }}>·</span>}
-                {item}
-              </span>
-            ))}
           </div>
         </div>
       )}
@@ -416,7 +497,7 @@ export function Home({ onNavigate }) {
 
       {/* ── Today: drill + brief ─────────────────────────────────────────── */}
       <div style={{ marginBottom: '2rem' }}>
-        <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
           Today
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'stretch', flexWrap: 'wrap' }}>
@@ -513,7 +594,7 @@ export function Home({ onNavigate }) {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.4rem', marginTop: 8 }}>
               <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
                 {todaysBrief.tags.map(tag => (
-                  <span key={tag} style={{ fontSize: '0.66rem', fontWeight: 600, background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-dim)', borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem', letterSpacing: '0.02em' }}>
+                  <span key={tag} style={{ fontSize: '0.68rem', fontWeight: 600, background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-dim)', borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem', letterSpacing: '0.02em' }}>
                     {tag}
                   </span>
                 ))}
@@ -533,7 +614,7 @@ export function Home({ onNavigate }) {
       {/* ── Jump back in / Start here ───────────────────────────────────── */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
             {sectionLabel}
           </div>
           {visitedRooms.length === 0 && (
@@ -601,7 +682,7 @@ export function Home({ onNavigate }) {
       {/* ── Guided paths ────────────────────────────────────────────────── */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>
             Guided Paths
           </div>
           <button
@@ -627,7 +708,7 @@ export function Home({ onNavigate }) {
                 cursor: 'pointer', boxShadow: 'var(--shadow-sm)',
               }}
             >
-              <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: path.color, marginBottom: '0.25rem' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: path.color, marginBottom: '0.25rem' }}>
                 {path.sequence.length} items
               </div>
               <div style={{ fontSize: '0.87rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.2rem', lineHeight: 1.3 }}>

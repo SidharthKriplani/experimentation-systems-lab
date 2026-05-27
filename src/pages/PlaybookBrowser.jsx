@@ -4875,7 +4875,7 @@ export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
                 <span style={{ fontSize: '0.95rem' }}>{cfg.icon}</span>
                 <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.01em' }}>{cat}</span>
                 <span style={{
-                  fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
+                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
                   color: cfg.color, background: cfg.bg, border: '1px solid ' + cfg.border,
                   borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.38rem',
                 }}>{posts.filter(p => p.content).length}/{posts.length}</span>
@@ -4930,7 +4930,7 @@ function RefCard({ post, cfg, onOpenItem, onRead }) {
         </div>
         {hasContent && (
           <span style={{
-            fontSize: '0.58rem', fontWeight: 700, flexShrink: 0,
+            fontSize: '0.68rem', fontWeight: 700, flexShrink: 0,
             color: cfg.color, marginTop: '0.1rem',
           }}>→</span>
         )}
@@ -4952,14 +4952,14 @@ function RefCard({ post, cfg, onOpenItem, onRead }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap', marginTop: '0.1rem' }}>
         {post.source && (
           <span style={{
-            fontSize: '0.58rem', color: 'var(--red)', background: 'var(--red-bg)',
+            fontSize: '0.68rem', color: 'var(--red)', background: 'var(--red-bg)',
             border: '1px solid var(--red-border)',
             borderRadius: 'var(--radius-sm)', padding: '0.05rem 0.3rem',
           }}>🏢 {post.source}</span>
         )}
         {!hasContent && (
           <span style={{
-            fontSize: '0.58rem', color: 'var(--yellow)', background: 'var(--yellow-bg)',
+            fontSize: '0.68rem', color: 'var(--yellow)', background: 'var(--yellow-bg)',
             border: '1px solid var(--yellow-border)',
             borderRadius: 'var(--radius-sm)', padding: '0.05rem 0.3rem',
           }}>soon</span>
@@ -4973,7 +4973,7 @@ function RefCard({ post, cfg, onOpenItem, onRead }) {
               style={{
                 background: 'none', border: '1px solid var(--border)',
                 borderRadius: 'var(--radius-sm)', padding: '0.05rem 0.3rem',
-                fontSize: '0.6rem', color: rc?.color || 'var(--text-muted)',
+                fontSize: '0.68rem', color: rc?.color || 'var(--text-muted)',
                 cursor: onOpenItem ? 'pointer' : 'default', fontWeight: 500,
                 transition: 'border-color 0.1s',
               }}

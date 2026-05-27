@@ -1,4 +1,17 @@
 import { useState } from 'react';
+import { scenarios } from '../data/scenarios.js';
+import { designScenarios } from '../data/designScenarios.js';
+import { statsModules } from '../data/statsModules.js';
+import { metricCases } from '../data/metricCases.js';
+import { rcaCases } from '../data/rcaCases.js';
+import { businessCases } from '../data/businessCases.js';
+import { productDesignScenarios } from '../data/productDesignScenarios.js';
+import { codeModules } from '../data/codeModules.js';
+import { prioritizationScenarios } from '../data/prioritizationScenarios.js';
+import { behavioralQuestions } from '../data/behavioralQuestions.js';
+import { estimationProblems } from '../data/estimationProblems.js';
+import { statsFoundationsModules } from '../data/statsFoundationsModules.js';
+import { growthAnalyticsCases } from '../data/growthAnalyticsCases.js';
 
 // ─── Keyword → Room mapping ───────────────────────────────────────────────────
 const KEYWORD_MAP = [
@@ -188,7 +201,8 @@ function truncateTitle(title) {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
+export function DefenseDocGenerator({ onBack, onNavigate }) {
+  const allData = { scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases };
   const [jdText, setJdText]   = useState('');
   const [plan,   setPlan]     = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -232,7 +246,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', marginBottom: '0.5rem' }}>
           <span style={{ width: 36, height: 36, borderRadius: 9, background: 'var(--purple-bg)', border: '1px solid var(--purple-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', flexShrink: 0 }}>🛡</span>
           <div>
-            <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--purple)', marginBottom: 2 }}>Prep Tools</div>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--purple)', marginBottom: 2 }}>Prep Tools</div>
             <h1 style={{ fontSize: '1.55rem', fontWeight: 700, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>Defense Doc</h1>
           </div>
         </div>
@@ -355,7 +369,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, allData }) {
                       <span style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text)' }}>{dayObj.label}</span>
                       <span style={{ fontWeight: 600, fontSize: '0.78rem', color: 'var(--text-muted)' }}>— {dayObj.theme}</span>
                     </div>
-                    <span style={{ fontSize: '0.66rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: accentColor, background: accentBg, border: '1px solid ' + accentBorder, borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.45rem' }}>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: accentColor, background: accentBg, border: '1px solid ' + accentBorder, borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.45rem' }}>
                       {tier}
                     </span>
                   </div>

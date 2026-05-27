@@ -19,7 +19,7 @@ function DifficultyBadge({ difficulty }) {
   const cfg = DIFFICULTY_CONFIG[difficulty] || DIFFICULTY_CONFIG.medium;
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
       color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.45rem',
     }}>
@@ -31,7 +31,7 @@ function DifficultyBadge({ difficulty }) {
 function CategoryBadge({ category }) {
   return (
     <span style={{
-      fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em',
+      fontSize: '0.68rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em',
       color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border)',
       borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.45rem',
     }}>
@@ -50,7 +50,7 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--purple)', marginBottom: '0.4rem',
         }}>
           Product Design Room
@@ -149,7 +149,7 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                 {/* Company dot */}
                 <span style={{
-                  fontSize: '0.65rem', fontWeight: 700,
+                  fontSize: '0.68rem', fontWeight: 700,
                   color: scenario.companyColor || 'var(--accent)',
                   background: 'var(--surface-2)', border: '1px solid var(--border)',
                   borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.45rem',
@@ -160,7 +160,7 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
                 <CategoryBadge category={scenario.category} />
                 {scenario.isFree && idx === 0 && (
                   <span style={{
-                    fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                    fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
                     color: 'var(--green)', background: 'var(--green-bg)', border: '1px solid var(--green-border)',
                     borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
                   }}>
@@ -169,7 +169,7 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
                 )}
                 {isLocked && (
                   <span style={{
-                    fontSize: '0.6rem', fontWeight: 700, color: 'var(--text-muted)',
+                    fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)',
                     marginLeft: 'auto',
                   }}>
                     🔒 Unlock

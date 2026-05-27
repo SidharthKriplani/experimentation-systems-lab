@@ -78,7 +78,7 @@ export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
           </span>
           <div>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.1em', color: 'var(--yellow)', marginBottom: '0.15rem',
             }}>
               BI &amp; Reporting Room

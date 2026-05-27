@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { saveTakehomeProgress } from '../../utils/takehomeProgress.js';
 import { track } from '../../utils/analytics.js';
+import { takehomeCases } from '../../data/takehomeCases.js';
 import { DebriefCopyButton } from '../shared/DebriefCopyButton.jsx';
 
 const NOTES_KEY = 'pal-notes-v1';
@@ -37,7 +38,8 @@ function countWords(text) {
   return text.trim().split(/\s+/).length;
 }
 
-export function TakehomeRunner({ caseData, onBack, onNext, unlocked }) {
+export function TakehomeRunner({ caseId, onBack, onNext, unlocked }) {
+  const caseData = takehomeCases.find(c => c.id === caseId);
   const [phase, setPhase] = useState('brief');
   const [timeLeft, setTimeLeft] = useState(caseData.durationMin * 60);
   const [timerActive, setTimerActive] = useState(false);

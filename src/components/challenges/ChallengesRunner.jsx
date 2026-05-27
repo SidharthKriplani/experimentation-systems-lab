@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { saveChallengesProgress } from '../../utils/challengesProgress.js';
 import { track } from '../../utils/analytics.js';
+import { challengesCases } from '../../data/challengesCases.js';
 
 const NOTES_KEY = 'pal-notes-v1';
 
@@ -67,7 +68,8 @@ const RATING_OPTIONS = [
 ];
 
 // ─── Main Runner ─────────────────────────────────────────────────────────────
-export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
+export function ChallengesRunner({ caseId, onBack, onNext, unlocked }) {
+  const caseData = challengesCases.find(c => c.id === caseId);
   const [screen, setScreen] = useState('scenario'); // 'scenario' | 'question' | 'synthesis' | 'debrief'
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState({}); // { [qId]: string }
@@ -180,7 +182,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
           padding: '1.5rem',
           marginBottom: '1.5rem',
         }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--red)', marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--red)', marginBottom: '0.75rem' }}>
             Scenario
           </div>
           <div style={{ color: 'var(--text)', fontSize: '0.9rem', lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
@@ -196,7 +198,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
           padding: '1.25rem',
           marginBottom: '1.5rem',
         }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
             You will be asked about
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
@@ -318,7 +320,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
             borderRadius: '6px', padding: '0.75rem 1rem', marginBottom: '0.75rem',
             fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6,
           }}>
-            <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginRight: '0.5rem' }}>Hint</span>
+            <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--yellow)', marginRight: '0.5rem' }}>Hint</span>
             {currentQ.hint}
           </div>
         )}
@@ -385,7 +387,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
                 background: 'var(--surface-2)', border: '1px solid var(--border-subtle)',
                 borderRadius: '8px', padding: '0.9rem 1rem',
               }}>
-                <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
                   Your Answer
                 </div>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.65, margin: 0, whiteSpace: 'pre-wrap' }}>
@@ -401,7 +403,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
               borderRadius: '10px',
               padding: '1.25rem',
             }}>
-              <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: qrc.color || 'var(--red)', marginBottom: '0.65rem' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: qrc.color || 'var(--red)', marginBottom: '0.65rem' }}>
                 Model Answer — {currentQ.label}
               </div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.75, margin: '0 0 1rem', whiteSpace: 'pre-wrap' }}>
@@ -410,7 +412,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
 
               {/* Key points self-check */}
               <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.85rem' }}>
-                <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.55rem' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.55rem' }}>
                   Did your answer cover these?
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
@@ -477,7 +479,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
         <ProgressBar current={totalQs} total={totalQs} />
 
         <div style={{ marginBottom: '1.25rem' }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--red)', marginBottom: '0.3rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--red)', marginBottom: '0.3rem' }}>
             Synthesis
           </div>
           <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>
@@ -500,7 +502,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
 
         {/* Your answers recap */}
         <div style={{ marginBottom: '1.5rem' }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
             Your Answers
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -567,7 +569,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
         <BackButton onBack={() => setScreen('synthesis')} label="← Back to Synthesis" />
 
         <div style={{ marginBottom: '1.25rem' }}>
-          <div style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--red)', marginBottom: '0.3rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--red)', marginBottom: '0.3rem' }}>
             Debrief
           </div>
           <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>
@@ -583,7 +585,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
           padding: '1.25rem',
           marginBottom: '1.25rem',
         }}>
-          <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--red)', marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--red)', marginBottom: '0.75rem' }}>
             Key Takeaways
           </div>
           <ul style={{ margin: 0, paddingLeft: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -603,7 +605,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
           padding: '1.25rem',
           marginBottom: '1.25rem',
         }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
             Overall — How did you do?
           </div>
           <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
@@ -661,7 +663,7 @@ export function ChallengesRunner({ caseData, onBack, onNext, unlocked }) {
         {/* Playbook links */}
         {caseData.playbookLinks && caseData.playbookLinks.length > 0 && (
           <div style={{ marginBottom: '1.5rem' }}>
-            <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
               Related Playbook Articles
             </div>
             <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap' }}>

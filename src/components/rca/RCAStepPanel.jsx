@@ -21,7 +21,7 @@ export function RCAStepPanel({ step, selectedId, onSelect, submitted, stepNumber
       {/* Step indicator */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.65rem' }}>
         <span style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)',
           borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.5rem',
         }}>
@@ -117,7 +117,7 @@ export function RCAStepPanel({ step, selectedId, onSelect, submitted, stepNumber
                   borderLeft: `3px solid ${optLevelStyle.border}`,
                 }}>
                   <div style={{
-                    fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+                    fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
                     color: optLevelStyle.border, marginBottom: '0.3rem',
                   }}>
                     {optLevelStyle.label}

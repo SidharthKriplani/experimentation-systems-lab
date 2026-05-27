@@ -39,7 +39,7 @@ export function ConceptDrawer({ conceptId, onClose }) {
       }}>
         {/* Drawer label */}
         <div style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--text-dim)', marginBottom: '1rem',
         }}>
           Concept Reference

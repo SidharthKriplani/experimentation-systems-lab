@@ -117,7 +117,7 @@ export function BookmarksBrowser({ onNavigate, onBack }) {
           </span>
           <div>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.1em', color: 'var(--purple)', marginBottom: '0.15rem',
             }}>
               Saved for Later

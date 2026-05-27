@@ -60,7 +60,7 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
           </span>
           <div>
             <div style={{
-              fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+              fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.1em', color: 'var(--red)', marginBottom: '0.15rem',
             }}>
               Cross-Room Challenges

@@ -32,7 +32,7 @@ export function ConceptCard({ conceptId, onClose }) {
             </h3>
           </div>
           <span style={{
-            fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
             color: categoryColor.color, background: categoryColor.bg, border: `1px solid ${categoryColor.border}`,
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem',
           }}>{categoryLabel}</span>
@@ -55,7 +55,7 @@ export function ConceptCard({ conceptId, onClose }) {
           borderLeft: '3px solid var(--teal)',
           borderRadius: 'var(--radius-sm)', padding: '0.6rem 0.75rem',
         }}>
-          <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.3rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '0.3rem' }}>
             Interview phrasing
           </div>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
@@ -67,7 +67,7 @@ export function ConceptCard({ conceptId, onClose }) {
       {/* Linked scenarios */}
       {concept.linkedScenarioIds?.length > 0 && (
         <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.65rem' }}>
-          <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.35rem' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.35rem' }}>
             Appears in
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
@@ -88,7 +88,7 @@ export function ConceptCard({ conceptId, onClose }) {
 function Section({ label, value, highlight }) {
   return (
     <div>
-      <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.25rem' }}>
+      <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-dim)', marginBottom: '0.25rem' }}>
         {label}
       </div>
       <p style={{

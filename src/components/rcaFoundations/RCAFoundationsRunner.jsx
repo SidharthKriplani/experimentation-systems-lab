@@ -170,7 +170,7 @@ function Module_RF01({ onComplete }) {
               <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
                 {LAYERS.map(layer => (
                   <button key={layer.id} onClick={() => assign(i, layer.id)} style={{
-                    fontSize: '0.65rem', padding: '0.15rem 0.4rem',
+                    fontSize: '0.68rem', padding: '0.15rem 0.4rem',
                     background: 'var(--surface)', border: '1px solid var(--border)',
                     borderRadius: 3, color: layer.color, cursor: 'pointer', fontWeight: 600,
                   }}>
@@ -452,7 +452,7 @@ function Module_RF04({ onComplete }) {
           }}>
             <div style={{ flex: 1, fontSize: '0.85rem', color: 'var(--text)', minWidth: 160 }}>
               <span style={{
-                fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-muted)',
+                fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)',
                 background: 'var(--surface-2)', border: '1px solid var(--border)',
                 borderRadius: 3, padding: '0.1rem 0.35rem', marginRight: '0.5rem',
               }}>

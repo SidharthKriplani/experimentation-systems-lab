@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { metricCases } from '../../data/metricCases.js';
 import { MetricChoicePanel } from './MetricChoicePanel.jsx';
 import { MetricScoreReveal } from './MetricScoreReveal.jsx';
 import { MetricDebriefPanel } from './MetricDebriefPanel.jsx';
@@ -36,7 +37,8 @@ function computeScore(metricCase, fieldChoices) {
   return { score, maxScore, level, pct };
 }
 
-export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign, onGoToReview, onNext }) {
+export function MetricsRunner({ caseId, savedProgress, onBack, onGoToDesign, onGoToReview, onNext }) {
+  const metricCase = metricCases.find(m => m.id === caseId);
   const hasExisting = !!(savedProgress && savedProgress.fieldChoices);
 
   const [fieldChoices, setFieldChoices] = useState(
@@ -93,7 +95,7 @@ export function MetricsRunner({ metricCase, savedProgress, onBack, onGoToDesign,
       {/* Case header */}
       <div style={{ marginBottom: '1.5rem' }}>
         <div style={{
-          fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
           letterSpacing: '0.09em', color: 'var(--green)', marginBottom: '0.35rem',
         }}>
           {metricCase.id} · {metricCase.domain}
@@ -238,7 +240,7 @@ function ContextPanel({ context }) {
         borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.7rem',
       }}>
         <div style={{
-          fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
           letterSpacing: '0.07em', color: 'var(--yellow)', marginBottom: '0.25rem',
         }}>Business pressure</div>
         <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
@@ -252,7 +254,7 @@ function ContextPanel({ context }) {
         borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.7rem',
       }}>
         <div style={{
-          fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
           letterSpacing: '0.07em', color: 'var(--red)', marginBottom: '0.25rem',
         }}>The common trap</div>
         <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
@@ -266,7 +268,7 @@ function ContextPanel({ context }) {
 function CtxLabel({ children }) {
   return (
     <div style={{
-      fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
       letterSpacing: '0.09em', color: 'var(--text-dim)',
     }}>{children}</div>
   );

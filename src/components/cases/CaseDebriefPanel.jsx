@@ -10,7 +10,7 @@ export function CaseDebriefPanel({ businessCase, onRetry, onBack, onNext }) {
       {/* Section label */}
       <div>
         <div style={{
-          fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
+          fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--purple)', marginBottom: '0.5rem',
         }}>
           Senior Answer
@@ -156,7 +156,7 @@ export function CaseDebriefPanel({ businessCase, onRetry, onBack, onNext }) {
 function SectionLabel({ children }) {
   return (
     <div style={{
-      fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
       color: 'var(--text-dim)', marginBottom: '0.55rem',
     }}>
       {children}

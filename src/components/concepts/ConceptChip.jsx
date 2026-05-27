@@ -31,7 +31,7 @@ export function ConceptChip({ id, onOpen, variant = 'inline' }) {
         }}
       >
         {concept.title}
-        <span style={{ fontSize: '0.6rem', opacity: 0.7 }}>↗</span>
+        <span style={{ fontSize: '0.68rem', opacity: 0.7 }}>↗</span>
       </button>
     );
   }
@@ -44,7 +44,7 @@ export function ConceptChip({ id, onOpen, variant = 'inline' }) {
       style={{
         background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
         borderRadius: '3px', padding: '0.05rem 0.3rem',
-        color: 'var(--accent)', fontSize: '0.62rem', fontWeight: 700,
+        color: 'var(--accent)', fontSize: '0.68rem', fontWeight: 700,
         cursor: 'pointer', transition: 'all 0.1s',
         verticalAlign: 'middle', lineHeight: 1.2, marginLeft: '0.2rem',
         display: 'inline-flex', alignItems: 'center', gap: '0.15rem',
@@ -76,7 +76,7 @@ export function ConceptsSection({ conceptIds, onOpen, title = 'Concepts in this 
       borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem', marginTop: '1rem',
     }}>
       <div style={{
-        fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
         color: 'var(--text-dim)', marginBottom: '0.5rem',
       }}>
         {title}

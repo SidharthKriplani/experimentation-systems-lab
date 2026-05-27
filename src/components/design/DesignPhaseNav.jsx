@@ -39,7 +39,7 @@ export function DesignPhaseNav({ phases, currentPhaseIndex, completedPhaseIds, o
             }}
           >
             {isCompleted && !isCurrent && (
-              <span style={{ fontSize: '0.65rem', color: 'var(--teal)' }}>✓</span>
+              <span style={{ fontSize: '0.68rem', color: 'var(--teal)' }}>✓</span>
             )}
             <span>{i + 1}. {phase.label}</span>
           </button>

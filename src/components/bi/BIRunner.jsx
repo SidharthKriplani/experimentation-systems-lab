@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { saveBIProgress, getBIProgress } from '../../utils/biProgress.js';
 import { track } from '../../utils/analytics.js';
+import { biCases } from '../../data/biCases.js';
 
 const ROOM_KEY = 'bi';
 const NOTES_KEY = 'pal-notes-v1';
@@ -547,7 +548,8 @@ function RevealScreen({ caseData, onBack, onNext, unlocked }) {
 }
 
 // Main runner — manages screen state
-export function BIRunner({ caseData, onBack, onNext, unlocked }) {
+export function BIRunner({ caseId, onBack, onNext, unlocked }) {
+  const caseData = biCases.find(c => c.id === caseId);
   const [screen, setScreen] = useState('situation');
 
   function handleBegin() {

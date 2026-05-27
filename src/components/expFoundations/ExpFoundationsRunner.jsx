@@ -922,7 +922,7 @@ export function ExpFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
       <div style={{ marginBottom: '1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
           <span style={{
-            fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
             color: 'var(--accent)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.45rem',
           }}>
