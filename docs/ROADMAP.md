@@ -1,61 +1,63 @@
 # Product Analytics Lab — Roadmap
 
-**Current version:** V4.21  
-**Last updated:** 2026-05  
+**Current version:** V4.25  
+**Last updated:** 2026-05-27  
 **Status:** Active development — beta access open
 
 ---
 
-## Active Sprint: V4.20–V4.23 — Conversion + Quality pass
+## Sprint recap: V4.20–V4.25 — Conversion + Quality pass ✅ COMPLETE
 
-Priority levels defined during the "take my money?" audit (2026-05-27). Work through them in order.
+Priority levels defined during the "take my money?" audit (2026-05-27). All P0–P3 items shipped. P4 (auth) partially shipped.
 
-### P0 — Build integrity / credibility killers ✅ DONE (V4.20)
-Items that would embarrass the product in front of a technical user or break trust immediately.
+### P0 — Build integrity ✅ DONE (V4.20)
 
 | Item | Status | Version |
 |------|--------|---------|
-| App.jsx static data imports (~1MB initial bundle) — replace with caseIndex.js slim arrays, move full data into each runner | ✅ done | V4.20 |
+| App.jsx static data imports (~1MB initial bundle) — replace with caseIndex.js slim arrays | ✅ done | V4.20 |
 | "Junior Miss" label in Progress.jsx — replace with "Junior-Ready" | ✅ done | V4.20 |
-| Font size floor: 0.68rem minimum across all JSX — accessibility threshold | ✅ done | V4.20 |
+| Font size floor: 0.68rem minimum across all JSX | ✅ done | V4.20 |
 
-### P1 — Conversion delta ✅ DONE (V4.21)
-The gap between "interesting" and "I want this." Visitors who read the hero but don't start a case.
+### P1 — Conversion delta ✅ DONE (V4.21–V4.25)
 
 | Item | Status | Version |
 |------|--------|---------|
-| Full Pricing page rewrite — outcome copy, risk reversal (30-day guarantee), "what's inside" chips, free tier reframe | ✅ done | V4.18 |
-| First-visit hero on Home — headline + subtitle + CTAs + trust line, hidden after first room opened | ✅ done | V4.19 |
-| Product preview mockup in hero — live Stats Room case card (question + MCQ options + debrief) shows the product before any click | ✅ done | V4.21 |
-| Sticky "Next case" CTA in runners — after debrief, keep the forward momentum | ⬜ pending | — |
-| Room browser "next case" highlight — visually call out the first unstarted case | ⬜ pending | — |
+| Full Pricing page rewrite — outcome copy, risk reversal, free tier reframe | ✅ done | V4.18 |
+| First-visit hero on Home — headline + subtitle + CTAs + trust line | ✅ done | V4.19 |
+| Product preview mockup in hero — live Stats Room case card | ✅ done | V4.21 |
+| Home hero "Try it live →" — filled accent button (was ghost link) | ✅ done | V4.24 |
+| Onboarding modal deferred 4s — stops firing before user sees content | ✅ done | V4.24 |
+| Sticky "Next case" CTA in runners — ChallengesRunner + RCARunner + CaseRunner + BIRunner | ✅ done | V4.24–V4.25 |
+| Room browser "next case" highlight — all 16 case room browsers | ✅ done | V4.25 |
 
-### P2 — New user experience (CURRENT)
-The experience for someone who shows up, doesn't know where to start, and might leave without trying a single case.
+### P2 — New user experience ✅ DONE (V4.22)
 
-| Item | Status | Description |
-|------|--------|-------------|
-| Nav IA cleanup — remove emojis from nav items, fix "Instrum." truncation, remove Consult, clean group labels | ⬜ pending | 15-item ROOMS group is paralyzing; nav emojis are inconsistent |
-| Pricing raise — $49 → $69 one-time | ⬜ pending | $49 underprices a product with 150+ cases and 25 foundation modules; $69 is still under-$100 but signals quality |
+| Item | Status | Version |
+|------|--------|---------|
+| Nav IA cleanup — remove emojis, fix "Instrum." truncation, remove Consult | ✅ done | V4.22 |
+| Pricing raise — $49 → $69 one-time | ✅ done | V4.22 |
 
 ### P3 — Content depth ✅ DONE (V4.23)
-More inventory in the highest-traffic rooms to keep returning users finding new material.
 
 | Item | Status | Notes |
 |------|--------|-------|
 | Challenges room: 6 → 16 cases | ✅ done | CHL07–CHL16: Spotify, Amazon, LinkedIn, DoorDash, Slack, Pinterest, Shopify, Duolingo, Figma, Instacart |
-| SQL live coding environment improvements | ⬜ deferred | Code room is powerful but discovery is low — lower priority than P4 architecture |
+| Challenges difficulty filter — All / Senior / Staff pills | ✅ done | V4.24 |
+| SQL live coding environment improvements | ⬜ deferred | Lower priority than auth/distribution |
 
-### P4 — Architecture
-Backend work that unlocks features currently impossible with localStorage-only.
+### P4 — Auth + cross-device sync ✅ PARTIALLY DONE (V4.24–V4.25)
 
-| Item | Description |
-|------|-------------|
-| Supabase progress sync | Cross-device access; prerequisite for team/org plans |
-| Paywall backend verification | Before Stripe goes live, server-side receipt validation prevents code sharing |
+| Item | Status | Notes |
+|------|--------|-------|
+| Supabase auth layer — magic link + Google OAuth | ✅ done | V4.24 — `src/utils/supabase.js`, `auth.js`, `syncProgress.js`, `AuthModal.jsx` |
+| Sign-in button in header nav (desktop + mobile) | ✅ done | V4.24–V4.25 — Sidebar + mobile topbar |
+| Progress sync on sign-in (pull/push) | ✅ done | V4.24 |
+| Progress sync on tab close (visibilitychange) | ✅ done | V4.25 |
+| Supabase env vars in Vercel | ⬜ pending (user action) | Add `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` — see `SETUP_AUTH.md` |
+| Paywall backend verification | ⬜ deferred | Server-side receipt validation before Stripe goes live |
 
 ### P5 — Distribution
-Without users, none of the above matters. This is the highest-leverage unlocked item.
+Without users, none of the above matters.
 
 | Item | Description |
 |------|-------------|
@@ -64,9 +66,7 @@ Without users, none of the above matters. This is the highest-leverage unlocked 
 
 ---
 
-## What shipped (V1 → V4.5)
-
-PAL started as an 8-scenario experiment review tool and grew into a full DS/PM interview prep platform.
+## What shipped (V1 → V4.25)
 
 | Version | Major additions |
 |---------|----------------|
@@ -83,54 +83,58 @@ PAL started as an 8-scenario experiment review tool and grew into a full DS/PM i
 | V4.3 | Cross-Room Challenges, Pyodide Python runner, Interview MCQ+speech, grouped nav, 40 MCQs |
 | V4.4 | BI Room (12 cases), Spot the Flaw (12 cases), Take-Home Challenges, Defense Doc Generator, Leadership Lens |
 | V4.5 | Analytics Instrumentation Room (8 cases), Progress full coverage, BI/STF expansions |
+| V4.6–4.14 | PostHog instrumentation, per-case notes, search filters, Playbook redesign, bug fixes, build safety |
+| V4.20–4.21 | Bundle split, hero redesign, product preview mockup, pricing rewrite |
+| V4.22 | Nav cleanup (no emojis, Consult removed), $69 pricing |
+| V4.23 | Challenges 6→16 cases (CHL07–CHL16) |
+| V4.24 | UX pass: difficulty filter, sticky next CTA (Challenges), deferred modal, filled hero CTA; Supabase auth layer |
+| V4.25 | Next-case highlight all 16 browsers, sticky CTA for RCA/Cases/BI runners, auth hardening (visibilitychange sync, mobile sign-in, README docs) |
 
 ---
 
-## Current platform scope (V4.5)
+## Current platform scope (V4.25)
 
-**16 practice rooms** — 200+ cases/modules total  
+**17 practice rooms** — 200+ cases/modules total  
 **5 practice tools** — Challenges, Spot the Flaw, Take-Home, Simulator, A/B Tool  
-**6 utility tools** — Search, Trainer, Consult, Companies, Defense Doc, Bookmarks  
-**69 articles** — Blog/Playbook  
+**5 utility tools** — Search, Trainer, Companies, Defense Doc, Bookmarks  
+**80 articles** — Blog/Playbook  
 **40 MCQs** — Trainer question bank  
 
-See README.md for the full content map.
-
 ---
 
-## Near-term (V4.6 candidates)
+## Next up (V4.26 candidates)
 
-These are identified gaps — not yet scheduled:
+**Monetization (highest leverage)**
+- Flip `isUnlocked()` → `false` in `src/utils/unlock.js` and set `VITE_STRIPE_PAYMENT_LINK` in Vercel env vars
+- Add Supabase env vars to Vercel to activate auth + cross-device sync
+- Confirm `VITE_POSTHOG_KEY` is live and establish WAU baseline
 
 **Content depth**
-- BI Room: BI13+ covering real-time dashboards, Looker/Tableau case studies
-- Instrumentation: more cases — dbt data models, data lineage, schema migration design
-- Take-Home: TH06+ with marketplace, fintech, health prompts
-- Playbook articles: Instrumentation room and BI room currently have no linked articles
+- Cases Room expansion: pricing strategy, international expansion (C13+)
+- STAT17–20+: more causal inference (IV estimation, synthetic control, geo holdout)
+- Take-Home TH06+: marketplace, fintech, health prompts
+- Behavioral BEH31+: Staff/Director-level leadership scenarios
 
 **UX polish**
-- Interview debrief export — PDF of session answers + model answers side-by-side
-- Per-case persistent notes (currently one global notes field)
-- Search within a single room (room-level filter in global search)
-- Mobile bottom nav rail for top rooms
+- First-Time User cold walk-through audit in incognito (sidebar nav not audited since V4.7)
+- Mobile bottom nav rail for most-used rooms
 
 ---
 
-## Monetization (deferred)
+## Monetization (ready to activate)
 
-The paywall is scaffolded but inactive:
-- `src/utils/unlock.js`: `isUnlocked()` returns `true` for beta
-- `src/pages/Pricing.jsx`: two-tier pricing page exists
+The paywall is scaffolded and ready:
+- `src/utils/unlock.js`: `isUnlocked()` returns `true` for beta — **flip to `false` when Stripe goes live**
+- `src/pages/Pricing.jsx`: $69 one-time pricing page
 - Stripe integration: `VITE_STRIPE_PAYMENT_LINK` env var, wired into Pricing CTA
-- **To activate**: set `isUnlocked()` to return `false` in unlock.js, set `VITE_STRIPE_PAYMENT_LINK` in Vercel env vars
+- **To activate**: set `isUnlocked()` → `false` in unlock.js, set `VITE_STRIPE_PAYMENT_LINK` in Vercel env vars
 
 ---
 
 ## V5 — Platform features (planned, no timeline)
 
-These require backend infrastructure — explicitly deferred:
+These require backend infrastructure beyond what Supabase auth provides:
 
-- **Cross-device sync** — requires auth + database; currently localStorage-only
 - **Team accounts + org dashboards** — for training/onboarding use cases
 - **Custom scenario upload** — let orgs add their own cases
 - **Interview prep certification** — scored, timed, exportable sessions
@@ -141,9 +145,9 @@ These require backend infrastructure — explicitly deferred:
 ## What will not be built
 
 - **Statistics tutorial content** — PAL assumes users know the basics. Formula modules and glossaries are out of scope.
-- **AI-evaluated open answers** — All scoring is pre-computed. No LLM evaluation of user reasoning. This keeps scoring consistent and offline-capable.
+- **AI-evaluated open answers** — All scoring is pre-computed. No LLM evaluation of user reasoning.
 - **Social / gamification features** — Leaderboards, streaks, badges distort the goal (better judgment) toward proxy metrics (usage).
-- **ML systems content** — PAL covers product analytics and PM. Feature stores, model monitoring, production ML deployment are explicitly out of scope (separate project).
+- **ML systems content** — PAL covers product analytics and PM. Separate ML Systems Lab project handles that scope.
 
 ---
 
@@ -153,8 +157,8 @@ These require backend infrastructure — explicitly deferred:
 |----------|-------|
 | Stack | React 18 + Vite 8 |
 | Hosting | Vercel (static, free tier) |
-| Backend | None |
-| Data storage | localStorage (15+ keys) |
+| Backend | Supabase (auth + progress sync, env-var gated) |
+| Data storage | localStorage (18 keys) + Supabase `user_progress` table (when auth active) |
 | Code splitting | React.lazy + Suspense on all 30+ room components |
 | Python runtime | Pyodide (in-browser, loaded on demand in Code Room) |
 | Analytics | PostHog (CDN, env-var gated, no PII) |
@@ -164,13 +168,13 @@ These require backend infrastructure — explicitly deferred:
 ## Decision log
 
 **Why no backend through V4.5?**
-Zero operating cost. Vercel free tier handles any traffic level. The tradeoff (no cross-device sync, no team accounts) is acceptable until monetization justifies infrastructure spend.
+Zero operating cost. Vercel free tier handles any traffic level. The tradeoff (no cross-device sync, no team accounts) was acceptable until monetization justified infrastructure spend.
+
+**Why Supabase for auth (V4.24+)?**
+Zero backend cost at PAL's current scale. Supabase free tier handles auth + progress sync for thousands of users. The entire auth layer is env-var gated — the app runs in localStorage-only mode if the env vars are not set, preserving zero-cost operation for development and beta.
 
 **Why pre-computed scoring?**
 Consistency and auditability. Users need to trace why a decision scored as it did. Pre-computed scoring with explicit feedback text is more trustworthy than LLM evaluation at this scale.
-
-**Why static content quality bar?**
-The platform's credibility depends entirely on case quality. One bad case that teaches wrong judgment is worse than no case. See `docs/CONTENT_QUALITY_BAR.md`.
 
 **Why keep ML systems out of PAL?**
 There is a separate ML Systems Lab project for that scope. PAL stays focused on product analytics and PM. Cross-contaminating the scope would dilute both products.

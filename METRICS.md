@@ -15,6 +15,7 @@ What we track, what we measure success by, and what decisions have been made fro
 | Pageview capture | Off (manual only) |
 | PII policy | `email`, `name`, `ip` stripped from all events via `sanitize_properties` |
 | Gate | App works identically with or without the key |
+| Auth | Supabase (env-var gated via `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`) — magic link + Google OAuth |
 
 ---
 
@@ -43,7 +44,8 @@ Events fire from `src/App.jsx` (navigation events) and directly from runner comp
 - Interview Simulator session completed
 - MCQ Trainer session scored
 - Defense Doc generated
-- Debrief copied to clipboard (`DebriefCopyButton` — V4.13.0) — clipboard copy fires but no PostHog event wired; `debrief_copied` event would be worth adding in a future pass to measure export behaviour
+- Debrief copied to clipboard (`DebriefCopyButton` — V4.13.0) — clipboard copy fires but no PostHog event wired; `debrief_copied` event would be worth adding
+- `user_signed_in` / `user_signed_out` — Supabase auth events not yet forwarded to PostHog; would allow cross-device funnel measurement
 
 ---
 
@@ -84,7 +86,7 @@ Top-of-funnel (page_viewed, case_opened), paywall signal (paywall_hit), and comp
 
 ## localStorage keys (client-side state)
 
-All progress state lives in localStorage. Every key must be included in `onResetAllProgress` in App.jsx.
+All progress state lives in localStorage. Every key must be included in `onResetAllProgress` in App.jsx. All 18 `pal-*` progress keys are also synced to Supabase `user_progress` table when the user is signed in (see `src/utils/syncProgress.js` — `PROGRESS_KEYS` array).
 
 | Key | Room / Feature | Type |
 |---|---|---|

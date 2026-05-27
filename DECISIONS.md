@@ -6,8 +6,8 @@ Prescriptive, present-tense standing rules. This is not build history (that's CH
 
 ## Architecture
 
-**No backend. Ever (until V5).**
-The platform is a static SPA on Vercel. All state lives in localStorage. No API routes, no database, no auth server. Cross-device sync is a V5 problem. Do not introduce a backend dependency for any feature through V4.x.
+**No custom backend. Supabase is the only allowed external service (V4.24+).**
+The platform is a static SPA on Vercel. Core state lives in localStorage. Supabase auth and cross-device progress sync were added in V4.24 and are fully env-var gated — the app runs in localStorage-only mode when `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` are absent. No API routes, no custom servers. Do not introduce any other backend dependency through V4.x.
 
 **React + Vite only. No framework migrations.**
 The stack is React 18 + Vite 8. Do not introduce Next.js, Remix, or any SSR framework. The platform is intentionally static — SEO is handled via static OG tags and sitemap, not server rendering.
@@ -15,8 +15,8 @@ The stack is React 18 + Vite 8. Do not introduce Next.js, Remix, or any SSR fram
 **All room components use React.lazy() + Suspense.**
 Named-export pattern: `.then(m => ({ default: m.X }))`. Never static-import a room page or runner. The initial bundle must not contain room code.
 
-**All progress uses localStorage only.**
-Key naming convention: `pal-[room]-progress-v1`. New rooms must follow this pattern. `onResetAllProgress` in App.jsx must include every key. Product Design uses a prefix pattern (`pd-progress-*`) requiring key iteration — document any similar exceptions.
+**All progress uses localStorage as the primary store.**
+Key naming convention: `pal-[room]-progress-v1`. New rooms must follow this pattern. `onResetAllProgress` in App.jsx must include every key. The 18 `pal-*` progress keys in `src/utils/syncProgress.js` (`PROGRESS_KEYS`) are also synced to Supabase when the user is signed in — add any new `pal-*` keys to that array. Product Design uses a prefix pattern (`pd-progress-*`) requiring key iteration — document any similar exceptions.
 
 **One file per component. No separate CSS files.**
 All styling uses inline style objects with CSS variables. No CSS modules, no Tailwind, no styled-components.
