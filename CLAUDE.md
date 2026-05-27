@@ -143,6 +143,13 @@ git push origin main
 
 Make a product + engineering call first. Not everything belongs. Ask: does this reveal a gap PAL is genuinely placed to fill, with content specific enough to practice against? If yes, add to IDEAS.md at the right tier with honest effort sizing. If no, say so and move on. Don't pipeline every input into the backlog.
 
+**Field intelligence workflow** (practitioner posts, LinkedIn screenshots, job descriptions):
+1. Assess source credibility — is this a practitioner signal or generic advice?
+2. Gap-map to PAL rooms — which room(s) does this inform? Is the gap real?
+3. Check for content specificity — can PAL build a case around this, or is it too vague?
+4. If viable: name the cluster, add to IDEAS.md at the right tier, note the source
+5. If not: say why and discard — don't invent tiers to make weak signals sound useful
+
 ---
 
 ## Adding a new room (checklist)

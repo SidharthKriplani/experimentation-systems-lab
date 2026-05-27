@@ -25,6 +25,7 @@ _(nothing active — update at session start when pulling from priority list)_
 - ~~Frameworks (Playbook) page redesign~~ — ✅ shipped V4.14.0 (reference-card layout, 3-col grid, category filter tabs, distinct from Deep Dives)
 - ~~Consult page — overlaps with Search~~ — ✅ cut V4.14.0
 - Stripe paywall activation — flip isUnlocked() → false, test end-to-end
+- **`gated: true` per-case paywall flag** (from GenAI Lab — 163 questions pre-tagged) — add `isFree` boolean to every case/module that should be free-tier; currently all gating is coarse (isUnlocked() global). Enables surgical free tier without touching paywall logic. Zero UX change; prerequisite for Stripe activation.
 - Confirm `VITE_POSTHOG_KEY` is live in Vercel prod and establish WAU baseline
 - ~~**Next-case highlight for all 15 remaining case room browsers** (audit #72)~~ — ✅ shipped V4.25.0 (all 16 browsers now have firstUnstartedId + accent border + "Next →" badge, each using room color var)
 - ~~**Sticky next CTA for RCARunner, CaseRunner, BIRunner** (audit #72)~~ — ✅ shipped V4.25.0 (position-fixed bottom bar with back + next buttons)
@@ -63,7 +64,14 @@ _(nothing active — update at session start when pulling from priority list)_
 - **Per-room breakdown in mock exam debrief** (from ML Systems Lab CombinatorTab) — after Interview Simulator session, show visual bar chart: Metrics 90% / Growth 65% / Behavioral 78% / Stats 80%. Gives clearer skill gap signal than current pass/fail format.
 - **Verbal practice with speech-to-text** (from ML Systems Lab VerbatimTab) — Web Speech API, user speaks 2-min answer to interview question, transcript shown, self-score on 4 criteria (clarity, depth, speed, recovery). Already have the interview question bank.
 
+### Features
+- **Quiz Me on Playbook articles** (from GenAI Lab — auto-generated MCQs from article content) — every Playbook article gets a "Quiz Me" button that generates 3–5 MCQs from the article body. Transforms passive reading into active recall. Extends the MCQ Trainer without new manual content.
+- **PM Practitioner tab** (from GenAI Lab AI Product tab analog) — dedicated tab/section for PM-specific tools: PRD critique simulator, stakeholder explainer, metric trade-off evaluator. PAL skews analyst-heavy; this anchors the PM audience.
+- **Single forward pointer after case debrief** (from GenAI Lab principle) — upgrade "Forward-pointer card" (Tier 3) to enforce ONE next step, not 3–5 options. Genai lab implemented this as a single "What to do next" card with no menu. Prevents decision paralysis at debrief end.
+
 ### Platform
+- **Three front doors IA audit** (from GenAI Lab — Build/Prove/Navigate structure) — audit PAL's home and nav for whether users can identify their entry mode in <5 sec. GenAI lab organizes around Build/Prove/Navigate. PAL equivalent: Practice (rooms) / Assess (Simulator+Trainer) / Navigate (Defense Doc+Company Tracks). Check if this framing improves cold-start clarity.
+- **Create PARKED.md** (from GenAI Lab pattern) — separate file for consciously cut or deferred features with reasons. Currently IDEAS.md "Retired" section handles this, but a dedicated PARKED.md with more context per item is cleaner. Move Retired section → PARKED.md with migration notes.
 - First-Time User cold walk-through audit with sidebar nav (incognito, every confusion point noted) — sidebar is new in V4.7, cold path not yet audited
 - IP/Moat audit — what's genuinely hard to replicate? What to double down on?
 - MVP/Weight audit — which features earn their place? Consolidation candidates?
@@ -95,6 +103,8 @@ _(nothing active — update at session start when pulling from priority list)_
 - **Skill category tagging across rooms** (from ML Systems Lab/GenAI Lab pattern, adaptable) — define 8 core skills (Metrics Design, Statistical Thinking, RCA, Storytelling, Technical Depth, Product Sense, Systems Thinking, Business Acumen) and tag every case/question. Enables cross-room skill-based filtering in Search.
 - **Progress export/import** (from ML Systems Lab, directly portable) — "Export my progress" button (JSON snapshot of all localStorage keys), "Import progress" for device handoff without Supabase auth.
 - **"Product-first" framing audit** (from GenAI Lab copy pattern) — reframe room descriptions from "Practice X questions" to "Do X like a staff analyst." Not a feature — a copy pass on all room cards, Home hero, and Pricing page.
+- **ELI5 mode toggle on Playbook articles** (from GenAI Lab) — toggle that rewrites article body at a simpler register: shorter sentences, no jargon, plain analogies. Useful for users early in their learning curve without requiring separate content.
+- **PWA + offline support** (from GenAI Lab — service worker, installable PWA) — add manifest.json + service worker to cache static assets. PAL is entirely static; offline support is achievable without backend changes. Useful for mobile commute prep.
 
 ### Platform
 - Review Queue smarter scheduling (weight by room difficulty + time since last attempt)
