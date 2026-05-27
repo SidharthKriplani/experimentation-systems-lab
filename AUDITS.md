@@ -994,3 +994,20 @@ The mobile topbar uses `height: 46px` with `position: sticky, top: 0`. On iPhone
 | 75-I | Topbar no safe-area-inset-top | Low | Low |
 
 **Total:** 9 findings. All resolved in V4.26.0.
+
+---
+
+## Audit #76 — Duplicate Sign-in UI — 2026-05-27
+
+**Scope:** Auth entry-point consistency across mobile nav surfaces
+**Status:** ✅ Resolved — V4.26.1
+
+### Finding 76-A — Sign-in button duplicated in topbar and sidebar ✅ RESOLVED
+
+**Observed:** On mobile, "Sign in" appeared in two places: the persistent topbar (right side) and again inside the sidebar menu. Opening the hamburger to navigate showed a second "Sign in" button at the bottom of the sidebar, creating visual redundancy and implying two separate auth flows.
+
+**Root cause:** When the sidebar auth section was added in V4.25.0 (Audit #73 fix), the mobile topbar already had a sign-in button. Both were wired to the same `setShowAuth(true)` call, but users saw both CTAs simultaneously.
+
+**Fix:** Removed the `!user` branch (sign-in button) from Sidebar.jsx. The sidebar now only renders auth state when the user is signed in (email display + sign out). Sign-in lives exclusively in the topbar — always visible, compact, one clear entry point. Signed-in state remains in the sidebar since it has room to show the full email address.
+
+**File:** `src/components/layout/Sidebar.jsx`
