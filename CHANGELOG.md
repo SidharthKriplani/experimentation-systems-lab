@@ -4,6 +4,43 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.25.4] — 2026-05-27
+
+### Fixed — Full dark mode palette rebuild (audit #74 follow-up)
+
+V4.25.3 only lifted text values — backgrounds stayed near-black, so text was still fighting a collapsing void at low brightness. This release fixes all three structural root causes:
+
+**Root cause 1 — Canvas too dark, surface step too small:**
+bg→surface gap was ~7 luminance units; cards barely lifted off the page. Rebuilt with a ~12 unit gap so card surfaces are clearly visible even at 25% brightness.
+
+**Root cause 2 — Semantic bg colors indistinguishable from background:**
+Every tinted bg (`--accent-bg`, `--teal-bg`, `--red-bg`, `--green-bg`, `--purple-bg`, `--blue-bg`) was near-black (#0d0d0d range), visually identical to `--bg`. At low brightness these collapsed to the same shade. All now have proper color tinting.
+
+**Root cause 3 — Borders invisible at low brightness:**
+`--border: #333a55` was too dark to define card edges at low brightness. Lifted to `#3d4668`; `--border-strong` to `#535e82`.
+
+| Variable | V4.25.3 | V4.25.4 |
+|---|---|---|
+| `--bg` | `#0d1018` | `#111520` |
+| `--surface` | `#141828` | `#191e30` |
+| `--surface-2` | `#1a1f30` | `#1f2438` |
+| `--surface-raised` | `#20253c` | `#262c44` |
+| `--border` | `#333a55` | `#3d4668` |
+| `--border-strong` | `#444d6e` | `#535e82` |
+| `--text` | `#eceef4` | `#f2f4fa` |
+| `--text-muted` | `#9ba5be` | `#a2acc6` |
+| `--text-dim` | `#7a8399` | `#8490aa` |
+| `--accent-bg` | `#0d1629` | `#141f3e` |
+| `--teal-bg` | `#042f2e` | `#0e2d2c` |
+| `--red-bg` | `#2e0d0d` | `#2c1212` |
+| `--purple-bg` | `#1e1030` | `#1e1238` |
+| `--input-bg` | `#111420` | `#191e30` |
+| `--header-bg` | `rgba(10,13,20,0.97)` | `rgba(17,21,32,0.97)` |
+
+**Files touched:** `src/index.css`
+
+---
+
 ## [4.25.3] — 2026-05-27
 
 ### Fixed — Dark mode contrast for low-brightness mobile (audit #74)
