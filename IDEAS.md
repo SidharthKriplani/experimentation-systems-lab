@@ -61,6 +61,24 @@ _No new features until PostHog baseline is established._
 
 ## Tier 2 — High impact, more effort
 
+### Defense Strategy — pending upgrades
+
+*Do not build until PostHog confirms real usage of the V4.27.0 flow.*
+
+**Layer 4A — Three-layer micro-sequence per skill (lowest effort, highest impact)**
+Currently the plan outputs room chips + 2 matched cases. Upgrade: for each skill in the day plan, show a structured micro-sequence — (1) "Read first" linking one Playbook article matched to that skill, (2) the relevant Foundation module if self-rated Weak/Okay, (3) 2–3 JD-matched cases as now, (4) "Drill" linking to the MCQ Trainer filtered to that category. PAL already has all four content layers; the Defense Strategy just needs to route through them in sequence rather than dumping room chips. The Playbook article link per skill is the single lowest-effort step here and closes the most visible gap.
+
+**Layer 4B — Company track cross-referencing (medium effort)**
+If the JD or company name signals a known company (Meesho, Amazon, Google etc.), adjust skill weights against PAL\'s company track data. Meesho = RCA weighted heavier, supply-demand framing surfaced. Amazon = behavioral appears in every round regardless of JD language. Requires enough company track data to be trustworthy before shipping.
+
+**Layer 5 — Live plan that updates as you practice (high effort, V5 territory)**
+As the user completes PAL rooms, gap scores re-compute from actual progress. Plan re-orders to surface the next highest gap. Requires a persistent `pal-defense-strategy-v1` localStorage key and tying room completion events back into Defense Strategy state. Turns a one-time plan into a living prep tracker.
+
+**Layer 6 — Verbal simulation prompt at day end (low effort)**
+At the end of each day card, surface one articulation prompt per top-gap skill ("Explain in 90 seconds how you would diagnose a 15% GMV drop"). Self-score checkbox: Couldn\'t do it / Got the structure / Nailed it. Score feeds back into gap weight for the next session. Closes the read-practice-articulate loop.
+
+---
+
 ### Content
 - STAT17–20+: more causal inference (IV estimation, synthetic control, geo holdout) — partially done in V3.4, extend further
 - Cases Room expansion: pricing strategy, international expansion (C13+)
