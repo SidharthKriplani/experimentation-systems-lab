@@ -51,10 +51,8 @@ const ROOM_META = {
   'stats':               { label: 'Stats',                  color: 'var(--teal)',    page: 'stats' },
 };
 
-// ─── Foundation rooms (go on Day 1-2) ────────────────────────────────────────
 const FOUNDATION_ROOMS = new Set(['exp-foundations', 'metrics-foundations', 'rca-foundations', 'stat-foundations']);
 
-// ─── Category labels for matched keyword display ──────────────────────────────
 const CATEGORY_LABELS = [
   { id: 'exp',           label: 'Experimentation',    keywords: ['experiment', 'a/b test', 'ab test', 'hypothesis', 'randomiz', 'control group', 'treatment', 'statistical significance', 'p-value', 'power', 'mde', 'causal'] },
   { id: 'metrics',       label: 'Metrics / KPIs',     keywords: ['metric', 'kpi', 'north star', 'success metric', 'counter metric', 'guardrail', 'okr'] },
@@ -69,90 +67,6 @@ const CATEGORY_LABELS = [
   { id: 'stats',         label: 'Statistics',         keywords: ['statistics', 'variance', 'distribution', 'regression', 'bias', 'sampling', 'confidence interval'] },
 ];
 
-// ─── Example placeholder plan (no JD entered) ────────────────────────────────
-const EXAMPLE_PLAN = {
-  role: 'Product Analyst at a growth-stage startup',
-  matchedCategories: [
-    { id: 'metrics',  label: 'Metrics / KPIs',   hits: 3 },
-    { id: 'growth',   label: 'Growth / Funnels',  hits: 3 },
-    { id: 'exp',      label: 'Experimentation',   hits: 2 },
-    { id: 'rca',      label: 'RCA / Diagnosis',   hits: 2 },
-    { id: 'sql',      label: 'SQL / Python',      hits: 1 },
-    { id: 'behavioral', label: 'Behavioral',      hits: 1 },
-  ],
-  days: [
-    { day: 1, label: 'Day 1', theme: 'Metric Theory', rooms: ['metrics-foundations', 'metrics'], note: 'Start with how metrics work before practicing judgment calls.' },
-    { day: 2, label: 'Day 2', theme: 'Growth Foundations', rooms: ['growth-analytics'], note: 'Cohort retention, funnel decomposition, LTV/CAC — core for growth PA roles.' },
-    { day: 3, label: 'Day 3', theme: 'Experimentation Practice', rooms: ['exp-foundations', 'browser'], note: 'How tests are designed and how results are read and challenged.' },
-    { day: 4, label: 'Day 4', theme: 'RCA + Cases', rooms: ['rca', 'cases'], note: 'Structured diagnosis and multi-step business case practice.' },
-    { day: 5, label: 'Day 5', theme: 'SQL / Code + Product Sense', rooms: ['code', 'product-design'], note: 'Funnel queries, cohort SQL, and feature design scenarios.' },
-    { day: 6, label: 'Day 6', theme: 'Behavioral + Estimation', rooms: ['behavioral', 'estimation'], note: 'Cross-functional influence and Fermi-style sizing questions.' },
-    { day: 7, label: 'Day 7', theme: 'Weak-spot review', rooms: ['metrics', 'growth-analytics', 'rca'], note: 'Re-attempt cases you struggled with. Explain top 3 strengths out loud in 90 seconds.' },
-  ],
-};
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function scoreRooms(jdText) {
-  const text = jdText.toLowerCase();
-  const scores = {};
-  KEYWORD_MAP.forEach(entry => {
-    const hits = entry.keywords.filter(k => text.includes(k)).length;
-    if (hits === 0) return;
-    entry.rooms.forEach(roomId => {
-      scores[roomId] = (scores[roomId] || 0) + hits;
-    });
-  });
-  return scores;
-}
-
-function getMatchedCategories(jdText) {
-  const text = jdText.toLowerCase();
-  const matched = [];
-  CATEGORY_LABELS.forEach(cat => {
-    const hits = cat.keywords.filter(k => text.includes(k)).length;
-    if (hits > 0) matched.push({ id: cat.id, label: cat.label, hits });
-  });
-  return matched.sort((a, b) => b.hits - a.hits);
-}
-
-function buildPlan(scores) {
-  const sorted = Object.entries(scores)
-    .sort((a, b) => b[1] - a[1])
-    .map(([roomId, score]) => ({ roomId, score }));
-
-  const foundations = sorted.filter(r => FOUNDATION_ROOMS.has(r.roomId));
-  const practice    = sorted.filter(r => !FOUNDATION_ROOMS.has(r.roomId));
-
-  // Collect unique rooms for each day bucket
-  const day1Rooms = foundations.slice(0, 2).map(r => r.roomId);
-  const day2Rooms = foundations.slice(2, 4).concat(practice.slice(0, 1)).map(r => r.roomId);
-  const day3Rooms = practice.slice(0, 2).map(r => r.roomId);
-  const day4Rooms = practice.slice(2, 4).map(r => r.roomId);
-  const day5Rooms = practice.slice(4, 6).map(r => r.roomId);
-
-  // Day 6: rooms with exactly 1 match (light coverage)
-  const day6Rooms = sorted.filter(r => r.score === 1).slice(0, 3).map(r => r.roomId);
-
-  // Day 7: weakest matched rooms (bottom third)
-  const day7Rooms = sorted.slice(-3).reverse().map(r => r.roomId);
-
-  function fillEmpty(arr, fallback) {
-    if (arr.length > 0) return arr;
-    return fallback;
-  }
-
-  return [
-    { day: 1, label: 'Day 1', theme: 'Foundations first', rooms: fillEmpty(day1Rooms, foundations.slice(0, 2).map(r => r.roomId).length ? foundations.slice(0, 2).map(r => r.roomId) : practice.slice(0, 2).map(r => r.roomId)), note: 'Build the theory base before doing judgment-call practice. Read debriefs carefully.' },
-    { day: 2, label: 'Day 2', theme: 'Foundations depth', rooms: fillEmpty(day2Rooms, practice.slice(0, 2).map(r => r.roomId)), note: 'Continue foundations and begin your first practice room. Complete 3+ cases.' },
-    { day: 3, label: 'Day 3', theme: 'Core practice', rooms: fillEmpty(day3Rooms, practice.slice(0, 2).map(r => r.roomId)), note: 'Attempt cases cold — commit your answer before reading the rubric.' },
-    { day: 4, label: 'Day 4', theme: 'Practice depth', rooms: fillEmpty(day4Rooms, practice.slice(2, 4).map(r => r.roomId).length ? practice.slice(2, 4).map(r => r.roomId) : practice.slice(0, 2).map(r => r.roomId)), note: 'Verbal practice: explain each answer out loud without notes.' },
-    { day: 5, label: 'Day 5', theme: 'Secondary topics', rooms: fillEmpty(day5Rooms, practice.slice(4, 6).map(r => r.roomId).length ? practice.slice(4, 6).map(r => r.roomId) : ['behavioral', 'estimation']), note: 'Breadth coverage. Write 1 sentence connecting each topic to your primary strength.' },
-    { day: 6, label: 'Day 6', theme: 'Light coverage', rooms: fillEmpty(day6Rooms, ['behavioral', 'estimation', 'bi']), note: 'One case per light-match room. Note any terminology you can\'t explain clearly.' },
-    { day: 7, label: 'Day 7', theme: 'Weak-spot review', rooms: fillEmpty(day7Rooms.length >= 1 ? day7Rooms : sorted.slice(0, 3).map(r => r.roomId), sorted.slice(0, 3).map(r => r.roomId)), note: 'Re-attempt lowest-rated cases cold. Can you explain your top 3 strengths in 90 seconds?' },
-  ];
-}
-
-// ─── Room → allData mapping ───────────────────────────────────────────────────
 var ROOM_DATA_MAP = {
   'browser':          { key: 'scenarios',               titleField: 'title', idField: 'id' },
   'stats':            { key: 'statsModules',             titleField: 'title', idField: 'id' },
@@ -169,7 +83,70 @@ var ROOM_DATA_MAP = {
   'growth-analytics': { key: 'growthAnalyticsCases',     titleField: 'title', idField: 'id' },
 };
 
-// ─── Top-case scorer ──────────────────────────────────────────────────────────
+// ─── Skill definitions (id matches CATEGORY_LABELS ids) ──────────────────────
+const SKILL_DEFS = [
+  { id: 'exp',             label: 'Experimentation / A/B',  rooms: ['exp-foundations', 'design', 'browser', 'spot-the-flaw'] },
+  { id: 'metrics',         label: 'Metrics & KPIs',         rooms: ['metrics-foundations', 'metrics', 'growth-analytics'] },
+  { id: 'rca',             label: 'RCA & Root Cause',        rooms: ['rca-foundations', 'rca', 'cases'] },
+  { id: 'sql',             label: 'SQL & Python',            rooms: ['code'] },
+  { id: 'product',         label: 'Product Sense',           rooms: ['product-design', 'prioritization'] },
+  { id: 'growth',          label: 'Growth & Funnels',        rooms: ['growth-analytics', 'metrics'] },
+  { id: 'bi',              label: 'BI & Reporting',          rooms: ['bi'] },
+  { id: 'instrumentation', label: 'Instrumentation',         rooms: ['instrumentation'] },
+  { id: 'behavioral',      label: 'Behavioral',              rooms: ['behavioral'] },
+  { id: 'estimation',      label: 'Estimation',              rooms: ['estimation'] },
+  { id: 'stats',           label: 'Statistics',              rooms: ['stat-foundations', 'stats'] },
+];
+
+// ─── Skills PAL does NOT cover ────────────────────────────────────────────────
+const OUTSIDE_PAL_SIGNALS = [
+  {
+    keywords: ['excel', 'spreadsheet', 'pivot table', 'vlookup', 'macro', 'vba', 'google sheets'],
+    label: 'Excel & Spreadsheets',
+    action: 'PAL does not cover Excel. Practice 2 pivot table exercises on a public dataset. One VLOOKUP, one INDEX-MATCH. That covers 80% of what gets tested.',
+  },
+  {
+    keywords: ['financial model', 'p&l', 'profit and loss', 'unit economics', 'balance sheet', 'income statement', 'revenue model', 'gmv', 'take rate'],
+    label: 'Financial / Business Modeling',
+    action: 'Outside PAL scope. Study the company\'s revenue model specifically (GMV, take rate, unit economics). CFI free course covers the mechanics.',
+  },
+  {
+    keywords: ['presentation', 'slide deck', 'powerpoint', 'storytell', 'communicate findings', 'executive communication', 'narrative'],
+    label: 'Presentation & Storytelling',
+    action: 'Outside PAL scope. Practice: structure a 5-minute data to insight to recommendation walkthrough out loud, twice. Record it once.',
+  },
+];
+
+// ─── Interview round templates ────────────────────────────────────────────────
+const ROUND_TEMPLATES = [
+  { id: 'screening', label: 'Screening / HR',        icon: '📋', focus: 'Background, motivation, basic metrics vocabulary. Low technical depth.', skillIds: ['behavioral', 'metrics'] },
+  { id: 'technical', label: 'Technical Round',        icon: '💻', focus: 'SQL, data analysis, product analytics, KPIs in context. Your hardest prep surface.', skillIds: ['sql', 'metrics', 'growth', 'instrumentation', 'stats'] },
+  { id: 'case',      label: 'Case / Problem Solving', icon: '🔍', focus: 'RCA, business cases, product design decisions. Structure matters more than the answer.', skillIds: ['rca', 'product', 'estimation', 'growth'] },
+  { id: 'final',     label: 'Bar Raiser / Final',     icon: '🎯', focus: 'Experimentation design, business judgment, prioritization under constraints.', skillIds: ['exp', 'product', 'bi'] },
+];
+
+// ─── Helpers: original ────────────────────────────────────────────────────────
+function scoreRooms(jdText) {
+  const text = jdText.toLowerCase();
+  const scores = {};
+  KEYWORD_MAP.forEach(entry => {
+    const hits = entry.keywords.filter(k => text.includes(k)).length;
+    if (hits === 0) return;
+    entry.rooms.forEach(roomId => { scores[roomId] = (scores[roomId] || 0) + hits; });
+  });
+  return scores;
+}
+
+function getMatchedCategories(jdText) {
+  const text = jdText.toLowerCase();
+  const matched = [];
+  CATEGORY_LABELS.forEach(cat => {
+    const hits = cat.keywords.filter(k => text.includes(k)).length;
+    if (hits > 0) matched.push({ id: cat.id, label: cat.label, hits });
+  });
+  return matched.sort((a, b) => b.hits - a.hits);
+}
+
 function getTopCases(roomId, allData, jdText, limit) {
   if (!allData) return [];
   var mapping = ROOM_DATA_MAP[roomId];
@@ -181,18 +158,11 @@ function getTopCases(roomId, allData, jdText, limit) {
     var score = 0;
     var title = (item[mapping.titleField] || '').toLowerCase();
     var tags = item.tags || [];
-    tags.forEach(function(tag) {
-      if (text.includes(tag.toLowerCase())) score += 2;
-    });
-    title.split(/\s+/).forEach(function(word) {
-      if (word.length > 3 && text.includes(word)) score += 1;
-    });
+    tags.forEach(function(tag) { if (text.includes(tag.toLowerCase())) score += 2; });
+    title.split(/\s+/).forEach(function(word) { if (word.length > 3 && text.includes(word)) score += 1; });
     return { item: item, score: score, idx: idx };
   });
-  scored.sort(function(a, b) {
-    if (b.score !== a.score) return b.score - a.score;
-    return a.idx - b.idx;
-  });
+  scored.sort(function(a, b) { return b.score !== a.score ? b.score - a.score : a.idx - b.idx; });
   return scored.slice(0, limit).map(function(s) { return s.item; });
 }
 
@@ -200,253 +170,534 @@ function truncateTitle(title) {
   return title.length > 45 ? title.slice(0, 42) + '...' : title;
 }
 
+// ─── Helpers: new ────────────────────────────────────────────────────────────
+function getWeight(hits) {
+  if (hits >= 4) return 3;
+  if (hits >= 2) return 2;
+  return 1;
+}
+
+function computeGapScore(weight, rating) {
+  const inv = { weak: 3, okay: 2, strong: 1 };
+  return weight * (inv[rating] || 2);
+}
+
+function buildGapRoomOrder(gaps) {
+  const seen = new Set();
+  const order = [];
+  gaps.forEach(g => {
+    const def = SKILL_DEFS.find(s => s.id === g.id);
+    if (!def) return;
+    def.rooms.forEach(r => { if (!seen.has(r) && ROOM_META[r]) { seen.add(r); order.push(r); } });
+  });
+  return order;
+}
+
+function detectOutsidePAL(jdText) {
+  const text = jdText.toLowerCase();
+  return OUTSIDE_PAL_SIGNALS.filter(sig => sig.keywords.some(k => text.includes(k)));
+}
+
+function buildDayPlan(roomOrder, gaps, dayCount, intensity) {
+  const rpp = intensity === 'fullblitz' ? 3 : 2;
+  const days = [];
+  let roomIdx = 0;
+
+  const NOTES = [
+    'Your biggest gap. Attempt cases cold — read every debrief carefully.',
+    'Verbal practice: explain your approach out loud before committing your answer.',
+    'Write one sentence connecting each topic to a real past project.',
+    'Do at least 3 cases. Note which sub-type you keep getting wrong.',
+    'Breadth day. One case per room. Flag anything you cannot explain clearly.',
+    'Return to your weak-rated areas. Can you answer without reading the debrief?',
+    'Simulate one 30-min round out loud: no hints, timed.',
+    'Re-attempt your hardest cases cold. Measure your improvement.',
+    'Round simulation — Screening: behavioral + one metric question, 15 min.',
+    'Round simulation — Technical: 3 SQL cases back-to-back.',
+    'Round simulation — Case: one full RCA walkthrough out loud.',
+    'Stretch coverage. Surface areas you have not touched yet.',
+    'Full 60-min mock: behavioral, then technical, then case. No hints.',
+    'Light review only. Your 5 strongest cases. Sleep. You are ready.',
+  ];
+
+  for (let d = 1; d <= dayCount; d++) {
+    const isLast = d === dayCount;
+    const isMid = d === Math.ceil(dayCount / 2) && dayCount >= 7;
+
+    if (isLast) {
+      days.push({
+        day: d, label: 'Day ' + d,
+        theme: dayCount >= 14 ? 'Final Polish' : 'Review + Simulate',
+        rooms: roomOrder.slice(0, Math.min(rpp, roomOrder.length)),
+        note: dayCount >= 14 ? NOTES[13] : NOTES[6],
+        tier: 'review',
+      });
+    } else if (isMid) {
+      const weakRooms = gaps
+        .filter(g => g.rating === 'weak')
+        .flatMap(g => (SKILL_DEFS.find(s => s.id === g.id) || {}).rooms || [])
+        .filter(r => ROOM_META[r])
+        .slice(0, rpp);
+      days.push({
+        day: d, label: 'Day ' + d, theme: 'Weak Spot Focus',
+        rooms: weakRooms.length > 0 ? weakRooms : roomOrder.slice(roomIdx, roomIdx + rpp),
+        note: NOTES[5],
+        tier: 'weak',
+      });
+      if (weakRooms.length === 0) roomIdx += rpp;
+    } else {
+      const dayRooms = roomOrder.slice(roomIdx, roomIdx + rpp).filter(r => ROOM_META[r]);
+      const progress = (d - 1) / (dayCount - 1);
+      const tier = progress < 0.35 ? 'gap' : progress < 0.7 ? 'practice' : 'breadth';
+      const theme = d === 1 ? 'Biggest Gap' : d === 2 ? 'Second Priority' : progress < 0.5 ? 'Core Practice' : 'Breadth Coverage';
+      const noteIdx = Math.min(d - 1, NOTES.length - 1);
+      days.push({ day: d, label: 'Day ' + d, theme, rooms: dayRooms, note: NOTES[noteIdx], tier });
+      roomIdx += rpp;
+    }
+  }
+
+  return days.filter(d => d.rooms && d.rooms.length > 0);
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 export function DefenseDocGenerator({ onBack, onNavigate }) {
   const allData = { scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases };
-  const [jdText, setJdText]   = useState('');
-  const [plan,   setPlan]     = useState(null);
-  const [isGenerating, setIsGenerating] = useState(false);
 
-  function handleGenerate() {
+  const [step, setStep]                   = useState('input');
+  const [jdText, setJdText]               = useState('');
+  const [extractedSkills, setExtracted]   = useState([]);
+  const [ratings, setRatings]             = useState({});
+  const [timeHorizon, setTimeHorizon]     = useState('7');
+  const [intensity, setIntensity]         = useState('balanced');
+  const [stratPlan, setStratPlan]         = useState(null);
+
+  function handleAnalyze() {
     if (!jdText.trim()) return;
-    setIsGenerating(true);
-    setTimeout(function() {
-      const scores   = scoreRooms(jdText);
-      const cats     = getMatchedCategories(jdText);
-      const days     = buildPlan(scores);
-      const totalHits = Object.values(scores).reduce(function(a, b) { return a + b; }, 0);
-      setPlan({ scores, cats, days, totalHits });
-      setIsGenerating(false);
-    }, 320);
+    const cats = getMatchedCategories(jdText);
+    let skills = cats.slice(0, 7).map(c => ({ id: c.id, label: c.label, hits: c.hits, weight: getWeight(c.hits) }));
+    if (skills.length < 3) {
+      SKILL_DEFS.filter(s => !skills.find(sk => sk.id === s.id)).slice(0, 5 - skills.length)
+        .forEach(f => skills.push({ id: f.id, label: f.label, hits: 0, weight: 1 }));
+    }
+    setExtracted(skills);
+    const defaults = {};
+    skills.forEach(s => { defaults[s.id] = 'okay'; });
+    setRatings(defaults);
+    setStep('configure');
   }
 
-  function handleReset() {
-    setPlan(null);
-    setJdText('');
+  function handleBuild() {
+    const gaps = extractedSkills.map(s => ({
+      ...s,
+      rating: ratings[s.id] || 'okay',
+      gapScore: computeGapScore(s.weight, ratings[s.id] || 'okay'),
+    })).sort((a, b) => b.gapScore - a.gapScore);
+
+    const roomOrder = buildGapRoomOrder(gaps);
+    const outside   = detectOutsidePAL(jdText);
+    const isCram    = timeHorizon === 'cram';
+
+    let plan;
+    if (isCram) {
+      plan = { type: 'cram', gaps, topRooms: roomOrder.slice(0, intensity === 'fullblitz' ? 5 : 3), outside };
+    } else {
+      const dayCount = timeHorizon === '3' ? 3 : timeHorizon === '14' ? 14 : 7;
+      const days = buildDayPlan(roomOrder, gaps, dayCount, intensity);
+      plan = { type: 'plan', gaps, days, roomOrder, outside };
+    }
+    setStratPlan(plan);
+    setStep('plan');
   }
 
-  const usingExample = !plan;
-  const displayPlan  = plan || EXAMPLE_PLAN;
+  const STEPS = [
+    { key: 'input',     label: 'Paste JD' },
+    { key: 'configure', label: 'Rate Skills' },
+    { key: 'plan',      label: 'Your Strategy' },
+  ];
+  const stepIdx = STEPS.findIndex(s => s.key === step);
+
+  const ratingColor = { weak: 'var(--red)', okay: 'var(--yellow)', strong: 'var(--teal)' };
+  const ratingBg    = { weak: 'var(--red-bg)', okay: 'var(--yellow-bg)', strong: 'var(--teal-bg)' };
+  const ratingBorder = { weak: 'var(--red-border)', okay: 'var(--yellow-border)', strong: 'var(--teal-border)' };
+  const ratingLabel = { weak: 'Weak', okay: 'Okay', strong: 'Strong' };
 
   return (
-    <div style={{ maxWidth: '920px', margin: '0 auto', padding: '2rem 1.25rem 6rem' }}>
+    <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.25rem 6rem' }}>
 
       {/* Back */}
       {onBack && (
-        <button
-          onClick={onBack}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem', padding: 0, display: 'flex', alignItems: 'center', gap: '0.3rem' }}
-        >
+        <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem', padding: 0, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
           ← Back
         </button>
       )}
 
       {/* Header */}
-      <div style={{ marginBottom: '2rem' }}>
+      <div style={{ marginBottom: '1.75rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', marginBottom: '0.5rem' }}>
           <span style={{ width: 36, height: 36, borderRadius: 9, background: 'var(--purple-bg)', border: '1px solid var(--purple-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', flexShrink: 0 }}>🛡</span>
           <div>
             <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--purple)', marginBottom: 2 }}>Prep Tools</div>
-            <h1 style={{ fontSize: '1.55rem', fontWeight: 700, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>Defense Doc</h1>
+            <h1 style={{ fontSize: '1.55rem', fontWeight: 700, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>Defense Strategy</h1>
           </div>
         </div>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.93rem', margin: '0.4rem 0 0', maxWidth: 580, lineHeight: 1.6 }}>
-          Paste a job description and get a prioritized 7-day study plan mapped to specific PAL rooms.
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '0.4rem 0 0', maxWidth: 560, lineHeight: 1.6 }}>
+          Paste a job description, rate yourself on each skill it tests, and get a personalized PAL prep plan — with honest gap flagging for skills PAL does not cover.
         </p>
       </div>
 
-      {/* ── Two-panel layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: plan ? '1fr 2fr' : '1fr', gap: '1.5rem', alignItems: 'start' }}>
-
-        {/* Left panel — JD input */}
-        <div>
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
-            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text)', marginBottom: '0.6rem' }}>
-              Job Description
-            </label>
-            <textarea
-              value={jdText}
-              onChange={function(e) { setJdText(e.target.value); }}
-              placeholder={'Paste the job description here...\n\nInclude responsibilities and qualifications for best results.'}
-              style={{ width: '100%', minHeight: plan ? 280 : 220, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.85rem', fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.65, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none' }}
-            />
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '0.35rem', marginBottom: '0.9rem' }}>
-              Tip: more complete JDs produce better recommendations.
+      {/* Step indicator */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+        {STEPS.map((s, i) => {
+          const isDone   = i < stepIdx;
+          const isActive = i === stepIdx;
+          return (
+            <div key={s.key} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <div style={{ width: 22, height: 22, borderRadius: '50%', background: isDone ? 'var(--purple)' : isActive ? 'var(--purple-bg)' : 'var(--surface-2)', border: '2px solid ' + (isDone || isActive ? 'var(--purple)' : 'var(--border)'), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 700, color: isDone ? 'white' : isActive ? 'var(--purple)' : 'var(--text-dim)', flexShrink: 0 }}>
+                  {isDone ? '✓' : i + 1}
+                </div>
+                <span style={{ fontSize: '0.78rem', fontWeight: isActive ? 700 : 400, color: isActive ? 'var(--text)' : isDone ? 'var(--text-muted)' : 'var(--text-dim)' }}>
+                  {s.label}
+                </span>
+              </div>
+              {i < STEPS.length - 1 && <div style={{ width: 20, height: 1, background: 'var(--border)', flexShrink: 0, margin: '0 0.1rem' }} />}
             </div>
-            <button
-              onClick={plan ? handleReset : handleGenerate}
-              disabled={isGenerating || (!plan && !jdText.trim())}
-              style={{
-                width: '100%',
-                background: plan ? 'var(--surface-2)' : (jdText.trim() ? 'var(--purple)' : 'var(--surface-2)'),
-                color: plan ? 'var(--text-muted)' : (jdText.trim() ? 'white' : 'var(--text-dim)'),
-                border: plan ? '1px solid var(--border)' : 'none',
-                borderRadius: 'var(--radius)',
-                padding: '0.75rem 1.25rem',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                cursor: (isGenerating || (!plan && !jdText.trim())) ? 'not-allowed' : 'pointer',
-                transition: 'all 0.15s',
-              }}
-            >
-              {isGenerating ? 'Analyzing...' : plan ? '← New job description' : 'Generate 7-day plan →'}
+          );
+        })}
+      </div>
+
+      {/* ── STEP 1: JD Input ── */}
+      {step === 'input' && (
+        <div style={{ maxWidth: 640 }}>
+          <label style={{ display: 'block', fontWeight: 600, fontSize: '0.88rem', color: 'var(--text)', marginBottom: '0.6rem' }}>
+            Job description
+          </label>
+          <textarea
+            value={jdText}
+            onChange={e => setJdText(e.target.value)}
+            placeholder={'Paste the full job description here.\n\nInclude responsibilities and qualifications for best results.'}
+            style={{ width: '100%', minHeight: 240, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem', fontSize: '0.875rem', color: 'var(--text)', lineHeight: 1.65, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', outline: 'none', transition: 'border-color 0.15s' }}
+            onFocus={e => { e.currentTarget.style.borderColor = 'var(--purple)'; }}
+            onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+          />
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '0.35rem', marginBottom: '1rem' }}>
+            Tip: the fuller the JD, the more accurate your skill gap map.
+          </div>
+          <button
+            onClick={handleAnalyze}
+            disabled={!jdText.trim()}
+            style={{ background: jdText.trim() ? 'var(--purple)' : 'var(--surface-2)', color: jdText.trim() ? 'white' : 'var(--text-dim)', border: 'none', borderRadius: 'var(--radius)', padding: '0.75rem 1.5rem', fontSize: '0.9rem', fontWeight: 700, cursor: jdText.trim() ? 'pointer' : 'not-allowed', transition: 'all 0.15s' }}
+          >
+            Analyze JD →
+          </button>
+        </div>
+      )}
+
+      {/* ── STEP 2: Configure ── */}
+      {step === 'configure' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(480px, 100%), 1fr))', gap: '2rem', alignItems: 'start' }}>
+
+          {/* Left: skill ratings */}
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', marginBottom: '0.3rem' }}>Rate yourself on each skill</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem', lineHeight: 1.5 }}>
+              Be honest — this shapes your plan. The dots show how much the JD weights each skill.
+            </div>
+            {extractedSkills.some(s => s.hits === 0) && (
+              <div style={{ padding: '0.65rem 0.85rem', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.78rem', color: 'var(--yellow-text)', marginBottom: '0.9rem', lineHeight: 1.5 }}>
+                Few signals matched this JD — showing defaults. Rate each skill to personalize.
+              </div>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+              {extractedSkills.map(skill => {
+                const r = ratings[skill.id] || 'okay';
+                return (
+                  <div key={skill.id} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flex: 1, minWidth: 0 }}>
+                      <span style={{ fontSize: '0.83rem', fontWeight: 600, color: 'var(--text)', flex: 1, minWidth: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{skill.label}</span>
+                      <div style={{ display: 'flex', gap: 3, flexShrink: 0 }}>
+                        {[1, 2, 3].map(w => (
+                          <div key={w} style={{ width: 7, height: 7, borderRadius: '50%', background: w <= skill.weight ? 'var(--purple)' : 'var(--border)', opacity: w <= skill.weight ? 1 : 0.35 }} />
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0 }}>
+                      {['weak', 'okay', 'strong'].map(val => (
+                        <button
+                          key={val}
+                          onClick={() => setRatings(prev => ({ ...prev, [skill.id]: val }))}
+                          style={{ padding: '0.26rem 0.55rem', borderRadius: 'var(--radius-sm)', border: '1.5px solid ' + (r === val ? ratingBorder[val] : 'var(--border)'), background: r === val ? ratingBg[val] : 'none', color: r === val ? ratingColor[val] : 'var(--text-muted)', fontSize: '0.72rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.1s', textTransform: 'capitalize' }}
+                        >
+                          {ratingLabel[val]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <button onClick={() => setStep('input')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.78rem', marginTop: '1rem', padding: 0 }}>
+              ← Change JD
             </button>
           </div>
 
-          {/* Keyword hint — shown when no plan yet */}
-          {!plan && (
-            <div style={{ marginTop: '1rem', background: 'var(--purple-bg)', border: '1px solid var(--purple-border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem' }}>
-              <div style={{ fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--purple)', marginBottom: '0.55rem' }}>Scanned for keywords across</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-                {CATEGORY_LABELS.map(function(cat) {
+          {/* Right: time horizon + intensity + build */}
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', marginBottom: '0.3rem' }}>How much time do you have?</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.9rem' }}>Pick the mode that matches your runway.</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+              {[
+                { key: 'cram', label: 'Cram Up',  sub: 'Interview today or tomorrow', icon: '⚡' },
+                { key: '3',    label: '3 Days',    sub: 'Short but focused prep window', icon: '📅' },
+                { key: '7',    label: '7 Days',    sub: 'Standard structured prep', icon: '📆' },
+                { key: '14',   label: '14 Days',   sub: 'Thorough gap-first coverage', icon: '🗓' },
+              ].map(t => (
+                <button
+                  key={t.key}
+                  onClick={() => setTimeHorizon(t.key)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textAlign: 'left', padding: '0.8rem 1rem', background: timeHorizon === t.key ? 'var(--purple-bg)' : 'var(--surface)', border: '1.5px solid ' + (timeHorizon === t.key ? 'var(--purple-border)' : 'var(--border)'), borderRadius: 'var(--radius)', cursor: 'pointer', transition: 'all 0.1s' }}
+                >
+                  <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{t.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '0.88rem', fontWeight: 700, color: timeHorizon === t.key ? 'var(--purple)' : 'var(--text)' }}>{t.label}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>{t.sub}</div>
+                  </div>
+                  {timeHorizon === t.key && <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--purple)', flexShrink: 0 }} />}
+                </button>
+              ))}
+            </div>
+
+            {timeHorizon !== 'cram' && (
+              <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', marginBottom: '0.3rem' }}>Intensity</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>How hard do you want to push per day?</div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  {[
+                    { key: 'balanced',  label: 'Balanced',   sub: '2 rooms/day — deeper work' },
+                    { key: 'fullblitz', label: 'Full Blitz', sub: '3 rooms/day — full coverage' },
+                  ].map(m => (
+                    <button
+                      key={m.key}
+                      onClick={() => setIntensity(m.key)}
+                      style={{ flex: 1, textAlign: 'left', padding: '0.75rem 0.9rem', background: intensity === m.key ? 'var(--purple-bg)' : 'var(--surface)', border: '1.5px solid ' + (intensity === m.key ? 'var(--purple-border)' : 'var(--border)'), borderRadius: 'var(--radius)', cursor: 'pointer', transition: 'all 0.1s' }}
+                    >
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: intensity === m.key ? 'var(--purple)' : 'var(--text)' }}>{m.label}</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>{m.sub}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <button
+              onClick={handleBuild}
+              style={{ width: '100%', background: 'var(--purple)', color: 'white', border: 'none', borderRadius: 'var(--radius)', padding: '0.8rem 1.25rem', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', transition: 'opacity 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; }}
+              onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+            >
+              Build my strategy →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── STEP 3: Plan Output ── */}
+      {step === 'plan' && stratPlan && (function() {
+        const { gaps, outside } = stratPlan;
+        const maxGap = Math.max(...gaps.map(g => g.gapScore), 1);
+
+        const tierColors = {
+          gap:      { color: 'var(--red)',    bg: 'var(--red-bg)',    border: 'var(--red-border)',    label: 'Gap Focus' },
+          practice: { color: 'var(--purple)', bg: 'var(--purple-bg)', border: 'var(--purple-border)', label: 'Practice' },
+          breadth:  { color: 'var(--yellow)', bg: 'var(--yellow-bg)', border: 'var(--yellow-border)', label: 'Breadth' },
+          weak:     { color: 'var(--yellow)', bg: 'var(--yellow-bg)', border: 'var(--yellow-border)', label: 'Weak Spot' },
+          review:   { color: 'var(--teal)',   bg: 'var(--teal-bg)',   border: 'var(--teal-border)',   label: 'Review' },
+        };
+
+        return (
+          <div>
+            {/* Gap scorecard */}
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.25rem 1.4rem', marginBottom: '1.5rem' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '1rem' }}>Skill gap map</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                {gaps.map(g => (
+                  <div key={g.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ width: 160, fontSize: '0.78rem', fontWeight: 500, color: 'var(--text)', flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{g.label}</div>
+                    <div style={{ flex: 1, height: 6, background: 'var(--surface-2)', borderRadius: 3, overflow: 'hidden', minWidth: 40 }}>
+                      <div style={{ height: '100%', width: ((g.gapScore / maxGap) * 100) + '%', background: ratingColor[g.rating], borderRadius: 3, transition: 'width 0.5s' }} />
+                    </div>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 700, color: ratingColor[g.rating], width: 42, textAlign: 'right', flexShrink: 0 }}>{ratingLabel[g.rating]}</span>
+                    {g.weight >= 2 && (
+                      <span style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--purple)', background: 'var(--purple-bg)', border: '1px solid var(--purple-border)', borderRadius: 3, padding: '0.1rem 0.35rem', flexShrink: 0 }}>
+                        {g.weight === 3 ? 'High JD' : 'Med JD'}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Round-by-round breakdown */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>Round-by-round exposure</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(260px, 100%), 1fr))', gap: '0.6rem' }}>
+                {ROUND_TEMPLATES.map(round => {
+                  const roundGaps = gaps.filter(g => round.skillIds.includes(g.id));
+                  const maxScore  = roundGaps.length > 0 ? Math.max(...roundGaps.map(g => g.gapScore)) : 0;
+                  const roundAccent = maxScore >= 6 ? 'var(--red)' : maxScore >= 3 ? 'var(--yellow)' : 'var(--teal)';
                   return (
-                    <span key={cat.id} style={{ fontSize: '0.72rem', fontWeight: 500, color: 'var(--purple)', background: 'var(--purple-bg)', border: '1px solid var(--purple-border)', borderRadius: 20, padding: '0.2rem 0.55rem' }}>
-                      {cat.label}
-                    </span>
+                    <div key={round.id} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1rem', borderLeft: '3px solid ' + roundAccent }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.3rem' }}>
+                        <span style={{ fontSize: '0.85rem' }}>{round.icon}</span>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)' }}>{round.label}</span>
+                      </div>
+                      <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '0.6rem' }}>{round.focus}</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
+                        {roundGaps.length > 0 ? roundGaps.map(g => (
+                          <span key={g.id} style={{ fontSize: '0.65rem', fontWeight: 700, color: ratingColor[g.rating], background: ratingBg[g.rating], border: '1px solid ' + ratingBorder[g.rating], borderRadius: 4, padding: '0.1rem 0.38rem' }}>
+                            {g.label} · {ratingLabel[g.rating]}
+                          </span>
+                        )) : (
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>Not in JD</span>
+                        )}
+                      </div>
+                    </div>
                   );
                 })}
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Right panel — plan output */}
-        <div>
-          {/* ── Example banner ── */}
-          {usingExample && (
-            <div style={{ background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius)', padding: '0.75rem 1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-              <span style={{ fontSize: '0.85rem' }}>💡</span>
-              <span style={{ fontSize: '0.82rem', color: 'var(--yellow-text)', fontWeight: 500 }}>
-                Example plan for: <strong>{EXAMPLE_PLAN.role}</strong>. Paste a real JD to get your personalized plan.
-              </span>
-            </div>
-          )}
-
-          {/* ── Matched categories ── */}
-          {!usingExample && (
-            <div style={{ marginBottom: '1.1rem' }}>
-              <div style={{ fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.55rem' }}>Keywords matched</div>
-              {displayPlan.matchedCategories && displayPlan.matchedCategories.length > 0 ? (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                  {displayPlan.matchedCategories.map(function(cat, i) {
-                    const isPrimary   = i < 3;
-                    const isSecondary = i >= 3 && i < 6;
-                    const color  = isPrimary ? 'var(--purple)'      : isSecondary ? 'var(--teal)'      : 'var(--text-muted)';
-                    const bg     = isPrimary ? 'var(--purple-bg)'   : isSecondary ? 'var(--teal-bg)'   : 'var(--surface-2)';
-                    const border = isPrimary ? 'var(--purple-border)': isSecondary ? 'var(--teal-border)': 'var(--border)';
+            {/* Cram Up output */}
+            {stratPlan.type === 'cram' && (
+              <div style={{ marginBottom: '1.25rem' }}>
+                <div style={{ fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+                  ⚡ Cram Up — top priorities right now
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', marginBottom: '1rem' }}>
+                  {stratPlan.topRooms.map((roomId, i) => {
+                    const meta = ROOM_META[roomId];
+                    if (!meta) return null;
+                    const topCases = getTopCases(roomId, allData, jdText, 2);
+                    const accent = i === 0 ? 'var(--red)' : i === 1 ? 'var(--yellow)' : meta.color;
                     return (
-                      <span key={cat.id} style={{ fontSize: '0.75rem', fontWeight: isPrimary ? 700 : 500, color, background: bg, border: '1px solid ' + border, borderRadius: 20, padding: '0.22rem 0.65rem' }}>
-                        {cat.label}
-                        <span style={{ opacity: 0.65, marginLeft: 3, fontWeight: 400, fontSize: '0.7rem' }}>
-                          ({cat.hits})
-                        </span>
-                      </span>
+                      <div key={roomId} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', borderLeft: '3px solid ' + accent }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: topCases.length > 0 ? '0.5rem' : 0 }}>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-dim)' }}>#{i + 1}</span>
+                          <button onClick={() => onNavigate && onNavigate(meta.page)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', color: meta.color, padding: 0 }}>
+                            {meta.label} →
+                          </button>
+                        </div>
+                        {topCases.length > 0 && (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
+                            {topCases.map(c => (
+                              <button key={c.id} onClick={() => onNavigate && onNavigate(meta.page, c.id)} style={{ background: 'var(--surface-2)', border: 'none', borderRadius: 5, padding: '0.2rem 0.55rem', fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer' }} onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; }} onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                                {'▸ ' + truncateTitle(c.title || '')}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
-              ) : (
-                <p style={{ fontSize: '0.83rem', color: 'var(--text-muted)', margin: 0 }}>No strong signals found — paste a more complete JD for better results.</p>
-              )}
-            </div>
-          )}
-
-          {/* ── 7-day plan cards ── */}
-          <div style={{ fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.7rem' }}>
-            Your 7-day study plan
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-            {displayPlan.days.map(function(dayObj) {
-              var dayNum = dayObj.day;
-              var accentColor = dayNum <= 2 ? 'var(--teal)' : dayNum <= 5 ? 'var(--purple)' : dayNum === 6 ? 'var(--yellow)' : 'var(--green)';
-              var accentBg    = dayNum <= 2 ? 'var(--teal-bg)' : dayNum <= 5 ? 'var(--purple-bg)' : dayNum === 6 ? 'var(--yellow-bg)' : 'var(--green-bg)';
-              var accentBorder= dayNum <= 2 ? 'var(--teal-border)' : dayNum <= 5 ? 'var(--purple-border)' : dayNum === 6 ? 'var(--yellow-border)' : 'var(--green-border)';
-              var tier = dayNum <= 2 ? 'Foundation' : dayNum <= 5 ? 'Practice' : dayNum === 6 ? 'Breadth' : 'Review';
-
-              return (
-                <div key={dayObj.day} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', borderLeft: '3px solid ' + accentColor }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.4rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
-                      <span style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text)' }}>{dayObj.label}</span>
-                      <span style={{ fontWeight: 600, fontSize: '0.78rem', color: 'var(--text-muted)' }}>— {dayObj.theme}</span>
-                    </div>
-                    <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: accentColor, background: accentBg, border: '1px solid ' + accentBorder, borderRadius: 'var(--radius-sm)', padding: '0.12rem 0.45rem' }}>
-                      {tier}
-                    </span>
-                  </div>
-
-                  {/* Room chips */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                    {(dayObj.rooms || []).map(function(roomId) {
-                      var meta = ROOM_META[roomId];
-                      if (!meta) return null;
-                      return (
-                        <button
-                          key={roomId}
-                          onClick={function() { if (onNavigate) onNavigate(meta.page); }}
-                          style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.7rem', fontSize: '0.78rem', fontWeight: 600, color: meta.color, cursor: 'pointer', transition: 'border-color 0.12s' }}
-                          title={'Go to ' + meta.label}
-                        >
-                          {meta.label} →
-                        </button>
-                      );
-                    })}
-                    {(!dayObj.rooms || dayObj.rooms.length === 0) && (
-                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No specific room match — paste a fuller JD.</span>
-                    )}
-                  </div>
-
-                  {/* Suggested cases */}
-                  {plan && allData && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginBottom: '0.5rem' }}>
-                      {(dayObj.rooms || []).map(function(roomId) {
-                        var meta = ROOM_META[roomId];
-                        if (!meta) return null;
-                        var topCases = getTopCases(roomId, allData, jdText, 2);
-                        if (topCases.length === 0) return null;
-                        return topCases.map(function(c) {
-                          return (
-                            <button
-                              key={roomId + '-' + c.id}
-                              onClick={function() { if (onNavigate) onNavigate(meta.page, c.id); }}
-                              style={{ background: 'var(--surface-2)', border: 'none', borderRadius: 5, padding: '0.22rem 0.6rem', fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer', transition: 'color 0.12s, background 0.12s' }}
-                              onMouseEnter={function(e) { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.background = 'var(--surface-3)'; }}
-                              onMouseLeave={function(e) { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'var(--surface-2)'; }}
-                              title={'Open: ' + (c.title || '')}
-                            >
-                              {'▸ ' + truncateTitle(c.title || '')}
-                            </button>
-                          );
-                        });
-                      })}
-                    </div>
-                  )}
-
-                  {/* Day note */}
-                  {dayObj.note && (
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>{dayObj.note}</p>
-                  )}
+                <div style={{ padding: '0.9rem 1rem', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius)', fontSize: '0.8rem', color: 'var(--yellow-text)', lineHeight: 1.6 }}>
+                  <strong>The hour before:</strong> Review your top 2 gap areas cold. Have one clear structure for RCA ready in your head: clarify the metric, decompose into drivers, prioritize hypotheses, state next steps. Do not start anything new.
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            )}
 
-          {/* Footer note */}
-          <div style={{ marginTop: '1.25rem', padding: '0.85rem 1rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>
-            As you complete cases, your{' '}
-            {onNavigate ? (
-              <button onClick={function() { onNavigate('progress'); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--purple)', fontWeight: 600, fontSize: '0.82rem', padding: 0 }}>
-                Progress page
+            {/* Day plan output */}
+            {stratPlan.type === 'plan' && (
+              <div style={{ marginBottom: '1.25rem' }}>
+                <div style={{ fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+                  Your {stratPlan.days.length}-day plan
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                  {stratPlan.days.map(dayObj => {
+                    const tc = tierColors[dayObj.tier] || tierColors.practice;
+                    return (
+                      <div key={dayObj.day} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', borderLeft: '3px solid ' + tc.color }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.45rem', flexWrap: 'wrap', gap: '0.4rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+                            <span style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text)' }}>{dayObj.label}</span>
+                            <span style={{ fontWeight: 500, fontSize: '0.78rem', color: 'var(--text-muted)' }}>— {dayObj.theme}</span>
+                          </div>
+                          <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: tc.color, background: tc.bg, border: '1px solid ' + tc.border, borderRadius: 4, padding: '0.12rem 0.45rem' }}>
+                            {tc.label}
+                          </span>
+                        </div>
+                        {/* Room chips */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.45rem' }}>
+                          {(dayObj.rooms || []).map(roomId => {
+                            const meta = ROOM_META[roomId];
+                            if (!meta) return null;
+                            return (
+                              <button key={roomId} onClick={() => onNavigate && onNavigate(meta.page)} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.3rem 0.7rem', fontSize: '0.78rem', fontWeight: 600, color: meta.color, cursor: 'pointer', transition: 'border-color 0.12s' }} onMouseEnter={e => { e.currentTarget.style.borderColor = meta.color; }} onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; }}>
+                                {meta.label} →
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {/* Suggested cases */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: dayObj.note ? '0.5rem' : 0 }}>
+                          {(dayObj.rooms || []).flatMap(roomId => {
+                            const meta = ROOM_META[roomId];
+                            if (!meta) return [];
+                            return getTopCases(roomId, allData, jdText, 2).map(c => (
+                              <button key={roomId + '-' + c.id} onClick={() => onNavigate && onNavigate(meta.page, c.id)} style={{ background: 'var(--surface-2)', border: 'none', borderRadius: 5, padding: '0.2rem 0.55rem', fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer' }} onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; }} onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                                {'▸ ' + truncateTitle(c.title || '')}
+                              </button>
+                            ));
+                          })}
+                        </div>
+                        {dayObj.note && <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.55 }}>{dayObj.note}</p>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Outside PAL */}
+            {outside && outside.length > 0 && (
+              <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem 1.25rem', marginBottom: '1.25rem' }}>
+                <div style={{ fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--red)', marginBottom: '0.75rem' }}>
+                  Outside PAL — honest gaps
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+                  {outside.map(sig => (
+                    <div key={sig.label} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                      <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--red)', marginTop: '0.45rem', flexShrink: 0 }} />
+                      <div>
+                        <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.2rem' }}>{sig.label}</div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{sig.action}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Footer */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+              <button onClick={() => setStep('configure')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.82rem', padding: 0 }}>
+                ← Reconfigure
               </button>
-            ) : (
-              <span style={{ color: 'var(--purple)', fontWeight: 600 }}>Progress page</span>
-            )}{' '}
-            will show which rooms still need attention. Regenerate this plan if your target role changes.
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', lineHeight: 1.5 }}>
+                As you complete rooms, your{' '}
+                <button onClick={() => onNavigate && onNavigate('progress')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--purple)', fontWeight: 600, fontSize: '0.78rem', padding: 0 }}>
+                  Progress page
+                </button>
+                {' '}will show which rooms still need attention.
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        );
+      })()}
+
     </div>
   );
 }
 
-// Alias export so both names resolve (App.jsx uses DefenseDocGenerator)
+// Alias export so both names resolve
 export { DefenseDocGenerator as DefenseDoc };

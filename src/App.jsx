@@ -208,7 +208,7 @@ export default function App() {
       'stf-runner': 'Spot the Flaw — Product Analytics Lab',
       'take-home': 'Take-Home Challenges — Product Analytics Lab',
       'takehome-runner': 'Take-Home Challenges — Product Analytics Lab',
-      'defense-doc': 'Defense Doc — Product Analytics Lab',
+      'defense-doc': 'Defense Strategy — Product Analytics Lab',
       'instrumentation': 'Analytics Instrumentation — Product Analytics Lab',
       'instrumentation-runner': 'Case — Analytics Instrumentation — Product Analytics Lab',
       'foundations': 'Foundations — Product Analytics Lab',

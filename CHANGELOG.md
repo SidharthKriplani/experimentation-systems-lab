@@ -4,6 +4,28 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.27.0] — 2026-05-28
+
+### Rebuilt — Defense Doc → Defense Strategy
+
+Complete rebuild of the prep tool. Renamed from "Defense Doc" to "Defense Strategy" throughout (Sidebar, App.jsx, page title).
+
+**New 3-step flow:**
+
+**Step 1 — Paste JD.** Same JD textarea. Extracts top 5–7 skills with JD weight (1–3 dots showing how much the role cares about each skill).
+
+**Step 2 — Rate Skills + Configure.** User rates themselves on each extracted skill: Weak / Okay / Strong. Gap score = JD weight × inverse self-rating. Also picks time horizon (Cram Up / 3 / 7 / 14 days) and intensity (Balanced = 2 rooms/day, Full Blitz = 3 rooms/day). Cram Up has no intensity picker — it is always maximum focus.
+
+**Step 3 — Your Strategy.** Three sections:
+- **Skill gap map** — horizontal bars ordered by gap score, with JD weight badge and self-rating color per skill.
+- **Round-by-round exposure** — 4 interview rounds (Screening, Technical, Case, Bar Raiser) each showing which of the user's skills are tested and their gap rating. Accent color turns red when max gap ≥ 6.
+- **Day plan or Cram Up list** — gap-ordered rooms with clickable room chips + 2 suggested cases per room matched to the JD. Day tiers: Gap Focus (red), Practice (purple), Breadth (yellow), Weak Spot, Review.
+- **Outside PAL — honest gaps** — scans JD for Excel/macros, financial modeling, and presentation skills. If found, flags them explicitly with specific external prep actions. No prep tool does this.
+
+**Files touched:** `src/pages/DefenseDocGenerator.jsx`, `src/components/layout/Sidebar.jsx`, `src/App.jsx`
+
+---
+
 ## [4.26.1] — 2026-05-27
 
 ### Fixed — Duplicate sign-in UI

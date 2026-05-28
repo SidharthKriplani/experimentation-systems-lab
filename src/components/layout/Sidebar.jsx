@@ -60,7 +60,7 @@ const FLAT_GROUPS = [
     items: [
       { id: 'trainer',        label: 'MCQ Quiz',      icon: 'target' },
       { id: 'company-tracks', label: 'Companies',     icon: 'building-2' },
-      { id: 'defense-doc',    label: 'Defense Doc',   icon: 'shield' },
+      { id: 'defense-doc',    label: 'Defense Strategy',   icon: 'shield' },
       { id: 'bookmarks',      label: 'Saved',         icon: 'bookmark' },
     ],
   },

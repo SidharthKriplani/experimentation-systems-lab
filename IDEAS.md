@@ -14,6 +14,12 @@ Next actions before any new feature work:
 
 _No new features until PostHog baseline is established._
 
+**Exception shipped V4.27.0:** Defense Strategy rebuild — triggered by real interview prep use case (Meesho SBA). Qualifies as a quality improvement to an existing tool, not a net-new feature.
+
+**Defense Strategy future layers (not yet built):**
+- Layer 4: Company track cross-referencing — if prepping for Meesho, weight RCA 40% heavier, surface supply-demand framing. Needs company track data to be trustworthy.
+- Layer 5: Live plan that updates as you practice — as rooms are completed, Defense Strategy re-scores gaps and updates priorities. Requires tying room completion events back to Defense Strategy state. V5 territory.
+
 ---
 
 ## Tier 1 — High impact, buildable now
@@ -69,7 +75,7 @@ _No new features until PostHog baseline is established._
 - ~~Dark/light mode persistence fix~~ — ✅ already in place via index.html inline script (was pre-existing)
 - Difficulty progression lock (must complete junior before senior unlocks) — opt-in mode only
 - **Learning paths with checkpoint tracking** (from ML Systems Lab, directly portable) — "6-week Analytics Interview Ready," "Metrics Mastery Track," "PM Onboarding Path." Each path is a guided sequence across rooms, with step completion checkmarks + progress counter (X/N steps). localStorage pattern identical to existing rooms.
-- **JD-to-skill-gap mapper** (from ML Systems Lab JDPrepTab + GenAI Lab PrepLab) — paste a job description → extract required skills against PAL room mastery → surface targeted drill questions. Extends Defense Doc Generator.
+- ~~**JD-to-skill-gap mapper** (from ML Systems Lab JDPrepTab + GenAI Lab PrepLab)~~ — ✅ shipped V4.27.0 as Defense Strategy (3-step flow: JD parse → self-rating gap score → personalized plan with round breakdown + outside-PAL flagging)
 - **Per-room breakdown in mock exam debrief** (from ML Systems Lab CombinatorTab) — after Interview Simulator session, show visual bar chart: Metrics 90% / Growth 65% / Behavioral 78% / Stats 80%. Gives clearer skill gap signal than current pass/fail format.
 - **Verbal practice with speech-to-text** (from ML Systems Lab VerbatimTab) — Web Speech API, user speaks 2-min answer to interview question, transcript shown, self-score on 4 criteria (clarity, depth, speed, recovery). Already have the interview question bank.
 
@@ -83,7 +89,7 @@ _No new features until PostHog baseline is established._
 - **Single forward pointer after case debrief** (from GenAI Lab principle) — upgrade "Forward-pointer card" (Tier 3) to enforce ONE next step, not 3–5 options. Genai lab implemented this as a single "What to do next" card with no menu. Prevents decision paralysis at debrief end.
 
 ### Platform
-- **Three front doors IA audit** (from GenAI Lab — Build/Prove/Navigate structure) — audit PAL's home and nav for whether users can identify their entry mode in <5 sec. GenAI lab organizes around Build/Prove/Navigate. PAL equivalent: Practice (rooms) / Assess (Simulator+Trainer) / Navigate (Defense Doc+Company Tracks). Check if this framing improves cold-start clarity.
+- **Three front doors IA audit** (from GenAI Lab — Build/Prove/Navigate structure) — audit PAL's home and nav for whether users can identify their entry mode in <5 sec. GenAI lab organizes around Build/Prove/Navigate. PAL equivalent: Practice (rooms) / Assess (Simulator+Trainer) / Navigate (Defense Strategy+Company Tracks). Check if this framing improves cold-start clarity.
 - **Create PARKED.md** (from GenAI Lab pattern) — separate file for consciously cut or deferred features with reasons. Currently IDEAS.md "Retired" section handles this, but a dedicated PARKED.md with more context per item is cleaner. Move Retired section → PARKED.md with migration notes.
 - First-Time User cold walk-through audit with sidebar nav (incognito, every confusion point noted) — sidebar is new in V4.7, cold path not yet audited
 - IP/Moat audit — what's genuinely hard to replicate? What to double down on?
@@ -108,7 +114,7 @@ _No new features until PostHog baseline is established._
 - Per-session score summary after Interview Simulator (shareable card)
 - Consultation Space expansion: show heatmap of which concepts are most queried
 - **Weak topic heatmap in Trainer debrief** (from ML Systems Lab TrainerTab, directly portable) — after MCQ drill session, show colored grid: Stats/Metrics/RCA/Design/etc. with % correct per room. "Study these next" surface specific weak-room cases.
-- **Forward-pointer card at case/challenge endings** (from GenAI Lab sprint pattern, directly portable) — every case completion shows a "Master this concept" card: one related case to try next + one Defense Doc angle + one Company Track suggestion. Removes the dead-end after debrief.
+- **Forward-pointer card at case/challenge endings** (from GenAI Lab sprint pattern, directly portable) — every case completion shows a "Master this concept" card: one related case to try next + one Defense Strategy angle + one Company Track suggestion. Removes the dead-end after debrief.
 - **"Share score" clipboard button** (from ML Systems Lab, directly portable) — one-click copy of score summary. "PAL: 18/20 · 90% · Strong: Metrics · Weak: Growth Analytics" → paste to LinkedIn or resume.
 - **Difficulty badges on room entry cards** (from GenAI Lab pattern, directly portable) — label each card with difficulty tier (Junior/Mid/Senior) and estimated time. Makes progression legible at a glance.
 - **91-day practice heatmap** (already on Progress page) — already shipped. Confirm it's visible on the main Progress dashboard.
@@ -177,7 +183,7 @@ _No new features until PostHog baseline is established._
 ### Discovery + navigation tools
 - Global Search (all rooms, keyboard shortcut `/` or `Ctrl+K`)
 - Consultation Space (keyword → cases + articles + MCQs)
-- Defense Doc Generator (JD → 7-day study plan, printable)
+- Defense Strategy (JD + self-rating gap score → personalized plan, Cram Up/3/7/14 days, round breakdown, outside-PAL flagging)
 - Bookmarks (cross-room, persistent)
 - Company Tracks (FAANG prep packs)
 - Grouped header nav (ROOMS / PRACTICE / TOOLS / LEARN / TRACK)
