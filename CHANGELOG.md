@@ -4,6 +4,20 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.27.1] — 2026-05-28
+
+### Added — ROLLOUT.md
+
+New spine file for beta rollout operations. Principles section is word-for-word identical across sibling repos (GenAI Systems Lab, ML Systems Lab). Batch content is PAL-specific.
+
+Key principles: Batch 0 is founder-only; every batch has a user profile + content scope; feedback expires when the next batch opens; mobile is non-negotiable in every vet checklist; pass criteria defined before a batch opens.
+
+Batch 0 (founder self-vet) fully specified with 20+ checklist items covering core loop, Defense Strategy 3-step flow, progress/auth, and mobile. Batch 1 (2–3 trusted testers, senior analyst profile, Defense Strategy + RCA + Stats) fully specified with verbatim tester brief. Batches 2–3 stubbed.
+
+CLAUDE.md spine file table updated to include ROLLOUT.md.
+
+---
+
 ## [4.27.0] — 2026-05-28
 
 ### Rebuilt — Defense Doc → Defense Strategy

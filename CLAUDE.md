@@ -177,3 +177,4 @@ Make a product + engineering call first. Not everything belongs. Ask: does this 
 | `METRICS.md` | Tracked events, user funnel, success metrics, localStorage keys. |
 | `docs/CONTENT_QUALITY_BAR.md` | 8-dimension standard every case must pass before shipping. |
 | `docs/SCENARIO_BANK_TAXONOMY.md` | 15 scenario families for the Review Room. |
+| `ROLLOUT.md` | Beta rollout plan — batches, self-vet checklists, tester briefs, feedback tracking. Operational only; not a backlog. |
