@@ -660,7 +660,16 @@ export default function App() {
             onClick={() => navigate('home')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.2rem 0' }}
           >
-            <div style={{ width: 20, height: 20, background: 'linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, flexShrink: 0 }}>⚗</div>
+            <div style={{ width: 20, height: 20, background: 'linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <g stroke="#ffffff" strokeLinecap="round" strokeWidth="1.8">
+                    <line x1="3" y1="10" x2="17" y2="10"/>
+                    <line x1="3" y1="6"  x2="3"  y2="14"/>
+                    <line x1="17" y1="6" x2="17" y2="14"/>
+                  </g>
+                  <circle cx="10" cy="10" r="1.8" fill="#ffffff"/>
+                </svg>
+              </div>
             <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', letterSpacing: '-0.02em' }}>Analytics Lab</span>
           </button>
           {!user && (

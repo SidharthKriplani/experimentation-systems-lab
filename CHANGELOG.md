@@ -4,6 +4,31 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.31.0] — 2026-05-29
+
+### Brand — CI mark shipped as primary logo
+
+Replaced flask icon with the confidence interval (CI) mark across all product touch points. The flask read "edtech/chemistry" — the CI mark reads "precision measurement," which matches the PostHog/Linear aesthetic PAL targets.
+
+**Mark design:** Horizontal line + two end caps + filled center dot. Immediately meaningful to data practitioners (CI notation); abstract enough to be a brand mark to everyone else. Works at 16px favicon down to lockup scale.
+
+**Touch points updated:**
+- `src/components/layout/Sidebar.jsx` — inline SVG CI mark replaces `<Icon name="flask"/>` in the 26×26 logo tile
+- `src/App.jsx` — inline SVG CI mark replaces `⚗` emoji in mobile topbar 20×20 tile
+- `public/favicon.svg` — replaced Vite lightning bolt with 32×32 CI mark (purple square, white mark)
+
+**Brand asset files added** (`/branding/`):
+- `pal-mark-dark.svg` — 96×96, purple bg, white mark
+- `pal-mark-light.svg` — 96×96, light purple bg, purple mark
+- `pal-mark-mono.svg` — 96×96, no bg (drop on any surface)
+- `pal-lockup-horizontal.svg` — icon + PAL wordmark + tagline, side by side
+- `pal-lockup-stacked.svg` — icon above full product name
+- `pal-favicon.svg` — 32×32 favicon-optimized
+
+**Reserve:** Logo mark I (bar chart P) held in IDEAS.md Tier 3 for swag/social use later.
+
+---
+
 ## [4.30.1] — 2026-05-29
 
 ### Fixed — Behavioral room crash

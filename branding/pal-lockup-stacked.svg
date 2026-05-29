@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 148" width="128" height="148" role="img">
+  <title>PAL — Product Analytics Lab</title>
+  <!-- Icon mark at 80x80, centered -->
+  <rect x="24" y="0" width="80" height="80" rx="17" fill="#6055C8"/>
+  <g stroke="#ffffff" stroke-linecap="round" stroke-width="2" fill="none">
+    <line x1="39" y1="40" x2="89" y2="40"/>
+    <line x1="39" y1="31" x2="39" y2="49"/>
+    <line x1="89" y1="31" x2="89" y2="49"/>
+  </g>
+  <circle cx="64" cy="40" r="3.75" fill="#ffffff"/>
+  <!-- Wordmark below -->
+  <text
+    x="64" y="104"
+    text-anchor="middle"
+    font-family="'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="20"
+    font-weight="600"
+    letter-spacing="4"
+    fill="#1A1630"
+  >PAL</text>
+  <!-- Thin divider rule -->
+  <line x1="24" y1="113" x2="104" y2="113" stroke="#6055C8" stroke-width="0.75" opacity="0.3"/>
+  <text
+    x="64" y="130"
+    text-anchor="middle"
+    font-family="'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="7.5"
+    font-weight="400"
+    letter-spacing="2"
+    fill="#9590C8"
+  >PRODUCT ANALYTICS LAB</text>
+</svg>

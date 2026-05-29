@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img">
+  <title>PAL</title>
+  <!-- Simplified CI mark for small sizes — no gap between stroke elements -->
   <rect width="32" height="32" rx="7" fill="#6055C8"/>
   <g stroke="#ffffff" stroke-linecap="round" stroke-width="1.5" fill="none">
     <line x1="6"  y1="16" x2="26" y2="16"/>

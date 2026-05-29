@@ -132,6 +132,10 @@ At the end of each day card, surface one articulation prompt per top-gap skill (
 
 ## Tier 3 — Interesting, lower priority
 
+### Branding reserve
+- **Logo mark I (bar chart P)** — bar chart that forms a P shape, inverted (light bg, purple bars). Warmest mark in the set — the one users might smile at first sight. Reserve for: swag, social card variant, email footer, or a secondary mark once brand is more established. Do not ship as primary — it reads clever before it reads premium. Primary mark is E (CI) shipped in V4.31.0. SVG files live in `/branding/`.
+
+
 ### Content
 - More Take-Home prompts (TH06+): marketplace, fintech, health domains
 - Behavioral Room expansion: BEH31+ for Staff/Director-level leadership scenarios

@@ -253,7 +253,14 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
               borderRadius: 7,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxShadow: '0 2px 10px rgba(99,102,241,0.4)',
-            }}><Icon name="flask" size={14} color="#fff" /></div>
+            }}><svg width="16" height="16" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                <g stroke="#ffffff" strokeLinecap="round" strokeWidth="1.6">
+                  <line x1="4" y1="13" x2="22" y2="13"/>
+                  <line x1="4" y1="8"  x2="4"  y2="18"/>
+                  <line x1="22" y1="8" x2="22" y2="18"/>
+                </g>
+                <circle cx="13" cy="13" r="2.2" fill="#ffffff"/>
+              </svg></div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.05rem' }}>
               <span style={{
                 fontWeight: 900,
