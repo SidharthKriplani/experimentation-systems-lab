@@ -107,6 +107,24 @@ No test files exist anywhere in the codebase. `package.json` has no test script,
 
 ---
 
+### 106. ✅ BUILD — Search missing 8 rooms + shallow field coverage
+
+**Version:** Found and fixed V4.33.8
+**Type:** BUILD + Navigation & Discoverability
+**Source:** User observation — searching "sutva" returned 2 results (Review Scenarios only); expected 6 across 4 rooms.
+
+**Root cause (two gaps):**
+1. 8 rooms never imported or registered in `SearchPage.jsx`: BI, Spot the Flaw, Take-Home, Instrumentation, Challenges, Exp Foundations, Metrics Foundations, RCA Foundations. ~40% of PAL content was invisible to search.
+2. `matchesQuery` only checked `title`, `subtitle`, `tags`, `difficulty` — missed `situation`, `scenario`, `setup`, `flawLabel`, `flawType`, `keyInsight`, `concept`, `domain`, `track` where concepts like SUTVA actually appear in scenario bodies.
+
+**Fix:** Added 8 imports + 8 ROOMS entries with correct page routes. Replaced ad-hoc field checks with `SEARCH_FIELDS` constant (13 fields). Verified: "sutva" now returns 6 results across 4 rooms.
+
+**Remaining unindexed (intentional or deferred):** `scenarioBank` (planning metadata), `learningPaths` (metadata) — not case content, correctly excluded. `trainerMCQ` (40 MCQ questions) and `concepts` (23 glossary entries) — worth adding but require navigation route verification. `companyTracks` — secondary.
+
+**File:** `src/pages/SearchPage.jsx`
+
+---
+
 ## Part XIX — V4.33.7 Tester Bug Fixes
 
 ### 101. ✅ UX / Human Elements — Stats Room "By Difficulty" sort had no visible output

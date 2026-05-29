@@ -70,6 +70,7 @@ Deferred — lower priority than bug fixes above.
 - MCQ Trainer mobile hover bug fixed — V4.33.5 (imperative DOM mutation, 4 components)
 - Deep bug sweep — V4.33.6 (null deref in Module25_IV + DECISIONS.md spine pass)
 - Stats Room "By Difficulty" sort fixed — V4.33.7 (group headers + pinned module numbers, audit #101)
+- Search gap fixed — V4.33.8 (8 missing rooms + shallow field coverage, audit #106)
 
 **Still open (in IDEAS.md):**
 - Empty state quality pass (#91) — deferred
