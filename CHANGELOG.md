@@ -4,6 +4,20 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.32.5] — 2026-05-29
+
+### Copy — Code Lab, Challenges, Frameworks descriptions rewritten
+
+Three pages still had copy that either opened defensively, listed mechanics, or skipped the "why frameworks at all" setup.
+
+- Code Lab — reframed from "not generic drills" to the real bar: translating a business question into the right query without being told what to look for; what trips candidates is reasoning, not syntax
+- Cross-Room Challenges — replaced "compound scenarios from 2–3 rooms" with the real test: two problems happening simultaneously, revealing whether you practice domains in isolation
+- Frameworks (PlaybookBrowser) — replaced framework-as-vocabulary framing with the actual payoff: the frameworks that change your conclusion, not your vocabulary (denominator check, segment cut, guardrail kill)
+
+**Files:** `src/pages/CodeBrowser.jsx`, `ChallengesBrowser.jsx`, `PlaybookBrowser.jsx`
+
+---
+
 ## [4.32.4] — 2026-05-29
 
 ### Copy — remaining room descriptions rewritten (6 pages missed in V4.32.2)

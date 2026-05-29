@@ -4799,7 +4799,7 @@ export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
           Frameworks
         </h1>
         <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0 0 1rem', lineHeight: 1.5 }}>
-          Knowing the name of a framework and knowing when to reach for it under pressure are different skills. These articles target the specific mental models interviewers test, show where candidates typically get them wrong, and link directly to practice cases where each pattern shows up live.{' '}
+          Most candidates use frameworks as vocabulary — they name MECE or RICE without those words changing their actual answer. The frameworks that matter are the ones that change your conclusion: the denominator check that flips a win into a loss, the segment cut that reveals what the aggregate was hiding, the guardrail that kills a ship decision. These articles are built around those specific moments, not the definitions.{' '}
           <span style={{ color: 'var(--green)', fontWeight: 600 }}>{livePosts.length} live</span>
           {' '}· {playbookPosts.length - livePosts.length} coming soon.
         </p>

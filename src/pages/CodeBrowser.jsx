@@ -60,7 +60,7 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
           Analytics code in product context.
         </h1>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: '560px', margin: '0 0 1.25rem' }}>
-          Not generic coding drills. Every module presents a real product scenario — a metric drop, an experiment decision, a margin question — and asks you to write the query or script that answers it.
+          SQL and Python are not the bar in product analytics interviews — the bar is whether you can translate a business question into the right query without being told what to look for. Most candidates can write syntactically correct SQL; what trips them is the analytical reasoning underneath: which table, which grain, which join, and what does the output actually mean for the decision. Every module here starts with the product situation, not the schema.
         </p>
 
         {/* Stats bar */}

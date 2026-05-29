@@ -89,7 +89,7 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
           color: 'var(--text-muted)', fontSize: '0.95rem',
           margin: '0 0 0.75rem', maxWidth: '640px', lineHeight: 1.6,
         }}>
-          Compound scenarios requiring knowledge from 2–3 rooms simultaneously. Each challenge mirrors a real staff+ interview or take-home where a single room of knowledge is not enough.
+          The hardest interview questions are not harder versions of a single-room question — they are moments where two problems are happening at once and you have to hold both. An SRM during a live experiment that is also showing a metric drop. A product decision that requires sizing, metric design, and an RCA on why the current metric is misleading. Staff+ loops are built around exactly these scenarios because they reveal whether you have been practicing domains in isolation or can actually operate across them.
         </p>
 
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
