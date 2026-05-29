@@ -4,6 +4,26 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.35.3] — 2026-05-29 [MD-only]
+
+### LINEAGE.md created + Indian e-commerce field intelligence logged
+
+**LINEAGE.md (new spine file):** Narrative history of PAL from V1 through V4.35.2. Covers origin (single Experiment Review Room, 2025), first pivot (rebrand to Product Analytics Lab + claim evaluation mechanic + Design Room), full analytics loop (V2.0 Metrics + RCA + Cases), PM expansion (V3.0–V3.4), Foundations layer (V3.5), production readiness (V3.6 monetization, V4.x hardening), key identity decisions table, access/monetization arc, and current state. Reconstructed from CHANGELOG.md — all narrative sourced from build records. CLAUDE.md spine table already referenced LINEAGE.md; file now exists.
+
+**Field intelligence — Indian e-commerce + marketplace prep gap:** Diagnosis of PAL\'s audience gap for Indian BA/analyst/PM roles surfaced three actionable IDEAS.md additions:
+
+1. **Meesho Company Track** (Tier 2 Platform — expanded existing stub) — COD failure rate, RTO, category GMV drop, supplier activation, seller churn, logistics SLA, buyer retention tier-2/3, search conversion. Business context required: low AOV, COD as primary payment, logistics cost first-order, supplier quality as demand lever. Gate: PostHog confirms Indian users, or Batch 1-equivalent outreach.
+
+2. **Indian tech case cluster** (Tier 2 Content — new) — 6–8 RCA/Metrics/Cases room cases grounded in Meesho, Swiggy, Zepto, Flipkart, Razorpay, Zomato. Structurally different from US-tech problems. No new infrastructure. Same gate.
+
+3. **Marketplace metric tree module** (Tier 2 Content — new) — interactive GMV→NMV→orders×AOV decomposition with cancellation and RTO sub-branches. Build-the-tree format with scenario drop-in. New capability not in any existing Metrics module. Effort: medium.
+
+**Discarded:** Backend execution gap critique is not applicable to PAL — judgment simulation is PAL\'s design intent. Defense Strategy already handles targeted drill mode.
+
+**Files:** `LINEAGE.md` (new), `IDEAS.md` (Tier 2 Platform expanded + Tier 2 Content 2 new entries), `CHANGELOG.md` (this entry)
+
+---
+
 ## [4.35.2] — 2026-05-29
 
 ### Animation coverage — full app audit + gap fill
