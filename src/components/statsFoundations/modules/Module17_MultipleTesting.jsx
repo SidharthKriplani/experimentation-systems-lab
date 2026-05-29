@@ -126,11 +126,13 @@ export function Module17_MultipleTesting({ module, onNext }) {
           </div>
         </div>
 
-        {/* Bonferroni cost note */}
-        {bonferroni && n > 1 && (
+        {/* Bonferroni cost note — always show when correction is on so layout stays stable */}
+        {bonferroni && (
           <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.9rem', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--yellow-text)' }}>
-            <strong>Cost of Bonferroni at n={n}:</strong> α per test = {adjustedAlpha.toFixed(4)}.
-            You need approximately <strong>{bonferroniDataMultiple}× more data</strong> to maintain the same statistical power.
+            {n === 1
+              ? <span><strong>Cost of Bonferroni at n=1:</strong> No correction needed — you are only testing 1 metric. α per test remains {adjustedAlpha.toFixed(4)}.</span>
+              : <span><strong>Cost of Bonferroni at n={n}:</strong> α per test = {adjustedAlpha.toFixed(4)}. You need approximately <strong>{bonferroniDataMultiple}× more data</strong> to maintain the same statistical power.</span>
+            }
           </div>
         )}
       </div>

@@ -4,6 +4,30 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.35.4] — 2026-05-30 [BUG]
+
+### Stat Foundations — 7 module UI bug fixes
+
+**Root causes and fixes across 7 module files:**
+
+1. **Module04_NormalDist.jsx — bell curve renders as spike:** The `pts` array stored raw data x-values (range −4.5 to +4.5) instead of SVG pixel coordinates. With a 580px SVG, the entire curve was crammed into ~10px at the left edge. Fix: pass `x: toSvgX(x)` in the pts array. Also fixed audit #94 subtitle duplication: removed `{module?.subtitle}` from the body paragraph (subtitle is rendered by the runner header card, not the module body).
+
+2. **Module08_StandardError.jsx — visualization bleeds into content above:** SVG used `overflow: visible`. When sample size is large (n=2000), SE = 0.335, and the curve peak is 44× taller than the SVG height — the spike extended hundreds of pixels into adjacent UI. Fix: (a) clamp svgY to `Math.max(2, ...)` so curve peak stays within the SVG viewport, (b) change SVG to `overflow: hidden`.
+
+3. **Module12_Power.jsx — sliders far from the chart they control:** The power readout banner sat between the sliders and the two-distribution SVG, adding ~120px of visual distance. Fix: moved the SVG to immediately follow the sliders; power banner now appears below the chart.
+
+4. **Module14_Correlation.jsx — hint text appears/disappears causing layout shift:** Two conditional spans (`{Math.abs(r) >= 0.7 && ...}` and `{Math.abs(r) < 0.3 && ...}`) caused text to appear/disappear as the slider moved, making the bounding card change height. Fix: single always-rendered `<span>` with dynamic content — no layout shift.
+
+5. **Module17_MultipleTesting.jsx — Bonferroni cost card vanishes at n=1:** Condition was `{bonferroni && n > 1 && (...)}` — at n=1 with correction enabled the card disappeared, causing a layout jump. Fix: removed `n > 1` guard; at n=1 the card now shows "No correction needed — testing only 1 metric."
+
+6. **Module18_RegressionToMean.jsx — m1 circles and m2 diamonds overlap:** Both markers rendered at identical x positions. At step 2, the diamond sat directly on top of the circle when m1 ≈ m2. Fix: offset m1 circles 4px left and m2 diamonds 4px right; connecting lines updated to run from (x−4, m1_y) to (x+4, m2_y). Reduced marker radii slightly to reduce crowding.
+
+7. **Module19_SelectionBias.jsx — churned dots overflow graph boundary:** Three churned dot coordinates (ids 36, 38, 39) had y ≥ 268 with r=7, placing circle bottoms at y=275–277, below the x-axis at y=270. Fix: added `<clipPath id="sb-plot-clip">` covering the plot area (x=35, y=10, w=461, h=261); all dots wrapped in `<g clipPath="url(#sb-plot-clip)">`. Also increased viewBox height from 280 to 285 to give axis labels room.
+
+**Files changed:** `Module04_NormalDist.jsx`, `Module08_StandardError.jsx`, `Module12_Power.jsx`, `Module14_Correlation.jsx`, `Module17_MultipleTesting.jsx`, `Module18_RegressionToMean.jsx`, `Module19_SelectionBias.jsx`
+
+---
+
 ## [4.35.3] — 2026-05-29 [MD-only]
 
 ### LINEAGE.md created + Indian e-commerce field intelligence logged

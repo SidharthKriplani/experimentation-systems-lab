@@ -136,15 +136,15 @@ export function Module18_RegressionToMean({ module, onNext }) {
             <line x1={PAD_L} y1={SVG_H - PAD_B} x2={SVG_W - PAD_R} y2={SVG_H - PAD_B} stroke="var(--border)" strokeWidth={1} />
             <text x={(PAD_L + SVG_W - PAD_R) / 2} y={SVG_H - 2} textAnchor="middle" fontSize={8} fill="var(--text-muted)">Users (sorted by measurement 1)</text>
 
-            {/* Connecting lines (step 2) */}
+            {/* Connecting lines (step 2) — from m1 position (x-4) to m2 position (x+4) */}
             {step === 2 && sortedByM1.map((u, rank) => {
               const isTop = top5Ids.has(u.id);
               const x = toSvgX(rank, N_USERS);
               return (
                 <line
                   key={`line-${u.id}`}
-                  x1={x} y1={toSvgY(u.m1)}
-                  x2={x} y2={toSvgY(u.m2)}
+                  x1={x - 4} y1={toSvgY(u.m1)}
+                  x2={x + 4} y2={toSvgY(u.m2)}
                   stroke={isTop ? 'var(--yellow)' : 'var(--border)'}
                   strokeWidth={isTop ? 2 : 1}
                   strokeDasharray="3,2"
@@ -153,15 +153,15 @@ export function Module18_RegressionToMean({ module, onNext }) {
               );
             })}
 
-            {/* Measurement 1 dots */}
+            {/* Measurement 1 dots — offset left to avoid overlap with m2 */}
             {sortedByM1.map((u, rank) => {
               const isTop = top5Ids.has(u.id);
-              const x = toSvgX(rank, N_USERS);
+              const x = toSvgX(rank, N_USERS) - (step === 2 ? 4 : 0);
               const y = toSvgY(u.m1);
               return (
                 <circle
                   key={`m1-${u.id}`}
-                  cx={x} cy={y} r={isTop ? 7 : 5}
+                  cx={x} cy={y} r={isTop ? 6 : 4}
                   fill={isTop ? 'var(--yellow)' : 'var(--surface)'}
                   stroke={isTop ? 'var(--yellow-text)' : 'var(--accent)'}
                   strokeWidth={1.5}
@@ -169,12 +169,12 @@ export function Module18_RegressionToMean({ module, onNext }) {
               );
             })}
 
-            {/* Measurement 2 diamonds (step 2) */}
+            {/* Measurement 2 diamonds (step 2) — offset right to separate from m1 */}
             {step === 2 && sortedByM1.map((u, rank) => {
               const isTop = top5Ids.has(u.id);
-              const x = toSvgX(rank, N_USERS);
+              const x = toSvgX(rank, N_USERS) + 4;
               const y = toSvgY(u.m2);
-              const r = isTop ? 6 : 4;
+              const r = isTop ? 5 : 3;
               return (
                 <polygon
                   key={`m2-${u.id}`}

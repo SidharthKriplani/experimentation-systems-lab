@@ -36,7 +36,7 @@ function buildCurvePath(sigma) {
     const pdf = normalPDF(x, 0, sigma);
     // normalize to max possible (n=1, SE=15): normalPDF(0,0,15)
     const norm = normalPDF(0, 0, SIGMA);
-    const svgY = H - (pdf / norm) * (H * 0.82) - 8;
+    const svgY = Math.max(2, H - (pdf / norm) * (H * 0.82) - 8);
     return `${toSvgX(x).toFixed(2)},${svgY.toFixed(2)}`;
   });
   return 'M ' + pts.join(' L ');
@@ -143,7 +143,7 @@ export function Module08_StandardError({ module, onNext }) {
             ── Current n={n} (SE={se.toFixed(3)})
           </span>
         </div>
-        <svg viewBox={`0 0 ${W} ${H + 25}`} style={{ width: '100%', overflow: 'visible' }}>
+        <svg viewBox={`0 0 ${W} ${H + 25}`} style={{ width: '100%', overflow: 'hidden' }}>
           {/* Reference curves (ghost) */}
           {refPaths.map(r => (
             <path key={r.n} d={r.path} fill="none" stroke={r.color} strokeWidth={1.5} opacity={0.35} strokeDasharray="5,3" />

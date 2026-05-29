@@ -210,32 +210,6 @@ export function Module12_Power({ module, onNext }) {
         </div>
       </div>
 
-      {/* Power readout banner */}
-      <div style={{
-        background: power >= 0.8 ? 'var(--green-bg)' : power >= 0.6 ? 'var(--yellow-bg)' : 'var(--red-bg)',
-        border: `2px solid ${power >= 0.8 ? 'var(--green-border)' : power >= 0.6 ? 'var(--yellow-border)' : 'var(--red-border)'}`,
-        borderRadius: 'var(--radius)', padding: '1rem 1.5rem',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem',
-      }}>
-        <div>
-          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: pColor, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem' }}>
-            Statistical Power — {powerLabel(power)}
-          </div>
-          <div style={{ fontSize: '2rem', fontWeight: 900, color: pColor, fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
-            {pct(power)}
-          </div>
-        </div>
-        <div style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: 380 }}>
-          You have a <strong style={{ color: pColor }}>{pct(power)}</strong> chance of detecting an effect of{' '}
-          <strong>{effectSize.toFixed(2)}σ</strong> with n={n.toLocaleString()} per variant at α={alpha}.
-          {power < 0.8 && (
-            <span style={{ display: 'block', marginTop: '0.2rem', color: 'var(--text-muted)' }}>
-              You need <strong style={{ color: pColor }}>n ≥ {requiredN.toLocaleString()}</strong> per variant for 80% power at this effect size.
-            </span>
-          )}
-        </div>
-      </div>
-
       {/* Main two-distribution SVG */}
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.25rem' }}>
         <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
@@ -329,6 +303,32 @@ export function Module12_Power({ module, onNext }) {
             Effect size (SD units) — SE = 1/√{n} = {se.toFixed(4)}
           </text>
         </svg>
+      </div>
+
+      {/* Power readout banner */}
+      <div style={{
+        background: power >= 0.8 ? 'var(--green-bg)' : power >= 0.6 ? 'var(--yellow-bg)' : 'var(--red-bg)',
+        border: `2px solid ${power >= 0.8 ? 'var(--green-border)' : power >= 0.6 ? 'var(--yellow-border)' : 'var(--red-border)'}`,
+        borderRadius: 'var(--radius)', padding: '1rem 1.5rem',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem',
+      }}>
+        <div>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: pColor, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem' }}>
+            Statistical Power — {powerLabel(power)}
+          </div>
+          <div style={{ fontSize: '2rem', fontWeight: 900, color: pColor, fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+            {pct(power)}
+          </div>
+        </div>
+        <div style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: 380 }}>
+          You have a <strong style={{ color: pColor }}>{pct(power)}</strong> chance of detecting an effect of{' '}
+          <strong>{effectSize.toFixed(2)}σ</strong> with n={n.toLocaleString()} per variant at α={alpha}.
+          {power < 0.8 && (
+            <span style={{ display: 'block', marginTop: '0.2rem', color: 'var(--text-muted)' }}>
+              You need <strong style={{ color: pColor }}>n ≥ {requiredN.toLocaleString()}</strong> per variant for 80% power at this effect size.
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Four metric cards */}

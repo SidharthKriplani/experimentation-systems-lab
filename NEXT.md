@@ -4,7 +4,7 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.35.3 (2026-05-29)*
+*Last updated: V4.35.4 (2026-05-30)*
 
 ---
 
@@ -84,6 +84,7 @@ Deferred — lower priority than bug fixes above.
 - Bold polish pass — V4.35.1 (spring-overshoot debrief reveal on all 20 runners, Next button glow pulse on 41 CTAs, modal/overlay slide-up, MCQ correct/wrong feedback on Stats + Cases + Scenario runners, global button press scale)
 - Animation coverage audit + gap fill — V4.35.2 (100% coverage: 21/21 runners, 39/39 pages, 32/32 StatsFoundations modules all verified by grep audit)
 - LINEAGE.md created — V4.35.3 (narrative history V1→V4.35.2, reconstructed from CHANGELOG.md; spine table reference now resolves)
+- Stat Foundations 7-module UI bug fix pass — V4.35.4 (bell curve spike, SE overflow, power slider distance, correlation layout shift, Bonferroni n=1, regression overlap, selection bias clip)
 - Indian e-commerce field intelligence logged — V4.35.3 (Meesho Company Track expanded in Tier 2 Platform; Indian tech case cluster + marketplace metric tree module added to Tier 2 Content; IDEAS.md + CHANGELOG.md updated)
 
 **Still open (in IDEAS.md):**

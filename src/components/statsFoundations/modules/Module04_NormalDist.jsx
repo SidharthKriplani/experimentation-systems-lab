@@ -35,7 +35,7 @@ export function Module04_NormalDist({ module, onNext }) {
 
     const pts = Array.from({ length: N_POINTS }, (_, i) => {
       const x = xMin + (i / (N_POINTS - 1)) * xRange;
-      return { x, y: toSvgY(normalPDF(x, mu, sigma)) };
+      return { x: toSvgX(x), y: toSvgY(normalPDF(x, mu, sigma)) };
     });
 
     const curvePath = 'M ' + pts.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' L ');
@@ -71,7 +71,7 @@ export function Module04_NormalDist({ module, onNext }) {
   return (
     <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
-        {module?.subtitle || 'The normal distribution is a symmetric bell curve defined entirely by its mean μ and standard deviation σ.'}{' '}
+        The normal distribution is a symmetric bell curve defined entirely by its mean μ and standard deviation σ.
         Use the sliders to shift and reshape the curve. Notice that changing σ widens the bell (more spread) while μ slides it left or right.
       </p>
 

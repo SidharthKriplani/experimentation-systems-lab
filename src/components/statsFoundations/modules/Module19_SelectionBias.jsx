@@ -80,36 +80,45 @@ export function Module19_SelectionBias({ module, onNext }) {
         <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
           Engagement vs Retention — {showAll ? 'all 40 users visible' : '15 churned users hidden'}
         </div>
-        <svg viewBox="0 0 500 280" width="100%">
+        <svg viewBox="0 0 500 285" width="100%">
+          <defs>
+            <clipPath id="sb-plot-clip">
+              <rect x={35} y={10} width={461} height={261} />
+            </clipPath>
+          </defs>
+
           {/* Axes */}
           <line x1={35} y1={10} x2={35} y2={270} stroke="var(--border)" strokeWidth={1.5} />
           <line x1={35} y1={270} x2={495} y2={270} stroke="var(--border)" strokeWidth={1.5} />
 
           {/* Axis labels */}
-          <text x={265} y={280} textAnchor="middle" fontSize={9} fill="var(--text-muted)">Engagement (events/day) →</text>
+          <text x={265} y={283} textAnchor="middle" fontSize={9} fill="var(--text-muted)">Engagement (events/day) →</text>
           <text x={12} y={145} textAnchor="middle" fontSize={9} fill="var(--text-muted)" transform="rotate(-90, 12, 145)">Retention (days) →</text>
 
           {/* Quadrant hint labels */}
           <text x={430} y={35} textAnchor="middle" fontSize={9} fill="var(--text-muted)" opacity={0.6}>High retention</text>
           <text x={430} y={46} textAnchor="middle" fontSize={9} fill="var(--text-muted)" opacity={0.6}>High engagement</text>
-          <text x={100} y={268} textAnchor="middle" fontSize={9} fill="var(--text-muted)" opacity={0.6}>Low engagement / churned</text>
+          <text x={105} y={260} textAnchor="middle" fontSize={9} fill="var(--text-muted)" opacity={0.6}>Low engagement / churned</text>
 
-          {/* Active dots (yellow, always visible) */}
-          {ACTIVE_DOTS.map(d => (
-            <circle key={d.id} cx={d.x} cy={d.y} r={7}
-              fill="var(--yellow)" stroke="var(--yellow-text)" strokeWidth={1.5} opacity={0.85} />
-          ))}
+          {/* All dots clipped to the plot area so none overflow the axes */}
+          <g clipPath="url(#sb-plot-clip)">
+            {/* Active dots (yellow, always visible) */}
+            {ACTIVE_DOTS.map(d => (
+              <circle key={d.id} cx={d.x} cy={d.y} r={7}
+                fill="var(--yellow)" stroke="var(--yellow-text)" strokeWidth={1.5} opacity={0.85} />
+            ))}
 
-          {/* Churned dots (fade out when showAll=false) */}
-          {CHURNED_DOTS.map(d => (
-            <circle key={d.id} cx={d.x} cy={d.y} r={7}
-              fill={showAll ? '#8888' : '#3333'}
-              stroke={showAll ? 'var(--text-muted)' : 'transparent'}
-              strokeWidth={1.5}
-              style={{ transition: 'fill 0.4s ease, stroke 0.4s ease' }}
-              opacity={showAll ? 0.7 : 0.15}
-            />
-          ))}
+            {/* Churned dots (fade out when showAll=false) */}
+            {CHURNED_DOTS.map(d => (
+              <circle key={d.id} cx={d.x} cy={d.y} r={7}
+                fill={showAll ? '#8888' : '#3333'}
+                stroke={showAll ? 'var(--text-muted)' : 'transparent'}
+                strokeWidth={1.5}
+                style={{ transition: 'fill 0.4s ease, stroke 0.4s ease' }}
+                opacity={showAll ? 0.7 : 0.15}
+              />
+            ))}
+          </g>
 
           {/* Legend */}
           <circle cx={50} cy={18} r={6} fill="var(--yellow)" stroke="var(--yellow-text)" strokeWidth={1.5} />

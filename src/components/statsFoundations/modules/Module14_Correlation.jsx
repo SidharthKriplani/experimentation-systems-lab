@@ -94,8 +94,13 @@ export function Module14_Correlation({ module, onNext }) {
         <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: 340 }}>
           r² = <strong style={{ color: dotColor }}>{rSq}</strong> — meaning{' '}
           <strong>{(parseFloat(rSq) * 100).toFixed(0)}%</strong> of the variance in Y is explained by X.
-          {Math.abs(r) >= 0.7 && <span style={{ display: 'block', marginTop: '0.15rem', color: 'var(--text-muted)', fontSize: '0.82rem' }}>Drag r toward 0 to see the cloud scatter.</span>}
-          {Math.abs(r) < 0.3 && <span style={{ display: 'block', marginTop: '0.15rem', color: 'var(--text-muted)', fontSize: '0.82rem' }}>At r≈0, knowing X tells you almost nothing about Y.</span>}
+          <span style={{ display: 'block', marginTop: '0.15rem', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+            {Math.abs(r) >= 0.7
+              ? 'Drag r toward 0 to see the cloud scatter.'
+              : Math.abs(r) < 0.3
+              ? 'At r≈0, knowing X tells you almost nothing about Y.'
+              : 'Keep dragging to see the relationship strengthen or weaken.'}
+          </span>
         </div>
       </div>
 
