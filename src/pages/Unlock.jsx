@@ -137,7 +137,9 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
         {/* What you get — free vs premium */}
         <div style={{ marginBottom: '1.75rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
-            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🔑</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}>
+              <CIMark size={40} />
+            </div>
             <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text)', margin: '0 0 0.4rem 0' }}>
               Unlock Full Access
             </h1>

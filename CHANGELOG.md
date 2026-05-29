@@ -4,6 +4,24 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.32.0] — 2026-05-29
+
+### Timer pause/resume — all runners
+
+Added pause/resume toggle to the elapsed timer across all applicable runners. Users can click the timer to pause it; clicking again resumes. While paused, the timer dims to 50% opacity and switches to a pause icon (two bars) so the state is visually obvious. The tooltip ("Tracks time for self-awareness — does not affect scoring. Click to pause or resume.") surfaces on hover, addressing Batch 0 feedback that users didn't understand what the timer was for or whether pausing would affect their score.
+
+**Implementation:** New shared component `src/components/shared/TimerButton.jsx` imported into five runners. Each runner gains a `paused` boolean state; the `setInterval` useEffect depends on `[paused, id]` so it cleanly starts/stops on toggle without leaking intervals.
+
+**Runners updated:** BehavioralRunner, InstrumentationRunner, RCARunner, EstimationRunner, StatsRunner. TakehomeRunner excluded — its countdown timer is the core exercise mechanic and pausing it would invalidate the practice.
+
+**Also fixed in this build:**
+- Metrics Room linked scenario chips were unclickable (`onGoToDesign`/`onGoToReview` props not wired through MetricsRunner → MetricDebriefPanel). Fixed prop pass-through; Chip now renders as `<button>` when onClick is present, `<span>` otherwise.
+- 🔑 emoji in the Unlock form replaced with `<CIMark size={40} />` — brand consistency with the CI mark shipped in V4.31.0.
+
+**Files:** `src/components/shared/TimerButton.jsx` (new), `src/components/behavioral/BehavioralRunner.jsx`, `src/components/instrumentation/InstrumentationRunner.jsx`, `src/components/rca/RCARunner.jsx`, `src/components/estimation/EstimationRunner.jsx`, `src/components/stats/StatsRunner.jsx`, `src/components/metrics/MetricDebriefPanel.jsx`, `src/components/metrics/MetricsRunner.jsx`, `src/pages/Unlock.jsx`
+
+---
+
 ## [4.31.1] — 2026-05-29
 
 ### Brand — unlock moment

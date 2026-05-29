@@ -3,6 +3,7 @@ import { saveEstimationAttempt, getEstimationProgress } from '../../utils/estima
 import { track } from '../../utils/analytics.js';
 import { estimationProblems } from '../../data/estimationProblems.js';
 import { Icon } from '../shared/Icon.jsx';
+import { TimerButton } from '../shared/TimerButton.jsx';
 
 const ROOM_KEY = 'estimation';
 
@@ -69,13 +70,22 @@ export function EstimationRunner({ caseId, onBack, onNext }) {
   const [noteSaved, setNoteSaved] = useState(false);
 
   const [elapsed, setElapsed] = useState(0);
+  const [paused, setPaused] = useState(false);
   const timerRef = useRef(null);
 
   useEffect(() => {
     setElapsed(0);
-    timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
-    return () => clearInterval(timerRef.current);
+    setPaused(false);
   }, [problem.id]);
+
+  useEffect(() => {
+    if (paused) {
+      clearInterval(timerRef.current);
+    } else {
+      timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [paused, problem.id]);
 
   useEffect(() => {
     setUserNote(loadNote(ROOM_KEY, problem.id));
@@ -141,9 +151,7 @@ export function EstimationRunner({ caseId, onBack, onNext }) {
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>
             {CATEGORY_LABEL[problem.category] || problem.category}
           </span>
-          <span className={`pal-timer${elapsed > 600 ? ' warning' : ''}`} style={{ marginLeft: 'auto' }}>
-            <Icon name="clock" size={12} color="currentColor" />{formatTime(elapsed)}
-          </span>
+          <TimerButton elapsed={elapsed} paused={paused} onToggle={() => setPaused(p => !p)} warning={elapsed > 600} />
         </div>
         <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 0.3rem', letterSpacing: '-0.02em' }}>
           {problem.title}

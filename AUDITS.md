@@ -39,6 +39,27 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XVI — V4.30–V4.32 Session Audits
+
+### 74. ✅ UX Comprehension Audit — Timer Legibility (V4.32.0)
+**Version:** V4.32.0
+**Type:** UX / Human Elements
+
+Batch 0 tester feedback surfaced two problems with the elapsed timer: (1) users didn't know whether clicking it would affect their score, and (2) they couldn't pause to think without the timer running. Both are self-confidence issues, not real performance issues — but they add cognitive overhead.
+
+**Findings:**
+- Timer was a non-interactive `<span>` with no affordance (no cursor change, no tooltip)
+- No pause mechanism anywhere across 5 runners
+- The `warning` class (red color at 10min) was alarming with no explanation
+
+**Resolution (V4.32.0):** Replaced `<span className="pal-timer">` with `<TimerButton>` shared component across BehavioralRunner, InstrumentationRunner, RCARunner, EstimationRunner, StatsRunner. Button toggles pause state; hover tooltip clarifies that the timer is self-awareness only, not scored.
+
+**TakehomeRunner excluded** — its countdown timer is the exercise mechanic. Pausing it would undermine the practice.
+
+**Status:** ✅ Resolved
+
+---
+
 ## Part XV — V4.9–V4.13 Session Audits
 
 ### 69. ✅ Navigation & Discoverability Audit — V4.12.x

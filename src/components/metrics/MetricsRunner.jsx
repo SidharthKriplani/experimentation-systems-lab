@@ -212,6 +212,8 @@ export function MetricsRunner({ caseId, savedProgress, onBack, onGoToDesign, onG
             onRetry={handleRetry}
             onBack={onBack}
             onNext={onNext}
+            onGoToDesign={onGoToDesign}
+            onGoToReview={onGoToReview}
           />
         </div>
       )}

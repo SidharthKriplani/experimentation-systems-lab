@@ -100,7 +100,7 @@ At the end of each day card, surface one articulation prompt per top-gap skill (
 
 ### Features
 - **Code Room — SQL playground (Batch 0 feedback)** — the Run Code button only works for Python. SQL modules display code with no execution path. Ideal end state: lightweight in-browser SQL execution (e.g. sql.js / DuckDB-WASM) with a sample dataset pre-loaded per module so users can run and validate queries. Adds significant value for the SQL-strong/experimentation-weak Batch 1 profile.
-- **Timer — play/pause + tooltip (Batch 0 feedback)** — the running timer has no pause and no explanation. Users don't know if it affects scoring or is just informational. Add: play/pause button, hover/tap tooltip ("tracks time for self-awareness — does not affect scoring"), and warning color at >10 min. Low effort.
+- ~~**Timer — play/pause + tooltip (Batch 0 feedback)**~~ — ✅ shipped V4.32.0. Shared `TimerButton` component; pause/resume toggle across 5 runners; tooltip on hover.
 - Stripe payment flow activation (link already scaffolded in `VITE_STRIPE_PAYMENT_LINK`) — requires flipping paywall gate + end-to-end test
 - ~~Company track completion badges~~ — ✅ shipped V4.14.0 (green Complete badge on card + 🎉 banner in TrackDetail)
 - ~~Dark/light mode persistence fix~~ — ✅ already in place via index.html inline script (was pre-existing)

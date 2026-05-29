@@ -6,7 +6,7 @@ const ROLE_CFG = {
   guardrail:  { label: 'Guardrail',  color: 'var(--yellow)',    bg: 'var(--yellow-bg)',  border: 'var(--yellow-border)' },
 };
 
-export function MetricDebriefPanel({ metricCase, onRetry, onBack, onNext }) {
+export function MetricDebriefPanel({ metricCase, onRetry, onBack, onNext, onGoToDesign, onGoToReview }) {
   const { seniorMetricDesign: smd, linkedDesignScenarioIds = [], linkedReviewScenarioIds = [] } = metricCase;
 
   return (
@@ -103,10 +103,10 @@ export function MetricDebriefPanel({ metricCase, onRetry, onBack, onNext }) {
           <SectionLabel>Linked scenarios</SectionLabel>
           <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
             {linkedDesignScenarioIds.map(id => (
-              <Chip key={id} label={id} type="design" />
+              <Chip key={id} label={id} type="design" onClick={onGoToDesign ? () => onGoToDesign(id) : null} />
             ))}
             {linkedReviewScenarioIds.map(id => (
-              <Chip key={id} label={id} type="review" />
+              <Chip key={id} label={id} type="review" onClick={onGoToReview ? () => onGoToReview(id) : null} />
             ))}
           </div>
         </div>
@@ -169,16 +169,29 @@ function SectionLabel({ children, color }) {
   );
 }
 
-function Chip({ label, type }) {
+function Chip({ label, type, onClick }) {
   const isDesign = type === 'design';
+  const baseStyle = {
+    fontSize: '0.72rem', fontWeight: 600,
+    color: isDesign ? 'var(--accent)' : 'var(--text-secondary)',
+    background: isDesign ? 'var(--accent-bg)' : 'var(--surface-2)',
+    border: `1px solid ${isDesign ? 'var(--accent-border)' : 'var(--border)'}`,
+    borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.55rem',
+  };
+  if (onClick) {
+    return (
+      <button
+        onClick={onClick}
+        style={{ ...baseStyle, cursor: 'pointer', fontFamily: 'inherit', transition: 'opacity 0.1s' }}
+        onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
+        onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+      >
+        {isDesign ? 'Design: ' : 'Review: '}{label} →
+      </button>
+    );
+  }
   return (
-    <span style={{
-      fontSize: '0.72rem', fontWeight: 600,
-      color: isDesign ? 'var(--accent)' : 'var(--text-secondary)',
-      background: isDesign ? 'var(--accent-bg)' : 'var(--surface-2)',
-      border: `1px solid ${isDesign ? 'var(--accent-border)' : 'var(--border)'}`,
-      borderRadius: 'var(--radius-sm)', padding: '0.15rem 0.55rem',
-    }}>
+    <span style={baseStyle}>
       {isDesign ? 'Design: ' : 'Review: '}{label}
     </span>
   );

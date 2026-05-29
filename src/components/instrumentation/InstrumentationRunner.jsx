@@ -3,6 +3,7 @@ import { saveInstrumentationProgress, getInstrumentationProgress } from '../../u
 import { track } from '../../utils/analytics.js';
 import { instrumentationCases } from '../../data/instrumentationCases.js';
 import { Icon } from '../shared/Icon.jsx';
+import { TimerButton } from '../shared/TimerButton.jsx';
 
 const ROOM_KEY = 'instrumentation';
 const NOTES_KEY = 'pal-notes-v1';
@@ -179,18 +180,17 @@ function WorkScreen({ caseData, onReveal }) {
   const [text, setText] = useState('');
   const [hintsOpen, setHintsOpen] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const startRef = useRef(Date.now());
+  const [paused, setPaused] = useState(false);
+  const timerRef = useRef(null);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setElapsed(Math.floor((Date.now() - startRef.current) / 1000));
-    }, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const mins = Math.floor(elapsed / 60);
-  const secs = elapsed % 60;
-  const timerStr = mins + ':' + (secs < 10 ? '0' : '') + secs;
+    if (paused) {
+      clearInterval(timerRef.current);
+    } else {
+      timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [paused]);
 
   const canReveal = text.trim().length >= 50;
 
@@ -209,11 +209,8 @@ function WorkScreen({ caseData, onReveal }) {
             {caseData.question}
           </p>
         </div>
-        <div style={{
-        }}>
-          <span className="pal-timer" style={{ gap: '0.3rem' }}>
-            <Icon name="clock" size={12} color="currentColor" />{timerStr}
-          </span>
+        <div>
+          <TimerButton elapsed={elapsed} paused={paused} onToggle={() => setPaused(p => !p)} warning={elapsed > 600} />
         </div>
       </div>
 

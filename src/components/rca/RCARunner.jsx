@@ -5,6 +5,7 @@ import { RCAScoreReveal } from './RCAScoreReveal.jsx';
 import { RCADebriefPanel } from './RCADebriefPanel.jsx';
 import { DebriefCopyButton } from '../shared/DebriefCopyButton.jsx';
 import { Icon } from '../shared/Icon.jsx';
+import { TimerButton } from '../shared/TimerButton.jsx';
 import { saveRCAAttempt } from '../../utils/rcaProgress.js';
 import { track } from '../../utils/analytics.js';
 
@@ -87,13 +88,22 @@ export function RCARunner({ caseId, savedProgress, unlocked, onBack, onNext }) {
   const [noteSaved, setNoteSaved] = useState(false);
 
   const [elapsed, setElapsed] = useState(0);
+  const [paused, setPaused] = useState(false);
   const timerRef = useRef(null);
 
   useEffect(() => {
     setElapsed(0);
-    timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
-    return () => clearInterval(timerRef.current);
+    setPaused(false);
   }, [rcaCase.id]);
+
+  useEffect(() => {
+    if (paused) {
+      clearInterval(timerRef.current);
+    } else {
+      timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [paused, rcaCase.id]);
 
   useEffect(() => {
     setUserNote(loadNote(ROOM_KEY, rcaCase.id));
@@ -172,9 +182,7 @@ export function RCARunner({ caseId, savedProgress, unlocked, onBack, onNext }) {
           <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow)' }}>
             {rcaCase.subtitle}
           </div>
-          <span className={`pal-timer${elapsed > 600 ? ' warning' : ''}`} style={{ marginLeft: 'auto' }}>
-            <Icon name="clock" size={12} color="currentColor" />{formatTime(elapsed)}
-          </span>
+          <TimerButton elapsed={elapsed} paused={paused} onToggle={() => setPaused(p => !p)} warning={elapsed > 600} />
         </div>
         <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', margin: 0, letterSpacing: '-0.02em' }}>
           {rcaCase.title}

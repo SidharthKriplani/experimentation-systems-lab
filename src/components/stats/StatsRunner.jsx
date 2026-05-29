@@ -7,6 +7,7 @@ import { ConceptDrawer } from '../concepts/ConceptDrawer.jsx';
 import { saveStatsAttempt, clearStatsProgress } from '../../utils/statsProgress.js';
 import { track } from '../../utils/analytics.js';
 import { Icon } from '../shared/Icon.jsx';
+import { TimerButton } from '../shared/TimerButton.jsx';
 
 // views: 'question' | 'reveal' | 'debrief'
 
@@ -42,6 +43,7 @@ export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoT
   const [submitted, setSubmitted] = useState(!!savedProgress?.selectedOptionId);
   const [openConceptId, setOpenConceptId] = useState(null);
   const [elapsed, setElapsed] = useState(0);
+  const [paused, setPaused] = useState(false);
   const timerRef = useRef(null);
   const [userNote, setUserNote] = useState('');
   const [noteSaved, setNoteSaved] = useState(false);
@@ -53,9 +55,17 @@ export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoT
 
   useEffect(() => {
     setElapsed(0);
-    timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
-    return () => clearInterval(timerRef.current);
+    setPaused(false);
   }, [module.id]);
+
+  useEffect(() => {
+    if (paused) {
+      clearInterval(timerRef.current);
+    } else {
+      timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [paused, module.id]);
 
   function formatTime(s) {
     const m = Math.floor(s / 60);
@@ -118,9 +128,7 @@ export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoT
             color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-sm)', padding: '0.1rem 0.4rem', textTransform: 'uppercase', letterSpacing: '0.06em',
           }}>{module.concept}</span>
-          <span className={`pal-timer${elapsed > 600 ? ' warning' : ''}`} style={{ marginLeft: 'auto' }}>
-            <Icon name="clock" size={12} color="currentColor" />{formatTime(elapsed)}
-          </span>
+          <TimerButton elapsed={elapsed} paused={paused} onToggle={() => setPaused(p => !p)} warning={elapsed > 600} />
         </div>
         <h1 style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--text)', margin: 0, letterSpacing: '-0.015em' }}>
           {module.title}
