@@ -60,6 +60,23 @@ var(--text)          /* primary text */
 var(--text-muted)    /* secondary text */
 ```
 
+### Animation — always use the utility class system, never write ad-hoc keyframes
+All animations live in `src/index.css`. Use these classes — do not add inline `animation:` CSS or new `@keyframes` in component files:
+```
+.pal-page-enter     — page/view mount (all pages, module views)
+.pal-card-enter     — staggered card entry (+ animationDelay inline per index)
+.pal-card-hover     — hover lift + shadow (all clickable cards)
+.pal-reveal-in      — spring debrief/answer panel entrance
+.pal-glow-pulse     — Next/Continue button after reveal
+.pal-slide-up       — modal and overlay entrance
+.pal-success-ring   — correct answer (JS class toggle + setTimeout)
+.pal-shake          — wrong answer (JS class toggle + setTimeout)
+.pal-pop            — badge / counter scale pop
+.pal-spotlight      — unlock sweep
+.pal-shimmer-box    — loading skeleton
+```
+New animation needed → add utility class to index.css, add to this list, cover with `prefers-reduced-motion`.
+
 ### Mobile — responsive grid pattern
 ```css
 gridTemplateColumns: 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))'

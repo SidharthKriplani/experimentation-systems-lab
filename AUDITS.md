@@ -39,6 +39,34 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XXII — V4.35.x Animation System Audit
+
+Three-pass audit of the full animation layer: system design (V4.35.0), bold moment animations (V4.35.1), and coverage completeness (V4.35.2). All resolved.
+
+### 110. ✅ Visual Consistency — No animation system; transitions inconsistent across app
+
+**Version:** Fixed V4.35.0–V4.35.2
+**Type:** Visual Consistency + UX / Human Elements
+
+PAL had a working CSS variable system and card hover lift but no coherent animation vocabulary. Page navigations snapped. Card grids rendered all at once. Debrief panels appeared instantly. Modals snapped in. Buttons had no press feedback. Coverage was partial — some pages had card-hover, most had nothing.
+
+**What was built:**
+
+*V4.35.0 — Foundation:*
+4 keyframes + 3 utility classes + shimmer loading skeleton added to `index.css`. `App.jsx` wrapped routing in `<div key={page} className="pal-page-enter">` for route transitions. All 16 Suspense `"Loading…"` fallbacks replaced with shimmer skeleton. All 21 browser pages received `pal-page-enter` (page mount) and staggered `pal-card-enter pal-card-hover` on card grids (28ms delay per card, capped 400ms).
+
+*V4.35.1 — Bold moments:*
+7 new keyframes: `palRevealIn` (spring overshoot debrief entrance), `palSuccessRipple` (correct answer green ring), `palShake` (wrong answer physical shake), `palPop` (badge scale), `palGlowPulse` (breathing Next button), `palSlideUp` (modal entrance), `palSpotlight` (unlock sweep). Global `button:not(:disabled):active { transform: scale(0.96) }` added — every button in the product now has press feedback. `pal-reveal-in` applied to 26 debrief panel instances across all runners. `pal-glow-pulse` applied to 41 Next/Continue CTAs. `pal-slide-up` applied to AuthModal and LockOverlay. MCQ correct/wrong feedback wired in StatsRunner, CaseRunner, ScenarioRunner.
+
+*V4.35.2 — Coverage audit:*
+Systematic grep audit revealed gaps: DesignRunner missing glow-pulse (fixed via MetricDebriefPanel), MetricsFoundationsRunner missing reveal-in, StatsFoundationsRunner delegates to 32 individual module files (all 32 individually wired: page-enter + glow-pulse + reveal-in where applicable). 18 previously untouched pages received page-enter. Final verified coverage: 21/21 runners ✅, 39/39 pages ✅, 32/32 StatsFoundation modules ✅.
+
+**Standing rule added:** DECISIONS.md now has a rule requiring all animations to use the utility class system — no ad-hoc keyframes or inline animation CSS in components.
+
+**Files:** `src/index.css`, `src/App.jsx`, all runner components, all page components, all `src/components/statsFoundations/modules/Module*.jsx`, `src/components/metrics/MetricDebriefPanel.jsx`, `src/components/auth/AuthModal.jsx`, `src/components/ui/LockOverlay.jsx`
+
+---
+
 ## Part XXI — V4.34.0 External Review Audit (investor-style read, all three labs)
 
 Source: Investor-style cold-read of all three lab repos (PAL, ML Systems Lab, GenAI Systems Lab) based on READMEs and package structure. Not a full source audit. Treated as a credible strategic signal — two findings converge with the prior ChatGPT review and are therefore actionable. Items that are speculative, pre-data, or generic startup advice are noted and discarded.

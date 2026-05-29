@@ -118,6 +118,7 @@ Founder self-vet complete. 5 bugs found and fixed in V4.28.0. Additional feature
 - [ ] Defense Strategy tested with 3 different JDs: generic analyst, BA at e-commerce, PM at startup — all produce sensible plans
 - [ ] Outside PAL section tested with a JD containing "Excel" and "pivot tables" — section appears correctly
 - [ ] RCA Room: all 12 cases load without error, sticky next bar works
+- [ ] Animation pass verified on real device: page transitions fade (not snap), cards stagger on room entry, debrief panel springs in after reveal, Next button pulses, modals slide up — check desktop and mobile Safari
 
 ### Tester brief
 *One prompt only — send this verbatim:*
