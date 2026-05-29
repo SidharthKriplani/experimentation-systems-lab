@@ -4,6 +4,43 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.32.2] — 2026-05-29
+
+### Copy — all room descriptions rewritten (stakes not mechanics)
+
+Every browser page was describing *what* users would do (topic lists, module counts, mechanics) without explaining *why the room exists* or *what goes wrong for most candidates*. A cold user landing on any room had no reason to care before clicking in.
+
+Rewrote descriptions for all 13 rooms that had this problem. The new pattern: name the real interview moment, name what most candidates get wrong, then explain what the room trains. No room description is a syllabus anymore.
+
+**Rooms rewritten:**
+- A/B Review — decision meeting framing; most tested senior format, least prepared for
+- Spot the Flaw — analyses that look right but aren't; interviewers hand you a flaw and most candidates miss it
+- RCA Foundations — metric drop → why?; most fail by jumping to explanations before ruling out data/external issues
+- Metrics Foundations — most common format; listing KPIs vs. understanding why metrics move
+- Stat Foundations — fluency vs. query-running; build reasoning not formula recall
+- BI & Reporting — which metric belongs on the dashboard and why, not just can you build it
+- Behavioral — underestimated format; STAR answers judged on judgment/ownership not just what happened
+- Cases Room — structure before answer; most candidates jump straight to metrics
+- Estimation — reasoning without data; decompose, assume, arrive at credible answer out loud
+- Exp Foundations — beyond mechanics; randomization unit, SRM, significance ≠ ship
+- Growth Analytics — decompose before celebrate, segment before conclude; top-line hides problems
+- Instrumentation — design vs. query; bad tracking is invisible until the experiment is already corrupted
+- Take-Home — highest bar format; timed, no safety net, rubric shows exactly where strong separates
+
+**Left untouched (already explained stakes well):** A/B Design, Code Lab, Product Design, Prioritization, Stats Room, RCA Room
+
+**Files:** `src/pages/ScenarioBrowser.jsx`, `SpotTheFlawBrowser.jsx`, `RCAFoundationsBrowser.jsx`, `MetricsFoundationsBrowser.jsx`, `StatsFoundationsBrowser.jsx`, `BIBrowser.jsx`, `BehavioralBrowser.jsx`, `CasesBrowser.jsx`, `EstimationBrowser.jsx`, `ExpFoundationsBrowser.jsx`, `GrowthAnalyticsBrowser.jsx`, `InstrumentationBrowser.jsx`, `TakehomeBrowser.jsx`
+
+---
+
+## [4.32.1] — 2026-05-29
+
+### Copy — first five room descriptions rewritten
+
+Initial pass on the five most visible rooms (A/B Review, Spot the Flaw, RCA Foundations, Metrics Foundations, Stat Foundations). Separated progress count from description in ScenarioBrowser. Superseded by V4.32.2 which completed the full pass.
+
+---
+
 ## [4.32.0] — 2026-05-29
 
 ### Timer pause/resume — all runners

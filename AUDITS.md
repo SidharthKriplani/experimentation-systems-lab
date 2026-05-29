@@ -41,6 +41,25 @@ Start here when running an audit. Add rows as new types emerge.
 
 ## Part XVI — V4.30–V4.32 Session Audits
 
+### 75. ✅ Copy Audit — Room Description Clarity (V4.32.2)
+**Version:** V4.32.2
+**Type:** UX / Human Elements + First-Time User
+
+Every room browser page was audited for whether a cold user — someone who has never used PAL and doesn't know the interview format — could understand why the room exists and why they should care before clicking in.
+
+**Finding:** 13 of 19 room descriptions failed the cold-user test. The pattern: they described mechanics (module counts, topic lists, what you do) but skipped stakes (the real interview moment, what goes wrong for most candidates). This is the classic expert blind spot — built by someone who already knew the domain.
+
+**Examples of the failure:**
+- "Event tracking, measurement plans, data contracts, and data quality" — a tag cloud, not a reason to care
+- "Structure ambiguous business and product analytics questions." — describes the exercise, not why it matters
+- "The theory behind A/B testing — before you practice design and review." — syllabus framing, no stakes
+
+**Resolution (V4.32.2):** All 13 rewrites follow the same pattern — name the real interview moment, name what most candidates get wrong, explain what the room trains. 6 rooms were already strong and left untouched.
+
+**Status:** ✅ Resolved
+
+---
+
 ### 74. ✅ UX Comprehension Audit — Timer Legibility (V4.32.0)
 **Version:** V4.32.0
 **Type:** UX / Human Elements
