@@ -4,6 +4,52 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.33.4] — 2026-05-29 [MD-only]
+
+### Audit — Foundation module UX issues (#94, #95, #96)
+
+User screenshots of Stat Foundations Module 02 (Mean/Median/Mode) and Module 04 (Normal Distribution) surfaced two distinct structural problems. Three audits logged; no code shipped.
+
+**#94 — Subtitle text duplication (⚠️ Bug):**
+Subtitle text appears in both the yellow runner header card (correct, intended) and as the first words of the module body paragraph (wrong, no separator). Verified in Module 02 and 04 of Stat Foundations. Root cause unverified — need to read module JSX to determine whether subtitle is hardcoded into the body string or rendered as a duplicate JSX element. Assumed same pattern in Exp/Metrics/RCA rooms. Fix: confirm root cause in one module, remove duplication source, apply across all four foundation module directories. Effort ~30–45 min. Added to NEXT.md as item 3.
+
+**#95 — Missing task instructions (⚠️ UX):**
+Interactive elements (buttons to add data points in Module 02; μ/σ sliders in Module 04) appear with no instruction framing — no label telling the user what to do or what to observe. Verified in Stat Foundations only. Assumed gap in Exp/Metrics/RCA module files. Fix: add 1–2 sentence "What to do" prompt above each interactive element per module. Deferred to own session — requires reading each room's modules before writing instructions.
+
+**#96 — Foundation depth (⚠️ Coverage):**
+Stat Foundations has 25 modules. Exp=7, Metrics=8, RCA=6. No formal audit on whether coverage is adequate per room. RCA in particular lacks modules on segmentation, time patterns, mix shift, causal validation. Deferred to own session, ~1 session per room. Gate: fix #95 before expanding depth.
+
+**NEXT.md updated:** #94 added as item 3; #95 and #96 deferred to own sessions; empty state pass (#91) moved to deferred.
+**IDEAS.md updated:** Bugs section ← #94; Content Quality section ← #95 + #96. All entries include verification scope, root cause status, and concrete fix approach.
+
+**Files:** `AUDITS.md`, `IDEAS.md`, `NEXT.md`, `CHANGELOG.md`, `CLAUDE.md`
+
+### Bug fix — MCQ Trainer option highlighting on mobile (Batch 1 tester report)
+
+**Bug:** From Q2 onwards in the MCQ Trainer, all option buttons appeared in a grey/muted state immediately after navigating to a new question — before the user had selected anything. Looked like all options were "answered" or selected when they weren't.
+
+**Root cause:** Option buttons used `onMouseEnter`/`onMouseLeave` to imperatively set `e.currentTarget.style.background` as a DOM mutation (not React state). On mobile, tapping the "Next →" button triggers `mouseenter` events on newly rendered option elements (from the lingering touch event). `onMouseLeave` never fires on touch, so the `var(--surface-2)` grey background stuck on all options. Additionally, `QuestionScreen` had no `key` prop, so React reconciled in-place on question change — any lingering DOM state from the previous question could bleed through.
+
+**Fix:**
+- Replaced imperative `onMouseEnter`/`onMouseLeave` DOM mutations with React state (`hoveredId`) inside `QuestionScreen`. Hover background is now computed inside `optionStyle()` alongside all other option styling — React controls it cleanly.
+- Added `key={currentIndex}` to `<QuestionScreen>` in Trainer render. Forces a full remount on every question change, guaranteeing `hoveredId` resets to `null` and no DOM state bleeds between questions.
+
+**File:** `src/pages/Trainer.jsx`
+
+### Spine pass — DECISIONS.md gaps from this session
+
+Three additions to DECISIONS.md:
+
+1. **Audience definition added** — PAL's audience is DA/PA/BA/PM/TPM/PL — not data scientists. This was enacted in V4.32.6 (onboarding modal + Simulator labels) but was never recorded as a standing rule. Now in `## Product scope`.
+
+2. **Sister labs interlinking rule added** — footer link to ML Systems Lab + GenAI Systems Lab lives on `Home.jsx` only. No global footer, no structural coupling, no shared auth/progress. Hub page is the future model if deeper cross-lab navigation is needed. Decided V4.33.0, now codified in `## Product scope`.
+
+3. **Monetization free tier contradiction fixed** — `## Monetization` section said "2 Stat Foundation modules + 2 Stats Room cases + full Playbook" (stale, pre-V4.29). `## Paywall` section correctly stated the V4.29.0 gate: first 3 cases per room + all Foundations + full Defense Strategy + full Playbook. Monetization section updated to match. Both sections now consistent.
+
+**Files:** `DECISIONS.md`, `CHANGELOG.md`
+
+---
+
 ## [4.33.3] — 2026-05-29 [MD-only]
 
 ### Audit — Full codebase health check (10 dimensions)

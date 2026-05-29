@@ -39,6 +39,77 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XVII — V4.33.4 Session Audits
+
+### 96. ⚠️ Content Audit — Foundation Module Depth (RCA, Metrics, Exp)
+**Version:** Logged V4.33.4, fix deferred
+**Type:** Coverage + Content Integrity
+
+Stat Foundations has 25 modules. The three other foundation rooms are significantly thinner:
+- Exp Foundations: 7 modules
+- Metrics Foundations: 8 modules
+- RCA Foundations: 6 modules
+
+No formal audit has been run on whether each topic cluster within these rooms has enough modules to cover the concept adequately. Specifically, RCA has only 6 steps — a full RCA workflow needs more coverage of segmentation, time patterns, mix shift, and causal validation.
+
+**Fix:** Dedicated content session per room — assess what's covered, what's missing, and whether additional modules are justified by interview frequency. Do not add padding modules. Scope: ~1 session per room, content-heavy.
+
+**Gate:** Fix audit #95 (missing task instructions) before expanding depth — adding more modules with the same missing-instructions problem makes it worse.
+
+---
+
+### 95. ⚠️ UX Audit — Foundation Modules Missing Task Instructions
+**Version:** Logged V4.33.4, fix deferred
+**Type:** UX / Human Elements
+
+Interactive elements in Stat Foundations modules launch with no instruction framing. A cold user sees a drag-and-drop zone, sliders, or buttons with no explanation of what to do or why — the interactive appears without context.
+
+**Verified in (via user screenshots, Stat Foundations only):**
+- Module 02 (Mean/Median/Mode): `+ Normal point` and `+ Outlier` buttons appear with no label. No text says "Add data points to see how each measure responds to outliers."
+- Module 04 (Normal Distribution): μ (mean) and σ (standard deviation) sliders appear with no orientation. No text says "Adjust the sliders to see how the curve shifts."
+
+**Assumed scope across other three rooms:** Not yet verified by code read or screenshot. Exp Foundations (7 modules), Metrics Foundations (8 modules), and RCA Foundations (6 modules) are assumed to have the same missing-instruction pattern, but each room's module files must be reviewed before writing instructions — the instruction copy depends on what the interactive element actually does.
+
+**Fix:** Add a "What to do" prompt (1–2 sentences) rendered above or immediately before the interactive element in each module component JSX. This is a content + JSX pass, not an architectural change.
+
+**Fix approach per module:**
+1. Read the module component file to understand what the interactive element does
+2. Write a 1–2 sentence instruction that tells the user: what to do (the action) + what to observe (the outcome)
+3. Add it as a `<p>` or styled label element directly above the interactive element in JSX
+4. Verify it renders correctly and is not redundant with the subtitle or key insight text
+
+**Suggested instruction format:** `"[Action verb phrase]. Watch how [observable outcome]."`
+Examples: "Add data points using the buttons below. Watch how mean, median, and mode respond differently to outliers." / "Adjust the sliders to change mean (μ) and standard deviation (σ). Watch the curve shift and observe what changes."
+
+**Files:** `src/components/statsFoundations/modules/` (25 modules — start here, confirm pattern), then `src/components/expFoundations/modules/`, `src/components/metricsFoundations/modules/`, `src/components/rcaFoundations/modules/`
+
+**Gate (from audit #96):** Resolve missing instructions before expanding module depth — adding more modules with the same problem compounds it.
+
+---
+
+### 94. ⚠️ Build Audit — Foundation Module Subtitle Text Duplication
+**Version:** Logged V4.33.4, fix deferred
+**Type:** BUILD + UX / Human Elements
+
+In Stat Foundations, the module subtitle appears twice: once in the yellow header card rendered by the runner (correct, intended), and again as the first words of the module body paragraph — concatenated directly into the body text with no separator.
+
+**Verified in (via user screenshots):**
+- Module 02 (Mean/Median/Mode, `statsFoundations`): Header card shows *"Summarizing where data lives"* in italics. Body paragraph immediately begins *"Summarizing where data lives The mean weighs every value equally..."* — no separator between subtitle and explanation.
+- Module 04 (Normal Distribution, `statsFoundations`): Header card shows *"Why the bell curve shows up everywhere."* Body begins *"Why the bell curve shows up everywhere Use the sliders..."* — same pattern.
+
+**Assumed pattern in other three rooms:** Not yet verified by screenshot or code read. Likely same pattern because all four runners share the same architectural approach (runner renders subtitle in header; individual module component renders its own body), but must be confirmed by reading one module from each of `expFoundations/`, `metricsFoundations/`, `rcaFoundations/`.
+
+**Hypothesized root cause (unverified):** The module body string in the module component JSX begins with the subtitle text — either hardcoded as the opening of the explanation string, or via a `{subtitle}` prop concatenation. The runner already renders subtitle in the header card, so the body version is redundant. **Must read the actual module component code (e.g. `Module02_MeanMedianMode.jsx`) before editing to confirm the exact source of the duplication.**
+
+**Fix approach (once root cause confirmed):**
+- If the body explanation string is hardcoded starting with the subtitle text: remove the subtitle prefix from the body string, leaving only the substantive explanation.
+- If the module component renders `{subtitle}` as a JSX element before the body: remove that render call from module components (the runner header already handles it).
+- Apply the confirmed pattern to all module files across all four foundation directories.
+
+**Files:** `src/components/statsFoundations/modules/`, `src/components/expFoundations/modules/`, `src/components/metricsFoundations/modules/`, `src/components/rcaFoundations/modules/`
+
+---
+
 ## Part XVI — V4.30–V4.32 Session Audits
 
 ### 93. ⚠️ SEO Audit — Sitemap Missing 21 Routes

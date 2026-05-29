@@ -29,6 +29,12 @@ All styling uses inline style objects with CSS variables. No CSS modules, no Tai
 Rooms in scope: stats, experimentation, RCA, metrics, SQL/Python analytics, product design, prioritization, behavioral/leadership, estimation/Fermi, growth analytics, BI, analytics instrumentation, spot-the-flaw, take-home challenges.
 Out of scope: ML model training, data engineering pipelines, MLOps, anything that belongs in the sibling ML Systems Lab.
 
+**PAL's audience is data analysts, product analysts, business analysts, PMs, TPMs, and product leads.**
+Not data scientists. This distinction matters for copy, onboarding framing, and interview prep positioning. The onboarding modal and Interview Simulator role labels were corrected in V4.32.6 to reflect this. Do not reintroduce "Data Scientist" as a primary audience label. Analyst-track and PM-track are the two correct audience frames.
+
+**Sibling labs (ML Systems Lab, GenAI Systems Lab) are linked passively from Home.jsx only.**
+A "sister labs" footer strip linking to `https://ml-systems-lab-v9xe.vercel.app/` and `https://genai-systems-lab-ivory.vercel.app/` lives at the bottom of `src/pages/Home.jsx` only — muted style, no visual emphasis. No global footer link. No structural coupling between labs (shared auth, shared progress, unified nav). Labs are separate products that acknowledge each other's existence — not a platform. A future hub page is the right interlinking model if cross-lab navigation is ever needed. This was decided in V4.33.0. Do not add sister lab links anywhere outside Home.jsx without an explicit session decision.
+
 **GenAI is a thread, not a room.**
 GenAI content lives inside existing rooms (Playbook articles, RCA cases, Metrics cases). There is no standalone GenAI room. This keeps scope clean and avoids thin content.
 
@@ -165,8 +171,8 @@ Recurring billing requires usage metering, cancellation flows, and dunning — b
 **30-day money-back guarantee. No questions asked.**
 Stated on Pricing page. Reduces purchase friction more than any discount. Non-negotiable — do not remove this from Pricing copy.
 
-**Free tier gates: 2 Stat Foundation modules + 2 Stats Room cases + full Playbook.**
-These are the most convincing samples. Stats Room cases show the MCQ+debrief format. Stat Foundations shows the interactive module format. Playbook shows depth. Do not change the free gate without re-evaluating conversion.
+**Free tier gate (as of V4.29.0): first 3 cases per room + all Foundation modules + full Defense Strategy + full Playbook.**
+Stats Room has 4 free cases (exception). All Foundation rooms (Stat, Exp, Metrics, RCA) are entirely free. Defense Strategy is entirely free. This is the implemented gate — see `src/utils/unlock.js` and `isFree` flags on each room data file. Do not change the free gate without re-evaluating conversion impact. The Paywall section of this file is the authoritative source — this Monetization entry must stay consistent with it.
 
 ---
 

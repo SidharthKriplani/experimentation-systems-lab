@@ -224,6 +224,7 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
   const answered = answers[currentIndex] !== undefined;
   const selectedId = answers[currentIndex];
   const total = questions.length;
+  const [hoveredId, setHoveredId] = useState(null);
 
   const handleKey = useCallback((e) => {
     if (['1', '2', '3', '4'].includes(e.key) && !answered) {
@@ -251,12 +252,12 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
       padding: '0.75rem 1rem',
       borderRadius: 'var(--radius)',
       border: '1.5px solid var(--border)',
-      background: 'var(--surface)',
+      background: !answered && hoveredId === opt.id ? 'var(--surface-2)' : 'var(--surface)',
       color: 'var(--text)',
       fontSize: '0.9rem',
       textAlign: 'left',
       cursor: answered ? 'default' : 'pointer',
-      transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
+      transition: 'background var(--transition), border-color var(--transition)',
       marginBottom: 8,
     };
     if (!answered) return base;
@@ -335,8 +336,8 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
               disabled={answered}
               onClick={() => !answered && onAnswer(opt.id)}
               style={optionStyle(opt)}
-              onMouseEnter={(e) => { if (!answered) e.currentTarget.style.background = 'var(--surface-2)'; }}
-              onMouseLeave={(e) => { if (!answered) e.currentTarget.style.background = 'var(--surface)'; }}
+              onMouseEnter={() => { if (!answered) setHoveredId(opt.id); }}
+              onMouseLeave={() => { if (!answered) setHoveredId(null); }}
             >
               <span style={{
                 minWidth: 26,
@@ -670,6 +671,7 @@ export function Trainer({ onBack }) {
   if (screen === 'question') {
     return (
       <QuestionScreen
+        key={currentIndex}
         questions={questions}
         currentIndex={currentIndex}
         onAnswer={handleAnswer}
