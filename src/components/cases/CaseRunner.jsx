@@ -98,6 +98,7 @@ export function CaseRunner({ caseId, savedProgress, unlocked, onBack, onNext }) 
   const [view, setView] = useState(savedProgress ? 'debrief' : 'analysis');
   const [result, setResult] = useState(null);
   const [note, setNote] = useState(() => getNotes('cases', businessCase.id));
+  const [answerFeedback, setAnswerFeedback] = useState('');
   useEffect(() => { setNote(getNotes('cases', businessCase.id)); }, [businessCase.id]);
 
   // Shuffle answer options per phase — seeded so same user sees same order,
@@ -120,6 +121,10 @@ export function CaseRunner({ caseId, savedProgress, unlocked, onBack, onNext }) 
   function handleSubmitPhase() {
     const optionId = phaseChoices[currentPhase.id];
     if (!optionId) return;
+    const opt = currentPhase.options.find(o => o.id === optionId);
+    const isCorrect = opt && opt.level === 'strong';
+    setAnswerFeedback(isCorrect ? 'pal-success-ring' : 'pal-shake');
+    setTimeout(() => setAnswerFeedback(''), isCorrect ? 700 : 420);
     setSubmittedChoices(prev => ({ ...prev, [currentPhase.id]: optionId }));
   }
 
@@ -201,6 +206,8 @@ export function CaseRunner({ caseId, savedProgress, unlocked, onBack, onNext }) 
             submitted={isCurrentSubmitted}
             stepNumber={currentPhaseIndex + 1}
             totalSteps={phases.length}
+            answerFeedback={answerFeedback}
+            pendingSelectedId={currentSelection}
           />
 
           {/* Action buttons */}
@@ -244,7 +251,7 @@ export function CaseRunner({ caseId, savedProgress, unlocked, onBack, onNext }) 
 
       {/* ─── REVEAL VIEW ─── */}
       {view === 'reveal' && result && (
-        <div style={{
+        <div className="pal-reveal-in" style={{
           border: '1px solid var(--border)', borderRadius: 'var(--radius)',
           padding: '1.5rem', background: 'var(--surface)', marginBottom: '1.5rem',
         }}>
@@ -268,7 +275,7 @@ export function CaseRunner({ caseId, savedProgress, unlocked, onBack, onNext }) 
       {/* ─── DEBRIEF VIEW ─── */}
       {view === 'debrief' && (
         <>
-          <div style={{
+          <div className="pal-reveal-in" style={{
             border: '1px solid var(--border)', borderRadius: 'var(--radius)',
             padding: '1.5rem', background: 'var(--surface)',
             paddingBottom: '70px',
@@ -326,6 +333,7 @@ export function CaseRunner({ caseId, savedProgress, unlocked, onBack, onNext }) 
               {onNext && (
                 <button
                   onClick={onNext}
+                  className="pal-glow-pulse"
                   style={{
                     background: 'var(--accent)', color: '#fff',
                     border: 'none', borderRadius: '7px',

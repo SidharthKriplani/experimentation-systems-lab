@@ -775,7 +775,7 @@ export function GrowthAnalyticsRunner({ caseId, onBack, onNext, unlocked }) {
 
       {/* Answer section */}
       {answerRevealed && (
-        <div>
+        <div className="pal-reveal-in">
           {/* Model walkthrough */}
           <div style={{
             background: 'var(--surface)', border: '1px solid var(--border)',
@@ -1072,6 +1072,7 @@ export function GrowthAnalyticsRunner({ caseId, onBack, onNext, unlocked }) {
             {onNext && rating && (
               <button
                 onClick={onNext}
+                className="pal-glow-pulse"
                 style={{
                   background: 'var(--teal)', border: 'none', borderRadius: '7px',
                   padding: '0.5rem 1.2rem', color: '#fff', fontSize: '0.85rem',

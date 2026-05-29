@@ -312,7 +312,7 @@ export function RCARunner({ caseId, savedProgress, unlocked, onBack, onNext }) {
       {/* ─── Debrief ────────────────────────────────────────────────── */}
       {view === 'debrief' && (
         <>
-          <div style={{ paddingBottom: '70px' }}>
+          <div className="pal-reveal-in" style={{ paddingBottom: '70px' }}>
           <RCADebriefPanel
             rcaCase={rcaCase}
             onRetry={handleRetry}
@@ -404,6 +404,7 @@ export function RCARunner({ caseId, savedProgress, unlocked, onBack, onNext }) {
               {onNext && (
                 <button
                   onClick={onNext}
+                  className="pal-glow-pulse"
                   style={{
                     background: 'var(--teal)', color: '#fff',
                     border: 'none', borderRadius: '7px',

@@ -12,6 +12,7 @@ import { DebriefPanel } from './DebriefPanel.jsx';
 import { DebriefCopyButton } from '../shared/DebriefCopyButton.jsx';
 import { saveAttempt } from '../../utils/progress.js';
 import { track } from '../../utils/analytics.js';
+import { getScoreRank } from '../../utils/scoring.js';
 
 const NOTES_KEY = 'pal-notes-v1';
 
@@ -71,6 +72,7 @@ export function ScenarioRunner({ caseId, onBack, onNext, hasNext, onGoToDesign }
   const [checkedFlags, setCheckedFlags] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [showDebrief, setShowDebrief] = useState(false);
+  const [answerFeedback, setAnswerFeedback] = useState('');
   const [note, setNote] = useState(() => getNotes('review', scenario.id));
   useEffect(() => { setNote(getNotes('review', scenario.id)); }, [scenario.id]);
 
@@ -83,6 +85,9 @@ export function ScenarioRunner({ caseId, onBack, onNext, hasNext, onGoToDesign }
   function handleSubmit() {
     if (!selectedDecision) return;
     const decision = scenario.decisions.find(d => d.id === selectedDecision);
+    const isCorrect = getScoreRank(decision.score) >= 3;
+    setAnswerFeedback(isCorrect ? 'pal-success-ring' : 'pal-shake');
+    setTimeout(() => setAnswerFeedback(''), isCorrect ? 700 : 420);
     saveAttempt(scenario.id, selectedDecision, decision.score);
     track('case_completed', { room: 'review', id: scenario.id, rating: decision.score });
     setSubmitted(true);
@@ -280,6 +285,7 @@ export function ScenarioRunner({ caseId, onBack, onNext, hasNext, onGoToDesign }
               selected={selectedDecision}
               onSelect={setSelectedDecision}
               submitted={submitted}
+              answerFeedback={answerFeedback}
             />
             {!submitted && (
               <div style={{ marginTop: '1rem' }}>
@@ -311,7 +317,7 @@ export function ScenarioRunner({ caseId, onBack, onNext, hasNext, onGoToDesign }
 
           {/* Post-submit actions */}
           {submitted && selectedDecisionObj && (
-            <div id="score-reveal">
+            <div id="score-reveal" className="pal-reveal-in">
               <ScoreReveal scoreKey={selectedDecisionObj.score} decisionLabel={selectedDecisionObj.label} />
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.65rem' }}>
                 <button
@@ -332,7 +338,7 @@ export function ScenarioRunner({ caseId, onBack, onNext, hasNext, onGoToDesign }
                   Try a Different Decision
                 </button>
                 {hasNext && (
-                  <button onClick={onNext} style={{
+                  <button onClick={onNext} className="pal-glow-pulse" style={{
                     background: 'var(--accent)', border: '1px solid var(--accent)',
                     borderRadius: 'var(--radius)', padding: '0.5rem',
                     color: '#fff', fontWeight: 700, fontSize: '0.83rem', cursor: 'pointer',
@@ -349,7 +355,7 @@ export function ScenarioRunner({ caseId, onBack, onNext, hasNext, onGoToDesign }
 
       {/* ── Debrief — full width ──────────────────────────────────────── */}
       {showDebrief && selectedDecision && (
-        <div id="debrief-panel" style={{ marginTop: '2.5rem' }}>
+        <div id="debrief-panel" className="pal-reveal-in" style={{ marginTop: '2.5rem' }}>
           <div style={{
             display: 'flex', alignItems: 'center', gap: '0.75rem',
             borderBottom: '2px solid var(--border)', paddingBottom: '0.875rem', marginBottom: '1.5rem',

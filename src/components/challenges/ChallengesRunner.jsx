@@ -380,7 +380,7 @@ export function ChallengesRunner({ caseId, onBack, onNext, unlocked }) {
 
         {/* Revealed answer */}
         {isRevealed && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="pal-reveal-in" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {/* User's answer recap */}
             {qAnswer.trim() && (
               <div style={{
@@ -450,6 +450,7 @@ export function ChallengesRunner({ caseId, onBack, onNext, unlocked }) {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 onClick={handleNextQuestion}
+                className="pal-glow-pulse"
                 style={{
                   background: 'var(--red)',
                   color: '#fff',
@@ -565,7 +566,7 @@ export function ChallengesRunner({ caseId, onBack, onNext, unlocked }) {
   // ── Debrief Screen ────────────────────────────────────────────────────────
   if (screen === 'debrief') {
     return (
-      <div style={{ maxWidth: '820px', margin: '0 auto', padding: '1.5rem 1rem' }}>
+      <div className="pal-reveal-in" style={{ maxWidth: '820px', margin: '0 auto', padding: '1.5rem 1rem' }}>
         <BackButton onBack={() => setScreen('synthesis')} label="← Back to Synthesis" />
 
         <div style={{ marginBottom: '1.25rem' }}>
@@ -700,6 +701,7 @@ export function ChallengesRunner({ caseId, onBack, onNext, unlocked }) {
           {onNext && (
             <button
               onClick={onNext}
+              className="pal-glow-pulse"
               style={{
                 background: 'var(--red)',
                 color: '#fff',
@@ -744,6 +746,7 @@ export function ChallengesRunner({ caseId, onBack, onNext, unlocked }) {
               {onNext && (
                 <button
                   onClick={onNext}
+                  className="pal-glow-pulse"
                   style={{
                     background: 'var(--red)', color: '#fff',
                     border: 'none', borderRadius: '7px',

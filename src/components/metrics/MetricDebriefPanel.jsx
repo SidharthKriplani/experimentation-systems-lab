@@ -117,6 +117,7 @@ export function MetricDebriefPanel({ metricCase, onRetry, onBack, onNext, onGoTo
         {onNext && (
           <button
             onClick={onNext}
+            className="pal-glow-pulse"
             style={{
               background: 'var(--green)', color: '#fff',
               border: 'none', borderRadius: 'var(--radius)', padding: '0.65rem 1.25rem',

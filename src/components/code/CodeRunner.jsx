@@ -345,7 +345,7 @@ function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry, onNext,
   }
 
   return (
-    <div style={{
+    <div className="pal-reveal-in" style={{
       background: 'var(--surface-2)',
       border: '1.5px solid var(--border)',
       borderRadius: 'var(--radius)',
@@ -510,6 +510,7 @@ function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry, onNext,
         {onNext && (
           <button
             onClick={onNext}
+            className="pal-glow-pulse"
             style={{
               background: trackColor, color: '#fff', border: 'none',
               borderRadius: 'var(--radius)', padding: '0.45rem 1.1rem',

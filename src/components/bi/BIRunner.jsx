@@ -268,7 +268,7 @@ function RevealScreen({ caseData, onBack, onNext, unlocked }) {
   const diffCfg = DIFF_CFG[caseData.difficulty] || DIFF_CFG.analyst;
 
   return (
-    <div style={{ maxWidth: '820px', margin: '0 auto', padding: '2rem 1.5rem', paddingBottom: rating ? '70px' : '2rem' }}>
+    <div className="pal-reveal-in" style={{ maxWidth: '820px', margin: '0 auto', padding: '2rem 1.5rem', paddingBottom: rating ? '70px' : '2rem' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '0.75rem' }}>
@@ -571,6 +571,7 @@ function RevealScreen({ caseData, onBack, onNext, unlocked }) {
             {onNext && (
               <button
                 onClick={onNext}
+                className="pal-glow-pulse"
                 style={{
                   background: 'var(--yellow)', color: '#1a1400',
                   border: 'none', borderRadius: '7px',

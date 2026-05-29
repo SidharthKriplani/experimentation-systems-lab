@@ -4,6 +4,31 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.35.1] — 2026-05-29
+
+### Bold polish pass — moment animations, press feedback, MCQ feedback
+
+Extended the animation system with high-impact moment-specific animations across all runners, modals, and interactive components.
+
+**New CSS keyframes + utilities (`src/index.css`):**
+7 new keyframes — `palRevealIn` (spring overshoot entrance for debrief panels), `palSuccessRipple` (double-ring green expand for correct answers), `palShake` (physical 7-step horizontal shake for wrong answers), `palPop` (spring scale for badges/counters), `palGlowPulse` (breathing accent glow for Next buttons), `palSlideUp` (modal/overlay entrance), `palSpotlight` (sweep for unlock moments). 7 new utility classes. Global `button:not(:disabled):active { transform: scale(0.96) }` — every button in the product now has physical press feedback. Full `prefers-reduced-motion` coverage.
+
+**Debrief reveal — all 20 runners (`pal-reveal-in`):**
+Every debrief/answer panel now enters with a spring-overshoot animation (rises 28px, overshoots -5px, settles). This is the highest-impact moment in the learning loop — users are most engaged right as the answer drops. Applied to 26 debrief panel instances across RCARunner, StatsRunner, CaseRunner, MetricsRunner, ScenarioRunner, BehavioralRunner, DesignRunner, EstimationRunner, PrioritizationRunner, SpotTheFlawRunner, GrowthAnalyticsRunner, BIRunner, InstrumentationRunner, ChallengesRunner, TakehomeRunner, CodeRunner, ProductDesignRunner, ExpFoundationsRunner, MetricsFoundationsRunner, RCAFoundationsRunner.
+
+**Next button glow pulse — all runners (`pal-glow-pulse`):**
+41 Next/Continue CTA buttons now breathe with a soft accent glow after reveal, drawing the eye forward without being aggressive. MetricsRunner Next button wired via MetricDebriefPanel.jsx.
+
+**Modal + overlay entrance (`pal-slide-up`):**
+AuthModal inner card and LockOverlay panel now slide up from 22px with scale 0.97→1 on mount. Eliminates the snap-in feeling on gated content.
+
+**MCQ answer feedback — 3 runners:**
+StatsRunner, CaseRunner, ScenarioRunner now flash `pal-success-ring` (green ripple, 700ms) on correct answer and `pal-shake` (physical shake, 420ms) on wrong answer. State is cleared via `setTimeout` — no permanent side effects. Sub-components (StatsDecisionCard, CaseStepPanel, DecisionPanel) updated to accept and apply the feedback class.
+
+**Files:** `src/index.css`, all runner files, `src/components/metrics/MetricDebriefPanel.jsx`, `src/components/auth/AuthModal.jsx`, `src/components/ui/LockOverlay.jsx`, `src/components/stats/StatsDecisionCard.jsx` (or equivalent), `src/components/cases/CaseStepPanel.jsx`, `src/components/scenario/DecisionPanel.jsx`
+
+---
+
 ## [4.35.0] — 2026-05-29
 
 ### Premium animation pass — entire app

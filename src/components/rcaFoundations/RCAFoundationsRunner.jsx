@@ -38,7 +38,7 @@ function InsightBox({ children }) {
 
 function NextBtn({ onClick, label }) {
   return (
-    <button onClick={onClick} style={{
+    <button onClick={onClick} className="pal-glow-pulse" style={{
       marginTop: '1.5rem', padding: '0.65rem 1.6rem',
       background: 'var(--teal)', color: '#fff', border: 'none',
       borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.9rem',
@@ -757,7 +757,7 @@ function Module_RF07({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Metric trees are the backbone of experiment debrief analysis — when a metric moves, the tree tells you which sub-metric drove it and whether that is the one you wanted to move.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -787,7 +787,7 @@ function Module_RF08({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The same SQL patterns that surface a metric drop also validate experiment results — a time-series of your outcome metric split by variant is the first sanity check after any A/B test launches.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -817,7 +817,7 @@ function Module_RF09({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Seasonality is also the primary confounder in long-running A/B tests — an experiment that spans a holiday week has treatment and control groups exposed to different demand environments, invalidating the comparison if not accounted for.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -847,7 +847,7 @@ function Module_RF10({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Data quality checks are equally critical in A/B test analysis: a sudden metric movement in the control group after experiment launch almost always signals an instrumentation change, not treatment spillover.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -877,7 +877,7 @@ function Module_RF11({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>External factor awareness is also required for valid A/B test interpretation: if a major competitor launched during your experiment window, your treatment effect estimate is confounded by the market shift, not just the feature you tested.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -907,7 +907,7 @@ function Module_RF12({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Multi-level causal thinking is the senior skill in both RCA and experiment analysis. When a primary metric moves unexpectedly in an A/B test, the cause is often a combination of an interaction effect, a novelty effect, and a segment composition shift — not a single clean explanation.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -987,7 +987,7 @@ export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
 
       {/* Post-completion: connection + playbook links + next */}
       {completed && (
-        <div style={{ marginTop: '1.75rem' }}>
+        <div className="pal-reveal-in" style={{ marginTop: '1.75rem' }}>
           <div style={{
             background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius)', padding: '1rem 1.1rem', marginBottom: '1rem',
@@ -1019,7 +1019,7 @@ export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
             </div>
           )}
 
-          <button onClick={onNext} style={{
+          <button onClick={onNext} className="pal-glow-pulse" style={{
             padding: '0.65rem 1.6rem', background: 'var(--teal)', color: '#fff',
             border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700,
             fontSize: '0.9rem', cursor: 'pointer',

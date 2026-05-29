@@ -18,7 +18,7 @@ const LEVEL_CONFIG = {
 
 import { useState } from 'react';
 
-export function CaseStepPanel({ phase, selectedId, onSelect, submitted, stepNumber, totalSteps }) {
+export function CaseStepPanel({ phase, selectedId, onSelect, submitted, stepNumber, totalSteps, answerFeedback, pendingSelectedId }) {
   const [hoveredId, setHoveredId] = useState(null);
   const phaseLabel = PHASE_LABELS[phase.id] || phase.label || phase.id;
   const chosenOption = submitted && selectedId
@@ -100,6 +100,7 @@ export function CaseStepPanel({ phase, selectedId, onSelect, submitted, stepNumb
             <div
               key={option.id}
               onClick={() => !submitted && onSelect(option.id)}
+              className={option.id === (pendingSelectedId || selectedId) && answerFeedback ? answerFeedback : ''}
               style={{
                 border: `1.5px solid ${borderColor}`,
                 borderRadius: 'var(--radius-sm)',

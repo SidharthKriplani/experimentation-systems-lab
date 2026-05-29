@@ -157,7 +157,7 @@ export function MetricsRunner({ caseId, savedProgress, onBack, onGoToDesign, onG
 
       {/* Reveal view */}
       {view === 'reveal' && scoreResult && (
-        <div style={{ marginTop: '1.25rem' }}>
+        <div className="pal-reveal-in" style={{ marginTop: '1.25rem' }}>
           <MetricScoreReveal
             score={scoreResult.score}
             maxScore={scoreResult.maxScore}
@@ -171,7 +171,7 @@ export function MetricsRunner({ caseId, savedProgress, onBack, onGoToDesign, onG
 
       {/* Debrief view */}
       {view === 'debrief' && (
-        <div style={{ marginTop: '1.25rem' }}>
+        <div className="pal-reveal-in" style={{ marginTop: '1.25rem' }}>
           <div className="pal-textarea-wrap" style={{ marginBottom: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: '0.4rem' }}>
               <div style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>

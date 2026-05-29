@@ -304,7 +304,7 @@ function RevealScreen({ caseData, onBack, onNext }) {
   const diffCfg = DIFF_CFG[caseData.difficulty] || DIFF_CFG.junior;
 
   return (
-    <div style={{ maxWidth: '820px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-reveal-in" style={{ maxWidth: '820px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
       {/* Header badges */}
       <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '0.75rem' }}>
@@ -563,6 +563,7 @@ function RevealScreen({ caseData, onBack, onNext }) {
         {onNext && rating > 0 && (
           <button
             onClick={onNext}
+            className="pal-glow-pulse"
             style={{
               background: 'var(--teal)', border: 'none', borderRadius: '7px',
               padding: '0.5rem 1.25rem', color: '#001a1a', fontSize: '0.85rem',

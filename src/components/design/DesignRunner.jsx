@@ -205,7 +205,7 @@ export function DesignRunner({ caseId, savedProgress, onBack, onGoToReview, onNe
 
       {/* Score reveal */}
       {view === 'reveal' && result && (
-        <div style={{
+        <div className="pal-reveal-in" style={{
           border: '1px solid var(--border)', borderRadius: 'var(--radius)',
           padding: '1.5rem', background: 'var(--surface)', marginBottom: '1.5rem',
         }}>
@@ -225,7 +225,7 @@ export function DesignRunner({ caseId, savedProgress, onBack, onGoToReview, onNe
 
       {/* Debrief */}
       {view === 'debrief' && result && (
-        <div style={{
+        <div className="pal-reveal-in" style={{
           border: '1px solid var(--border)', borderRadius: 'var(--radius)',
           padding: '1.5rem', background: 'var(--surface)',
         }}>

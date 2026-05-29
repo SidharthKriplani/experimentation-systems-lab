@@ -326,7 +326,7 @@ export function TakehomeRunner({ caseId, onBack, onNext, unlocked }) {
 
       {/* ===================== RUBRIC PHASE ===================== */}
       {phase === 'rubric' && (
-        <div>
+        <div className="pal-reveal-in">
           {/* Elapsed time */}
           <div style={{
             background: 'var(--surface)', border: '1px solid var(--border)',
@@ -563,6 +563,7 @@ export function TakehomeRunner({ caseId, onBack, onNext, unlocked }) {
           {onNext && (
             <button
               onClick={onNext}
+              className="pal-glow-pulse"
               style={{
                 marginTop: '1rem', background: 'var(--surface)', color: 'var(--text)',
                 border: '1px solid var(--border)', borderRadius: '8px',

@@ -69,7 +69,7 @@ function PhaseNav({ phases, currentIndex, completedIds }) {
 // ─── Model answer reveal panel ────────────────────────────────────────────────
 function ModelAnswerPanel({ phase, onRate, currentRating }) {
   return (
-    <div style={{
+    <div className="pal-reveal-in" style={{
       marginTop: '1.5rem',
       background: 'var(--surface-2)',
       border: '1.5px solid var(--purple-border)',
@@ -152,7 +152,7 @@ function DebriefView({ scenario, responses, ratings, result, onRetry, onBack, on
   const [expandedPhase, setExpandedPhase] = useState(null);
 
   return (
-    <div>
+    <div className="pal-reveal-in">
       {/* Score card */}
       <div style={{
         background: levelCfg.bg,
@@ -270,6 +270,7 @@ function DebriefView({ scenario, responses, ratings, result, onRetry, onBack, on
         {onNext && (
           <button
             onClick={onNext}
+            className="pal-glow-pulse"
             style={{
               padding: '0.55rem 1.2rem',
               background: 'var(--purple)', color: '#fff',

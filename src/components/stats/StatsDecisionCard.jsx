@@ -1,6 +1,6 @@
 // The core interaction unit: situation, setup, question, options
 
-export function StatsDecisionCard({ module, selectedId, onSelect, submitted }) {
+export function StatsDecisionCard({ module, selectedId, onSelect, submitted, answerFeedback }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
@@ -102,6 +102,7 @@ export function StatsDecisionCard({ module, selectedId, onSelect, submitted }) {
                 key={opt.id}
                 onClick={() => !submitted && onSelect(opt.id)}
                 disabled={submitted}
+                className={isSelected && answerFeedback ? answerFeedback : ''}
                 style={{
                   display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
                   padding: '0.75rem 0.9rem',

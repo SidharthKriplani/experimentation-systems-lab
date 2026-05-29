@@ -47,6 +47,7 @@ export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoT
   const timerRef = useRef(null);
   const [userNote, setUserNote] = useState('');
   const [noteSaved, setNoteSaved] = useState(false);
+  const [answerFeedback, setAnswerFeedback] = useState('');
 
   useEffect(() => {
     setUserNote(loadNote(ROOM_KEY, module.id));
@@ -79,6 +80,9 @@ export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoT
   function handleSubmit() {
     if (!selectedId) return;
     const opt = module.options.find(o => o.id === selectedId);
+    const isCorrect = opt.level === 'correct' || opt.level === 'strong';
+    setAnswerFeedback(isCorrect ? 'pal-success-ring' : 'pal-shake');
+    setTimeout(() => setAnswerFeedback(''), isCorrect ? 700 : 420);
     saveStatsAttempt(module.id, selectedId, opt.level);
     track('case_completed', { room: 'stats', id: module.id, rating: opt.level });
     setSubmitted(true);
@@ -155,6 +159,7 @@ export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoT
               selectedId={selectedId}
               onSelect={setSelectedId}
               submitted={false}
+              answerFeedback={answerFeedback}
             />
           </div>
           <div style={{
@@ -204,7 +209,7 @@ export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoT
 
       {/* Reveal view */}
       {view === 'reveal' && selectedOption && (
-        <div style={{
+        <div className="pal-reveal-in" style={{
           border: '1px solid var(--border)', borderRadius: 'var(--radius)',
           background: 'var(--surface)', padding: '1.5rem',
         }}>
@@ -223,7 +228,7 @@ export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoT
 
       {/* Debrief view */}
       {view === 'debrief' && selectedOption && (
-        <div style={{
+        <div className="pal-reveal-in" style={{
           border: '1px solid var(--border)', borderRadius: 'var(--radius)',
           background: 'var(--surface)', padding: '1.5rem',
         }}>
@@ -251,6 +256,7 @@ export function StatsRunner({ caseId, savedProgress, onBack, onGoToReview, onGoT
             <div style={{ marginTop: '1.25rem', display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 onClick={onNext}
+                className="pal-glow-pulse"
                 style={{
                   background: 'var(--accent)', border: 'none', borderRadius: '7px',
                   padding: '0.5rem 1.2rem', color: '#fff', fontSize: '0.85rem',

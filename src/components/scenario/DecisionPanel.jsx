@@ -1,4 +1,4 @@
-export function DecisionPanel({ decisions, selected, onSelect, submitted }) {
+export function DecisionPanel({ decisions, selected, onSelect, submitted, answerFeedback }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
       {decisions.map((decision) => {
@@ -8,6 +8,7 @@ export function DecisionPanel({ decisions, selected, onSelect, submitted }) {
             key={decision.id}
             onClick={() => !submitted && onSelect(decision.id)}
             disabled={submitted}
+            className={isSelected && answerFeedback ? answerFeedback : ''}
             style={{
               background: isSelected ? 'var(--accent-bg)' : 'var(--surface-2)',
               border: `1px solid ${isSelected ? 'var(--accent)' : 'var(--border)'}`,

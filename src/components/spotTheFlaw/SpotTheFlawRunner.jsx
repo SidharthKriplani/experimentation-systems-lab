@@ -322,7 +322,7 @@ export function SpotTheFlawRunner({ caseId, onBack, onNext, unlocked }) {
 
   // ── REVEAL SCREEN ────────────────────────────────────────────────────────────
   return (
-    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-reveal-in" style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
       <button
         onClick={onBack}
@@ -545,6 +545,7 @@ export function SpotTheFlawRunner({ caseId, onBack, onNext, unlocked }) {
         {onNext && rating && (
           <button
             onClick={onNext}
+            className="pal-glow-pulse"
             style={{
               background: 'var(--red)', border: 'none', borderRadius: '7px',
               padding: '0.5rem 1.2rem', color: '#fff', fontSize: '0.85rem',

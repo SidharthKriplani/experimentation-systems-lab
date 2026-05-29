@@ -34,7 +34,7 @@ function InsightBox({ label, color, bg, border, children }) {
 function NextBtn({ onClick, label }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-      <button onClick={onClick} style={{
+      <button onClick={onClick} className="pal-glow-pulse" style={{
         padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none',
         background: 'var(--green)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
       }}>{label || 'Next concept →'}</button>
@@ -706,7 +706,7 @@ function Module_MF09({ module, onNext }) {
         </div>
       )}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -741,7 +741,7 @@ function Module_MF10({ module, onNext }) {
         </div>
       )}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -776,7 +776,7 @@ function Module_MF11({ module, onNext }) {
         </div>
       )}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -811,7 +811,7 @@ function Module_MF12({ module, onNext }) {
         </div>
       )}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Next →
         </button>
       </div>
@@ -846,7 +846,7 @@ function Module_MF13({ module, onNext }) {
         </div>
       )}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Complete module →
         </button>
       </div>

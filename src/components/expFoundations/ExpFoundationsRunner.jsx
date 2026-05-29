@@ -38,7 +38,7 @@ function InsightBox({ children }) {
 
 function NextBtn({ onClick, label }) {
   return (
-    <button onClick={onClick} style={{
+    <button onClick={onClick} className="pal-glow-pulse" style={{
       marginTop: '1.5rem', padding: '0.65rem 1.6rem',
       background: 'var(--accent)', color: '#fff', border: 'none',
       borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.9rem',
@@ -989,7 +989,7 @@ function Module_EF08({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>A/A testing is a prerequisite to trusting any A/B result. If your platform has systematic bias, every experiment you run is compromised. Interviewers use A/A scenarios to probe whether you validate infrastructure before drawing conclusions.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Complete module →
         </button>
       </div>
@@ -1019,7 +1019,7 @@ function Module_EF09({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>CUPED is the practical answer to the question of how to run faster experiments without compromising power. It extends the power module (ef03) — once you understand why n scales with 1/MDE squared, CUPED gives you a lever to shift that curve without adding traffic.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Complete module →
         </button>
       </div>
@@ -1049,7 +1049,7 @@ function Module_EF10({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The peeking problem is one of the most common ways teams accidentally p-hack without realizing it. Sequential testing is the designed solution — knowing the difference between a planned interim analysis and ad-hoc peeking is exactly what interviewers probe when they ask about experiment velocity.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Complete module →
         </button>
       </div>
@@ -1079,7 +1079,7 @@ function Module_EF11({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Network effects are why the randomization unit module covers cluster randomization — it is the structural fix for SUTVA violations. Understanding interference makes you fluent in why two-sided marketplace experiments and social feed tests require fundamentally different designs than simple product UI tests.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Complete module →
         </button>
       </div>
@@ -1109,7 +1109,7 @@ function Module_EF12({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Holdout groups answer the question that individual experiments cannot: are all these small wins adding up to real business impact? Candidates who know holdouts understand that the sum of individual experiment lifts rarely equals the true compound effect.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Complete module →
         </button>
       </div>
@@ -1139,7 +1139,7 @@ function Module_EF13({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The explore-exploit tradeoff shows up in PM interviews about personalization, recommendation systems, and ad serving. Knowing when a bandit is better than a fixed A/B test — and when it is not — is a practical design judgment interviewers test for.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Complete module →
         </button>
       </div>
@@ -1169,7 +1169,7 @@ function Module_EF14({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Geo experiments are the practical answer to the SUTVA problem for offline channels and marketplace interventions. They also connect to incrementality measurement in marketing — a domain where product analysts at growth-stage companies are routinely expected to design and interpret these tests.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Complete module →
         </button>
       </div>
@@ -1199,7 +1199,7 @@ function Module_EF15({ onComplete }) {
         <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Switchback designs are the canonical solution for ride-sharing, food delivery, and other dense marketplace experiments where demand and supply interact at a market level. Knowing this design signals fluency with the hardest class of experiment problems interviewers raise for marketplace PMs and analysts.</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
           Complete module →
         </button>
       </div>
@@ -1294,7 +1294,7 @@ export function ExpFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
 
       {/* Post-completion: connection + next */}
       {completed && (
-        <div style={{ marginTop: '1.75rem' }}>
+        <div className="pal-reveal-in" style={{ marginTop: '1.75rem' }}>
           <div style={{
             background: 'var(--surface-2)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius)', padding: '1rem 1.1rem', marginBottom: '1rem',
@@ -1319,7 +1319,7 @@ export function ExpFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
             </div>
           </div>
 
-          <button onClick={onNext} style={{
+          <button onClick={onNext} className="pal-glow-pulse" style={{
             padding: '0.65rem 1.6rem', background: 'var(--accent)', color: '#fff',
             border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700,
             fontSize: '0.9rem', cursor: 'pointer',

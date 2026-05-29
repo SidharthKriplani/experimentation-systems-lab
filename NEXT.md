@@ -4,7 +4,7 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.35.0 (2026-05-29)*
+*Last updated: V4.35.1 (2026-05-29)*
 
 ---
 
@@ -81,6 +81,7 @@ Deferred — lower priority than bug fixes above.
 - Foundation broken links bug logged — NEXT.md #1 (investigation needed before fix)
 - Progress page guided path cards logged — NEXT.md #4 (collapse item list, keep name + progress + Continue)
 - Premium animation pass — V4.35.0 (keyframes + utility classes in index.css, route key transition in App.jsx, shimmer Suspense fallbacks, staggered card-enter + card-hover across all 21 browser pages)
+- Bold polish pass — V4.35.1 (spring-overshoot debrief reveal on all 20 runners, Next button glow pulse on 41 CTAs, modal/overlay slide-up, MCQ correct/wrong feedback on Stats + Cases + Scenario runners, global button press scale)
 
 **Still open (in IDEAS.md):**
 - Empty state quality pass (#91) — deferred

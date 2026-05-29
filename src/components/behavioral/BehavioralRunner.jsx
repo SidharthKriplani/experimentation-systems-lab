@@ -283,7 +283,7 @@ export function BehavioralRunner({ caseId, onBack, onNext }) {
 
       {/* Revealed state */}
       {revealed && (
-        <div>
+        <div className="pal-reveal-in">
           {/* Your answer */}
           <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem' }}>
             <div style={{ fontWeight: 600, fontSize: '0.78rem', color: 'var(--text-dim)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Your Answer</div>
@@ -439,7 +439,7 @@ export function BehavioralRunner({ caseId, onBack, onNext }) {
               ← Back to Room
             </button>
             {onNext && (
-              <button onClick={onNext} style={{
+              <button onClick={onNext} className="pal-glow-pulse" style={{
                 background: 'var(--accent)', border: 'none', borderRadius: '7px',
                 padding: '0.5rem 1.2rem', color: '#fff', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
                 marginLeft: 'auto',

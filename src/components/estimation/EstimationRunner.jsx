@@ -305,7 +305,7 @@ export function EstimationRunner({ caseId, onBack, onNext }) {
 
       {/* Model Answer panel */}
       {revealed && (
-        <div>
+        <div className="pal-reveal-in">
           {/* Your answer */}
           <div style={{
             background: 'var(--surface)', border: '1px solid var(--border)',
@@ -466,6 +466,7 @@ export function EstimationRunner({ caseId, onBack, onNext }) {
             {onNext && (
               <button
                 onClick={onNext}
+                className="pal-glow-pulse"
                 style={{
                   background: 'var(--teal)', border: 'none', borderRadius: '7px',
                   padding: '0.5rem 1.2rem', color: '#fff', fontSize: '0.85rem',
