@@ -48,8 +48,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
           Metric Design
         </h1>
         <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem', lineHeight: 1.6, maxWidth: '540px' }}>
-          Design the right metric before you measure the wrong thing. Choose your primary metric,
-          diagnostics, guardrails, grain, and decision rule — then see the senior standard.
+          The most common interview failure is picking the obvious metric and defending it under pressure — but interviewers want to see you spot the metric that games, the denominator that shifts, the guardrail you forgot. This room trains the full decision: not just what to measure, but why that specific metric and what breaks if you get it wrong.
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
           <RoomBadge />

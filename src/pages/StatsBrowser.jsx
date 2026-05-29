@@ -51,8 +51,7 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
           Statistical Concepts
         </h1>
         <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem', lineHeight: 1.6, maxWidth: '540px' }}>
-          Every concept appears inside a product decision — not as a textbook definition.
-          Read the situation, inspect the data, make the call, then see how a senior analyst would have read it.
+          Stats questions in interviews are never pure math — they are always attached to a decision. Should we ship? Is this result real or noise? Can we trust the sample? Knowing the formula is not the bar; knowing which concept applies, what it means for this specific decision, and where the common misread is — that is what gets tested.
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>{statsModules.length} modules</span>

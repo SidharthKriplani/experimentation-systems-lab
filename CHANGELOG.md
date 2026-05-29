@@ -4,6 +4,24 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.32.4] — 2026-05-29
+
+### Copy — remaining room descriptions rewritten (6 pages missed in V4.32.2)
+
+V4.32.2 incorrectly left 6 room pages marked "already solid." On review, four of them (A/B Design, Metrics, RCA, Stats) had mechanics-first descriptions that failed the same cold-user test. Product Design and Prioritization also had framework-listing copy.
+
+**Rooms fixed:**
+- A/B Design — "Set the primary metric, randomization unit, trust checks, and decision rule" → experiment mistakes locked in before a single user is assigned; design forces the call blind to results
+- Metrics Room — "Choose your primary metric, diagnostics, guardrails" → the metric that games, the denominator that shifts, the guardrail you forgot; not what to measure but why and what breaks
+- RCA Room — "Diagnose step by step, walks you through" → jumping to explanation before ruling out data issues/mix shift; what to check first, in what order, why each cut eliminates a hypothesis
+- Stats Room — "Read the situation, inspect the data, make the call" → stats questions are never pure math; knowing which concept applies and what the common misread is — that is what gets tested
+- Product Design — "Work through 5 phases" → candidates fail by skipping the hard part; full arc from scoping correctly through defending prioritization
+- Prioritization — "Practice RICE scoring, effort-impact matrices" → defending the tradeoff when the interviewer introduces constraints you did not plan for
+
+**Files:** `src/pages/DesignBrowser.jsx`, `MetricsBrowser.jsx`, `RCABrowser.jsx`, `StatsBrowser.jsx`, `ProductDesignBrowser.jsx`, `PrioritizationBrowser.jsx`
+
+---
+
 ## [4.32.3] — 2026-05-29
 
 ### UX — Sidebar reorder: Progress above Foundations

@@ -37,7 +37,7 @@ export function DesignBrowser({ onSelectScenario, onOpenArticle }) {
           Experiment Design
         </h1>
         <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem', lineHeight: 1.6, maxWidth: '540px' }}>
-          Design A/B tests from scratch before seeing results. Set the primary metric, randomization unit, trust checks, and decision rule — then compare your design to the senior analyst standard.
+          Most experiment mistakes are locked in before a single user is assigned — wrong randomization unit, primary metric that cannot move the business, no decision rule for the ambiguous outcome. Design forces you to make every call upfront, blind to the results, so you discover your reasoning gaps before they corrupt a live experiment.
         </p>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: '0.4rem',

@@ -70,7 +70,7 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
           fontSize: '0.88rem', color: 'var(--text-secondary)',
           margin: '0 0 1rem', lineHeight: 1.6, maxWidth: '580px',
         }}>
-          PM-style product design questions from real companies. Work through 5 phases — Clarify, Users, Goals, Solutions, Prioritize — then compare your thinking to a senior PM model answer.
+          Product design questions fail not because candidates lack ideas but because they skip the hard part — defining who the user is before proposing solutions, or prioritizing without a defensible rationale. This room trains the full arc: from scoping the problem correctly through to defending your prioritization when the interviewer pushes back.
         </p>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <div style={{

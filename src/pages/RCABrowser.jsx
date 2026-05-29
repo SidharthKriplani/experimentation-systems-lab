@@ -80,8 +80,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
           Root Cause Analysis
         </h1>
         <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem', lineHeight: 1.6, maxWidth: '540px' }}>
-          Diagnose metric movements step by step. Each case gives you context, then walks you through
-          the exact reasoning process a senior analyst would use to find the root cause.
+          The most common RCA failure is jumping to an explanation before ruling out data issues, external factors, or mix shift — then defending it when the interviewer pushes back. This room builds the diagnostic instinct: given a metric movement and raw context, what do you check first, in what order, and why does each cut either confirm or eliminate a hypothesis?
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
           <span style={{

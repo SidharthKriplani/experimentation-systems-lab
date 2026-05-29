@@ -40,7 +40,7 @@ export function PrioritizationBrowser({ onStart, unlocked, onOpenArticle }) {
           </h1>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: 0, maxWidth: '600px' }}>
-          Practice RICE scoring, effort–impact matrices, stakeholder tradeoffs, and OKR-level decisions. Each scenario is a real PM judgment call — not a formula exercise.
+          The bar in prioritization interviews is not picking the right project — it is defending the tradeoff when the interviewer introduces constraints you did not plan for. This room puts you in real resource and stakeholder conflicts, then shows you how senior PMs reason through them without falling back on a framework as a shield.
         </p>
         <div style={{ marginTop: '0.75rem', display: 'flex', gap: '1.5rem' }}>
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
