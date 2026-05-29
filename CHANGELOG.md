@@ -4,6 +4,16 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.33.1] — 2026-05-29
+
+### Removed — Global footer strip
+
+Removed the global `Footer.jsx` component from `App.jsx`. It appeared on every page showing "Product Analytics Lab — V4.17 · 150+ Playable Items" / "Works offline · Private by design · No account required" — redundant, stale versioning, not needed. `Footer.jsx` file retained but unused. Sister labs footer on Home.jsx is unaffected.
+
+**Files:** `src/App.jsx`
+
+---
+
 ## [4.33.0] — 2026-05-29
 
 ### Feature — Sister labs footer link on Home page

@@ -15,7 +15,6 @@ import {
 import { getAllInstrumentationProgress } from './utils/instrumentationProgress.js';
 // Layout (always needed — not lazy)
 import { Sidebar } from './components/layout/Sidebar.jsx';
-import { Footer } from './components/layout/Footer.jsx';
 // Utils
 import { getAllProgress } from './utils/progress.js';
 import { getDesignProgress } from './utils/designProgress.js';
@@ -1289,7 +1288,6 @@ export default function App() {
         )}
         </Suspense>
       </main>
-      <Footer onNavigate={navigate} />
     </div>
     {showAuth && (
       <Suspense fallback={null}>
