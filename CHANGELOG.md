@@ -4,6 +4,18 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.33.0] — 2026-05-29
+
+### Feature — Sister labs footer link on Home page
+
+Added a passive footer strip at the bottom of Home.jsx, below the room grid, linking to ML Systems Lab and GenAI Systems Lab. Home page only — does not appear in runners, room browsers, or any other page. Styled in `var(--text-muted)` at 0.78rem, separated by a top border, opens in a new tab.
+
+**Rationale:** Home page is the one moment a new visitor is evaluating whether PAL is for them. A quiet "also by the same team" line at the bottom gives discovery context without competing with any actionable content. Mid-session placement would be noise — home page only is the right constraint.
+
+**Files:** `src/pages/Home.jsx`
+
+---
+
 ## [4.32.9] — 2026-05-29 [MD-only, no code]
 
 ### Logged — 7 new audits from sibling lab cross-review (ML Systems Lab + GenAI Lab)

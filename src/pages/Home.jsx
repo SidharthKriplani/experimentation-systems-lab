@@ -742,6 +742,16 @@ export function Home({ onNavigate }) {
         </div>
       </div>
 
+      {/* ── Sister labs footer ───────────────────────────────────────────── */}
+      <div style={{ textAlign: 'center', padding: '2rem 1.5rem 1.5rem', marginTop: '1rem', borderTop: '1px solid var(--border)' }}>
+        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+          Also by the same team:{' '}
+          <a href="https://ml-systems-lab-v9xe.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'underline', textUnderlineOffset: '3px' }}>ML Systems Lab</a>
+          {' · '}
+          <a href="https://genai-systems-lab-ivory.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'underline', textUnderlineOffset: '3px' }}>GenAI Systems Lab</a>
+        </span>
+      </div>
+
       {/* ── Onboarding modal ──────────────────────────────────────────────── */}
       {showOnboardingModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
