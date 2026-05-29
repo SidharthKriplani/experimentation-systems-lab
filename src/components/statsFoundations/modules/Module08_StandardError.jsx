@@ -70,7 +70,7 @@ export function Module08_StandardError({ module, onNext }) {
   const nToSlider = (nn) => Math.round(((Math.log10(nn) - logMin) / (logMax - logMin)) * 100);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         The <strong>Standard Error (SE)</strong> measures how much your sample mean varies from sample to sample.
         It equals the population standard deviation divided by the square root of n — so larger samples produce smaller (more precise) SEs.
@@ -224,6 +224,7 @@ export function Module08_StandardError({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

@@ -81,7 +81,7 @@ export function Module01_WhatIsData({ module, onNext }) {
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Explanation */}
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         {module?.subtitle || 'Data comes in two fundamental types: numerical (you can do math on it) and categorical (it describes a group).'}{' '}
@@ -229,7 +229,7 @@ export function Module01_WhatIsData({ module, onNext }) {
 
       {/* Score feedback */}
       {checked && (
-        <div style={{
+        <div className="pal-reveal-in" style={{
           background: score === 8 ? 'var(--green-bg)' : 'var(--yellow-bg)',
           border: `1.5px solid ${score === 8 ? 'var(--green-border)' : 'var(--yellow-border)'}`,
           borderRadius: 'var(--radius)',
@@ -299,6 +299,7 @@ export function Module01_WhatIsData({ module, onNext }) {
       {/* Next */}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{
             padding: '0.6rem 1.5rem',

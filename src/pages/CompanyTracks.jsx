@@ -93,14 +93,16 @@ function getCompletedCount(track) {
     sum + ref.ids.filter(id => isCaseCompleted(ref.room, id)).length, 0);
 }
 
-function CompanyCard({ track, onSelect }) {
+function CompanyCard({ track, onSelect, index }) {
   const rooms = getUniqueRooms(track);
   const totalCases = getTotalCases(track);
   const completedCount = getCompletedCount(track);
   const isColorDark = track.color === '#000000';
 
   return (
-    <div style={{
+    <div
+      className="pal-card-enter pal-card-hover"
+      style={{
       background: 'var(--surface)',
       border: '1px solid var(--border)',
       borderLeft: `4px solid ${track.color}`,
@@ -111,6 +113,7 @@ function CompanyCard({ track, onSelect }) {
       gap: '1rem',
       transition: 'box-shadow 0.15s ease, transform 0.15s ease',
       cursor: 'default',
+      animationDelay: (Math.min((index || 0) * 28, 400)) + 'ms',
     }}
       onMouseEnter={e => {
         e.currentTarget.style.boxShadow = 'var(--shadow-md)';
@@ -517,7 +520,7 @@ export function CompanyTracks({ onNavigate, onBack, unlocked }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+    <div className="pal-page-enter" style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       {/* Page header */}
       <div style={{
         maxWidth: view === 'detail' ? '800px' : '960px',
@@ -579,11 +582,12 @@ export function CompanyTracks({ onNavigate, onBack, unlocked }) {
             }}
               className="company-tracks-grid"
             >
-              {companyTracks.map(track => (
+              {companyTracks.map((track, index) => (
                 <CompanyCard
                   key={track.id}
                   track={track}
                   onSelect={handleSelectTrack}
+                  index={index}
                 />
               ))}
             </div>

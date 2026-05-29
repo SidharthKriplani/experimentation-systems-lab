@@ -150,7 +150,7 @@ export function Module24_SyntheticControl({ module, onNext }) {
   const interventionX = tToX(INTERVENTION_T);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         Synthetic Control builds a <strong>weighted combination of untreated units</strong> that best
@@ -212,7 +212,7 @@ export function Module24_SyntheticControl({ module, onNext }) {
           </button>
         )}
         {revealed && (
-          <div style={{ fontSize: '0.85rem', color: selectedDonor?.valid ? 'var(--green)' : 'var(--red)', fontWeight: 700 }}>
+          <div className="pal-reveal-in" style={{ fontSize: '0.85rem', color: selectedDonor?.valid ? 'var(--green)' : 'var(--red)', fontWeight: 700 }}>
             {selectedDonor?.valid
               ? '✓ Correct — Donor A has the lowest pre-period RMSE and was not itself treated. Good synthetic control.'
               : selected === 'B'
@@ -359,7 +359,7 @@ export function Module24_SyntheticControl({ module, onNext }) {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} style={{ padding: '0.7rem 1.75rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', boxShadow: 'var(--shadow)', letterSpacing: '0.02em' }}>
+        <button className="pal-glow-pulse" onClick={onNext} style={{ padding: '0.7rem 1.75rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', boxShadow: 'var(--shadow)', letterSpacing: '0.02em' }}>
           Next concept →
         </button>
       </div>

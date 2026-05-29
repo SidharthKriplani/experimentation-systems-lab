@@ -90,7 +90,7 @@ export function BookmarksBrowser({ onNavigate, onBack }) {
   }
 
   return (
-    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
       {/* Back nav */}
       <button
@@ -177,11 +177,12 @@ export function BookmarksBrowser({ onNavigate, onBack }) {
 
               {/* Items in this room */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                {grouped[room].map(b => {
+                {grouped[room].map((b, bIndex) => {
                   const diffCfg = DIFF_CFG[b.difficulty];
                   return (
                     <div
                       key={`${b.room}:${b.id}`}
+                      className="pal-card-enter pal-card-hover"
                       style={{
                         background: 'var(--surface)',
                         border: '1px solid var(--border)',
@@ -190,6 +191,7 @@ export function BookmarksBrowser({ onNavigate, onBack }) {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '1rem',
+                        animationDelay: (Math.min(bIndex * 28, 400)) + 'ms',
                       }}
                     >
                       {/* Main info */}

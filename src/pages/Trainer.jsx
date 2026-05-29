@@ -104,7 +104,7 @@ function SetupScreen({ onStart }) {
   };
 
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: 700, margin: '0 auto', padding: '2rem 1rem' }}>
       {/* Header */}
       <div style={{
         background: 'var(--green-bg)',
@@ -274,7 +274,7 @@ function QuestionScreen({ questions, currentIndex, onAnswer, onNext, answers, sc
   const pct = total > 0 ? (currentIndex / total) * 100 : 0;
 
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto', padding: '1.5rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: 700, margin: '0 auto', padding: '1.5rem 1rem' }}>
       {/* Progress bar + score chip */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.25rem' }}>
         <div style={{ flex: 1, height: 6, background: 'var(--border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
@@ -439,7 +439,7 @@ function DebriefScreen({ questions, answers, onRetry, onNewSession, onBack }) {
   });
 
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: 700, margin: '0 auto', padding: '2rem 1rem' }}>
       {/* Score header */}
       <div style={{
         textAlign: 'center',

@@ -418,7 +418,7 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
   }
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '1.5rem' }}>
@@ -1096,13 +1096,14 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
               fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.09em', color: 'var(--text-dim)', marginBottom: '0.5rem',
             }}>Review Room — completed scenarios</div>
-            {completed.map(scenario => {
+            {completed.map((scenario, index) => {
               const progress = allProgress[scenario.id];
               const lastLevel = progress.attempts?.slice(-1)[0];
               const levelCfg = LEVEL_LABELS[lastLevel] || LEVEL_LABELS.analyst;
               return (
                 <div
                   key={scenario.id}
+                  className="pal-card-enter pal-card-hover"
                   onClick={() => onSelect(scenario.id)}
                   style={{
                     background: 'var(--bg)', border: '1px solid var(--border)',
@@ -1112,6 +1113,7 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
                     flexWrap: 'wrap', gap: '0.75rem',
                     transition: 'border-color 0.15s',
                     boxShadow: 'var(--shadow-sm)',
+                    animationDelay: (Math.min(index * 28, 400)) + 'ms',
                   }}
                   onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
                   onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}

@@ -87,7 +87,7 @@ export function Module11_HypothesisTesting({ module, onNext }) {
   const extremePct = (pValue * 100).toFixed(2);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         The <strong>p-value</strong> is the probability of observing a test statistic as extreme as yours — or more extreme — if the null hypothesis were actually true.
         It's the red shaded area in the tail(s) of the null distribution. Smaller p = more surprising under H₀ = stronger evidence against it.
@@ -273,6 +273,7 @@ export function Module11_HypothesisTesting({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

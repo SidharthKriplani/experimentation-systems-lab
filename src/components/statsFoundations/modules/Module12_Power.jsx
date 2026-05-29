@@ -145,7 +145,7 @@ export function Module12_Power({ module, onNext }) {
   const pColor = powerColor(power);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         <strong>Statistical power</strong> is the probability of detecting a real effect when one truly exists.
         It's the green area under the alternative hypothesis curve beyond the critical value.
@@ -410,6 +410,7 @@ export function Module12_Power({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

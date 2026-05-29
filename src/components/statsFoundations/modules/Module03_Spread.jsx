@@ -46,7 +46,7 @@ export function Module03_Spread({ module, onNext }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         {module?.subtitle || 'Variance and standard deviation measure how spread out your data is around the mean.'}{' '}
         Each deviation line below represents how far a single point sits from the mean. Variance averages the squared deviations — squaring penalizes large outliers more.
@@ -232,6 +232,7 @@ export function Module03_Spread({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

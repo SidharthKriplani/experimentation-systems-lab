@@ -94,7 +94,7 @@ export function Module20_PracticalSignificance({ module, onNext }) {
   const matPos = useMemo(() => getMatrixPosition(pValue, h), [pValue, h]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         A result can be <strong>statistically significant but practically negligible</strong> (large N amplifies tiny effects),
         or <strong>practically large but not yet significant</strong> (small N can't confirm a real effect).
@@ -228,6 +228,7 @@ export function Module20_PracticalSignificance({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.7rem 1.75rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', boxShadow: 'var(--shadow)', letterSpacing: '0.02em' }}
         >

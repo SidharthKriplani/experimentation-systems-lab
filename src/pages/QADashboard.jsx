@@ -157,7 +157,7 @@ export function QADashboard({ onNavigate, onOpenItem, unlocked, onUnlock, onLock
   ];
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>

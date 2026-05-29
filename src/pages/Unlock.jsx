@@ -50,7 +50,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
     return (
       <>
         <style>{KEYFRAMES}</style>
-        <div style={{
+        <div className="pal-page-enter" style={{
           maxWidth: '360px', margin: '5rem auto', padding: '2rem 1.5rem',
           textAlign: 'center',
           animation: 'pal-unlock-in 0.3s ease-out both',
@@ -95,7 +95,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
     return (
       <>
         <style>{KEYFRAMES}</style>
-        <div style={{
+        <div className="pal-page-enter" style={{
           maxWidth: '360px', margin: '5rem auto', padding: '2rem 1.5rem',
           textAlign: 'center',
           animation: 'pal-unlock-in 0.25s ease-out both',
@@ -126,7 +126,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
   }
 
   return (
-    <div style={{ maxWidth: '480px', margin: '4rem auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '480px', margin: '4rem auto', padding: '2rem 1.5rem' }}>
       <div style={{
         background: 'var(--surface)',
         border: '1px solid var(--border)',

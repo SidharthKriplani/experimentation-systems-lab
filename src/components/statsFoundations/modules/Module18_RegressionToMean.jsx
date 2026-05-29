@@ -69,7 +69,7 @@ export function Module18_RegressionToMean({ module, onNext }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         <strong>Regression to the mean</strong>: when you select extreme performers based on a noisy first measurement,
         their second measurement tends to be less extreme — not because anything changed, but because the first measurement
@@ -118,7 +118,7 @@ export function Module18_RegressionToMean({ module, onNext }) {
 
       {/* SVG dot plot */}
       {step > 0 && (
-        <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem' }}>
+        <div className="pal-reveal-in" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem' }}>
           <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
             {step === 1 ? 'Measurement 1 — top 5 highlighted in yellow' : 'Measurement 1 (circles) vs Measurement 2 (diamonds) — connecting lines show regression'}
           </div>
@@ -202,7 +202,7 @@ export function Module18_RegressionToMean({ module, onNext }) {
 
       {/* Stats panel */}
       {step === 2 && (
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <div className="pal-reveal-in" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: 140, background: 'var(--yellow-bg)', border: '1.5px solid var(--yellow-border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
             <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--yellow-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Top 5 avg — Meas. 1</div>
             <div style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--yellow-text)', fontVariantNumeric: 'tabular-nums' }}>{top5Avg1.toFixed(1)}</div>
@@ -246,6 +246,7 @@ export function Module18_RegressionToMean({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

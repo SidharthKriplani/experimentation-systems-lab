@@ -71,7 +71,7 @@ export function Module02_CentralTendency({ module, onNext }) {
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         {module?.subtitle || 'Mean, median, and mode each summarize the "center" of your data differently.'}{' '}
         The mean weighs every value equally — so one extreme outlier can drag it far from the rest. The median only cares about rank order, making it robust to extremes.
@@ -202,7 +202,7 @@ export function Module02_CentralTendency({ module, onNext }) {
       </div>
 
       {hasOutlier && (
-        <div style={{ background: 'var(--red-bg)', border: '1.5px solid var(--red-border)', borderRadius: 'var(--radius)', padding: '0.9rem 1.1rem', fontSize: '0.85rem', color: 'var(--red-text)', lineHeight: 1.55 }}>
+        <div className="pal-reveal-in" style={{ background: 'var(--red-bg)', border: '1.5px solid var(--red-border)', borderRadius: 'var(--radius)', padding: '0.9rem 1.1rem', fontSize: '0.85rem', color: 'var(--red-text)', lineHeight: 1.55 }}>
           <strong>Outlier effect visible:</strong> The mean jumped to {mean.toFixed(1)} — far from the main cluster. The median ({median.toFixed(1)}) barely moved. This is exactly why median is used for skewed distributions like revenue or session time.
         </div>
       )}
@@ -225,6 +225,7 @@ export function Module02_CentralTendency({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

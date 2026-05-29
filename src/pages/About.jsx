@@ -103,7 +103,7 @@ V2.0 (current): Metrics Room (6 cases) · RCA Room (6 cases) · Cases Room (4 ca
   ];
 
   return (
-    <div style={{ maxWidth: '760px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '760px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
       <div style={{ marginBottom: '2.5rem' }}>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.025em', marginBottom: '0.4rem' }}>
           Methodology

@@ -40,7 +40,7 @@ export function Pricing({ onShowUnlock, onBack, onNavigate }) {
   ];
 
   return (
-    <div style={{ maxWidth: 860, margin: '0 auto', padding: '3rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: 860, margin: '0 auto', padding: '3rem 1.5rem' }}>
       {/* Back */}
       <button
         onClick={onBack}

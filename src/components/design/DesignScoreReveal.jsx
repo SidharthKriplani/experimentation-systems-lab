@@ -128,6 +128,7 @@ export function DesignScoreReveal({ result, onContinue, continueLabel = 'View fu
       {/* CTA */}
       <button
         onClick={onContinue}
+        className="pal-glow-pulse"
         style={{
           padding: '0.75rem 1.25rem',
           background: 'var(--accent)', color: '#fff',

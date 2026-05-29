@@ -473,7 +473,7 @@ export function JudgmentBank({ onNavigate }) {
   }
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <div style={{ maxWidth: '720px', marginBottom: '2rem' }}>
@@ -555,14 +555,15 @@ export function JudgmentBank({ onNavigate }) {
         gap: '0.65rem',
         marginBottom: '3rem',
       }}>
-        {filtered.map(s => {
-          if (s.room === 'stats') return <StatsCard key={`stats-${s.id}`} module={s} onClick={() => onNavigate('stats')} />;
-          if (s.room === 'metrics') return <MetricsCard key={`metrics-${s.id}`} metricCase={s} onClick={() => onNavigate('metrics')} />;
-          if (s.room === 'design') return <DesignCard key={`design-${s.id}`} scenario={s} onClick={() => onNavigate('design')} />;
-          if (s.room === 'review') return <ReviewCard key={`review-${s.id}`} scenario={s} onClick={() => onNavigate('browser')} />;
-          if (s.room === 'rca') return <RCACard key={`rca-${s.id}`} rcaCase={s} onClick={() => onNavigate('rca')} />;
-          if (s.room === 'cases') return <CasesCard key={`cases-${s.id}`} businessCase={s} onClick={() => onNavigate('cases')} />;
-          return <PlannedCard key={`planned-${s.id}`} scenario={s} />;
+        {filtered.map((s, index) => {
+          const cardDelay = { animationDelay: (Math.min(index * 28, 400)) + 'ms' };
+          if (s.room === 'stats') return <div key={`stats-${s.id}`} className="pal-card-enter pal-card-hover" style={cardDelay}><StatsCard module={s} onClick={() => onNavigate('stats')} /></div>;
+          if (s.room === 'metrics') return <div key={`metrics-${s.id}`} className="pal-card-enter pal-card-hover" style={cardDelay}><MetricsCard metricCase={s} onClick={() => onNavigate('metrics')} /></div>;
+          if (s.room === 'design') return <div key={`design-${s.id}`} className="pal-card-enter pal-card-hover" style={cardDelay}><DesignCard scenario={s} onClick={() => onNavigate('design')} /></div>;
+          if (s.room === 'review') return <div key={`review-${s.id}`} className="pal-card-enter pal-card-hover" style={cardDelay}><ReviewCard scenario={s} onClick={() => onNavigate('browser')} /></div>;
+          if (s.room === 'rca') return <div key={`rca-${s.id}`} className="pal-card-enter pal-card-hover" style={cardDelay}><RCACard rcaCase={s} onClick={() => onNavigate('rca')} /></div>;
+          if (s.room === 'cases') return <div key={`cases-${s.id}`} className="pal-card-enter pal-card-hover" style={cardDelay}><CasesCard businessCase={s} onClick={() => onNavigate('cases')} /></div>;
+          return <div key={`planned-${s.id}`} className="pal-card-enter" style={cardDelay}><PlannedCard scenario={s} /></div>;
         })}
         {filtered.length === 0 && (
           <div style={{

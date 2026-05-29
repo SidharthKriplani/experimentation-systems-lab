@@ -255,7 +255,7 @@ export function SearchPage({ onNavigate }) {
   let globalIdx = 0;
 
   return (
-    <div style={{ maxWidth: '780px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '780px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
       {/* Page header */}
       <div style={{ marginBottom: '1.5rem' }}>
@@ -451,18 +451,19 @@ export function SearchPage({ onNavigate }) {
                 </div>
 
                 {/* Result cards */}
-                {items.map(item => {
+                {items.map((item, itemIndex) => {
                   const cardGlobalIdx = globalIdx;
                   globalIdx++;
                   return (
-                    <ResultCard
-                      key={item[room.idField]}
-                      item={item}
-                      room={room}
-                      isHighlighted={highlightedIndex === cardGlobalIdx}
-                      onNavigate={onNavigate}
-                      cardRef={el => { cardRefs.current[cardGlobalIdx] = el; }}
-                    />
+                    <div key={item[room.idField]} className="pal-card-enter pal-card-hover" style={{ animationDelay: (Math.min(itemIndex * 28, 400)) + 'ms' }}>
+                      <ResultCard
+                        item={item}
+                        room={room}
+                        isHighlighted={highlightedIndex === cardGlobalIdx}
+                        onNavigate={onNavigate}
+                        cardRef={el => { cardRefs.current[cardGlobalIdx] = el; }}
+                      />
+                    </div>
                   );
                 })}
               </div>

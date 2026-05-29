@@ -95,7 +95,7 @@ export function Module10_CI({ module, onNext }) {
     : 120;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         A <strong>confidence interval</strong> gives a range that — if you repeated the experiment many times —
         would contain the true parameter in X% of those repetitions. The width depends on your confidence level
@@ -220,7 +220,7 @@ export function Module10_CI({ module, onNext }) {
 
       {/* 20 CI bars */}
       {intervals.length > 0 && (
-        <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem', overflowX: 'auto' }}>
+        <div className="pal-reveal-in" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem', overflowX: 'auto' }}>
           <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>
             20 simulated {conf.label} CIs — green = contains μ, red = misses μ
           </div>
@@ -279,6 +279,7 @@ export function Module10_CI({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

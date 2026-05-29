@@ -96,7 +96,7 @@ export function Module16_Skewness({ module, onNext }) {
   const inactiveBtn = { ...btnBase, background: 'var(--surface)', color: 'var(--text-muted)' };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         <strong>Skewness</strong> describes asymmetry in a distribution. Most product metrics — revenue per user,
         session length, LTV — are <em>right-skewed</em> (log-normal), not symmetric. A small number of power users
@@ -313,6 +313,7 @@ export function Module16_Skewness({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

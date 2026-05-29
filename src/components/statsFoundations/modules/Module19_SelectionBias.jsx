@@ -46,7 +46,7 @@ export function Module19_SelectionBias({ module, onNext }) {
   const activeAvgEngagement = 7.8;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         <strong>Selection bias</strong> occurs when the data you analyze isn't a random sample of the population you care about.
         The missing data is not random — it's <em>systematically different</em>. In product analytics, churned users are
@@ -151,7 +151,7 @@ export function Module19_SelectionBias({ module, onNext }) {
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>n = 25 {!showAll && '← inflated!'}</div>
         </div>
         {!showAll && (
-          <div style={{ flex: 1, minWidth: 160, background: 'var(--red-bg)', border: '1.5px solid var(--red-border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
+          <div className="pal-reveal-in" style={{ flex: 1, minWidth: 160, background: 'var(--red-bg)', border: '1.5px solid var(--red-border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
             <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--red)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Inflation factor</div>
             <div style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--red)', fontVariantNumeric: 'tabular-nums' }}>
               +{((activeAvgEngagement / allAvgEngagement - 1) * 100).toFixed(0)}%
@@ -197,6 +197,7 @@ export function Module19_SelectionBias({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

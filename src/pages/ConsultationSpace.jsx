@@ -202,7 +202,7 @@ export function ConsultationSpace({ onBack, onNavigate }) {
   );
 
   return (
-    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
       {/* Back */}
       <button

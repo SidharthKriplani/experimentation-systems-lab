@@ -4,7 +4,7 @@ export function FoundationHub({ onOpenArticle, onNavigate }) {
   const domains = Object.entries(FOUNDATION_DOMAINS);
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.25rem 3rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.25rem 3rem' }}>
       {/* Page header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{
@@ -79,9 +79,10 @@ export function FoundationHub({ onOpenArticle, onNavigate }) {
               gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))',
               gap: '0.6rem',
             }}>
-              {domain.articles.map(article => (
+              {domain.articles.map((article, artIndex) => (
                 <button
                   key={article.id}
+                  className="pal-card-enter pal-card-hover"
                   onClick={() => onOpenArticle(article.id)}
                   style={{
                     display: 'block',
@@ -97,6 +98,7 @@ export function FoundationHub({ onOpenArticle, onNavigate }) {
                     fontSize: '0.83rem',
                     fontWeight: 500,
                     lineHeight: 1.45,
+                    animationDelay: (Math.min(artIndex * 28, 400)) + 'ms',
                   }}
                   onMouseEnter={e => {
                     e.currentTarget.style.borderColor = domain.color;

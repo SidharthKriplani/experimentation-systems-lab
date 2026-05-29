@@ -315,7 +315,7 @@ export function Home({ onNavigate }) {
   const todayDate = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
   return (
-    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem 5rem', width: '100%', boxSizing: 'border-box' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem 5rem', width: '100%', boxSizing: 'border-box' }}>
 
       {/* ── First-visit hero (hidden once any room is opened) ─────────────── */}
       {visitedRooms.length === 0 && (
@@ -707,10 +707,10 @@ export function Home({ onNavigate }) {
           </button>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(220px, 100%), 1fr))', gap: '0.5rem' }}>
-          {learningPaths.slice(0, 4).map(path => (
+          {learningPaths.slice(0, 4).map((path, index) => (
             <div
               key={path.id}
-              className="pal-card-hover"
+              className="pal-card-enter pal-card-hover"
               role="button"
               tabIndex={0}
               onClick={() => onNavigate('progress')}
@@ -720,6 +720,7 @@ export function Home({ onNavigate }) {
                 borderTop: '3px solid ' + path.color,
                 borderRadius: 'var(--radius)', padding: '0.9rem 1rem',
                 cursor: 'pointer', boxShadow: 'var(--shadow-sm)',
+                animationDelay: (Math.min(index * 28, 400)) + 'ms',
               }}
             >
               <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: path.color, marginBottom: '0.25rem' }}>

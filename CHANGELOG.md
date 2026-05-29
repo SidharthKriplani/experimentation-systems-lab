@@ -4,6 +4,27 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.35.2] — 2026-05-29
+
+### Animation coverage — full app audit + gap fill
+
+Ran a systematic grep audit of every runner and page for animation class coverage. Found and fixed all gaps. Coverage is now 100% across the entire app.
+
+**Gaps fixed:**
+- `DesignRunner` — Next button glow-pulse was missing (wired via `DesignScoreReveal.jsx` and `DesignDebriefPanel.jsx`)
+- `MetricsFoundationsRunner` — 8 conditional reveal panels across MF01–MF08 were missing `pal-reveal-in`
+- `StatsFoundationsRunner` — delegates to 32 individual module files; all 32 now have `pal-page-enter` on outermost div, `pal-glow-pulse` on `onNext` button, and `pal-reveal-in` on 11 conditional answer panels across 9 modules
+- 12 previously untouched pages now have `pal-page-enter`: PrioritizationBrowser, ProductDesignBrowser, BookmarksBrowser, CompanyTracks, FoundationHub, JudgmentBank, Progress, SearchPage, Home, Trainer, InterviewSimulator, ABTestInterpreter, About, Pricing, Unlock, ConsultationSpace, DefenseDocGenerator, QADashboard
+
+**Final coverage:**
+- 21/21 runners: `pal-reveal-in` + `pal-glow-pulse` ✅
+- 39/39 pages: `pal-page-enter` ✅ (+ `pal-card-enter` on all card grids)
+- 32/32 StatsFoundations modules: `pal-page-enter` + `pal-glow-pulse` ✅
+
+**Files:** All `src/components/statsFoundations/modules/Module*.jsx`, `src/components/design/DesignScoreReveal.jsx`, `src/components/design/DesignDebriefPanel.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, all previously missing `src/pages/*.jsx`
+
+---
+
 ## [4.35.1] — 2026-05-29
 
 ### Bold polish pass — moment animations, press feedback, MCQ feedback

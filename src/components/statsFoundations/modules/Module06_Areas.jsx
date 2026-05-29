@@ -92,7 +92,7 @@ export function Module06_Areas({ module, onNext }) {
   const pctLabel = (v) => `${(v * 100).toFixed(2)}%`;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         {module?.subtitle || 'The area under a normal curve between two z-scores is a probability.'}{' '}
         Drag the bounds to shade different regions. The shaded area is exactly P(z₁ &lt; Z &lt; z₂) — the probability that a randomly drawn value falls in that range.
@@ -271,6 +271,7 @@ export function Module06_Areas({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

@@ -69,7 +69,7 @@ export function Module04_NormalDist({ module, onNext }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         {module?.subtitle || 'The normal distribution is a symmetric bell curve defined entirely by its mean μ and standard deviation σ.'}{' '}
         Use the sliders to shift and reshape the curve. Notice that changing σ widens the bell (more spread) while μ slides it left or right.
@@ -217,6 +217,7 @@ export function Module04_NormalDist({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

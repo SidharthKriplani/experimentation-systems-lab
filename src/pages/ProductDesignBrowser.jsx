@@ -50,7 +50,7 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
   const firstUnstartedId = productDesignScenarios.find(s => !completedIds.has(s.id))?.id;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
@@ -129,7 +129,9 @@ export function ProductDesignBrowser({ onSelectScenario, unlocked, onUnlock, onO
           return (
             <div
               key={scenario.id}
+              className="pal-card-enter pal-card-hover"
               style={{
+                animationDelay: (Math.min(idx * 28, 400)) + 'ms',
                 border: '1.5px solid var(--border)',
                 borderLeft: isNextUnstarted ? '3px solid var(--purple)' : '3px solid ' + diffCfg.color,
                 borderRadius: 'var(--radius)',

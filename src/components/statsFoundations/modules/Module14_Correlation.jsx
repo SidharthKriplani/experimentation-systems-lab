@@ -38,7 +38,7 @@ export function Module14_Correlation({ module, onNext }) {
   const rSq = (r * r).toFixed(2);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         <strong>Correlation</strong> measures the strength and direction of the linear relationship between two variables.
         The Pearson correlation coefficient <em>r</em> ranges from −1 (perfect negative) through 0 (no relationship) to +1 (perfect positive).
@@ -208,6 +208,7 @@ export function Module14_Correlation({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.6rem 1.5rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}
         >

@@ -397,7 +397,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, unlocked }) {
   const ratingLabel = { weak: 'Weak', okay: 'Okay', strong: 'Strong' };
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.25rem 6rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.25rem 6rem' }}>
 
       {/* Back */}
       {onBack && (

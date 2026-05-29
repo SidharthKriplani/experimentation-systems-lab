@@ -71,7 +71,7 @@ export function Module21_Counterfactuals({ module, onNext }) {
   const score = SCENARIOS.filter(s => answers[s.id] === s.verdict).length;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         The <strong>fundamental problem of causal inference</strong>: you can never observe what would have
@@ -132,7 +132,7 @@ export function Module21_Counterfactuals({ module, onNext }) {
 
       {/* Score */}
       {allDone && (
-        <div style={{ background: score === 3 ? 'var(--green-bg)' : 'var(--yellow-bg)', border: `1px solid ${score === 3 ? 'var(--green-border)' : 'var(--yellow-border)'}`, borderRadius: 'var(--radius)', padding: '0.9rem 1.25rem' }}>
+        <div className="pal-reveal-in" style={{ background: score === 3 ? 'var(--green-bg)' : 'var(--yellow-bg)', border: `1px solid ${score === 3 ? 'var(--green-border)' : 'var(--yellow-border)'}`, borderRadius: 'var(--radius)', padding: '0.9rem 1.25rem' }}>
           <div style={{ fontWeight: 700, fontSize: '0.95rem', color: score === 3 ? 'var(--green)' : 'var(--yellow-text)' }}>
             {score === 3 ? '3/3 — Perfect. You can spot a confound.' : score === 2 ? '2/3 — Good. The before/after trap is the most common.' : '1/3 — Revisit the explanations above.'}
           </div>
@@ -209,6 +209,7 @@ export function Module21_Counterfactuals({ module, onNext }) {
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{ padding: '0.7rem 1.75rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--yellow)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', boxShadow: 'var(--shadow)', letterSpacing: '0.02em' }}
         >

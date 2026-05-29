@@ -114,7 +114,7 @@ const hasSpeech = !!SpeechRecognition;
 export function InterviewSimulator({ onBack, onNavigate, unlocked }) {
   if (!unlocked) {
     return (
-      <div style={{ maxWidth: '480px', margin: '4rem auto', padding: '2rem 1.5rem', textAlign: 'center' }}>
+      <div className="pal-page-enter" style={{ maxWidth: '480px', margin: '4rem auto', padding: '2rem 1.5rem', textAlign: 'center' }}>
         <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🔒</div>
         <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', marginBottom: '0.5rem' }}>
           Interview Simulator — Full Access Only
@@ -290,7 +290,7 @@ function InterviewSimulatorInner({ onBack, onNavigate }) {
   // ── Screen 1: Setup ──────────────────────────────────────────────
   if (screen === 'setup') {
     return (
-      <div style={{ maxWidth: '700px', margin: '0 auto', padding: '3rem 1.5rem' }}>
+      <div className="pal-page-enter" style={{ maxWidth: '700px', margin: '0 auto', padding: '3rem 1.5rem' }}>
         <button
           onClick={onBack}
           style={{
@@ -493,7 +493,7 @@ function InterviewSimulatorInner({ onBack, onNavigate }) {
     }
 
     return (
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+      <div className="pal-page-enter" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1.5rem' }}>
         {/* Progress + Timer bar */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -775,7 +775,7 @@ function InterviewSimulatorInner({ onBack, onNavigate }) {
     const hasMCQResults = sessionMode === 'mcq' || sessionMode === 'mixed';
 
     return (
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+      <div className="pal-page-enter" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1.5rem' }}>
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.4rem' }}>
             Debrief

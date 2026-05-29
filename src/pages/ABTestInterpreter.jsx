@@ -201,7 +201,7 @@ export function ABTestInterpreter({ onBack }) {
   };
 
   return (
-    <div style={{ maxWidth: '700px', margin: '0 auto', padding: '3rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '700px', margin: '0 auto', padding: '3rem 1.5rem' }}>
       <button
         onClick={onBack}
         style={{

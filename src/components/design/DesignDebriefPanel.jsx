@@ -189,6 +189,7 @@ export function DesignDebriefPanel({
         {onNext && (
           <button
             onClick={onNext}
+            className="pal-glow-pulse"
             style={{
               background: 'var(--accent)', color: '#fff', border: 'none',
               borderRadius: 'var(--radius-sm)', padding: '0.5rem 1.1rem',

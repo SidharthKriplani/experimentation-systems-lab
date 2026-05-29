@@ -62,7 +62,7 @@ export function Module25_IV({ module, onNext }) {
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
         Instrumental Variables (IV) uses a third variable — the <strong>instrument</strong> — that causes
@@ -178,7 +178,7 @@ export function Module25_IV({ module, onNext }) {
 
       {/* Score */}
       {allDone && (
-        <div style={{
+        <div className="pal-reveal-in" style={{
           background: allCorrect ? 'var(--green-bg)' : 'var(--yellow-bg)',
           border: `1px solid ${allCorrect ? 'var(--green-border)' : 'var(--yellow-border)'}`,
           borderRadius: 'var(--radius)', padding: '0.9rem 1.25rem',
@@ -204,7 +204,7 @@ export function Module25_IV({ module, onNext }) {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} style={{ padding: '0.7rem 1.75rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--green)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', boxShadow: 'var(--shadow)', letterSpacing: '0.02em' }}>
+        <button className="pal-glow-pulse" onClick={onNext} style={{ padding: '0.7rem 1.75rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--green)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', boxShadow: 'var(--shadow)', letterSpacing: '0.02em' }}>
           Complete ✓
         </button>
       </div>

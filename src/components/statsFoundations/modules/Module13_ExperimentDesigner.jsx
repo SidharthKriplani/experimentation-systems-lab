@@ -137,7 +137,7 @@ export function Module13_ExperimentDesigner({ module, onNext }) {
   const sliderStyle = { width: '100%', accentColor: 'var(--yellow)', cursor: 'pointer' };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
       {/* Intro paragraph */}
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
@@ -453,6 +453,7 @@ export function Module13_ExperimentDesigner({ module, onNext }) {
       {/* Next button */}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
+          className="pal-glow-pulse"
           onClick={onNext}
           style={{
             padding: '0.7rem 1.75rem',
