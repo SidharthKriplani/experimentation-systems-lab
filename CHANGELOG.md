@@ -4,6 +4,22 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.32.8] — 2026-05-29 [MD-only, no code]
+
+### Logged — Defense Strategy V2 concept (resume-aware, round-typed, cost-weighted)
+
+Product design session. No code shipped.
+
+Full V2 concept for Defense Strategy logged in IDEAS.md Tier 2. Core insight: current flow asks users to self-rate all JD skills, including ones their resume already evidences — noisy and wasteful. V2 cross-references resume against JD first, surfaces only genuine gaps for self-rating, then routes by round type (Technical / Product Sense / Behavioral / General / Final), days available (1/3/7/14), and optional previous-round feedback to produce a cost-weighted day plan.
+
+Five-step input flow: JD parse → resume cross-reference (text paste, client-side only) → rate gaps only → round context (days + round type + difficulty) → previous round feedback (optional, re-weights plan). All client-side. No backend required.
+
+Gate: do not build until Batch 1 confirms real Defense Strategy usage from V4.27.0 flow AND Layer 4A (micro-sequence per skill) is shipped.
+
+**Files:** `IDEAS.md`, `CHANGELOG.md`, `CLAUDE.md`
+
+---
+
 ## [4.32.7] — 2026-05-29 [MD-only, no code]
 
 ### Logged — Deep Dives IA overhaul + Frameworks/Deep Dives label bugs

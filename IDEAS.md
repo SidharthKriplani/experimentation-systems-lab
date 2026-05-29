@@ -95,6 +95,54 @@ At the end of each day card, surface one articulation prompt per top-gap skill (
 
 ---
 
+### Defense Strategy V2 — Resume-Aware, Round-Typed, Cost-Weighted Prep Plan
+
+*Gate: do not build until Batch 1 confirms real Defense Strategy usage from V4.27.0 flow. This is a ground-up rethink of the input layer, not a layer on top of current flow.*
+
+**The core problem with current flow:** Asking users to self-rate every skill the JD mentions is noisy. People self-rate inaccurately, and you\'re wasting their attention on skills their resume already evidences. The result is a plan padded with non-gaps.
+
+**The insight:** Cross-reference resume against JD first. What the resume covers = already proven, skip the self-rating. What the JD requires but the resume doesn\'t cover = genuine gaps. Rate only those. Sharper signal, less user friction, better plan.
+
+**Proposed 5-step input flow:**
+
+**Step 1 — JD input (already exists)**
+User pastes the job description. System extracts required skills, weighted by frequency and emphasis in the JD (existing logic).
+
+**Step 2 — Resume input (new)**
+User pastes resume text or LinkedIn summary (text paste only — MVP; no PDF upload until backend exists, mammoth.js DOCX is option B). System cross-references resume against JD-extracted skills. Skills the resume credibly covers are removed from the gap list. Only genuine gaps surface for Step 3.
+*Implementation note: text paste framing = "paste your resume or LinkedIn summary" — low friction. PDF parsing in-browser is unreliable without a backend. Do not promise file upload.*
+
+**Step 3 — Self-rate gaps only (upgrade from current)**
+Instead of rating all JD skills, user rates only the skills identified as gaps in Step 2. Fewer questions, higher accuracy. Self-rating options remain: Strong / Okay / Weak.
+
+**Step 4 — Round context (new)**
+Three inputs on one screen:
+- Days available: Quick (1 day) / Short (3 days) / Standard (7 days) / Full (14 days)
+- Round type: Technical (routes to Stats/RCA/Metrics/Code) / Product Sense (routes to Design/Prioritization/Estimation) / Behavioral (routes to Behavioral room + articulation prompts) / General / Final (covers all)
+- Difficulty: Junior / Mid / Senior (weights depth and case selection within each room)
+
+*Round type must map to PAL\'s actual content, not generic labels. Technical = Stats+RCA+Metrics+Code. Product Sense = Design+Prioritization+Estimation. Behavioral = Behavioral room. Final = weighted mix of all based on gap severity.*
+
+**Step 5 — Previous round feedback (new, optional)**
+If the user has already completed earlier rounds in this interview loop: free-text field per completed round type + optional structured tag (Passed / Struggled / Did not go well). This input re-weights the plan — e.g. "I already passed the HM screen but the technical is next" tells the system to deprioritize behavioral entirely and tighten the plan around the technical gap. High personalization signal, low implementation cost (it\'s just an additional weight modifier on the existing scoring logic).
+
+**Output — cost-weighted day plan:**
+Same card-per-day format as current, but now the plan:
+- Skips skills the resume already covers (no padding)
+- Weights days by gap severity × round type × days available
+- If behavioral round: includes one articulation prompt per day (Layer 6, pull forward)
+- If previous round feedback signals a specific failure area: that area gets a dedicated recovery day at the start of the plan
+
+**What this is NOT:** A backend product. All logic runs client-side on the JD text, resume text, and user inputs. No API calls, no storage beyond localStorage. The resume is never sent anywhere — it\'s parsed in-browser for gap analysis only.
+
+**Effort:** High. This is a full rebuild of the Defense Strategy input flow — new components for resume paste + gap-detection logic, round type routing, previous round feedback field, and updated plan generation scoring. Estimate 2–3 sessions.
+
+**Gate check before building:**
+- PostHog confirms Defense Strategy has real Batch 1 usage (not just opens)
+- Current Layer 4A (micro-sequence per skill) is already shipped — V2 builds on that output format, not a separate plan format
+
+---
+
 ### Deep Dives (BlogBrowser) — IA + UX overhaul
 
 **Gate: do not build until ≥6 posts per major category have full content.** Currently 81 posts exist, 12 with full content, ~69 stubs. Any UI redesign that exposes posts before content is real will surface empty stubs — worse experience than the current flat list.
