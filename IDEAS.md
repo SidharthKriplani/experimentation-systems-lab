@@ -50,6 +50,7 @@ _No new features until PostHog baseline is established._
 - ~~**Sign-in button in mobile topbar** (audit #73)~~ — ✅ shipped V4.25.0 (sign-in button + avatar added to mobile-topbar right slot)
 
 ### Visual Polish
+- **Interview Simulator layout overhaul (audit #82)** — current config screen (role cards, session length/mode pills) reads like a toy UI, not a serious drill tool. Needs full redesign: remove emojis from role cards, tighten spacing, increase visual gravity, replace hardcoded px values with CSS variables throughout. Do in same pass as audit #80 emoji removal.
 - **Emoji removal — full UI pass (audit #80)** — emojis in room headers, icon boxes, locked states, and nav give a childish, unserious feeling inconsistent with the senior-IC positioning. Replace all UI-chrome emojis with Icon component SVGs or typographic symbols. Scope: all browser header icon boxes, foundation page headers, paywall lock states, tool page headers. Do not touch emojis inside case/article content text (author-voice). Medium effort — systematic search-and-replace across ~20 files.
 - **Room header icon consistency — full pass (audit #79)** — icon treatment is inconsistent across room browsers. Growth Analytics uses bare "↗" character; A/B Foundations uses 🧪 in the h1; Stats/Metrics/RCA/Design rooms have no icon at all; others have the 36×36 colored box pattern. Standardize to the box pattern (36×36, var(--X-bg) fill, var(--X-border) border, Icon component inside) across all room browsers and foundation pages. Should be done in the same pass as audit #80.
 
@@ -91,6 +92,26 @@ As the user completes PAL rooms, gap scores re-compute from actual progress. Pla
 
 **Layer 6 — Verbal simulation prompt at day end (low effort)**
 At the end of each day card, surface one articulation prompt per top-gap skill ("Explain in 90 seconds how you would diagnose a 15% GMV drop"). Self-score checkbox: Couldn\'t do it / Got the structure / Nailed it. Score feeds back into gap weight for the next session. Closes the read-practice-articulate loop.
+
+---
+
+### Deep Dives (BlogBrowser) — IA + UX overhaul
+
+**Gate: do not build until ≥6 posts per major category have full content.** Currently 81 posts exist, 12 with full content, ~69 stubs. Any UI redesign that exposes posts before content is real will surface empty stubs — worse experience than the current flat list.
+
+**Problem:** 81 posts as an endless scroll is a content graveyard. Users open it, see the wall, close it. Most content is stubs. The current layout does not communicate what Deep Dives is or how to navigate it.
+
+**Proposed IA (once content is real):**
+
+*Default state — Series view:* Posts are grouped into named series (e.g. "Metric Foundations," "Experimentation Essentials," "RCA Masterclass"). User lands on series cards, not individual posts. Tags sit above the series grid for filtering.
+
+*Tag-selected state:* Selecting a tag collapses the series view and surfaces individual posts matching that tag, with filter/sort options (newest, most relevant, room-matched). A "Clear filter" returns to series view.
+
+*Personalized state (requires localStorage activity data):* If the user has meaningful room progress, the default view shifts from series to three labelled sections — "Revise" (concepts from rooms they\'ve attempted but scored low), "Learn" (concepts adjacent to rooms they haven\'t started), "What\'s next" (natural progression from current progress). Tags still show above and override the personalized view when selected. This is achievable because PAL already stores per-room completion in localStorage — no new data infrastructure needed.
+
+*Pagination:* Never show more than 20 posts at once in any view. "Show more" button below, not infinite scroll.
+
+**Effort:** Medium-high. Content taxonomy work (naming series, tagging posts) is the prerequisite and is non-trivial — probably a full session of data work before any UI is built. The personalized sections are the highest-value piece and are achievable in ~60–80 lines once content taxonomy is solid.
 
 ---
 

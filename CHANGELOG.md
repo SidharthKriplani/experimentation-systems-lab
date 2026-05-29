@@ -4,6 +4,20 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.32.7] — 2026-05-29 [MD-only, no code]
+
+### Logged — Deep Dives IA overhaul + Frameworks/Deep Dives label bugs
+
+Product design session. No code shipped.
+
+- **Audit #83** — Frameworks page shows "framework" as label; Deep Dives page shows "concepts and frameworks" instead of "deep dives." Copy fix deferred.
+- **Audit #84** — Deep Dives content + IA audit: 81 posts, 12 with full content, ~69 stubs. Endless scroll with no grouping, series, or pagination. Full redesign proposed (series-first default, tag filtering, paginated posts, personalized "Revise / Learn / What\'s next" sections from localStorage activity data) — logged as Tier 2 IDEAS, gated on ≥6 full-content posts per category before any UI work starts.
+- **Audit #82** — Interview Simulator layout overhaul logged (toy-feeling config screen, emojis, hardcoded values). Deferred.
+
+**Files:** `AUDITS.md`, `IDEAS.md`, `CHANGELOG.md`
+
+---
+
 ## [4.32.6] — 2026-05-29
 
 ### Fix — Onboarding modal audience copy

@@ -41,6 +41,61 @@ Start here when running an audit. Add rows as new types emerge.
 
 ## Part XVI — V4.30–V4.32 Session Audits
 
+### 84. ⚠️ Content + IA Audit — Deep Dives (BlogBrowser) Content State + Navigation Design
+**Version:** Logged V4.32.6, fix deferred
+**Type:** Content Integrity + Navigation & Discoverability + Creativity / Product
+
+**Content state:** 81 posts in BlogBrowser.jsx. 12 have full content. ~69 are stubs. The current flat-list layout exposes this — stubs make the room feel incomplete.
+
+**Navigation problem:** 81 posts presented as an endless scroll with no grouping, series, or filtering. Users cannot identify what to read or where to start. No pagination — all posts load at once.
+
+**Copy problem (overlaps audit #83):** Page labels say "concepts and frameworks" — does not match the room identity ("Deep Dives").
+
+**Proposed fix (Tier 2 IDEAS — gated on content):**
+- Series-first default view, tag filtering above, paginated posts (max 20 at a time) on tag select
+- Personalized "Revise / Learn / What\'s next" sections driven by localStorage room progress
+- Full taxonomy pass: name series, assign tags to all 81 posts
+- Content fill: bring remaining stubs to full content before redesigning the shell
+
+**Gate:** ≥6 posts per major category at full content before any UI redesign ships.
+
+---
+
+### 83. ⚠️ Copy Audit — Frameworks + Deep Dives Page Labels Wrong
+**Version:** Logged V4.32.6, fix deferred
+**Type:** Content Integrity + UX / Human Elements
+
+Page labels are self-referentially wrong or mismatched:
+- Frameworks (PlaybookBrowser) — shows "framework" as a section/content label; should not be redundant with the page title
+- Deep Dives (BlogBrowser) — shows "concepts and frameworks" as its content descriptor; should say "deep dives" to match what the room actually is
+
+Small fix — locate the subtitle/label text in PlaybookBrowser.jsx and BlogBrowser.jsx and correct the copy to match page identity.
+
+**Files to fix:** `src/pages/PlaybookBrowser.jsx`, `src/pages/BlogBrowser.jsx`
+
+---
+
+### 82. ⚠️ Visual Audit — Interview Simulator Layout Overhaul
+**Version:** Logged V4.32.6, fix deferred
+**Type:** Visual Consistency + Creativity / Product + UX / Human Elements
+
+User feedback: "the layout looks shit / childish, like some mock toy / needs a lot of variables for customization." The current simulator config screen (role cards, session length pills, mode pills) reads like a toy UI — not a serious interview prep tool at the level PAL is positioning for.
+
+**Scope (full design pass needed):**
+- Role selection cards — current emoji + card grid feels casual; needs a more considered treatment
+- Session length + mode pill selectors — generic, no visual hierarchy
+- Overall config page density and spacing — too much white space between unrelated groups
+- No sense of "this is a real drill" — needs visual gravity
+- Hardcoded layout values likely throughout; needs CSS variable coverage for spacing, radius, type scale
+
+**Fix approach (next session):**
+- Full layout redesign of InterviewSimulator.jsx config screen
+- Remove emojis from role cards (aligns with audit #80)
+- Tighten spacing, increase type weight, reduce toy-feel
+- Audit all hardcoded px values → CSS variables
+
+---
+
 ### 81. ✅ Copy Audit — Onboarding Modal Audience (V4.32.6)
 **Version:** V4.32.6
 **Type:** UX / Human Elements + First-Time User
@@ -52,7 +107,9 @@ Onboarding modal misidentified PAL's audience as "DS and PM." PAL serves data an
 - Button 1: "I'm a Data Scientist / Analyst" → "I'm a Data / Product Analyst"
 - Button 2: "I'm a Product Manager" → "I'm a PM / TPM / Product Lead"
 
-**File:** `src/pages/Home.jsx` — resolved in V4.32.6
+Same "Data Scientist" / "Product Manager" labels also found in the Interview Simulator role cards and debrief roleLabel variable — fixed in same release.
+
+**Files:** `src/pages/Home.jsx`, `src/pages/InterviewSimulator.jsx` — resolved in V4.32.6
 
 ---
 
