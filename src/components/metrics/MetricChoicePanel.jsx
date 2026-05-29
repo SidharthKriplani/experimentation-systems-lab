@@ -1,6 +1,9 @@
 // Single field panel — shows label, prompt, radio options, and post-submit rationale
 
+import { useState } from 'react';
+
 export function MetricChoicePanel({ field, selectedId, onSelect, submitted }) {
+  const [hoveredId, setHoveredId] = useState(null);
   return (
     <div style={{
       background: 'var(--surface)',
@@ -26,8 +29,9 @@ export function MetricChoicePanel({ field, selectedId, onSelect, submitted }) {
         {field.options.map(opt => {
           const isSelected = selectedId === opt.id;
 
-          let borderColor = isSelected ? 'var(--teal-border)' : 'var(--border)';
-          let bg = isSelected ? 'var(--teal-bg)' : 'var(--surface-2)';
+          const isHovered = !submitted && !isSelected && hoveredId === opt.id;
+          let borderColor = isSelected ? 'var(--teal-border)' : isHovered ? 'var(--teal-border)' : 'var(--border)';
+          let bg = isSelected ? 'var(--teal-bg)' : isHovered ? 'var(--teal-bg)' : 'var(--surface-2)';
           let textColor = isSelected ? 'var(--teal)' : 'var(--text-secondary)';
           let radioColor = isSelected ? 'var(--teal)' : 'var(--border)';
 
@@ -57,18 +61,8 @@ export function MetricChoicePanel({ field, selectedId, onSelect, submitted }) {
                 textAlign: 'left', width: '100%',
                 transition: 'all 0.1s',
               }}
-              onMouseEnter={e => {
-                if (!submitted && !isSelected) {
-                  e.currentTarget.style.borderColor = 'var(--teal-border)';
-                  e.currentTarget.style.background = 'var(--teal-bg)';
-                }
-              }}
-              onMouseLeave={e => {
-                if (!submitted && !isSelected) {
-                  e.currentTarget.style.borderColor = 'var(--border)';
-                  e.currentTarget.style.background = 'var(--surface-2)';
-                }
-              }}
+              onMouseEnter={() => { if (!submitted && !isSelected) setHoveredId(opt.id); }}
+              onMouseLeave={() => setHoveredId(null)}
             >
               {/* Radio dot */}
               <div style={{

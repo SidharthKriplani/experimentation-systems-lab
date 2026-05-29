@@ -162,7 +162,7 @@ export function Module25_IV({ module, onNext }) {
                   <span style={{ color: 'var(--text-secondary)' }}>
                     {isCorrect
                       ? cond.testNote
-                      : `The correct answer: "${cond.options.find(o => o.correct).label}". ${cond.testNote}`}
+                      : `The correct answer: "${cond.options.find(o => o.correct)?.label ?? '—'}". ${cond.testNote}`}
                   </span>
                 </div>
               )}

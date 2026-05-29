@@ -39,6 +39,72 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XVIII — V4.33.6 Deep Bug Audit
+
+### 100. ⚠️ Build Audit — Imperative DOM Mutations (cosmetic hover, lower risk)
+**Version:** Logged V4.33.6, fix deferred
+**Type:** BUILD + Visual Consistency + Mobile
+
+Full codebase scan found 200+ `e.currentTarget.style.X` imperative DOM mutations across 60+ files. The critical subset (choice option buttons) was fixed in V4.33.5–V4.33.6. The remaining lower-risk mutations are cosmetic hover effects on navigation buttons, debrief action buttons, and browser card hover lifts.
+
+**Remaining lower-risk patterns (fix in a dedicated pass):**
+- `opacity` toggle on debrief/navigation buttons (MetricDebriefPanel, CaseDebriefPanel, RCADebriefPanel, DesignDebriefPanel, BIRunner, GrowthAnalyticsRunner, etc.) — stuck opacity at 0.88 instead of 1.0. Barely noticeable, does not affect logic.
+- `borderColor`/`boxShadow`/`transform` on browser case cards (StatsBrowser, MetricsBrowser, RCABrowser, BIBrowser, etc.) — stuck hover lift on mobile. Cards look highlighted but are still tappable.
+- `onFocus`/`onBlur` for textarea/input `borderColor` (InstrumentationRunner, BIRunner, SpotTheFlawRunner, GrowthAnalyticsRunner) — SAFE: focus/blur is reliable, not a mobile touch issue.
+- `color` toggle on icon/utility buttons (ChallengesRunner, CodeRunner, RCARunner, StatsFoundationsRunner) — stuck color is cosmetic.
+
+**Fix approach:** Systematic pass — replace all remaining imperative hover mutations with React state (`hoveredId`) or CSS `:hover` class via a `<style>` tag. Low urgency — none of these affect user data, selection state, or navigation.
+
+**Files:** All files listed in the V4.33.6 audit scan output. Full list available via `grep -rn "currentTarget.style" src/`.
+
+---
+
+### 99. ⚠️ Build Audit — Missing `key` props on `.map()` JSX
+**Version:** Logged V4.33.6, fix deferred
+**Type:** BUILD + Framework / Technical
+
+Scan found ~30 `.map()` calls rendering JSX without a `key` prop on the returned root element. React requires unique keys to reconcile lists efficiently. Missing keys cause React warnings and can cause incorrect element reuse on re-render (wrong component instance getting updated data).
+
+**Highest-impact missing keys (stateful or frequently re-rendered):**
+- `MetricChoicePanel.jsx:26` — `field.options.map(opt => {` — NO key on the returned `<button>` (confirmed from scan; `key={opt.id}` exists elsewhere but verify)
+- `MetricDebriefPanel.jsx:33` — `smd.metricTree.map((node, i) => {` — no key
+- `MetricDebriefPanel.jsx:105,108` — linked scenario chip maps — no key
+- `RCAFoundationsRunner.jsx:259,439,630` — DECOMPS, FACTORS, STEPS maps — no key on returned JSX roots
+- `ChallengesRunner.jsx:162,205,419,509,612` — multiple maps in a heavily stateful runner — no keys
+
+**Fix approach:** Read each map, confirm the returned JSX root element, add `key={uniqueId}` or `key={i}` as appropriate. `key={i}` is acceptable for static lists that never reorder; use a stable ID otherwise.
+
+---
+
+### 98. ✅ Build Audit — `addEventListener` without `removeEventListener`
+**Version:** Verified V4.33.6
+**Type:** BUILD + Framework / Technical
+
+Full scan found no files where `addEventListener` count exceeds `removeEventListener` count. All event listeners are correctly paired with cleanup. No memory leak risk from this pattern.
+
+---
+
+### 97. ✅ Build Audit — Deep bug sweep (V4.33.6 tester-triggered)
+**Version:** V4.33.6
+**Type:** BUILD + Mobile + Framework / Technical
+
+Full automated scan triggered by real Batch 1 bug report (MCQ Trainer hover state stuck on mobile). Scan covered: imperative DOM mutations, addEventListener leaks, JSON.parse try/catch coverage, .find() null derefs, setInterval cleanup, missing key props, stale useCallback deps.
+
+**Findings and dispositions:**
+
+| Finding | Status | Action |
+|---|---|---|
+| Imperative DOM mutations on choice option buttons (MetricChoicePanel, CaseStepPanel, RCAStepPanel) | ✅ Fixed V4.33.6 | `hoveredId` state pattern, same as Trainer fix |
+| `Module25_IV.jsx` — `.find(o => o.correct).label` null deref | ✅ Fixed V4.33.6 | Optional chaining + nullish fallback |
+| Imperative mutations on cosmetic hover buttons (opacity, borderColor on nav/debrief) | ⚠️ Logged #100 | Low risk, deferred |
+| Missing key props on ~30 map() calls | ⚠️ Logged #99 | React warnings, deferred |
+| addEventListener/removeEventListener pairing | ✅ Passed | All paired correctly |
+| JSON.parse try/catch coverage | ✅ Passed | All JSON.parse in runners covered |
+| setInterval/clearInterval pairing | ✅ Passed | All timers cleaned up |
+| useCallback with empty deps [] | ✅ Acceptable | DesignRunner/StatsRunner use stable setter refs, no stale closure |
+
+---
+
 ## Part XVII — V4.33.4 Session Audits
 
 ### 96. ⚠️ Content Audit — Foundation Module Depth (RCA, Metrics, Exp)

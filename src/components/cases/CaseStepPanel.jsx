@@ -16,7 +16,10 @@ const LEVEL_CONFIG = {
   wrong:   { color: 'var(--red)',    bg: 'var(--red-bg)',     border: 'var(--red-border)',    label: 'Needs work' },
 };
 
+import { useState } from 'react';
+
 export function CaseStepPanel({ phase, selectedId, onSelect, submitted, stepNumber, totalSteps }) {
+  const [hoveredId, setHoveredId] = useState(null);
   const phaseLabel = PHASE_LABELS[phase.id] || phase.label || phase.id;
   const chosenOption = submitted && selectedId
     ? phase.options.find(o => o.id === selectedId)
@@ -79,6 +82,7 @@ export function CaseStepPanel({ phase, selectedId, onSelect, submitted, stepNumb
           let bgColor = 'var(--surface)';
           let labelColor = 'var(--text-secondary)';
 
+          const isHovered = !submitted && !isSelected && hoveredId === option.id;
           if (submitted && isSelected && levelCfg) {
             borderColor = levelCfg.border;
             bgColor = levelCfg.bg;
@@ -87,6 +91,9 @@ export function CaseStepPanel({ phase, selectedId, onSelect, submitted, stepNumb
             borderColor = 'var(--purple-border)';
             bgColor = 'var(--purple-bg)';
             labelColor = 'var(--text)';
+          } else if (isHovered) {
+            borderColor = 'var(--purple-border)';
+            bgColor = 'var(--purple-bg)';
           }
 
           return (
@@ -101,18 +108,8 @@ export function CaseStepPanel({ phase, selectedId, onSelect, submitted, stepNumb
                 cursor: submitted ? 'default' : 'pointer',
                 transition: 'all 0.1s',
               }}
-              onMouseEnter={e => {
-                if (!submitted && !isSelected) {
-                  e.currentTarget.style.borderColor = 'var(--purple-border)';
-                  e.currentTarget.style.background = 'var(--purple-bg)';
-                }
-              }}
-              onMouseLeave={e => {
-                if (!submitted && !isSelected) {
-                  e.currentTarget.style.borderColor = 'var(--border)';
-                  e.currentTarget.style.background = 'var(--surface)';
-                }
-              }}
+              onMouseEnter={() => { if (!submitted && !isSelected) setHoveredId(option.id); }}
+              onMouseLeave={() => setHoveredId(null)}
             >
               {/* Option label row */}
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem' }}>

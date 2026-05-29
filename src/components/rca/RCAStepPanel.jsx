@@ -4,7 +4,10 @@ const LEVEL_STYLE = {
   wrong:   { border: 'var(--red)',    bg: 'var(--red-bg)',    label: 'Incorrect' },
 };
 
+import { useState } from 'react';
+
 export function RCAStepPanel({ step, selectedId, onSelect, submitted, stepNumber, totalSteps }) {
+  const [hoveredId, setHoveredId] = useState(null);
   const selectedOption = submitted && selectedId
     ? step.options.find(o => o.id === selectedId)
     : null;
@@ -53,7 +56,9 @@ export function RCAStepPanel({ step, selectedId, onSelect, submitted, stepNumber
                   ? `2px solid ${optLevelStyle.border}`
                   : isSelected
                     ? '2px solid var(--accent)'
-                    : '1.5px solid var(--border)',
+                    : hoveredId === opt.id && !submitted
+                      ? '1.5px solid var(--accent-border)'
+                      : '1.5px solid var(--border)',
                 background: isSubmittedChosen
                   ? optLevelStyle.bg
                   : isSelected
@@ -67,16 +72,8 @@ export function RCAStepPanel({ step, selectedId, onSelect, submitted, stepNumber
                 flexDirection: 'column',
                 gap: '0.35rem',
               }}
-              onMouseEnter={e => {
-                if (!submitted && !isSelected) {
-                  e.currentTarget.style.borderColor = 'var(--accent-border)';
-                }
-              }}
-              onMouseLeave={e => {
-                if (!submitted && !isSelected) {
-                  e.currentTarget.style.borderColor = 'var(--border)';
-                }
-              }}
+              onMouseEnter={() => { if (!submitted && !isSelected) setHoveredId(opt.id); }}
+              onMouseLeave={() => setHoveredId(null)}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
                 {/* Radio indicator */}

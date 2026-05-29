@@ -4,6 +4,38 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.33.6] — 2026-05-29
+
+### Deep bug sweep — imperative DOM mutation pattern + null deref
+
+Full automated codebase scan triggered by Batch 1 tester report (MCQ Trainer hover stuck on mobile). Identified and fixed all high-risk instances of the same pattern across the codebase.
+
+**Fixed — MetricChoicePanel.jsx (Metrics Room choice options):**
+Same class of bug as Trainer.jsx. Option buttons used `onMouseEnter`/`onMouseLeave` to imperatively set `background` and `borderColor` on choice buttons. On mobile, a touch on "Next case" could trigger `mouseenter` on the new case's option buttons, making unselected options appear selected (teal background/border stuck). Fixed: added `hoveredId` React state, removed imperative DOM mutations, hover computed in style object alongside all other state-driven styles.
+
+**Fixed — CaseStepPanel.jsx (Cases Room phase options):**
+Same pattern. `background` and `borderColor` set imperatively on phase option buttons. Unselected options could appear selected (purple background stuck) on mobile navigation. Fixed: `hoveredId` state, imperative handlers replaced.
+
+**Fixed — RCAStepPanel.jsx (RCA Room step options):**
+Same pattern, `borderColor` only. Unselected options could appear highlighted (accent border stuck) on mobile. Fixed: `hoveredId` state, imperative handler replaced.
+
+**Fixed — Module25_IV.jsx (Stats Foundations, IV module):**
+Direct property access `.find(o => o.correct).label` — if no option has `correct: true` in the data, this throws a TypeError crashing the module. Fixed: `.find(o => o.correct)?.label ?? '—'` with optional chaining and nullish fallback.
+
+**Scanned but passed (no fix needed):**
+- addEventListener/removeEventListener — all correctly paired
+- JSON.parse in all runners — all covered by try/catch
+- setInterval/clearInterval — all timers have cleanup
+- useCallback with [] deps — stable setter refs, no stale closure issue
+
+**Logged as deferred audits:**
+- #99 — Missing key props on ~30 map() calls — React warnings, no crash risk
+- #100 — Remaining cosmetic imperative hover mutations (opacity, card border lifts) — low risk, own pass
+
+**Files:** `src/components/metrics/MetricChoicePanel.jsx`, `src/components/cases/CaseStepPanel.jsx`, `src/components/rca/RCAStepPanel.jsx`, `src/components/statsFoundations/modules/Module25_IV.jsx`, `AUDITS.md`, `CHANGELOG.md`, `CLAUDE.md`
+
+---
+
 ## [4.33.4] — 2026-05-29 [MD-only]
 
 ### Audit — Foundation module UX issues (#94, #95, #96)
