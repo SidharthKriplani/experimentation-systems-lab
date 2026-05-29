@@ -1911,8 +1911,7 @@ export function BlogBrowser({ onNavigate }) {
           Concepts & Frameworks
         </h1>
         <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: '580px', margin: '0 0 0.9rem' }}>
-          Read the framework. Then test your judgment in the practice rooms.
-          Every article connects directly to a room — so you can go from concept to decision in one session.
+          Interviewers test concepts indirectly — they give you a scenario and watch whether the right mental model surfaces on its own. These deep dives are written to build that instinct: each one targets a specific pattern, shows where candidates get it wrong, and links directly to the practice cases where it shows up live. Read, then practice — the sequence matters.
         </p>
 
         {/* Stats row */}

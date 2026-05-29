@@ -4799,8 +4799,8 @@ export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
           Frameworks
         </h1>
         <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0 0 1rem', lineHeight: 1.5 }}>
-          Quick-reference for every pattern that comes up in interviews.
-          {' '}<span style={{ color: 'var(--green)', fontWeight: 600 }}>{livePosts.length} live</span>
+          Knowing the name of a framework and knowing when to reach for it under pressure are different skills. These articles target the specific mental models interviewers test, show where candidates typically get them wrong, and link directly to practice cases where each pattern shows up live.{' '}
+          <span style={{ color: 'var(--green)', fontWeight: 600 }}>{livePosts.length} live</span>
           {' '}· {playbookPosts.length - livePosts.length} coming soon.
         </p>
 

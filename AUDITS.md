@@ -41,6 +41,25 @@ Start here when running an audit. Add rows as new types emerge.
 
 ## Part XVI — V4.30–V4.32 Session Audits
 
+### 76. ✅ Copy Audit — Tool/Utility Page Descriptions (V4.32.3)
+**Version:** V4.32.3
+**Type:** UX / Human Elements + First-Time User
+
+Same cold-user audit applied to the 9 non-room pages (tools, learn, and utility pages). These pages describe *what the tool does* but not *why it matters at the interview moment*.
+
+**Findings:**
+- Stats Calc: "Paste your experiment results. Get statistical significance, SRM check, and a plain-language verdict." — mechanic inventory, no stakes
+- Trainer: "Configure your session" — pure mechanic, zero stakes framing
+- Bookmarks: "Jump back in whenever you're ready." — passive, no reason to return deliberately
+- Company Tracks: "Curated case sets by company and role." — feature description with no interview hook
+- PlaybookBrowser: "Quick-reference for every pattern that comes up in interviews." — generic
+
+**Resolution (V4.32.3):** All 9 rewrites follow the same pattern established in Audit #75 — name the real stakes, name what goes wrong without it, explain what the tool trains or enables.
+
+**Status:** ✅ Resolved
+
+---
+
 ### 75. ✅ Copy Audit — Room Description Clarity (V4.32.2)
 **Version:** V4.32.2
 **Type:** UX / Human Elements + First-Time User

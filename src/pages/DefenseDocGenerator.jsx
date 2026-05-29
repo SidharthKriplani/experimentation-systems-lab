@@ -416,7 +416,7 @@ export function DefenseDocGenerator({ onBack, onNavigate, unlocked }) {
           </div>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '0.4rem 0 0', maxWidth: 560, lineHeight: 1.6 }}>
-          Paste a job description, rate yourself on each skill it tests, and get a personalized PAL prep plan — with honest gap flagging for skills PAL does not cover.
+          Most candidates prep in the wrong order — practicing what feels comfortable instead of closing the gaps the job description is actually testing. Defense Strategy reads the JD, maps its skill demands against your self-rated gaps, and builds a prioritized prep plan so your final week is spent on what matters for this specific role.
         </p>
       </div>
 

@@ -115,10 +115,10 @@ function SetupScreen({ onStart }) {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
           <span style={{ fontSize: '1.5rem' }}>🎯</span>
-          <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700, color: 'var(--text)' }}>Trainer</h1>
+          <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700, color: 'var(--text)' }}>MCQ Quiz</h1>
         </div>
-        <p style={{ margin: 0, color: 'var(--green)', fontSize: '0.9rem', fontWeight: 500 }}>
-          Configure your session
+        <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.55 }}>
+          Concept fluency is the floor — you cannot build judgment on shaky definitions. This surfaces the distinctions that trip candidates at the wrong moment: p-value vs significance, precision vs recall, SRM vs power. Run it under timed conditions until the answers are automatic.
         </p>
       </div>
 

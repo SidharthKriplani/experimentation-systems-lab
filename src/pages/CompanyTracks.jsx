@@ -567,7 +567,7 @@ export function CompanyTracks({ onNavigate, onBack, unlocked }) {
                 lineHeight: 1.6,
                 maxWidth: '580px',
               }}>
-                Curated case sets by company and role — practice what matters for your target
+                Every company weights the loop differently. Meta DS screens lean heavily on experimentation; Airbnb PM loops are dense on product sense and estimation; Stripe analyst bars are SQL-first. Company Tracks curates the specific cases that matter for your target — by role and company — so your prep time goes toward what the actual interviewers are testing, not just whatever is easiest to find.
               </p>
             </div>
 

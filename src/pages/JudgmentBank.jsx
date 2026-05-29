@@ -481,7 +481,7 @@ export function JudgmentBank({ onNavigate }) {
           Judgment Bank
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '0.75rem' }}>
-          All 6 rooms in one view. Each case teaches one decision trap from real product analytics work.
+          The gap between analyst and senior is not knowledge — it is the quality of the call when conditions are ambiguous. The Judgment Bank puts all 6 rooms in one view, organized by decision trap, so you can work across domains deliberately: see the same mistake show up in stats, then in metrics, then in an RCA, until the pattern is automatic rather than effortful.
         </p>
         <div style={{
           background: 'var(--surface)', border: '1px solid var(--border)',

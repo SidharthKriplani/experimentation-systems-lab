@@ -217,7 +217,7 @@ export function ABTestInterpreter({ onBack }) {
         A/B Test Interpreter
       </h1>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '2rem', lineHeight: 1.6 }}>
-        Paste your experiment results. Get statistical significance, SRM check, and a plain-language verdict.
+        An experiment ends and the numbers land in front of you. The gap between a confident ship decision and a fumbled stakeholder conversation is whether you can read them correctly — p-value, lift, SRM, and confidence interval together, not in isolation. Enter your results and get a plain-language verdict with the reasoning behind it, so you practice interpretation, not just arithmetic.
       </p>
 
       {/* ── Form ── */}

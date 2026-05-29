@@ -134,7 +134,7 @@ export function BookmarksBrowser({ onNavigate, onBack }) {
           color: 'var(--text-muted)', fontSize: '0.95rem',
           margin: 0, maxWidth: '560px', lineHeight: 1.6,
         }}>
-          Cases you've saved across all rooms. Jump back in whenever you're ready.
+          The hardest cases reveal the most — and are the easiest to skip and forget. Bookmarks is where you save the ones that exposed a gap, so you can return with better preparation instead of moving on and hoping the topic does not come up. The pattern across your saved cases is a more honest map of your weak spots than any single session.
         </p>
       </div>
 

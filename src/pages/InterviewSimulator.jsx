@@ -306,7 +306,7 @@ function InterviewSimulatorInner({ onBack, onNavigate }) {
           Interview Simulator
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginBottom: '2.5rem', lineHeight: 1.6 }}>
-          Mock interview. No hints. Real cases. Debrief at the end.
+          Individual cases build skill. Interview pressure reveals the gaps they hide. The Simulator strings real cases into a timed loop across your track — no hints mid-session, no feedback until it is over — then debriefs the full session so you see your patterns, not just your individual answers. It is the closest thing to a real loop without a recruiter on the other end.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>

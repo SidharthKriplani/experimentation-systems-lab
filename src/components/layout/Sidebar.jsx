@@ -314,6 +314,16 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
         {/* ── Nav ── */}
         <nav style={{ flex: 1, overflowY: 'auto', padding: '0.1rem 0.5rem 0.75rem', scrollbarWidth: 'none' }}>
 
+          {/* TRACK — Progress at top, before foundations */}
+          {FLAT_GROUPS.filter(g => g.label === 'TRACK').map(group => (
+            <div key={group.label} style={{ marginBottom: '0.1rem' }}>
+              <SectionLabel label={group.label} />
+              {group.items.map(item => (
+                <NavItem key={item.id} id={item.id} />
+              ))}
+            </div>
+          ))}
+
           {/* FOUNDATIONS */}
           <SectionLabel label="FOUNDATIONS" />
           <NavItem id="stat-foundations" />
@@ -385,8 +395,8 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
             );
           })}
 
-          {/* FLAT GROUPS */}
-          {FLAT_GROUPS.map(group => (
+          {/* FLAT GROUPS (PRACTICE, LEARN, TOOLS — TRACK is rendered above Foundations) */}
+          {FLAT_GROUPS.filter(g => g.label !== 'TRACK').map(group => (
             <div key={group.label} style={{ marginBottom: '0.1rem' }}>
               <SectionLabel label={group.label} />
               {group.items.map(item => (

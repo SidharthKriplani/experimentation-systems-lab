@@ -4,6 +4,33 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.32.3] — 2026-05-29
+
+### UX — Sidebar reorder: Progress above Foundations
+
+Progress (TRACK section) moved to the top of the sidebar nav, above FOUNDATIONS and PRACTICE ROOMS. Motivation: Progress is personal — it tracks the user's journey — and belongs near the top where identity-oriented items live, not buried below all the content sections. The TRACK group (Progress + Pricing) is now rendered first in the nav; PRACTICE, LEARN, TOOLS follow after the accordion.
+
+**File:** `src/components/layout/Sidebar.jsx`
+
+### Copy — tool/utility page descriptions rewritten (stakes not mechanics)
+
+Same treatment as V4.32.2, applied to the 9 non-room pages. These pages had either generic one-liners or mechanic-focused descriptions with no stakes framing.
+
+**Pages rewritten:**
+- Stats Calc (ABTestInterpreter) — numbers land after the experiment; interpretation gap is where candidates fumble
+- Interview Simulator — individual cases hide pressure gaps; the Simulator reveals patterns the single-case format misses
+- MCQ Quiz (Trainer) — concept fluency is the floor; wrong distinctions at the wrong moment (p-value vs significance, SRM vs power)
+- Company Tracks — every company weights the loop differently; tracks the specific cases your target is actually testing
+- Defense Strategy — most candidates prep in the wrong order; JD-driven gap prioritization for the final week
+- Bookmarks — pattern across saved cases is an honest weak-spot map; return with better prep, not just good intentions
+- Deep Dives (BlogBrowser) — mental models that surface on their own vs recalled when prompted; read connects to practice
+- Frameworks (PlaybookBrowser) — knowing the name vs. knowing when to reach for it under pressure
+- Judgment Bank — analyst vs senior is not knowledge, it is the quality of the call; same traps across all 6 rooms
+
+**Files:** `src/pages/ABTestInterpreter.jsx`, `InterviewSimulator.jsx`, `Trainer.jsx`, `CompanyTracks.jsx`, `DefenseDocGenerator.jsx`, `BookmarksBrowser.jsx`, `BlogBrowser.jsx`, `PlaybookBrowser.jsx`, `JudgmentBank.jsx`
+
+---
+
 ## [4.32.2] — 2026-05-29
 
 ### Copy — all room descriptions rewritten (stakes not mechanics)
