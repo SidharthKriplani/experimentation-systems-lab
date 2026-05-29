@@ -21,7 +21,7 @@ The job is to build a good product, not to make every session feel productive.
 
 ## What this project is (5 lines)
 
-**Product Analytics Lab (PAL)** is a browser-based interview prep platform for product analysts and PMs. Users practice judgment calls — not recall — across 17 rooms covering stats, experimentation, RCA, metrics, SQL/Python, product design, prioritization, behavioral, estimation, analytics instrumentation, and A/B foundations. React + Vite SPA, localStorage + optional Supabase auth. Deployed on Vercel. Repo: `github.com/SidharthKriplani/experimentation-systems-lab`. Current version: V4.33.1.
+**Product Analytics Lab (PAL)** is a browser-based interview prep platform for product analysts and PMs. Users practice judgment calls — not recall — across 17 rooms covering stats, experimentation, RCA, metrics, SQL/Python, product design, prioritization, behavioral, estimation, analytics instrumentation, and A/B foundations. React + Vite SPA, localStorage + optional Supabase auth. Deployed on Vercel. Repo: `github.com/SidharthKriplani/experimentation-systems-lab`. Current version: V4.33.2.
 
 ---
 
@@ -170,6 +170,7 @@ Make a product + engineering call first. Not everything belongs. Ask: does this 
 | File | Purpose |
 |---|---|
 | `CLAUDE.md` | This file. Read every session. |
+| `NEXT.md` | Session queue — max 5 items, ordered. Read before IDEAS.md. Update at end of every session. |
 | `DECISIONS.md` | Prescriptive rulebook — architectural + product standing rules. Check before making any structural choice. |
 | `LINEAGE.md` / `CHANGELOG.md` | Build history. `CHANGELOG.md` is terse (version + bullets). Full narrative lineage is embedded in `CHANGELOG.md` as detailed entries. Covers V1.0 through V4.13.1. |
 | `IDEAS.md` | Tiered backlog — In Progress / Tier 1 / Tier 2 / Tier 3 / Retired. |

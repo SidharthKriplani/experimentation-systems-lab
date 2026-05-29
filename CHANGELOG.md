@@ -4,6 +4,18 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.33.2] — 2026-05-29 [MD-only]
+
+### Process — NEXT.md session queue introduced
+
+Added `NEXT.md` as a new spine file — a rolling session queue, max 5 items, updated at the end of every session. Replaces the "read IDEAS.md and figure it out" cold-start pattern. NEXT.md is read before IDEAS.md at session start; IDEAS.md Tier 1 is only consulted after NEXT.md is clear.
+
+Added NEXT.md to the spine files table in CLAUDE.md. Populated with carry-forwards from V4.33.1 session.
+
+**Files:** `NEXT.md` (created), `CLAUDE.md`, `CHANGELOG.md`
+
+---
+
 ## [4.33.1] — 2026-05-29
 
 ### Removed — Global footer strip

@@ -1,64 +1,57 @@
-# NEXT.md — Next build session
+# NEXT.md — Session Queue
 
-Read this at session start. Do only this. Update before closing.
+Read this at the start of every build session. Do only this. Update before closing.
 
-*Last updated: May 2026 (post V4.33.0)*
+**Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
----
-
-## Theme: Fix bugs. Establish analytics baseline. Then decide what to build.
-
-Feature building is paused (DECISIONS.md). The next session is not a feature sprint — it's a cleanup + analytics sprint. Nothing ships until PostHog baseline is confirmed.
+*Last updated: V4.33.1 (2026-05-29)*
 
 ---
 
-## Do this (in order)
+## Next session
 
-**1. PostHog autocapture PII risk check** `S effort` `CRITICAL`
-Verify `src/utils/analytics.js` PostHog init call includes `{ autocapture: false }`. If missing, one-line fix. Do not defer — autocapture with PII fields in DOM is a real liability.
-See: IDEAS.md → Bugs → "PostHog autocapture PII risk (audit #85)"
+**1. PostHog autocapture PII check (audit #85)** `S` `CRITICAL`
+Open `src/utils/analytics.js`. Find `posthog.init()`. Verify options include `{ autocapture: false }`. If missing, add it. One line. Potential live PII risk — do not skip.
 
-**2. Timer cleanup on navigation bug check** `S effort` `BUG`
-Verify TimerButton interval is cleared when `onBack` fires across all 5 runners (RCARunner, CaseRunner, BIRunner, etc.). Check for `clearInterval` in `useEffect` cleanup or `onBack` handler. If missing anywhere — ghost interval, state after unmount.
-See: IDEAS.md → Bugs → "Timer cleanup on navigation (audit #88)"
+**2. Frameworks + Deep Dives label copy fix (audit #83)** `S` `QUICK WIN`
+- `src/pages/PlaybookBrowser.jsx` — fix "framework" label (redundant with page title)
+- `src/pages/BlogBrowser.jsx` — fix "concepts and frameworks"; should say "deep dives"
 
-**3. Metrics Room — linked scenario chips not clickable** `S effort` `BUG`
-After revealing the senior metric design answer, linked scenario cards appear in the debrief but tapping them does nothing. Fix: wire `onNavigate` or `onOpen` on each chip.
-See: IDEAS.md → Bugs → "Metrics Room — linked scenarios not clickable"
+**3. Timer cleanup verify (audit #88)** `S` `BUG`
+Check `TimerButton` — verify `clearInterval` fires on unmount via `useEffect` cleanup or `onBack` handler across all 5 runners. Fix if missing.
 
-**4. Confirm PostHog is live in Vercel prod** `S effort` `BLOCKER`
-Check Vercel dashboard: is `VITE_POSTHOG_KEY` set? Open the live site, check network tab for posthog.com requests. If not firing — nothing else matters until it is. Without a WAU baseline, every feature decision is guesswork.
-See: DECISIONS.md → "Current priority (V4.25+)"
+**4. Metrics Room — linked scenario chips not clickable** `S` `BUG`
+Linked scenario cards in debrief tap to nothing. Wire `onNavigate` or `onOpen` on each chip.
+See: IDEAS.md → Bugs
 
-**5. Emoji removal pass — room headers + icon boxes** `M effort` `HIGH`
-Emojis in room headers, icon boxes, and locked states give an unserious feel inconsistent with senior-IC positioning. Replace with inline SVG or typographic symbols. Scope: all browser header icon boxes, foundation page headers, paywall lock states, tool headers. Do NOT touch emoji inside case/article content text.
-See: IDEAS.md → Visual Polish → "Emoji removal — full UI pass (audit #80)"
+**5. Visual pass — Simulator layout + emoji removal + icon consistency (audits #82, #80, #79)** `L` `OWN SESSION`
+All three are related. Do in one dedicated session: redesign Simulator config screen, remove all UI-chrome emojis, standardize room header icon boxes. Do not mix with items 1–4.
 
 ---
 
-## If time allows
+## Carry-forward from V4.33.1 session
 
-**Stat count consistency audit** `S effort`
-Grep all numeric claims ("150+ cases", "17 rooms", "V4.17") across src/, public/, CLAUDE.md and verify against actual data file counts. ~30 min pass.
-See: IDEAS.md → Bugs → "Stat count consistency audit (audit #89)"
+**Done today:**
+- Audience labels fixed in onboarding modal + Interview Simulator (V4.32.6)
+- Frameworks/Deep Dives/Simulator layout logged as audits #83, #82
+- 7 audits logged from sibling lab cross-review (#85–#91)
+- Defense Strategy V2 fully specced in IDEAS.md Tier 2
+- Deep Dives IA overhaul specced in IDEAS.md Tier 2
+- Sister labs footer added to Home page only (V4.33.0)
+- Global footer removed (V4.33.1)
+- NEXT.md created as session queue
+
+**Still open (in IDEAS.md):**
+- Stat count consistency audit (#89) — ~30 min, add to session if time allows
+- Empty state quality pass (#91) — deferred
+- PostHog live in Vercel prod — confirm `VITE_POSTHOG_KEY` is set in Vercel dashboard
 
 ---
 
-## Do NOT touch this session
+## Do not touch next session (unless explicitly decided)
 
-- Interview Simulator expansion — no PostHog data yet to justify
-- Defense Strategy V2 — gate: Batch 1 usage confirmed first
-- Deep Dives IA overhaul — gate: content taxonomy first
+- Defense Strategy V2 — gate: Batch 1 usage confirmed
+- Deep Dives IA overhaul — gate: content taxonomy + ≥6 full posts per category
 - New rooms / new cases — wrong session type
-- Stripe activation — separate focused sprint
-- Any new feature work — the pause is real, respect it
-
----
-
-## End of session checklist
-
-- [ ] Brace check all modified files
-- [ ] Commit with descriptive message
-- [ ] Update CLAUDE.md sprint log
-- [ ] Update this file — move done items out, add anything new
-- [ ] Push: `cd "/Users/ASUS/Documents/GitHub/experimentation-systems-lab" && git push origin main`
+- Stripe activation — own sprint
+- Learning paths — Tier 2, not yet
