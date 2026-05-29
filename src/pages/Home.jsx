@@ -759,7 +759,7 @@ export function Home({ onNavigate }) {
               Welcome to Product Analytics Lab
             </div>
             <div style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: 1.65 }}>
-              150+ practice cases for DS and PM interviews. Where should we start?
+              Practice cases for data analysts, product analysts, BAs, PMs, TPMs, and product leads. Where should we start?
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
               <button
@@ -767,7 +767,7 @@ export function Home({ onNavigate }) {
                 className="pal-btn-primary"
                 style={{ textAlign: 'left', padding: '0.7rem 1rem', fontSize: '0.9rem', borderRadius: 'var(--radius)' }}
               >
-                I'm a Data Scientist / Analyst →
+                I'm a Data / Product Analyst →
               </button>
               <button
                 onClick={() => { dismissOnboarding(); onNavigate('product-design'); }}
@@ -775,7 +775,7 @@ export function Home({ onNavigate }) {
                 onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-raised)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
               >
-                I'm a Product Manager →
+                I'm a PM / TPM / Product Lead →
               </button>
               <button
                 onClick={dismissOnboarding}

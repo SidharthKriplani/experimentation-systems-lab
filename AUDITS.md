@@ -41,6 +41,21 @@ Start here when running an audit. Add rows as new types emerge.
 
 ## Part XVI — V4.30–V4.32 Session Audits
 
+### 81. ✅ Copy Audit — Onboarding Modal Audience (V4.32.6)
+**Version:** V4.32.6
+**Type:** UX / Human Elements + First-Time User
+
+Onboarding modal misidentified PAL's audience as "DS and PM." PAL serves data analysts, business analysts, product analysts, PMs, TPMs, and product leads — not data scientists.
+
+**Fixes applied:**
+- Subtitle: "150+ practice cases for DS and PM interviews" → "Practice cases for data analysts, product analysts, BAs, PMs, TPMs, and product leads"
+- Button 1: "I'm a Data Scientist / Analyst" → "I'm a Data / Product Analyst"
+- Button 2: "I'm a Product Manager" → "I'm a PM / TPM / Product Lead"
+
+**File:** `src/pages/Home.jsx` — resolved in V4.32.6
+
+---
+
 ### 80. ⚠️ Visual Audit — Emoji Removal Across All Pages
 **Version:** V4.32.5
 **Type:** Visual Consistency + Creativity / Product

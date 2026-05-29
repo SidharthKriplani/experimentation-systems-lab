@@ -4,6 +4,21 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.32.6] — 2026-05-29
+
+### Fix — Onboarding modal audience copy
+
+The welcome modal incorrectly described PAL's audience as "DS and PM" and offered "I'm a Data Scientist / Analyst" as a role option. PAL serves data analysts, business analysts, product analysts, PMs, TPMs, and product leads — not data scientists.
+
+- Subtitle: "150+ practice cases for DS and PM interviews" → "Practice cases for data analysts, product analysts, BAs, PMs, TPMs, and product leads"
+- Button 1: "I'm a Data Scientist / Analyst" → "I'm a Data / Product Analyst"
+- Button 2: "I'm a Product Manager" → "I'm a PM / TPM / Product Lead"
+- Navigation targets unchanged (analyst → stat-foundations, PM → product-design)
+
+**File:** `src/pages/Home.jsx`
+
+---
+
 ## [4.32.5] — 2026-05-29
 
 ### Copy — Code Lab, Challenges, Frameworks descriptions rewritten
