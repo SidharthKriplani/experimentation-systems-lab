@@ -10,22 +10,29 @@ Read this at the start of every build session. Do only this. Update before closi
 
 ## Next session
 
-**1. PostHog autocapture PII check (audit #85)** `S` `CRITICAL`
-Open `src/utils/analytics.js`. Find `posthog.init()`. Verify options include `{ autocapture: false }`. If missing, add it. One line. Potential live PII risk — do not skip.
+**1. Frameworks + Deep Dives label copy fix (audit #83)** `S` `QUICK WIN`
+- `src/pages/PlaybookBrowser.jsx` — find and fix "framework" label (redundant with page title)
+- `src/pages/BlogBrowser.jsx` — find and fix "concepts and frameworks"; should say "deep dives"
 
-**2. Frameworks + Deep Dives label copy fix (audit #83)** `S` `QUICK WIN`
-- `src/pages/PlaybookBrowser.jsx` — fix "framework" label (redundant with page title)
-- `src/pages/BlogBrowser.jsx` — fix "concepts and frameworks"; should say "deep dives"
-
-**3. Timer cleanup verify (audit #88)** `S` `BUG`
-Check `TimerButton` — verify `clearInterval` fires on unmount via `useEffect` cleanup or `onBack` handler across all 5 runners. Fix if missing.
-
-**4. Metrics Room — linked scenario chips not clickable** `S` `BUG`
+**2. Metrics Room — linked scenario chips not clickable** `S` `BUG`
 Linked scenario cards in debrief tap to nothing. Wire `onNavigate` or `onOpen` on each chip.
 See: IDEAS.md → Bugs
 
-**5. Visual pass — Simulator layout + emoji removal + icon consistency (audits #82, #80, #79)** `L` `OWN SESSION`
-All three are related. Do in one dedicated session: redesign Simulator config screen, remove all UI-chrome emojis, standardize room header icon boxes. Do not mix with items 1–4.
+**3. Hardcoded color values — CSS variable pass (audit #92)** `M` `HIGH`
+40+ hardcoded `#fff`, `rgba(0,0,0,x)`, `#333` across RCAFoundationsRunner, AuthModal, Sidebar, LockOverlay, DesignDebriefPanel, MetricChoicePanel. Check `index.css` for existing variables first. Replace all violations. ~1 session.
+
+**4. Sitemap — add 8 missing top-level routes (audit #93)** `S` `MEDIUM`
+Add to `public/sitemap.xml`: home, progress, trainer, unlock, company-tracks, defense-doc, about, search. Runner sub-pages excluded. Quick edit.
+
+**5. Empty state quality pass (audit #91)** `S` `UX`
+Bookmarks, Progress (zero rooms), locked-room state, MCQ Trainer (no attempts). Each needs: acknowledge state + explain what belongs here + give one specific next-action CTA. Quick copy + JSX pass.
+
+---
+
+## Deferred to own session
+
+**Visual pass — Simulator layout + emoji removal + icon consistency (audits #82, #80, #79)**
+All three are related. Dedicated session only: redesign Simulator config screen, remove all UI-chrome emojis, standardize room header icon boxes. Do not mix with a normal bug/fix session.
 
 ---
 

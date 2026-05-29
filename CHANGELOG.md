@@ -4,6 +4,31 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.33.3] — 2026-05-29 [MD-only]
+
+### Audit — Full codebase health check (10 dimensions)
+
+Ran a systematic 10-dimension audit across the full codebase. No code shipped.
+
+**Passed (no action needed):**
+- ✅ PostHog autocapture (#85) — `autocapture: false` + PII sanitization already in `analytics.js`
+- ✅ Timer cleanup (#88) — `clearInterval` correctly in useEffect cleanup across all 5 runners
+- ✅ Stat count consistency (#89) — all numeric claims consistent across src/, public/, CLAUDE.md
+- ✅ Lazy loading — all 61 page/runner components correctly lazy-loaded
+- ✅ Dead imports — none found in App.jsx
+- ✅ Template literals in data files — none found
+- ✅ Single-quote consistency — data files correctly single-quoted throughout
+
+**New findings logged:**
+- ⚠️ #92 — 40+ hardcoded color values (`#fff`, `rgba(0,0,0,x)`, `#333`) should be CSS variables. Files: RCAFoundationsRunner, AuthModal, Sidebar, LockOverlay, DesignDebriefPanel, MetricChoicePanel.
+- ⚠️ #93 — Sitemap missing 8 top-level routes: home, progress, trainer, unlock, company-tracks, defense-doc, about, search. Runner sub-pages correctly excluded.
+
+**NEXT.md updated:** items #85/#88/#89 retired (passed), replaced with #92 (CSS vars), #93 (sitemap), #91 (empty states).
+
+**Files:** `AUDITS.md`, `IDEAS.md`, `NEXT.md`, `CHANGELOG.md`, `CLAUDE.md`
+
+---
+
 ## [4.33.2] — 2026-05-29 [MD-only]
 
 ### Process — NEXT.md session queue introduced

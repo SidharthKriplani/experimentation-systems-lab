@@ -59,11 +59,13 @@ _No new features until PostHog baseline is established._
 - **MCQ Trainer distractor quality (audit #87)** — some wrong options in `trainerMCQ.js` are too obviously eliminable. Each distractor should be correct in a different context, or adjacent-but-subtly-wrong. Full 40-question pass to rewrite weak distractors. One session.
 
 ### Bugs
-- **PostHog autocapture PII risk — check immediately (audit #85)** — verify `src/utils/analytics.js` PostHog init call includes `{ autocapture: false }`. If not present, add it. One-line fix. Do not defer past V4.33.
-- **Timer cleanup on navigation (audit #88)** — verify TimerButton interval is cleared when `onBack` fires across all 5 runners. Check for `clearInterval` in useEffect cleanup or onBack handler. Quick check, potential ghost-state bug if missing.
-- **Stat count consistency audit (audit #89)** — grep all numeric claims ("150+ cases", "17 rooms") across src/, public/, CLAUDE.md and verify against actual data file counts. ~30 min pass.
+- **Hardcoded color values — CSS variable pass (audit #92)** — 40+ hardcoded `#fff`, `rgba(0,0,0,x)`, `#333` across RCAFoundationsRunner, AuthModal, Sidebar, LockOverlay, DesignDebriefPanel, MetricChoicePanel. Replace with `var(--text-inverse)`, `var(--overlay)` etc. Check index.css first for existing variables before adding new ones. Medium effort — 1 session.
+- **Sitemap missing 8 top-level routes (audit #93)** — sitemap.xml has 26 routes, App.jsx registers 47+. Missing top-level pages: home, progress, trainer, unlock, company-tracks, defense-doc, about, search. Runner sub-pages correctly excluded. Add 8 URLs to `public/sitemap.xml`.
 - **Empty state quality pass (audit #91)** — Bookmarks, Progress (zero rooms), locked-room state, MCQ Trainer (no attempts). Each should acknowledge state, explain what belongs here, give a specific next action.
-- **Metrics Room — linked scenarios not clickable (Batch 0 feedback)** — after revealing the senior metric design answer, linked scenario cards appear in the debrief but tapping them does nothing. Users expect to navigate directly. Small fix, high friction when it fails.
+- **Metrics Room — linked scenarios not clickable (Batch 0 feedback)**
+- ~~**PostHog autocapture PII risk (audit #85)**~~ — ✅ verified V4.33.2. `analytics.js` already has `autocapture: false` + `capture_pageview: false` + PII sanitization. No fix needed.
+- ~~**Timer cleanup on navigation (audit #88)**~~ — ✅ verified V4.33.2. `clearInterval` correctly called in useEffect cleanup across all runners.
+- ~~**Stat count consistency audit (audit #89)**~~ — ✅ verified V4.33.2. All numeric claims consistent across src/, public/, CLAUDE.md. — after revealing the senior metric design answer, linked scenario cards appear in the debrief but tapping them does nothing. Users expect to navigate directly. Small fix, high friction when it fails.
 - ~~**`onResetAllProgress` missing 9 keys** (audit #62)~~ — ✅ fixed V4.6.1 (8 keys added, reset now covers all rooms)
 - ~~**`case_opened` missing from 4 open functions** (audit #61)~~ — ✅ fixed V4.6.1 (BI, STF, Take-Home, Instrumentation now tracked)
 - ~~**Sitemap missing 8 V4.x routes** (audit #63)~~ — ✅ fixed V4.6.1 (22 URLs, all rooms indexed)

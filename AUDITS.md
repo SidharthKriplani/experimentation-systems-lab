@@ -41,6 +41,49 @@ Start here when running an audit. Add rows as new types emerge.
 
 ## Part XVI — V4.30–V4.32 Session Audits
 
+### 93. ⚠️ SEO Audit — Sitemap Missing 21 Routes
+**Version:** Logged V4.33.2, fix deferred
+**Type:** SEO / Social
+
+Sitemap audit (V4.33.2 session) found sitemap.xml has 26 routes but App.jsx registers 47+ unique routes. 21 routes are missing.
+
+**Missing top-level pages (SEO-relevant, should be added):**
+`home`, `progress`, `trainer`, `unlock`, `company-tracks`, `defense-doc`, `about`, `search`
+
+**Missing runner/sub-pages (not SEO-relevant, correctly excluded):**
+behavioral-runner, bi-runner, cases-runner, challenges-runner, code-runner, design-runner, estimation-runner, exp-foundations-runner, growth-analytics-runner, instrumentation-runner, metrics-runner, metrics-foundations-runner, prioritization-runner, product-design-runner, rca-runner, stat-foundations-runner, stats-runner, stf-runner
+
+**Fix:** Add the 8 missing top-level pages to `public/sitemap.xml`. Exclude runner pages — they're not standalone SEO targets. Previous sitemap audit #63 fixed 8 URLs in V4.6.1 but didn't catch these.
+
+**File:** `public/sitemap.xml`
+
+---
+
+### 92. ⚠️ Visual Consistency Audit — Hardcoded Color Values (40+ violations)
+**Version:** Logged V4.33.2, fix deferred
+**Type:** Visual Consistency
+
+Full codebase audit (V4.33.2 session) found 40+ hardcoded color values in JSX files that should use CSS variables.
+
+**Violation summary:**
+- `#fff` / `#ffffff` — 30+ instances (should be `var(--text-inverse)` or `var(--surface)`)
+- `rgba(0,0,0,x)` — 5+ instances (should be `var(--overlay)` or equivalent)
+- `#333` — 1 instance in AuthModal.jsx (should be `var(--text)`)
+- `#4285F4` (Google blue) — 1 instance in AuthModal.jsx (acceptable as brand color, document as exception)
+- `rgba(99,102,241,0.4)` — 1 instance in Sidebar.jsx (should be accent variable)
+
+**Files with most violations:**
+- `src/components/rcaFoundations/RCAFoundationsRunner.jsx` — 10+ instances
+- `src/components/auth/AuthModal.jsx` — 7 instances
+- `src/components/layout/Sidebar.jsx` — 4 instances
+- `src/components/ui/LockOverlay.jsx` — 2 instances
+- `src/components/design/DesignDebriefPanel.jsx` — 2 instances
+- `src/components/metrics/MetricChoicePanel.jsx` — 1 instance
+
+**Fix:** Systematic grep-and-replace pass. First check `src/index.css` for existing variables that map to the hardcoded values, then replace. May need to add 1–2 new variables (`--overlay`, `--text-inverse`) if not already defined. Medium effort — ~1 session.
+
+---
+
 ### 91. ⚠️ UX Audit — Empty State Quality (Sibling lab signal)
 **Version:** Logged V4.32.9, fix deferred
 **Type:** UX / Human Elements
@@ -70,8 +113,8 @@ PAL\'s BlogBrowser.jsx has the same problem. Each post object has a `room` field
 
 ---
 
-### 89. ⚠️ Content Integrity Audit — Stat Count Consistency (Sibling lab signal)
-**Version:** Logged V4.32.9, fix deferred
+### 89. ✅ Content Integrity Audit — Stat Count Consistency (Sibling lab signal)
+**Version:** Logged V4.32.9, verified V4.33.2
 **Type:** Content Integrity
 
 GenAI Lab found three different case/post counts stated across index.html, Home.jsx, and IDEAS.md — all different, none updated after content adds.
@@ -82,8 +125,8 @@ PAL states case counts in multiple places: home welcome card, room browser heade
 
 ---
 
-### 88. ⚠️ Build Audit — Timer Cleanup on Navigation (Sibling lab signal)
-**Version:** Logged V4.32.9, check needed
+### 88. ✅ Build Audit — Timer Cleanup on Navigation (Sibling lab signal)
+**Version:** Logged V4.32.9, verified V4.33.2
 **Type:** BUILD + Framework / Technical
 
 ML Systems Lab found their timed session (CombinatorTab) continued running in the background after the user navigated away — interval was never cleared. PAL shipped the shared TimerButton component in V4.32.0 across 5 runners.
@@ -125,8 +168,8 @@ PAL\'s case debriefs almost certainly have the same gap. They explain what the r
 
 ---
 
-### 85. ⚠️ Analytics Audit — PostHog Autocapture PII Risk (Sibling lab signal — HIGH)
-**Version:** Logged V4.32.9, fix needed
+### 85. ✅ Analytics Audit — PostHog Autocapture PII Risk (Sibling lab signal — HIGH)
+**Version:** Logged V4.32.9, verified V4.33.2
 **Type:** Framework / Technical + SEO / Social
 
 ML Systems Lab found PostHog\'s default configuration has `autocapture: true` — PostHog automatically captures all clicks, form inputs, and text entered into input fields, including personally identifiable content (email addresses, job titles entered in Defense Strategy, resume text pasted in future).
