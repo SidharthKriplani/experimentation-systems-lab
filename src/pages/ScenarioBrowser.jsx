@@ -34,7 +34,7 @@ export function ScenarioBrowser({ allProgress, onSelect, unlocked, onUnlock, onO
   );
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
@@ -110,7 +110,7 @@ export function ScenarioBrowser({ allProgress, onSelect, unlocked, onUnlock, onO
         gridTemplateColumns: 'repeat(auto-fill, minmax(min(310px, 100%), 1fr))',
         gap: '0.875rem',
       }}>
-        {filteredScenarios.map(scenario => (
+        {filteredScenarios.map((scenario, index) => (
           <ScenarioCard
             key={scenario.id}
             scenario={scenario}
@@ -118,6 +118,8 @@ export function ScenarioBrowser({ allProgress, onSelect, unlocked, onUnlock, onO
             onClick={onSelect}
             unlocked={unlocked}
             isNextUnstarted={scenario.id === firstUnstartedId}
+            cardClassName="pal-card-enter pal-card-hover"
+            cardStyle={{ animationDelay: (Math.min(index * 28, 400)) + 'ms' }}
           />
         ))}
         {filteredScenarios.length === 0 && (

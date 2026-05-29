@@ -1897,7 +1897,7 @@ export function BlogBrowser({ onNavigate }) {
   }
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
@@ -1974,11 +1974,12 @@ export function BlogBrowser({ onNavigate }) {
               gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))',
               gap: '0.75rem',
             }}>
-              {posts.map(post => (
+              {posts.map((post, index) => (
                 <PostCard
                   key={post.id}
                   post={post}
                   cfg={cfg}
+                  index={index}
                   onClick={() => setSelectedPost(post)}
                 />
               ))}
@@ -1990,15 +1991,17 @@ export function BlogBrowser({ onNavigate }) {
   );
 }
 
-function PostCard({ post, cfg, onClick }) {
+function PostCard({ post, cfg, onClick, index }) {
   const hasContent = post.content && post.content.length > 0;
 
   return (
     <div
+      className="pal-card-enter pal-card-hover"
       onClick={onClick}
       style={{
+        animationDelay: String(Math.min((index || 0) * 28, 400)) + 'ms',
         background: 'var(--surface)',
-        border: `1.5px solid ${hasContent ? cfg.border : 'var(--border)'}`,
+        border: '1.5px solid ' + (hasContent ? cfg.border : 'var(--border)'),
         borderRadius: 'var(--radius)',
         padding: '1.1rem 1.2rem',
         display: 'flex', flexDirection: 'column', gap: '0.45rem',

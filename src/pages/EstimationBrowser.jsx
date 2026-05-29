@@ -98,7 +98,7 @@ export function EstimationBrowser({ onStart, unlocked }) {
   const firstUnstartedId = estimationProblems.find(p => !completedIds.has(p.id))?.id;
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
@@ -261,7 +261,7 @@ export function EstimationBrowser({ onStart, unlocked }) {
             </button>
           </div>
         )}
-        {filtered.map(problem => {
+        {filtered.map((problem, index) => {
           const prog = progress[problem.id];
           const isLocked = !problem.isFree && !unlocked;
           const dc = DIFFICULTY_COLOR[problem.difficulty] || {};
@@ -271,8 +271,10 @@ export function EstimationBrowser({ onStart, unlocked }) {
           return (
             <div
               key={problem.id}
+              className="pal-card-enter pal-card-hover"
               onClick={() => onStart(problem.id)}
               style={{
+                animationDelay: (Math.min(index * 28, 400)) + 'ms',
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
                 borderLeft: isNextUnstarted ? '3px solid var(--accent)' : ('3px solid ' + (dc.color || 'var(--border)')),

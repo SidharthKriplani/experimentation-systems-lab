@@ -1,7 +1,7 @@
 import { DifficultyBadge, IndustryBadge, ThemeBadge } from '../ui/Badge.jsx';
 import { getScoreLevel } from '../../utils/scoring.js';
 
-export function ScenarioCard({ scenario, progress, onClick, isNextUnstarted, unlocked }) {
+export function ScenarioCard({ scenario, progress, onClick, isNextUnstarted, unlocked, cardClassName, cardStyle }) {
   const isCompleted = progress && progress.attempts?.length > 0;
   const bestScore = progress?.bestScore;
   const scoreLevel = bestScore ? getScoreLevel(bestScore) : null;
@@ -9,8 +9,10 @@ export function ScenarioCard({ scenario, progress, onClick, isNextUnstarted, unl
 
   return (
     <div
+      className={cardClassName || ''}
       onClick={() => onClick(scenario.id)}
       style={{
+        ...cardStyle,
         background: 'var(--surface)',
         border: '1px solid var(--border)',
         borderLeft: isNextUnstarted ? '3px solid var(--accent)' : '1px solid var(--border)',

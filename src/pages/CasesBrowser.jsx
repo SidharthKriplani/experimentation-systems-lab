@@ -7,7 +7,7 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
   const firstUnstartedId = businessCases.find(bc => !completedIds.has(bc.id))?.id;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
@@ -61,12 +61,13 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
 
       {/* Case cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {businessCases.map(bc => {
+        {businessCases.map((bc, index) => {
           const progress = getCaseProgress(bc.id);
 
           return (
             <CaseCard
               key={bc.id}
+              index={index}
               businessCase={bc}
               progress={progress}
               isLocked={!bc.isFree && !unlocked}
@@ -82,12 +83,14 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
   );
 }
 
-function CaseCard({ businessCase: bc, progress, isLocked, onSelect, onUnlock, isNextUnstarted }) {
+function CaseCard({ businessCase: bc, index, progress, isLocked, onSelect, onUnlock, isNextUnstarted }) {
   const levelCfg = progress ? getLevelConfig(progress.level) : null;
 
   return (
     <div
+      className="pal-card-enter pal-card-hover"
       style={{
+        animationDelay: (Math.min(index * 28, 400)) + 'ms',
         border: '1.5px solid var(--border)',
         borderLeft: isNextUnstarted ? '3px solid var(--accent)' : '1.5px solid var(--border)',
         borderRadius: 'var(--radius)',

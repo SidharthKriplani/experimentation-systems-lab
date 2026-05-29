@@ -696,10 +696,13 @@ export default function App() {
 
         <main style={{ flex: 1 }}>
           <Suspense fallback={
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              Loading…
+            <div style={{ padding: '2rem 2rem 0' }}>
+              {[1,2,3].map(i => (
+                <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+              ))}
             </div>
           }>
+        <div key={page} className="pal-page-enter">
         {page === 'home' && (
           <Home onNavigate={navigate} onStartScenario={openScenario} />
         )}
@@ -926,7 +929,13 @@ export default function App() {
 
         {/* ── Search Page ── */}
         {page === 'search' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <SearchPage
               onNavigate={(targetPage, itemId) => {
                 if (itemId) {
@@ -956,12 +965,24 @@ export default function App() {
 
         {/* ── BI Room ── */}
         {page === 'bi' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <BIBrowser onSelectCase={openBICase} unlocked={unlocked} onOpenArticle={openPlaybookArticle} />
           </Suspense>
         )}
         {page === 'bi-runner' && activeBICaseId && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <BIRunner
               caseId={activeBICaseId}
               onBack={() => setPage('bi')}
@@ -973,12 +994,24 @@ export default function App() {
 
         {/* ── Spot the Flaw Room ── */}
         {page === 'spot-the-flaw' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <SpotTheFlawBrowser onSelectCase={openSTFCase} unlocked={unlocked} onNavigate={navigate} />
           </Suspense>
         )}
         {page === 'stf-runner' && activeSTFCaseId && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <SpotTheFlawRunner
               caseId={activeSTFCaseId}
               onBack={() => setPage('spot-the-flaw')}
@@ -990,12 +1023,24 @@ export default function App() {
 
         {/* ── Take-Home Room ── */}
         {page === 'take-home' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <TakehomeBrowser onSelectCase={openTakehomeCase} unlocked={unlocked} onOpenArticle={openPlaybookArticle} />
           </Suspense>
         )}
         {page === 'takehome-runner' && activeTakehomeCaseId && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <TakehomeRunner
               caseId={activeTakehomeCaseId}
               onBack={() => setPage('take-home')}
@@ -1007,12 +1052,24 @@ export default function App() {
 
         {/* ── Analytics Instrumentation Room ── */}
         {page === 'instrumentation' && (
-          <Suspense fallback={<div style={{ padding: '2rem', color: 'var(--text-muted)' }}>Loading...</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <InstrumentationBrowser onSelectCase={openInstrumentationCase} unlocked={unlocked} onOpenArticle={openPlaybookArticle} />
           </Suspense>
         )}
         {page === 'instrumentation-runner' && activeInstrumentationCaseId && (
-          <Suspense fallback={<div style={{ padding: '2rem', color: 'var(--text-muted)' }}>Loading...</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <InstrumentationRunner
               caseId={activeInstrumentationCaseId}
               onBack={() => navigate('instrumentation')}
@@ -1024,7 +1081,13 @@ export default function App() {
 
         {/* ── Defense Doc Generator ── */}
         {page === 'defense-doc' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <DefenseDocGenerator
               unlocked={unlocked}
               onBack={() => setPage('home')}
@@ -1142,7 +1205,13 @@ export default function App() {
         {page === 'simulator' && <InterviewSimulator unlocked={unlocked} onBack={() => setPage('home')} onNavigate={navigate} />}
         {page === 'ab-interpreter' && <ABTestInterpreter onBack={() => setPage('home')} />}
         {page === 'consult' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <ConsultationSpace
               onBack={() => setPage('home')}
               onNavigate={(targetPage, itemId) => {
@@ -1162,12 +1231,24 @@ export default function App() {
           </Suspense>
         )}
         {page === 'trainer' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <Trainer onBack={() => setPage('home')} />
           </Suspense>
         )}
         {page === 'company-tracks' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <CompanyTracks
               unlocked={unlocked}
               onBack={() => setPage('home')}
@@ -1197,7 +1278,13 @@ export default function App() {
           </Suspense>
         )}
         {page === 'challenges' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <ChallengesBrowser
               onSelectChallenge={openChallenge}
               unlocked={unlocked}
@@ -1205,7 +1292,13 @@ export default function App() {
           </Suspense>
         )}
         {page === 'challenges-runner' && activeChallengeId && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <ChallengesRunner
               caseId={activeChallengeId}
               onBack={() => setPage('challenges')}
@@ -1220,7 +1313,13 @@ export default function App() {
         )}
 
         {page === 'bookmarks' && (
-          <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
+          <Suspense fallback={
+              <div style={{ padding: '2rem 2rem 0' }}>
+                {[1,2,3].map(i => (
+                  <div key={i} className="pal-shimmer-box" style={{ height: '88px', marginBottom: '1rem', opacity: 1 - i * 0.15 }} />
+                ))}
+              </div>
+            }>
             <BookmarksBrowser
               onBack={() => setPage('home')}
               onNavigate={(targetPage, itemId) => {
@@ -1286,6 +1385,7 @@ export default function App() {
             }}
           />
         )}
+        </div>
         </Suspense>
       </main>
     </div>

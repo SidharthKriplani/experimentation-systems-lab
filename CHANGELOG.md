@@ -4,6 +4,25 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.35.0] — 2026-05-29
+
+### Premium animation pass — entire app
+
+Added a full animation system across all 21 browser pages and the global route shell. Addresses the gap between PAL's solid CSS variable infrastructure and the actual perceived polish of navigating the product.
+
+**CSS foundation (`src/index.css`):**
+4 new keyframes — `palPageEnter` (fade + 10px rise, 0.22s ease), `palCardEnter` (fade + 14px rise, 0.28s cubic-bezier), `palShimmer` (gradient scan, 1.5s infinite), `palFadeIn` (opacity only). 3 utility classes — `.pal-page-enter`, `.pal-card-enter`, `.pal-shimmer-box`. Full `prefers-reduced-motion` block disables all three for accessibility.
+
+**Route transitions (`src/App.jsx`):**
+Entire page content inside the outermost Suspense is now wrapped in `<div key={page} className="pal-page-enter">`. React re-mounts this div on every navigation, triggering the fade+rise animation on every page change. All 16 Suspense fallbacks replaced with a 3-bar shimmer skeleton (`pal-shimmer-box`) — eliminates the raw "Loading…" text flash.
+
+**Staggered card entry (21 browser pages):**
+Every case/module card grid now uses `pal-card-enter` + `pal-card-hover` with `animationDelay: Math.min(index * 28, 400)ms`. Cards enter staggered — first card at 0ms, subsequent cards 28ms apart, capped at 400ms. Hover lift (`translateY(-2px)` + `shadow-md`) applied consistently across all grids. Named sub-components (ModuleCard in StatsBrowser, CaseCard in RCABrowser/CasesBrowser, ScenarioCard, PostCard in BlogBrowser, RefCard in PlaybookBrowser) had `index` prop threaded through and animation applied to their root elements.
+
+**Files:** `src/index.css`, `src/App.jsx`, all 21 `src/pages/*Browser.jsx` files, `src/components/scenario/ScenarioCard.jsx`
+
+---
+
 ## [4.34.0] — 2026-05-29
 
 ### Skeleton depth expansion — Exp, Metrics, RCA Foundations

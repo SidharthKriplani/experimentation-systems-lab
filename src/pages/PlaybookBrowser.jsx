@@ -4791,7 +4791,7 @@ export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
   }
 
   return (
-    <div style={{ maxWidth: '1040px', margin: '0 auto', padding: '1.75rem 1rem 3rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '1040px', margin: '0 auto', padding: '1.75rem 1rem 3rem' }}>
 
       {/* Header — compact, reference-framing */}
       <div style={{ marginBottom: '1.5rem' }}>
@@ -4853,10 +4853,10 @@ export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
           gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
           gap: '0.55rem',
         }}>
-          {visiblePosts.map(post => {
+          {visiblePosts.map((post, index) => {
             const cfg = CATEGORY_CONFIG[post.category] || CATEGORY_CONFIG['Ambiguous Problems'];
             return (
-              <RefCard key={post.id} post={post} cfg={cfg} onOpenItem={onOpenItem} onRead={setActivePost} />
+              <RefCard key={post.id} post={post} cfg={cfg} index={index} onOpenItem={onOpenItem} onRead={setActivePost} />
             );
           })}
         </div>
@@ -4887,8 +4887,8 @@ export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
                 gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
                 gap: '0.55rem',
               }}>
-                {posts.map(post => (
-                  <RefCard key={post.id} post={post} cfg={cfg} onOpenItem={onOpenItem} onRead={setActivePost} />
+                {posts.map((post, index) => (
+                  <RefCard key={post.id} post={post} cfg={cfg} index={index} onOpenItem={onOpenItem} onRead={setActivePost} />
                 ))}
               </div>
             </div>
@@ -4899,12 +4899,14 @@ export function PlaybookBrowser({ onOpenItem, initialArticleId }) {
   );
 }
 
-function RefCard({ post, cfg, onOpenItem, onRead }) {
+function RefCard({ post, cfg, onOpenItem, onRead, index }) {
   const hasContent = !!post.content;
   return (
     <div
+      className="pal-card-enter pal-card-hover"
       onClick={hasContent ? () => onRead(post) : undefined}
       style={{
+        animationDelay: String(Math.min((index || 0) * 28, 400)) + 'ms',
         background: hasContent ? 'var(--surface)' : 'var(--surface-2)',
         border: '1px solid var(--border)',
         borderRadius: 'var(--radius)',

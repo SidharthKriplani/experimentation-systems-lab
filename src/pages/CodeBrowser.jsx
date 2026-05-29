@@ -37,7 +37,7 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
   const firstUnstartedId = modules.find(m => !completedIds.has(m.id))?.id;
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
 
       {/* Mobile notice — Code Room requires desktop */}
       <div style={{
@@ -124,7 +124,7 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
       {/* Module cards */}
       {!theoryActive && (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(300px, 100%), 1fr))', gap: '1rem' }}>
-        {filtered.map(module => {
+        {filtered.map((module, index) => {
           const progress    = allProgress[module.id];
           const isLocked    = !module.isFree && !unlocked;
           const trackCfg    = TRACK_CONFIG[module.track] || TRACK_CONFIG.sql;
@@ -136,8 +136,10 @@ export function CodeBrowser({ onSelectModule, unlocked, onUnlock, onOpenArticle 
           return (
             <div
               key={module.id}
+              className="pal-card-enter pal-card-hover"
               onClick={() => isLocked ? onUnlock() : onSelectModule(module.id)}
               style={{
+                animationDelay: (Math.min(index * 28, 400)) + 'ms',
                 background: 'var(--surface)',
                 border: '1.5px solid ' + (progress ? 'var(--border)' : 'var(--border-subtle)'),
                 borderLeft: isNextUnstarted ? '3px solid var(--teal)' : ('1.5px solid ' + (progress ? 'var(--border)' : 'var(--border-subtle)')),

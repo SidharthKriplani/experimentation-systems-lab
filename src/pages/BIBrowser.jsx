@@ -66,7 +66,7 @@ export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
   const firstUnstartedId = biCases.find(c => !completedIds.has(c.id))?.id;
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
@@ -175,7 +175,7 @@ export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
         gridTemplateColumns: 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))',
         gap: '0.85rem',
       }}>
-        {filtered.map(c => {
+        {filtered.map((c, index) => {
           const prog = allProgress[c.id];
           const isLocked = !c.isFree && !unlocked;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.analyst;
@@ -184,7 +184,9 @@ export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
           return (
             <div
               key={c.id}
+              className="pal-card-enter pal-card-hover"
               style={{
+                animationDelay: String(Math.min(index * 28, 400)) + 'ms',
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
                 borderLeft: isNextUnstarted ? '3px solid var(--yellow)' : '3px solid ' + diffCfg.color,

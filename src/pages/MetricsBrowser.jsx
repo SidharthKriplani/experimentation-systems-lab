@@ -34,7 +34,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
   const firstUnstartedId = metricCases.find(mc => !getMetricsProgress(mc.id))?.id;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
@@ -124,7 +124,7 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
         gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))',
         gap: '0.85rem',
       }}>
-        {displayCases.map(mc => {
+        {displayCases.map((mc, index) => {
           const progress = getMetricsProgress(mc.id);
           const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
           const diffCfg = DIFF_CFG[mc.difficulty] || DIFF_CFG.analyst;
@@ -134,11 +134,13 @@ export function MetricsBrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle
           return (
             <div
               key={mc.id}
+              className="pal-card-enter pal-card-hover"
               role="button"
               tabIndex={0}
               onClick={() => isLocked ? (onUnlock && onUnlock()) : onSelectCase(mc.id)}
               onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); isLocked ? (onUnlock && onUnlock()) : onSelectCase(mc.id); } }}
               style={{
+                animationDelay: (Math.min(index * 28, 400)) + 'ms',
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',
                 borderLeft: isNextUnstarted ? '3px solid var(--green)' : '1.5px solid var(--border)',

@@ -66,7 +66,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
   const firstUnstartedId = rcaCases.find(c => !getRCAProgress(c.id))?.id;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
@@ -157,7 +157,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
       {/* Case cards */}
       {!theoryActive && (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {displayCases.map((c) => {
+        {displayCases.map((c, index) => {
           const progress = getRCAProgress(c.id);
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.analyst;
           const domainCfg = DOMAIN_CFG[c.domain] || DOMAIN_CFG.growth;
@@ -165,6 +165,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
           return (
             <CaseCard
               key={c.id}
+              index={index}
               rcaCase={c}
               progress={progress}
               isLocked={!c.isFree && !unlocked}
@@ -210,7 +211,7 @@ export function RCABrowser({ onSelectCase, unlocked, onUnlock, onOpenArticle, on
   );
 }
 
-function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCase, onUnlock, isNextUnstarted }) {
+function CaseCard({ rcaCase, index, progress, isLocked, diffCfg, domainCfg, onSelectCase, onUnlock, isNextUnstarted }) {
   const levelColor = progress ? LEVEL_COLOR[progress.level] : null;
   const levelBg = progress ? LEVEL_BG[progress.level] : null;
 
@@ -224,11 +225,13 @@ function CaseCard({ rcaCase, progress, isLocked, diffCfg, domainCfg, onSelectCas
 
   return (
     <div
+      className="pal-card-enter pal-card-hover"
       role="button"
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
       style={{
+        animationDelay: (Math.min(index * 28, 400)) + 'ms',
         background: 'var(--surface)',
         border: '1px solid var(--border)',
         borderLeft: isNextUnstarted ? '3px solid var(--teal)' : '3px solid ' + diffCfg.color,

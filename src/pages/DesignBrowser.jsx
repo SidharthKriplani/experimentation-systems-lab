@@ -23,7 +23,7 @@ export function DesignBrowser({ onSelectScenario, onOpenArticle }) {
   const firstUnstartedId = designScenarios.find(s => !completedIds.has(s.id))?.id;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
@@ -75,7 +75,7 @@ export function DesignBrowser({ onSelectScenario, onOpenArticle }) {
       {/* Scenario cards */}
       {!theoryActive && (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {designScenarios.map(scenario => {
+        {designScenarios.map((scenario, index) => {
           const progress = allProgress[scenario.id];
           const bestLevel = progress?.bestLevel;
           const levelCfg = bestLevel ? LEVEL_COLORS[bestLevel] : null;
@@ -85,7 +85,9 @@ export function DesignBrowser({ onSelectScenario, onOpenArticle }) {
           return (
             <div
               key={scenario.id}
+              className="pal-card-enter pal-card-hover"
               style={{
+                animationDelay: (Math.min(index * 28, 400)) + 'ms',
                 border: '1.5px solid var(--border)',
                 borderLeft: isNextUnstarted ? '3px solid var(--accent)' : '3px solid ' + diffCfg.color,
                 borderRadius: 'var(--radius)',

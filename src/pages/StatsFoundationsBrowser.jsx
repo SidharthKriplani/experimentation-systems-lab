@@ -113,7 +113,7 @@ export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
   });
 
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '720px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
@@ -253,7 +253,10 @@ export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
               </div>
 
               {/* Card */}
-              <div style={{
+              <div
+                className="pal-card-enter pal-card-hover"
+                style={{
+                animationDelay: String(Math.min(idx * 28, 400)) + 'ms',
                 flex: 1,
                 margin: `${isFirst ? '0' : '4px'} 0 4px 0`,
                 border: cardBorder,

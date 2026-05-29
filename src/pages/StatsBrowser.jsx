@@ -49,7 +49,7 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
   const firstUnstartedId = statsModules.find(m => !completedIds.has(m.id))?.id;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
@@ -152,11 +152,11 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
                   <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{group.modules.length} module{group.modules.length !== 1 ? 's' : ''}</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  {group.modules.map(module => <ModuleCard key={module.id} module={module} allProgress={allProgress} firstUnstartedId={firstUnstartedId} onSelectModule={onSelectModule} />)}
+                  {group.modules.map((module, index) => <ModuleCard key={module.id} module={module} index={index} allProgress={allProgress} firstUnstartedId={firstUnstartedId} onSelectModule={onSelectModule} />)}
                 </div>
               </div>
             ))
-          : displayModules.map(module => <ModuleCard key={module.id} module={module} allProgress={allProgress} firstUnstartedId={firstUnstartedId} onSelectModule={onSelectModule} />)
+          : displayModules.map((module, index) => <ModuleCard key={module.id} module={module} index={index} allProgress={allProgress} firstUnstartedId={firstUnstartedId} onSelectModule={onSelectModule} />)
         }
       </div>
       )}
@@ -192,7 +192,7 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
   );
 }
 
-function ModuleCard({ module, allProgress, firstUnstartedId, onSelectModule }) {
+function ModuleCard({ module, index, allProgress, firstUnstartedId, onSelectModule }) {
   const progress = allProgress[module.id];
   const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
   const diffCfg = DIFF_CFG[module.difficulty] || DIFF_CFG.foundational;
@@ -201,11 +201,13 @@ function ModuleCard({ module, allProgress, firstUnstartedId, onSelectModule }) {
 
   return (
     <div
+      className="pal-card-enter pal-card-hover"
       role="button"
       tabIndex={0}
       onClick={() => onSelectModule(module.id)}
       onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectModule(module.id); } }}
       style={{
+        animationDelay: (Math.min(index * 28, 400)) + 'ms',
         background: 'var(--surface)',
         border: '1.5px solid var(--border)',
         borderLeft: isNextUnstarted ? '3px solid var(--accent)' : `3px solid ${diffCfg.color}`,

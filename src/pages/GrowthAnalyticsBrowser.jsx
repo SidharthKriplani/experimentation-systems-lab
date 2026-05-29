@@ -43,7 +43,7 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, 
   const firstUnstartedId = growthAnalyticsCases.find(c => !completedIds.has(c.id))?.id;
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
@@ -173,7 +173,7 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, 
       {/* Case cards */}
       {!theoryActive && (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {filteredCases.map(c => {
+        {filteredCases.map((c, index) => {
           const prog = allProgress[c.id];
           const isLocked = !c.isFree && !unlocked;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.analyst;
@@ -183,11 +183,13 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, 
           return (
             <div
               key={c.id}
+              className="pal-card-enter pal-card-hover"
               role="button"
               tabIndex={0}
               onClick={() => onSelectCase(c.id)}
               onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectCase(c.id); } }}
               style={{
+                animationDelay: (Math.min(index * 28, 400)) + 'ms',
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
                 borderLeft: isNextUnstarted ? '3px solid var(--green)' : '3px solid ' + diffCfg.color,

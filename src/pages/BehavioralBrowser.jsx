@@ -97,7 +97,7 @@ export function BehavioralBrowser({ onStart, unlocked }) {
   const firstUnstartedId = behavioralQuestions.find(q => !completedIds.has(q.id))?.id;
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1.5rem' }}>
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
@@ -241,7 +241,7 @@ export function BehavioralBrowser({ onStart, unlocked }) {
             </button>
           </div>
         )}
-        {filtered.map(question => {
+        {filtered.map((question, index) => {
           const prog = progress[question.id];
           const isLocked = !question.isFree && !unlocked;
           const dc = DIFFICULTY_COLOR[question.difficulty] || {};
@@ -251,8 +251,10 @@ export function BehavioralBrowser({ onStart, unlocked }) {
           return (
             <div
               key={question.id}
+              className="pal-card-enter pal-card-hover"
               onClick={() => onStart(question.id)}
               style={{
+                animationDelay: (Math.min(index * 28, 400)) + 'ms',
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
                 borderLeft: isNextUnstarted ? '3px solid var(--purple)' : '3px solid ' + (dc.color || 'var(--border)'),

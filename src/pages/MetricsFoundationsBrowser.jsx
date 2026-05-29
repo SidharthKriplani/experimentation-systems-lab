@@ -47,7 +47,7 @@ export function MetricsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
   const total = metricsFoundationModules.length;
 
   return (
-    <div style={{ maxWidth: 780, margin: '0 auto', padding: '2rem 1.25rem 3rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: 780, margin: '0 auto', padding: '2rem 1.25rem 3rem' }}>
       {/* Header */}
       <div style={{ marginBottom: '1.75rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
@@ -125,8 +125,10 @@ export function MetricsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
           return (
             <button
               key={m.id}
+              className="pal-card-enter pal-card-hover"
               onClick={() => !isLocked && onStart(m.id)}
               style={{
+                animationDelay: String(Math.min(idx * 28, 400)) + 'ms',
                 display: 'flex', alignItems: 'center', gap: '1rem',
                 padding: '0.85rem 1.1rem',
                 borderRadius: 'var(--radius)',

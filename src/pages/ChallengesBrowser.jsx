@@ -56,7 +56,7 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
   const firstUnstartedId = sortedCases.find(c => !completedIds.has(c.id))?.id;
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1.5rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
@@ -146,7 +146,7 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
         gridTemplateColumns: 'repeat(auto-fill, minmax(min(400px, 100%), 1fr))',
         gap: '1rem',
       }}>
-        {filteredCases.map(c => {
+        {filteredCases.map((c, index) => {
           const prog = allProgress[c.id];
           const isLocked = !c.isFree && !unlocked;
           const diffCfg = DIFF_CFG[c.difficulty] || DIFF_CFG.senior;
@@ -156,6 +156,7 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
           return (
             <div
               key={c.id}
+              className="pal-card-enter pal-card-hover"
               role="button"
               tabIndex={0}
               onClick={() => onSelectChallenge(c.id)}
@@ -168,6 +169,7 @@ export function ChallengesBrowser({ onSelectChallenge, unlocked }) {
               onMouseEnter={() => setHoveredId(c.id)}
               onMouseLeave={() => setHoveredId(null)}
               style={{
+                animationDelay: String(Math.min(index * 28, 400)) + 'ms',
                 background: 'var(--surface)',
                 border: '1px solid ' + (isHovered ? 'var(--red-border)' : 'var(--border)'),
                 borderLeft: isNextUnstarted ? '3px solid var(--red)' : ('1px solid ' + (isHovered ? 'var(--red-border)' : 'var(--border)')),
