@@ -4,6 +4,26 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.30.0] — 2026-05-29
+
+### Added — Defense Strategy plan tracking + momentum nudge
+
+**Plan persistence:** When a user generates a Defense Strategy plan (step 3), all recommended room + case ID pairs are extracted via `extractPlanSteps()` and saved to `pal-defense-plan-v1` in localStorage. Previous plan is overwritten on each new generation. Loaded on mount so progress survives navigation away and back.
+
+**Auto-detection of plan progress:** `isCaseDone(roomId, caseId)` cross-references each plan step against the relevant room progress key (`pal-rca-progress-v2`, `pal-metrics-progress-v2`, etc.) — no manual checkboxes. Completion is detected from real practice data, not self-reported.
+
+**Progress bar:** Always visible in the plan view. Shows "X / Y cases" and a purple fill bar. Updates automatically when the user returns after completing cases in other rooms.
+
+**Soft nudge card at 35%:** When a non-unlocked user has completed ≥35% of their plan steps, a warm purple card appears below the plan ("You have real momentum — X% of your plan done") with a single "Enter Access Code →" CTA. Not a hard gate — no wall, no block. The room gate remains the hard lock. This is a contextual upsell at the moment of maximum motivation.
+
+**`unlocked` prop added** to `DefenseDocGenerator` (and `DefenseDoc` alias). App.jsx passes `unlocked={unlocked}`. Nudge only shows to non-unlocked users.
+
+**`ROOM_PROGRESS_KEY` map** added: 19 room → localStorage key entries covering all PAL rooms. Enables future cross-room progress reads from anywhere in the app.
+
+**MD files updated:** IDEAS.md (prerequisite audit result documented, auto-detection confirmed feasible), CHANGELOG.md, CLAUDE.md (version bump).
+
+---
+
 ## [4.29.0] — 2026-05-29
 
 ### Added — Freemium access code gate

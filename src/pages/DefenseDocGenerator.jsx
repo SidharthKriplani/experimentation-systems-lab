@@ -259,8 +259,79 @@ function buildDayPlan(roomOrder, gaps, dayCount, intensity) {
   return days.filter(d => d.rooms && d.rooms.length > 0);
 }
 
+// ─── Plan persistence + auto-detection ───────────────────────────────────────
+const PLAN_KEY = 'pal-defense-plan-v1';
+
+const ROOM_PROGRESS_KEY = {
+  'rca':                'pal-rca-progress-v2',
+  'metrics':            'pal-metrics-progress-v2',
+  'cases':              'pal-cases-progress-v2',
+  'stats':              'pal-stats-progress-v1',
+  'code':               'pal-code-progress-v1',
+  'behavioral':         'pal-behavioral-progress-v1',
+  'estimation':         'pal-estimation-progress-v1',
+  'growth-analytics':   'pal-growth-analytics-progress-v1',
+  'bi':                 'pal-bi-progress-v1',
+  'instrumentation':    'pal-instrumentation-progress-v1',
+  'product-design':     'pal-design-progress-v1',
+  'prioritization':     'pal-pri-progress-v1',
+  'spot-the-flaw':      'pal-stf-progress-v1',
+  'browser':            'exp-lab-progress-v1',
+  'design':             'pal-design-progress-v1',
+  'exp-foundations':    'pal-exp-foundation-progress-v1',
+  'rca-foundations':    'pal-rca-foundation-progress-v1',
+  'stat-foundations':   'pal-stat-foundations-progress-v1',
+  'metrics-foundations':'pal-metrics-foundation-progress-v1',
+};
+
+function isCaseDone(roomId, caseId) {
+  const key = ROOM_PROGRESS_KEY[roomId];
+  if (!key) return false;
+  try {
+    const store = JSON.parse(localStorage.getItem(key) || '{}');
+    return !!store[caseId];
+  } catch { return false; }
+}
+
+function extractPlanSteps(plan, allData, jdText) {
+  const steps = [];
+  if (plan.type === 'cram') {
+    plan.topRooms.forEach(function(roomId) {
+      var meta = ROOM_META[roomId];
+      if (!meta) return;
+      getTopCases(roomId, allData, jdText, 2).forEach(function(c) {
+        steps.push({ roomId: roomId, page: meta.page, caseId: c.id, title: c.title || '' });
+      });
+    });
+  } else {
+    plan.days.forEach(function(dayObj) {
+      (dayObj.rooms || []).forEach(function(roomId) {
+        var meta = ROOM_META[roomId];
+        if (!meta) return;
+        getTopCases(roomId, allData, jdText, 2).forEach(function(c) {
+          steps.push({ roomId: roomId, page: meta.page, caseId: c.id, title: c.title || '', day: dayObj.day });
+        });
+      });
+    });
+  }
+  return steps;
+}
+
+function savePlan(steps, type) {
+  try {
+    localStorage.setItem(PLAN_KEY, JSON.stringify({ generatedAt: Date.now(), type: type, steps: steps }));
+  } catch {}
+}
+
+function loadSavedPlanSteps() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PLAN_KEY) || '{}');
+    return saved.steps || [];
+  } catch { return []; }
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
-export function DefenseDocGenerator({ onBack, onNavigate }) {
+export function DefenseDocGenerator({ onBack, onNavigate, unlocked }) {
   const allData = { scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases };
 
   const [step, setStep]                   = useState('input');
@@ -270,6 +341,7 @@ export function DefenseDocGenerator({ onBack, onNavigate }) {
   const [timeHorizon, setTimeHorizon]     = useState('7');
   const [intensity, setIntensity]         = useState('balanced');
   const [stratPlan, setStratPlan]         = useState(null);
+  const [planSteps, setPlanSteps]         = useState(() => loadSavedPlanSteps());
 
   function handleAnalyze() {
     if (!jdText.trim()) return;
@@ -306,6 +378,9 @@ export function DefenseDocGenerator({ onBack, onNavigate }) {
       plan = { type: 'plan', gaps, days, roomOrder, outside };
     }
     setStratPlan(plan);
+    const steps = extractPlanSteps(plan, allData, jdText);
+    setPlanSteps(steps);
+    savePlan(steps, plan.type);
     setStep('plan');
   }
 
@@ -657,6 +732,55 @@ export function DefenseDocGenerator({ onBack, onNavigate }) {
                 </div>
               </div>
             )}
+
+            {/* Plan progress + nudge */}
+            {planSteps.length > 0 && (() => {
+              const doneCount = planSteps.filter(s => isCaseDone(s.roomId, s.caseId)).length;
+              const pct = doneCount / planSteps.length;
+              const showNudge = !unlocked && pct >= 0.35;
+              return (
+                <div style={{ marginBottom: '1.25rem' }}>
+                  {/* Progress bar */}
+                  <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1.1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        Plan progress
+                      </span>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 700, color: pct >= 0.35 ? 'var(--purple)' : 'var(--text-muted)' }}>
+                        {doneCount} / {planSteps.length} cases
+                      </span>
+                    </div>
+                    <div style={{ height: 6, background: 'var(--surface-2)', borderRadius: 99, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${Math.round(pct * 100)}%`, background: 'var(--purple)', borderRadius: 99, transition: 'width 0.4s ease' }} />
+                    </div>
+                    {doneCount === 0 && (
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.4rem' }}>
+                        Complete plan cases and this bar updates automatically.
+                      </div>
+                    )}
+                  </div>
+                  {/* Soft nudge at 35% — only for locked users */}
+                  {showNudge && (
+                    <div style={{ marginTop: '0.65rem', background: 'var(--purple-bg)', border: '1.5px solid var(--purple-border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                      <div>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--purple)', marginBottom: '0.25rem' }}>
+                          You have real momentum — {Math.round(pct * 100)}% of your plan done
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                          Unlock full access to keep going — all remaining cases, full behavioral bank, and company tracks.
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => onNavigate && onNavigate('unlock')}
+                        style={{ background: 'var(--purple)', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 1.1rem', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+                      >
+                        Enter Access Code →
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* Outside PAL */}
             {outside && outside.length > 0 && (

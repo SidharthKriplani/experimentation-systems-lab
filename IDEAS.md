@@ -67,7 +67,14 @@ _No new features until PostHog baseline is established._
 
 ### Defense Strategy — pending upgrades
 
-*Do not build until PostHog confirms real usage of the V4.27.0 flow.*
+*Do not build until PostHog confirms real usage of the V4.27.0 flow AND Batch 1 feedback is collected.*
+
+**Gate model (decided, not yet built):**
+Two-gate architecture. Room gate = hard lock, already live V4.29.0 — fires whenever a locked case is opened, no bypass. Plan nudge = soft upsell card at ~35% plan completion, NOT a hard wall. The plan nudge has a bypass problem if hard-gated (user just copies the plan and navigates directly to rooms, hitting the room gate anyway). So the plan nudge is a warmer, contextual conversion surface for motivated users mid-goal — not a second paywall.
+
+Auto-detection (not manual checkboxes): plan step completion is auto-detected by cross-referencing the plan\'s recommended case IDs against existing room progress keys (`pal-rca-progress-v1`, `pal-cases-progress-v1`, etc.). No self-reported progress.
+
+**Prerequisite audit completed (V4.29.0):** Defense Strategy already computes and uses specific case IDs — `getTopCases()` returns full case objects with `.id` fields (e.g. RCA01, M01, C01), used directly in `onNavigate(meta.page, c.id)` chips. The IDs are there. BUT they are computed at render time and never persisted — so there is no stored record of "this was your plan." Auto-detection requires one additional step: when the plan is generated, serialize the plan (room + case ID pairs per day) to `pal-defense-plan-v1` in localStorage. Then detection logic cross-references stored IDs against progress keys on load. This is ~40 lines of code, not a schema change. No other prerequisite outstanding.
 
 **Layer 4A — Three-layer micro-sequence per skill (lowest effort, highest impact)**
 Currently the plan outputs room chips + 2 matched cases. Upgrade: for each skill in the day plan, show a structured micro-sequence — (1) "Read first" linking one Playbook article matched to that skill, (2) the relevant Foundation module if self-rated Weak/Okay, (3) 2–3 JD-matched cases as now, (4) "Drill" linking to the MCQ Trainer filtered to that category. PAL already has all four content layers; the Defense Strategy just needs to route through them in sequence rather than dumping room chips. The Playbook article link per skill is the single lowest-effort step here and closes the most visible gap.
@@ -75,8 +82,8 @@ Currently the plan outputs room chips + 2 matched cases. Upgrade: for each skill
 **Layer 4B — Company track cross-referencing (medium effort)**
 If the JD or company name signals a known company (Meesho, Amazon, Google etc.), adjust skill weights against PAL\'s company track data. Meesho = RCA weighted heavier, supply-demand framing surfaced. Amazon = behavioral appears in every round regardless of JD language. Requires enough company track data to be trustworthy before shipping.
 
-**Layer 5 — Live plan that updates as you practice (high effort, V5 territory)**
-As the user completes PAL rooms, gap scores re-compute from actual progress. Plan re-orders to surface the next highest gap. Requires a persistent `pal-defense-strategy-v1` localStorage key and tying room completion events back into Defense Strategy state. Turns a one-time plan into a living prep tracker.
+**Layer 5 — Live plan that updates as you practice (high effort)**
+As the user completes PAL rooms, gap scores re-compute from actual progress. Plan re-orders to surface the next highest gap. Requires a persistent `pal-defense-plan-v1` localStorage key storing which plan was generated (room + case IDs) and tying room completion events back into Defense Strategy state. Turns a one-time plan into a living prep tracker. Auto-detection prerequisite (above) must be resolved first. Previously called V5 territory — still significant scope but the data infrastructure already exists.
 
 **Layer 6 — Verbal simulation prompt at day end (low effort)**
 At the end of each day card, surface one articulation prompt per top-gap skill ("Explain in 90 seconds how you would diagnose a 15% GMV drop"). Self-score checkbox: Couldn\'t do it / Got the structure / Nailed it. Score feeds back into gap weight for the next session. Closes the read-practice-articulate loop.

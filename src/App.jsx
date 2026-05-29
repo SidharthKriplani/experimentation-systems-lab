@@ -1018,6 +1018,7 @@ export default function App() {
         {page === 'defense-doc' && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
             <DefenseDocGenerator
+              unlocked={unlocked}
               onBack={() => setPage('home')}
               onNavigate={(targetPage, itemId) => {
                 if (itemId) {
