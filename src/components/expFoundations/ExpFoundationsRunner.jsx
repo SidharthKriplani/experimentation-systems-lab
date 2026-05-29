@@ -1016,6 +1016,11 @@ function Module_EF08({ onComplete }) {
         what happens early in the run.
       </p>
 
+      <InstructionBox>
+        Study the chart below — it shows a 30-day A/A test where both groups receive identical treatment.
+        Notice where the p-value line dips below the red 0.05 threshold and what happens afterward.
+      </InstructionBox>
+
       <div style={{
         background: 'var(--surface-2)', border: '1px solid var(--border)',
         borderRadius: 'var(--radius-sm)', padding: '1rem', marginBottom: '1.25rem',
@@ -1409,6 +1414,12 @@ function Module_EF09({ onComplete }) {
         Which is the key requirement for CUPED to work?
       </div>
 
+      <InstructionBox>
+        Select the answer that identifies the core requirement CUPED depends on, then click Check to
+        reveal the explanation. Think about what the regression line represents and what happens if it
+        explains nothing.
+      </InstructionBox>
+
       {options.map(function(opt, i) {
         return (
           <MCQOption
@@ -1634,6 +1645,10 @@ function Module_EF10({ onComplete }) {
         <div style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text)', marginBottom: '0.85rem' }}>
           Why does peeking inflate the false positive rate?
         </div>
+        <InstructionBox>
+          Select the answer that best explains the peeking problem, then click Check. Connect your answer
+          to what you saw in the left chart — why did naive stopping fire a false alarm on day 7?
+        </InstructionBox>
         {mcqOptions.map(function(opt, i) {
           return (
             <MCQOption
@@ -1952,6 +1967,12 @@ function Module_EF12({ onComplete }) {
         What is the primary purpose of a holdout group?
       </div>
 
+      <InstructionBox>
+        Select the answer that best captures why a holdout group is kept separate from all launches,
+        then click Check. Think about what question the holdout gap answers that individual A/B tests
+        cannot.
+      </InstructionBox>
+
       {mcqOptions.map(function(opt, i) {
         return (
           <MCQOption
@@ -2097,6 +2118,12 @@ function Module_EF13({ onComplete }) {
       <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.85rem' }}>
         When does a multi-armed bandit outperform a fixed A/B test?
       </div>
+
+      <InstructionBox>
+        Select the scenario where a bandit is the better choice, then click Check. Use the tradeoff
+        table above — focus on when the cost of showing users a losing variant outweighs the need for
+        a clean causal estimate.
+      </InstructionBox>
 
       {mcqOptions.map(function(opt, i) {
         return (
@@ -2253,6 +2280,12 @@ function Module_EF14({ onComplete }) {
             Why do geo experiments have low statistical power compared to user-level tests?
           </div>
 
+          <InstructionBox>
+            Select the answer that best explains the power limitation of geo experiments, then click
+            Check. Think about what determines sample size in a statistical test and how many
+            randomization units a geo experiment actually has.
+          </InstructionBox>
+
           {mcqOptions.map(function(opt, i) {
             return (
               <MCQOption
@@ -2354,6 +2387,11 @@ function Module_EF15({ onComplete }) {
         two-sided marketplace problem where demand and supply cannot be independently randomized.
       </p>
 
+      <InstructionBox>
+        Study the switchback timeline below — it shows how treatment and control alternate every two
+        hours within a single market. Notice that the same city is used for both arms; only time changes.
+      </InstructionBox>
+
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.85rem', marginBottom: '1.25rem' }}>
         <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.6rem' }}>
           Switchback timeline — 2-hour windows, one market
@@ -2383,6 +2421,11 @@ function Module_EF15({ onComplete }) {
           T = Treatment window, C = Control window. Same city, alternating every 2 hours.
         </div>
       </div>
+
+      <InstructionBox>
+        Answer each question in sequence — a new question unlocks after you check the previous one.
+        Select the best answer and click Check to see the explanation and advance.
+      </InstructionBox>
 
       {questions.map(function(q, qi) {
         if (qi > step) return null;

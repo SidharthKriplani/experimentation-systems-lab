@@ -21,7 +21,7 @@ The job is to build a good product, not to make every session feel productive.
 
 ## What this project is (5 lines)
 
-**Product Analytics Lab (PAL)** is a browser-based interview prep platform for product analysts and PMs. Users practice judgment calls — not recall — across 17 rooms covering stats, experimentation, RCA, metrics, SQL/Python, product design, prioritization, behavioral, estimation, analytics instrumentation, and A/B foundations. React + Vite SPA, localStorage + optional Supabase auth. Deployed on Vercel. Repo: `github.com/SidharthKriplani/experimentation-systems-lab`. Current version: V4.35.3.
+**Product Analytics Lab (PAL)** is a browser-based interview prep platform for product analysts and PMs. Users practice judgment calls — not recall — across 17 rooms covering stats, experimentation, RCA, metrics, SQL/Python, product design, prioritization, behavioral, estimation, analytics instrumentation, and A/B foundations. React + Vite SPA, localStorage + optional Supabase auth. Deployed on Vercel. Repo: `github.com/SidharthKriplani/experimentation-systems-lab`. Current version: V4.36.2.
 
 ---
 

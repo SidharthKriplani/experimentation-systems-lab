@@ -755,7 +755,7 @@ export function Home({ onNavigate }) {
 
       {/* ── Onboarding modal ──────────────────────────────────────────────── */}
       {showOnboardingModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
           <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)', padding: '2rem', maxWidth: 420, width: '90%', position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
             <button
               onClick={dismissOnboarding}

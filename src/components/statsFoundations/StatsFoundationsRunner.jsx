@@ -234,7 +234,7 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
           background: 'var(--surface)', border: '1px solid var(--border)',
           borderRadius: '8px', padding: '0.55rem 1.1rem',
           fontSize: '0.82rem', fontWeight: 600, color: 'var(--text)',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.14)',
+          boxShadow: 'var(--shadow-md)',
           zIndex: 9999, pointerEvents: 'none',
           animation: 'fadeIn 0.15s ease',
         }}>

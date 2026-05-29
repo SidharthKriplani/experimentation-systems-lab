@@ -729,6 +729,9 @@ function Module_MF09({ module, onNext }) {
       </p>
 
       <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.25rem' }}>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Click a scenario to load it into the funnel — observe which step shows the largest drop and how the highlighted step changes between scenarios.
+        </div>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
           {[
             { key: 'baseline', label: 'Baseline' },
@@ -814,6 +817,9 @@ function Module_MF09({ module, onNext }) {
 
       <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
         <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.75rem' }}>{MF09_MCQ.question}</div>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Select the answer that correctly identifies the step with the largest absolute user loss in the baseline funnel, then click Check answer.
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginBottom: '0.75rem' }}>
           {MF09_MCQ.options.map(function(opt) {
             return (
@@ -913,7 +919,10 @@ function Module_MF10({ module, onNext }) {
       </p>
 
       <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.25rem' }}>
-        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1rem' }}>Revenue per Session decomposition</div>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.75rem' }}>Revenue per Session decomposition</div>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Drag the sliders to adjust session counts and revenue per session for each platform — watch the overall RPSession update in real time and notice when a mix shift drives it down.
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(260px, 100%), 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
           <div>
@@ -1015,6 +1024,9 @@ function Module_MF10({ module, onNext }) {
 
       <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
         <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.75rem' }}>{MF10_MCQ.question}</div>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Select the answer that explains how overall conversion can fall even when both segment rates are unchanged, then click Check answer.
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginBottom: '0.75rem' }}>
           {MF10_MCQ.options.map(function(opt) {
             return (
@@ -1104,8 +1116,11 @@ function Module_MF11({ module, onNext }) {
       </p>
 
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
-        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '1rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.75rem' }}>
           Build your OEC — adjust component weights
+        </div>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Drag each weight slider to redistribute how much each component contributes to the OEC score — watch what happens to the composite when you underweight retention.
         </div>
 
         {[
@@ -1160,6 +1175,9 @@ function Module_MF11({ module, onNext }) {
       <div>
         <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.75rem' }}>
           What is the primary risk of using a composite metric as your primary experiment decision criterion?
+        </div>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Select the answer that best identifies the structural weakness of composite metrics, then click Check.
         </div>
 
         {mcqOptions.map(function(opt, i) {
@@ -1276,8 +1294,11 @@ function Module_MF12({ module, onNext }) {
       </p>
 
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
-        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.9rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.75rem' }}>
           Ship or no ship? Click your decision for each scenario.
+        </div>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> For each scenario, decide whether to ship or hold — click your decision to see if it matches the correct call and why.
         </div>
 
         {scenarios.map(function(s) {
@@ -1326,6 +1347,9 @@ function Module_MF12({ module, onNext }) {
         <div className="pal-reveal-in">
           <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.75rem' }}>
             Why must guardrail thresholds be pre-committed before an experiment launches?
+          </div>
+          <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+            <strong>What to do:</strong> Select the answer that explains why pre-commitment matters for guardrails, then click Check.
           </div>
 
           {mcqOptions.map(function(opt, i) {
@@ -1430,8 +1454,11 @@ function Module_MF13({ module, onNext }) {
       </p>
 
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
-        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.9rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.75rem' }}>
           Adjust coefficient of variation (CV) — watch sample size requirements change
+        </div>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Drag the CV slider to adjust the coefficient of variation — watch how the required sample size changes as the metric becomes noisier or more precise.
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
@@ -1487,6 +1514,9 @@ function Module_MF13({ module, onNext }) {
       <div>
         <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.75rem' }}>
           You are testing a new feature and need to detect a 3% lift. Which metric should you choose as your primary outcome to minimize experiment runtime?
+        </div>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Select the metric with the lowest coefficient of variation — the one that will detect a 3% lift with the fewest users — then click Check.
         </div>
 
         {mcqOptions.map(function(opt, i) {

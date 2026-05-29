@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
+import { ErrorBoundary } from './components/shared/ErrorBoundary.jsx';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts.js';
 import { track } from './utils/analytics.js';
 import { onAuthStateChange } from './utils/auth.js';
@@ -695,6 +696,7 @@ export default function App() {
         </div>
 
         <main style={{ flex: 1 }}>
+          <ErrorBoundary>
           <Suspense fallback={
             <div style={{ padding: '2rem 2rem 0' }}>
               {[1,2,3].map(i => (
@@ -1391,6 +1393,7 @@ export default function App() {
         )}
         </div>
         </Suspense>
+          </ErrorBoundary>
       </main>
     </div>
     {showAuth && (

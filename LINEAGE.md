@@ -124,9 +124,9 @@ Several decisions have been made once and never revisited. They define what PAL 
 
 ---
 
-## What PAL Is at V4.35.2
+## What PAL Is at V4.36.0
 
-17 rooms. 155+ cases. 40+ interactive foundation modules. Cross-room Challenges. Defense Strategy (JD → personalized study plan). Interview Simulator. MCQ Trainer. Company Tracks. Global Search. Bookmarks. PostHog analytics. Supabase optional auth. CI mark brand identity. Full premium animation system (11 utility classes, 9 keyframes). Access code gate. Pricing page.
+17 rooms. 155+ cases. 72 interactive foundation modules across 4 rooms (32 Stat + 15 Exp + 13 Metrics + 12 RCA — all stubs fully populated as of V4.36.0). Cross-room Challenges. Defense Strategy (JD → personalized study plan). Interview Simulator. MCQ Trainer. Company Tracks. Global Search. Bookmarks. PostHog analytics. Supabase optional auth. CI mark brand identity. Full premium animation system (11 utility classes, 9 keyframes). Access code gate. Pricing page.
 
 The stack is still React + Vite, no backend, localStorage primary store. The product is a static SPA on Vercel. Nothing from V1 has been broken.
 
@@ -136,4 +136,22 @@ The product was never a course, never a textbook, never a leaderboard. It is a p
 
 ---
 
-*Reconstructed from CHANGELOG.md (V1 through V4.35.2). If this file is out of date, read the CHANGELOG and update the narrative — do not delete this file.*
+## V4.35.x–V4.36.0 — Foundation Layer Completion
+
+The most significant structural change this period was completing the foundation layer across all four rooms.
+
+**V4.35.4** — Seven visual bugs fixed in Stat Foundations modules (bell curve spike, SE overflow, power slider, correlation layout shift, Bonferroni n=1, regression overlap, selection bias clip). These were not cosmetic — they broke the interactive learning mechanic that makes Stat Foundations different from a textbook.
+
+**V4.35.5** — Right-side sticky nav panel added to all four foundation runners. Users can now see every module in the room, jump to any unlocked module, and track progress without exiting to the browser page. The decision: right-side sidebar for foundations only (case practice rooms have their own browser pages as navigation). Responsive — hides below 900px.
+
+**V4.35.6** — Stub greying. 19 stub modules in Exp, Metrics, and RCA Foundations were marked `isStub: true` in their data files, rendering them at 0.4 opacity in the nav with a "Coming soon" tooltip. This was a deliberate interim state — the nav panel made stubs visible, so their emptiness needed to be communicated clearly.
+
+**V4.36.0** — All 12 remaining "Coming Soon" placeholders replaced with full interactive modules. Each module includes: an SVG visualization or interactive exercise, a multi-choice question with reveal, and a key insight. The modules removed from stub status: ef12 (Holdout Groups — trajectory chart + sum-of-parts paradox), ef13 (Multi-Armed Bandits — epsilon-greedy simulator), ef14 (Geo Experiments — 4-scenario classifier), ef15 (Switchback — C/T timeline + 3-question drill), mf11 (Composite Metrics — OEC slider builder), mf12 (Guardrail Metrics — ship/no-ship decisions), mf13 (Metric Sensitivity — CV slider + sample size calc), rf08 (SQL Patterns — 3-step query walkthrough), rf09 (Seasonality — YoY toggle chart), rf10 (Data Quality — symptom-to-cause diagnose), rf11 (External Factors — 5-event classify), rf12 (Multi-Level RCA — toggleable cause bars).
+
+Also in V4.35.x: five NEXT.md bugs resolved — subtitle duplication across 5 foundation modules, GuidedPathCard item list removed from Progress page, homepage framing aligned to analytics+experimentation core identity.
+
+The foundation layer is now complete and internally consistent. Every module in every foundation room is interactive, navigable, and substantive.
+
+---
+
+*Reconstructed from CHANGELOG.md (V1 through V4.36.0). If this file is out of date, read the CHANGELOG and update the narrative — do not delete this file.*

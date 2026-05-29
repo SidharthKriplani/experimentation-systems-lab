@@ -4,6 +4,85 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.36.3] — 2026-05-30 [VISUAL]
+
+### Depth palette pass — dark mode deepening + --discovery token (V4.36.3)
+
+Implemented the "Depth" visual identity: deeper blue-cast dark mode surface stack, more saturated indigo accent, deepened light mode accent, and new `--discovery` reserved token for insight reveal moments.
+
+**`src/index.css` — dark mode changes (research-driven, Linear benchmark):**
+- `--bg`: `#111520` → `#0D101E` (deeper, more blue cast)
+- `--surface`: `#191e30` → `#151929`
+- `--surface-2`: `#1f2438` → `#1C2035`
+- `--surface-raised`: `#262c44` → `#232840`
+- `--border`: `#3d4668` → `#2E3A5C` (blue-shifted)
+- `--border-subtle`: `#2f3758` → `#263350`
+- `--border-strong`: `#535e82` → `#3E4E72`
+- `--text`: `#f2f4fa` → `#EEF0FA` (cooler blue cast)
+- `--text-secondary`: `#d0d5e8` → `#C5CBE4`
+- `--text-muted`: `#a2acc6` → `#8F9BB8`
+- `--text-dim`: `#8490aa` → `#7A87A8`
+- `--accent`: `#6366f1` → `#5C5FF5` (more saturated, electric direction vs. Tailwind default)
+- `--accent-hover`: `#818cf8` → `#7478F7`
+- `--header-bg`: `rgba(17,21,32,0.97)` → `rgba(13,16,30,0.97)` (matches new bg)
+- `--input-bg`: `#191e30` → `#151929` (matches new surface)
+
+**`src/index.css` — light mode changes:**
+- `--accent`: `#4338ca` → `#3730a3` (indigo-700 → indigo-800, more authoritative)
+- `--accent-hover`: `#3730a3` → `#2D279E`
+
+**New token `--discovery`:**
+- Light: `#E8A033` / Dark: `#F0B352` — warm amber reserved exclusively for InsightBox border+bg-tint and debrief reveal panel left-border. Never nav, never CTA, never UI chrome. Observable HQ amber (#EFB118) was the primary reference.
+
+**`DECISIONS.md`:** Added `--discovery` scoping rule — reserved token, two use sites only (InsightBox, debrief left-border). Treat as a brand constraint; one misuse destroys the signal.
+
+**Font system deferred:** Source Serif 4 + DM Sans proposal is research-complete but NOT shipped. Requires local preview against real case text before committing. Will be a separate decision.
+
+Files: `src/index.css`, `DECISIONS.md`
+
+---
+
+## [4.36.2] — 2026-05-30 [BUILD]
+
+### Data file validator script (audit #102) + infrastructure audit confirmation
+
+**`scripts/validate-data.js` — created:** ES module script checking all `src/data/*.js` files for three classes of build-breaking issues: (1) backtick template literals, (2) unescaped apostrophes inside single-quoted strings (character-by-character state machine to avoid false positives on double-quoted content), (3) missing `id:` and `title:` field presence. Run via `npm run validate-data`. Exits 0 on clean, 1 on violations. Smoke test: 26/28 files PASS; `companyTracks.js` and `trainerMCQ.js` flag title absence (expected — those use `company` and `question` schemas respectively, not bugs).
+
+**Infrastructure audit — already resolved in prior session (confirmed by grep):**
+- `src/components/shared/ErrorBoundary.jsx` — class component exists, `<main>` in App.jsx is wrapped (audit #105 ✅)
+- `public/sitemap.xml` — all 8 top-level routes present: home, progress, trainer, unlock, company-tracks, defense-doc, about, search (audit #93 ✅)
+- `src/pages/PlaybookBrowser.jsx` — h1 reads "Reference cards" (audit #83 ✅)
+- `src/pages/BlogBrowser.jsx` — h1 reads "deep dives" (audit #83 ✅)
+
+Files: `scripts/validate-data.js`, `package.json`
+
+---
+
+## [4.36.1] — 2026-05-30 [BUG]
+
+### CSS variable pass — hardcoded color values replaced (audit #92)
+
+Replaced all semantic hardcoded color values across 7 component files with CSS variable tokens. Added `--overlay: rgba(0, 0, 0, 0.45)` to the `:root {}` block in `index.css` as a new shared token for modal/drawer backdrops. Added `--shadow-md` if not already present (used by Header, StatsFoundationsRunner).
+
+**9 edits across 7 files:**
+- `src/index.css` — `--overlay` added to `:root`; `.sidebar-overlay` rgba replaced with `var(--overlay)`
+- `src/components/auth/AuthModal.jsx` — backdrop `rgba(0,0,0,0.45)` → `var(--overlay)`; `boxShadow rgba(0,0,0,0.18)` → `var(--shadow-md)`; Google button `color: '#333'` → `var(--text)`
+- `src/components/layout/Sidebar.jsx` — mobile backdrop `rgba(0,0,0,0.42)` → `var(--overlay)`
+- `src/components/ui/LockOverlay.jsx` — card lock backdrop `rgba(0,0,0,0.55)` → `var(--overlay)`
+- `src/components/layout/Header.jsx` — dropdown `boxShadow rgba(0,0,0,0.12)` → `var(--shadow-md)`
+- `src/components/statsFoundations/StatsFoundationsRunner.jsx` — toast `boxShadow rgba(0,0,0,0.14)` → `var(--shadow-md)`
+- `src/pages/Home.jsx` — onboarding modal backdrop `rgba(0,0,0,0.65)` → `var(--overlay)`
+
+**Deliberate exclusions (not changed):**
+- `'#fff'` on colored CTA buttons — convention across codebase; changing would require new token definition
+- `rgba(0,0,0,0.08)` in JS `onMouseEnter` inline style handlers — CSS variables don't resolve in runtime `.style.boxShadow` strings
+- `#4285F4` Google brand blue — external brand color, not a PAL token
+- SVG data-viz fill/stroke colors — intentionally raw values
+
+Files: `src/index.css`, `src/components/auth/AuthModal.jsx`, `src/components/layout/Sidebar.jsx`, `src/components/ui/LockOverlay.jsx`, `src/components/layout/Header.jsx`, `src/components/statsFoundations/StatsFoundationsRunner.jsx`, `src/pages/Home.jsx`
+
+---
+
 ## [4.36.0] — 2026-05-30 [CONTENT]
 
 ### Foundation stubs — full interactive module population (12 modules)

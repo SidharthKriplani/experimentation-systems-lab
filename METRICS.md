@@ -33,7 +33,7 @@ Events fire from `src/App.jsx` (navigation events) and directly from runner comp
 | `open_challenge` | User opens a Cross-Room Challenge | `{ id: string, title: string }` |
 
 ### Rooms tracked via `case_opened`
-`stats`, `design`, `review`, `metrics`, `rca`, `cases`, `code`, `prioritization`, `behavioral`, `estimation`, `stat-foundations`, `growth-analytics`, `bi`, `spot-the-flaw`, `take-home`, `product-design`, `challenges`, `instrumentation`
+`stats`, `design`, `review`, `metrics`, `rca`, `cases`, `code`, `prioritization`, `behavioral`, `estimation`, `stat-foundations`, `exp-foundations`, `metrics-foundations`, `rca-foundations`, `growth-analytics`, `bi`, `spot-the-flaw`, `take-home`, `product-design`, `challenges`, `instrumentation`
 
 ### Events not yet tracked (gaps)
 - Debrief revealed

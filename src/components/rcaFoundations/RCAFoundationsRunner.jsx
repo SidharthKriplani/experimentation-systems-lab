@@ -836,6 +836,9 @@ function Module_RF07({ onComplete }) {
       </div>
 
       <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Select the best answer to each metric tree question, then click Check answer — advance through all three questions before continuing.
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.85rem' }}>
           <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Question {qIdx + 1} of {RF07_QUESTIONS.length}
@@ -1009,6 +1012,10 @@ function Module_RF08({ onComplete }) {
         The first 30 minutes of any RCA follow the same SQL playbook: confirm the signal is real, narrow to a platform or segment, then check whether the pattern has historical precedent. Walk through each query below and read what the output tells you.
       </p>
 
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Click Run query to execute each SQL step — read the highlighted rows in the result table and the finding before moving to the next query.
+      </div>
+
       {/* Step tabs */}
       <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.85rem', flexWrap: 'wrap' }}>
         {STEPS.map((s, i) => (
@@ -1087,6 +1094,9 @@ function Module_RF08({ onComplete }) {
       {/* MCQ after all steps done */}
       {allStepsRan && (
         <div style={{ marginTop: '1.25rem' }}>
+          <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+            <strong>What to do:</strong> Select the SQL pattern that should always run first in any RCA, then click Check.
+          </div>
           <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.65rem' }}>{RF08_MCQ.question}</div>
           {RF08_MCQ.options.map((opt, oi) => (
             <MCQOption
@@ -1177,6 +1187,10 @@ function Module_RF09({ onComplete }) {
         Not every week-over-week drop is a product regression. Before raising an alarm, overlay the same metric from the same week last year. If the shapes match, you are looking at a predictable seasonal cycle — not a broken feature.
       </p>
 
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Click the Show YoY toggle to overlay last year's data on the chart — compare what changes between the two states and notice whether the shapes match.
+      </div>
+
       {/* Chart */}
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', marginBottom: '0.85rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -1252,6 +1266,9 @@ function Module_RF09({ onComplete }) {
       {/* MCQ — show after YoY toggled */}
       {showYoY && (
         <div style={{ marginTop: '1.25rem' }}>
+          <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+            <strong>What to do:</strong> Select the answer that correctly interprets what a matching YoY drop means, then click Check.
+          </div>
           <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.65rem' }}>{RF09_MCQ.question}</div>
           {RF09_MCQ.options.map(function(opt, oi) {
             return (
@@ -1353,7 +1370,7 @@ function Module_RF10({ onComplete }) {
         Three data quality failure patterns account for the vast majority of false alarms in RCA. Each has a distinct signature. Match each symptom pattern to the correct diagnosis, then check your answer before moving to the next.
       </p>
 
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
         {DIAGNOSES.map(function(d) {
           const c = DIAGNOSIS_COLORS[d];
           return (
@@ -1362,6 +1379,10 @@ function Module_RF10({ onComplete }) {
             </span>
           );
         })}
+      </div>
+
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> For each symptom pattern, click the diagnosis that fits — an explanation reveals after your selection.
       </div>
 
       {SYMPTOMS.map(function(s) {

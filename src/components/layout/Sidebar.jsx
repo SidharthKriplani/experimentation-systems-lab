@@ -219,7 +219,7 @@ export function Sidebar({ currentPage, onNavigate, unlockedStatus, theme, onTogg
           onClick={onClose}
           style={{
             position: 'fixed', inset: 0,
-            background: 'rgba(0,0,0,0.42)',
+            background: 'var(--overlay)',
             zIndex: 49,
             backdropFilter: 'blur(2px)',
           }}

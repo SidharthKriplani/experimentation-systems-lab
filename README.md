@@ -14,7 +14,7 @@ PAL is a React + Vite SPA covering the full stack of analytical work: statistics
 
 | Room | Focus | Volume |
 |------|-------|--------|
-| **Stat Foundations** | CLT, power, p-values, effect sizes, Bayesian basics, multiple testing, causal inference (DiD, RDD, IV, synthetic control) | 20 modules |
+| **Stat Foundations** | CLT, power, p-values, effect sizes, Bayesian basics, multiple testing, causal inference (DiD, RDD, IV, synthetic control) | 32 modules |
 | **Stats** | Claim evaluation mechanic — read a statistical claim, decide if it holds | 16 modules (STAT01–16) |
 | **Metrics** | Metric definition, north-star tradeoffs, guardrail design | 8 cases (M01–M08) |
 | **Design** | Experiment design with 4-phase structured format and scoring | 16 scenarios (D01–D16) |
@@ -46,12 +46,13 @@ PAL is a React + Vite SPA covering the full stack of analytical work: statistics
 
 | Category | Count |
 |----------|-------|
-| Interactive rooms | 16 |
+| Interactive rooms | 17 |
 | Total cases / modules | 155+ |
+| Interactive foundation modules | 72 (32 Stat + 15 Exp + 13 Metrics + 12 RCA) |
 | Practice tool scenarios | 23 |
 | Long-form articles (Blog/Learn) | 69 |
 | MCQ trainer questions | 40 |
-| LocalStorage persistence keys | 15+ |
+| LocalStorage persistence keys | 25+ |
 
 **Article topics:** Metrics · RCA · Experimentation · Stats · Ambiguous/GenAI · Product Sense · SQL · Career · Mental Models · Growth Analytics
 
@@ -163,4 +164,4 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the full version history and upcomi
 
 ---
 
-*Product Analytics Lab — V4.33.7*
+*Product Analytics Lab — V4.36.0*

@@ -21,8 +21,8 @@
   --text-dim: #6b7280;
 
   /* Primary accent — indigo */
-  --accent: #4338ca;
-  --accent-hover: #3730a3;
+  --accent: #3730a3;
+  --accent-hover: #2D279E;
   --accent-light: #6366f1;
   --accent-bg: #eef2ff;
   --accent-border: #c7d2fe;
@@ -81,6 +81,12 @@
   --gradient-teal: linear-gradient(135deg, #0d9488 0%, #06b6d4 100%);
   --gradient-hero: linear-gradient(135deg, rgba(99,102,241,0.07) 0%, rgba(139,92,246,0.04) 50%, rgba(14,165,233,0.03) 100%);
 
+  /* Overlay / backdrop */
+  --overlay: rgba(0, 0, 0, 0.45);
+
+  /* Discovery — insight reveal moments only (InsightBox, debrief panels) */
+  --discovery: #E8A033;
+
   /* Transitions */
   --transition-fast: 0.1s ease;
   --transition: 0.16s ease;
@@ -88,27 +94,27 @@
 }
 
 :root[data-theme="dark"] {
-  /* Canvas — properly lifted for low-brightness visibility
-     bg→surface step is now ~12 luminance units (was ~7), cards clearly lift off page */
-  --bg: #111520;
-  --surface: #191e30;
-  --surface-2: #1f2438;
-  --surface-raised: #262c44;
+  /* Canvas — deeper blue cast, bioluminescence direction (Linear benchmark: #08090A)
+     bg→surface step maintained, borders blue-shifted for depth */
+  --bg: #0D101E;
+  --surface: #151929;
+  --surface-2: #1C2035;
+  --surface-raised: #232840;
 
-  /* Borders — significantly brighter, visible at 20-30% screen brightness */
-  --border: #3d4668;
-  --border-subtle: #2f3758;
-  --border-strong: #535e82;
+  /* Borders — blue-shifted, still visible at low brightness */
+  --border: #2E3A5C;
+  --border-subtle: #263350;
+  --border-strong: #3E4E72;
 
-  /* Text — full hierarchy readable at low brightness */
-  --text: #f2f4fa;
-  --text-secondary: #d0d5e8;
-  --text-muted: #a2acc6;
-  --text-dim: #8490aa;
+  /* Text — cooler blue cast, full hierarchy readable at low brightness */
+  --text: #EEF0FA;
+  --text-secondary: #C5CBE4;
+  --text-muted: #8F9BB8;
+  --text-dim: #7A87A8;
 
-  /* Primary accent — indigo */
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
+  /* Primary accent — indigo (more saturated, electric direction) */
+  --accent: #5C5FF5;
+  --accent-hover: #7478F7;
   --accent-light: #818cf8;
   --accent-bg: #141f3e;
   --accent-border: #2d4e98;
@@ -148,14 +154,14 @@
   --blue-border: #2d4e98;
 
   /* Structural */
-  --header-bg: rgba(17, 21, 32, 0.97);
+  --header-bg: rgba(13, 16, 30, 0.97);
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.25);
   --shadow: 0 2px 8px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.7), 0 4px 12px rgba(0,0,0,0.45);
   --shadow-xl: 0 20px 60px rgba(0,0,0,0.8), 0 8px 24px rgba(0,0,0,0.55);
   --shadow-glow: 0 0 0 3px rgba(99,102,241,0.25);
-  --input-bg: #191e30;
+  --input-bg: #151929;
   --radius: 9px;
   --radius-sm: 5px;
   --radius-lg: 13px;
@@ -166,6 +172,9 @@
   --gradient-warm: linear-gradient(135deg, #fbbf24 0%, #fb923c 100%);
   --gradient-teal: linear-gradient(135deg, #2dd4bf 0%, #22d3ee 100%);
   --gradient-hero: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.07) 50%, rgba(14,165,233,0.04) 100%);
+
+  /* Discovery — insight reveal (warmer amber on dark surface) */
+  --discovery: #F0B352;
 
   /* Transitions (same as light) */
   --transition-fast: 0.1s ease;
@@ -304,7 +313,7 @@ table { border-collapse: collapse; }
 .sidebar-overlay {
   display: none;
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: var(--overlay);
   z-index: 49;
 }
 

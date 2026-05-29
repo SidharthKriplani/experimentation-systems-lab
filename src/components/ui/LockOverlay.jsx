@@ -2,7 +2,7 @@ export function LockOverlay({ onUnlock }) {
   return (
     <div className="pal-slide-up" style={{
       position: 'absolute', inset: 0, zIndex: 10,
-      background: 'rgba(0,0,0,0.55)',
+      background: 'var(--overlay)',
       backdropFilter: 'blur(4px)',
       borderRadius: '8px',
       display: 'flex',

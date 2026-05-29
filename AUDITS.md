@@ -39,6 +39,151 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XXV — V4.36.1–V4.36.2 Infrastructure Audit
+
+### 118. ✅ Copy — PlaybookBrowser + BlogBrowser label copy (audit #83)
+
+**Version:** Fixed (prior session, confirmed V4.36.x)
+**Type:** Content Integrity
+
+`PlaybookBrowser.jsx` h1 heading confirmed as "Reference cards". `BlogBrowser.jsx` h1 confirmed as "deep dives". No label reading "framework" or "concepts and frameworks" found in UI copy. Both changes were already in place — confirmed by grep audit.
+
+**Files:** `src/pages/PlaybookBrowser.jsx`, `src/pages/BlogBrowser.jsx`
+
+---
+
+### 119. ✅ SEO — Sitemap missing 8 top-level routes (audit #93)
+
+**Version:** Fixed (prior session, confirmed V4.36.x)
+**Type:** SEO / Social
+
+All 8 required top-level routes confirmed present in `public/sitemap.xml`: `/` (priority 1.0), `/progress` (0.7), `/trainer` (0.7), `/unlock` (0.6), `/company-tracks` (0.8), `/defense-doc` (0.8), `/about` (0.5), `/search` (0.7). 26+ total URLs in sitemap. No additions needed.
+
+**Files:** `public/sitemap.xml`
+
+---
+
+### 120. ✅ BUILD — React Error Boundary missing entirely (audit #105)
+
+**Version:** Fixed (prior session, confirmed V4.36.x)
+**Type:** Framework / Technical
+
+`src/components/shared/ErrorBoundary.jsx` confirmed to exist as a class component with `getDerivedStateFromError`, `componentDidCatch`, and "Something went wrong — go home" fallback UI using CSS variables. `src/App.jsx` confirmed wrapping `<Suspense>` block inside `<ErrorBoundary>` with correct named import. Three white-screen crash vectors (Behavioral room, Cases shuffling, Module25_IV) are now caught and surfaced gracefully.
+
+**Files:** `src/components/shared/ErrorBoundary.jsx`, `src/App.jsx`
+
+---
+
+### 121. ✅ Build safety — Data file validator script (audit #102)
+
+**Version:** Fixed V4.36.2
+**Type:** Build safety
+
+`scripts/validate-data.js` implemented as an ES module (matching `package.json "type": "module"`). Three checks: (1) backtick character scan per line, (2) character-by-character state machine for unescaped apostrophes inside single-quoted strings (skips double-quoted content to avoid false positives), (3) `id:` and `title:` field presence check. `npm run validate-data` added to `package.json` scripts. Smoke test: 26/28 data files PASS; `companyTracks.js` and `trainerMCQ.js` flag "Missing required field: title" — legitimate structural exceptions (those files use `company`/`question` schemas), not bugs.
+
+**Files:** `scripts/validate-data.js`, `package.json`
+
+---
+
+### 122. ✅ Visual Consistency — Depth palette pass + --discovery token (V4.36.3)
+
+**Version:** Fixed V4.36.3
+**Type:** Visual Consistency / Creativity & Product
+
+Dark mode surface stack deepened (bg #0D101E, surface #151929, surface-2 #1C2035, surface-raised #232840), borders blue-shifted, indigo accent saturated (#5C5FF5 dark / #3730a3 light). New `--discovery` token (#E8A033 light / #F0B352 dark) added and scoped to InsightBox + debrief reveal panels only. DECISIONS.md rule added to prevent token reuse. Competitive research basis: Linear dark bg, Observable amber secondary. Font system (Source Serif 4 + DM Sans) deferred pending local preview.
+
+**Files:** `src/index.css`, `DECISIONS.md`
+
+---
+
+### 117. ✅ Visual Consistency — Hardcoded color values across 7 component files (audit #92)
+
+### 117. ✅ Visual Consistency — Hardcoded color values across 7 component files (audit #92)
+
+**Version:** Fixed V4.36.1
+**Type:** Visual Consistency
+
+40+ hardcoded `rgba(0,0,0,x)`, `#333`, and other semantic color values existed in AuthModal, Sidebar, LockOverlay, Header, StatsFoundationsRunner, Home.jsx, and index.css — bypassing the CSS variable system and breaking dark mode correctness.
+
+**Fix:** Introduced `--overlay: rgba(0, 0, 0, 0.45)` to `:root` in `index.css` as a shared backdrop token. Applied `var(--overlay)` to all modal/drawer backdrop usages. Applied `var(--shadow-md)` to dropdown and toast box-shadows. Applied `var(--text)` to Google OAuth button text color in AuthModal.
+
+**Deliberate exclusions:** `'#fff'` on colored CTA buttons (convention), `rgba(0,0,0,0.08)` in JS `onMouseEnter` inline style strings (CSS vars don't resolve at runtime), `#4285F4` Google brand blue, SVG data-viz colors.
+
+**Files:** `src/index.css`, `src/components/auth/AuthModal.jsx`, `src/components/layout/Sidebar.jsx`, `src/components/ui/LockOverlay.jsx`, `src/components/layout/Header.jsx`, `src/components/statsFoundations/StatsFoundationsRunner.jsx`, `src/pages/Home.jsx`
+
+---
+
+## Part XXIV — V4.35.5–V4.36.0 Foundation Layer Completion Audit
+
+Full foundation layer audit covering: right-side nav panel, stub greying, 5 NEXT.md bug fixes, and 12 interactive module replacements.
+
+### 112. ✅ UX — Foundation runners lacked any module navigation panel
+
+**Version:** Fixed V4.35.5
+**Type:** Navigation & Discoverability
+
+No navigation panel existed inside any of the four foundation runners. Users who wanted to jump between modules had to exit to the browser page and re-enter. There was no way to see progress at a glance, identify completed modules, or skip ahead.
+
+**Fix:** Added a sticky right-side nav sidebar to all 4 foundation runners. CSS utility class `.pal-foundation-nav` added to `index.css` (hides below 900px). Outer container uses `display: flex`; sidebar is `order: 2`; content is `order: 1`. Clicking any non-blocked module calls `onSelectModule` wired in App.jsx. Current module highlighted with room accent color; completed modules show `✓`; locked modules show `🔒` and are non-clickable.
+
+**Files:** All 4 runner files, `src/App.jsx`, `src/index.css`
+
+---
+
+### 113. ✅ Content — 19 stub modules greyed in nav but no clickable content existed
+
+**Version:** Fixed V4.35.6 (greying) + V4.36.0 (content)
+**Type:** Content Integrity + UX
+
+19 module stubs across Exp Foundations (ef08–ef15), Metrics Foundations (mf09–mf13), and RCA Foundations (rf07–rf12) had devNotes in data files and skeleton "Coming Soon" placeholder components, but no real interactive content. With the new nav sidebar, stubs were now navigable and the "Coming Soon" placeholders were prominently exposed.
+
+**V4.35.6 mitigation:** Added `isStub: true` to all 19 stub entries in the 3 data files. Nav sidebar renders stubs at 0.4 opacity, non-clickable, with "Coming soon" tooltip.
+
+**V4.36.0 full fix:** Replaced all 12 remaining "Coming Soon" placeholders with full interactive modules (ef12–ef15 had already been built in previous session along with mf09–mf10, rf07). All 12 new modules follow the established pattern: SVG visualization or interactive element, MCQ with reveal, key insight. Removed `isStub: true` from all 19 entries — all foundation modules are now fully clickable.
+
+**Files:** `expFoundationsRunner.jsx`, `metricsFoundationsRunner.jsx`, `rcaFoundationsRunner.jsx`, all 3 data files.
+
+---
+
+### 114. ✅ BUILD — Foundation subtitle renders twice: in runner header and in module body paragraph (audit #94)
+
+**Version:** Fixed V4.35.x (this session)
+**Type:** BUILD + Content Integrity
+
+Five stat foundation modules (Module01, Module02, Module03, Module05, Module06) opened their body paragraph with `{module?.subtitle}` — the same text already rendered in the yellow header card by the runner shell. Result: subtitle appeared once in the header card and again as the first sentence of the body, with no separator.
+
+**Fix:** Removed `{module?.subtitle}` from the body paragraph in all 5 affected module files using a Python sed script. Verified render after each. No other module files were affected (confirmed by grep).
+
+**Files:** `Module01_WhatIsData.jsx`, `Module02_CentralTendency.jsx`, `Module03_Spread.jsx`, `Module05_ZScores.jsx`, `Module06_Areas.jsx`
+
+---
+
+### 115. ✅ UX — Progress page GuidedPathCard expanded to show full item list (no value added)
+
+**Version:** Fixed V4.35.x (this session)
+**Type:** UX / Human Elements
+
+Each GuidedPathCard on the Progress page expanded to show every item in the path (5–7 rows with room badges, case names, and "Next" labels). This made the Progress page feel like a curriculum view rather than a dashboard. The item list added no information not already surfaced by the progress bar and "Continue" button.
+
+**Fix:** Removed the `{/* Sequence list */}` block (~40 lines) from GuidedPathCard.jsx. Kept: path name, progress counter (X/N), progress bar, Continue CTA.
+
+**File:** `src/components/paths/GuidedPathCard.jsx`
+
+---
+
+### 116. ✅ Content — Homepage framing diluted core analytics identity (audit #103)
+
+**Version:** Fixed V4.35.x (this session)
+**Type:** UX / Human Elements + Creativity / Product
+
+Homepage subtitle treated all 16 rooms as equals and did not lead with the analytics+experimentation wedge that defines PAL's identity. Two independent external reviews (ChatGPT cold-read V4.33.7, investor-style review V4.34.0) flagged the same dilution problem.
+
+**Fix:** Updated subtitle to "The hands-on prep platform for product analysts and PMs. Master experiment design, metric diagnosis, and root cause analysis — the three skills that decide every product analytics interview. Each scenario tests judgment, not recall." Primary CTA changed from generic "Start practicing →" (pointing to stat-foundations) to "Start with A/B testing →" (pointing to stats room — the stronger first impression). DECISIONS.md rule on core room visual weight was already updated.
+
+**File:** `src/pages/Home.jsx`
+
+---
+
 ## Part XXIII — V4.35.3 Audience Coverage Audit (Indian market gap)
 
 **⚠️ #111 — Case bank skews US-tech; Indian analyst/PM audience not served (Content staleness / Coverage)**

@@ -289,7 +289,7 @@ export function Header({ currentPage, onNavigate, unlockedStatus, theme, onToggl
                     background: 'var(--surface)',
                     border: '1px solid var(--border)',
                     borderRadius: '6px',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+                    boxShadow: 'var(--shadow-md)',
                     minWidth: '180px',
                     zIndex: 200,
                     overflow: 'hidden',
