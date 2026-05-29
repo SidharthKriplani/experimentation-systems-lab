@@ -18,7 +18,7 @@ class ModuleErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
-import { saveStatFoundationsProgress, getStatFoundationsProgress } from '../../utils/statsFoundationsProgress.js';
+import { saveStatFoundationsProgress, getStatFoundationsProgress, getAllStatFoundationsProgress } from '../../utils/statsFoundationsProgress.js';
 import { addBookmark, removeBookmark, isBookmarked, toggleBookmark } from '../../utils/bookmarks.js';
 import { Module01_WhatIsData } from './modules/Module01_WhatIsData.jsx';
 import { Module02_CentralTendency } from './modules/Module02_CentralTendency.jsx';
@@ -114,7 +114,7 @@ const DIFFICULTY_STYLE = {
   Advanced:     { color: 'var(--red)',    bg: 'var(--red-bg)',    border: 'var(--red-border)' },
 };
 
-export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked, onNavigate }) {
+export function StatsFoundationsRunner({ moduleId, onBack, onNext, unlocked, onNavigate, onSelectModule }) {
   const module = statsFoundationsModules.find(m => m.id === moduleId);
   const ModuleComponent = MODULE_COMPONENTS[moduleId];
 
@@ -177,8 +177,53 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
     });
   }
 
+  const completedMap = getAllStatFoundationsProgress();
+
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%', boxSizing: 'border-box', position: 'relative' }}>
+    <div style={{ maxWidth: '1120px', margin: '0 auto', padding: '1.5rem 1rem', width: '100%', boxSizing: 'border-box', display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+
+      {/* ── Right nav sidebar ── */}
+      <div className="pal-foundation-nav" style={{
+        width: '190px', flexShrink: 0, order: 2,
+        position: 'sticky', top: '1rem',
+        maxHeight: 'calc(100vh - 2rem)', overflowY: 'auto',
+        background: 'var(--surface)', border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)', padding: '0.75rem 0.5rem',
+      }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', padding: '0 0.4rem', marginBottom: '0.5rem' }}>
+          Stat Foundations
+        </div>
+        {statsFoundationsModules.map((m) => {
+          const isCurrent = m.id === moduleId;
+          const isDone = !!completedMap[m.id];
+          const isLocked = !m.isFree && !unlocked;
+          return (
+            <button
+              key={m.id}
+              onClick={() => !isLocked && onSelectModule && onSelectModule(m.id)}
+              style={{
+                display: 'flex', alignItems: 'baseline', gap: '0.35rem',
+                width: '100%', textAlign: 'left',
+                padding: '0.28rem 0.4rem', borderRadius: '5px', border: 'none',
+                background: isCurrent ? 'var(--yellow-bg)' : 'transparent',
+                color: isCurrent ? 'var(--yellow-text)' : isLocked ? 'var(--text-muted)' : isDone ? 'var(--teal)' : 'var(--text)',
+                fontSize: '0.75rem', lineHeight: 1.4,
+                cursor: isLocked ? 'default' : 'pointer',
+                opacity: isLocked ? 0.55 : 1,
+                marginBottom: '0.1rem',
+                fontWeight: isCurrent ? 700 : 400,
+              }}
+              title={isLocked ? 'Unlock to access' : m.title}
+            >
+              <span style={{ flexShrink: 0, fontVariantNumeric: 'tabular-nums', fontSize: '0.68rem', color: isCurrent ? 'var(--yellow)' : 'var(--text-muted)', minWidth: '1.4rem' }}>{m.index}.</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isLocked ? '🔒 ' : isDone && !isCurrent ? '✓ ' : ''}{m.title}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Main content column ── */}
+      <div style={{ flex: 1, minWidth: 0, order: 1, position: 'relative' }}>
 
       {/* ── Toast notification ── */}
       {toastVisible && (
@@ -448,6 +493,7 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
           </div>
         </>
       )}
+      </div>{/* end main content column */}
     </div>
   );
 }

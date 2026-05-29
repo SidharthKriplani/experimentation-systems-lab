@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { rcaFoundationModules } from '../../data/rcaFoundationModules.js';
-import { saveRCAFoundationProgress } from '../../utils/rcaFoundationProgress.js';
+import { saveRCAFoundationProgress, getAllRCAFoundationProgress } from '../../utils/rcaFoundationProgress.js';
 import { track } from '../../utils/analytics.js';
 
 const NOTES_KEY = 'pal-notes-v1';
@@ -932,7 +932,7 @@ const MODULE_COMPONENTS = {
 };
 
 // ── Runner shell ────────────────────────────────────────────────────────────
-export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
+export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked, onSelectModule }) {
   const module = rcaFoundationModules.find(m => m.id === moduleId);
   const [completed, setCompleted] = useState(false);
   const [note, setNote] = useState(() => getNotes('rca-foundations', moduleId));
@@ -948,8 +948,53 @@ export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
     setCompleted(true);
   }
 
+  const completedMap = getAllRCAFoundationProgress();
+
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto', padding: '1.5rem 1.25rem 3rem' }}>
+    <div style={{ maxWidth: '1120px', margin: '0 auto', padding: '1.5rem 1rem', width: '100%', boxSizing: 'border-box', display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+
+      {/* ── Right nav sidebar ── */}
+      <div className="pal-foundation-nav" style={{
+        width: '190px', flexShrink: 0, order: 2,
+        position: 'sticky', top: '1rem',
+        maxHeight: 'calc(100vh - 2rem)', overflowY: 'auto',
+        background: 'var(--surface)', border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)', padding: '0.75rem 0.5rem',
+      }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', padding: '0 0.4rem', marginBottom: '0.5rem' }}>
+          RCA Foundations
+        </div>
+        {rcaFoundationModules.map((m) => {
+          const isCurrent = m.id === moduleId;
+          const isDone = !!completedMap[m.id];
+          const isLocked = !m.isFree && !unlocked;
+          return (
+            <button
+              key={m.id}
+              onClick={() => !isLocked && onSelectModule && onSelectModule(m.id)}
+              style={{
+                display: 'flex', alignItems: 'baseline', gap: '0.35rem',
+                width: '100%', textAlign: 'left',
+                padding: '0.28rem 0.4rem', borderRadius: '5px', border: 'none',
+                background: isCurrent ? 'var(--teal-bg)' : 'transparent',
+                color: isCurrent ? 'var(--teal)' : isLocked ? 'var(--text-muted)' : isDone ? 'var(--teal)' : 'var(--text)',
+                fontSize: '0.75rem', lineHeight: 1.4,
+                cursor: isLocked ? 'default' : 'pointer',
+                opacity: isLocked ? 0.55 : 1,
+                marginBottom: '0.1rem',
+                fontWeight: isCurrent ? 700 : 400,
+              }}
+              title={isLocked ? 'Unlock to access' : m.title}
+            >
+              <span style={{ flexShrink: 0, fontVariantNumeric: 'tabular-nums', fontSize: '0.68rem', color: isCurrent ? 'var(--teal)' : 'var(--text-muted)', minWidth: '1.4rem' }}>{m.index}.</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isLocked ? '🔒 ' : isDone && !isCurrent ? '✓ ' : ''}{m.title}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Main content column ── */}
+      <div style={{ flex: 1, minWidth: 0, order: 1 }}>
       {/* Nav bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
         <button onClick={onBack} style={{
@@ -1049,6 +1094,7 @@ export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
           </div>
         </div>
       )}
+      </div>{/* end main content column */}
     </div>
   );
 }

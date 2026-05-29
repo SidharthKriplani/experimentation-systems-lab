@@ -903,6 +903,7 @@ export default function App() {
             onNext={nextStatFoundationsId
               ? () => openStatFoundationsModule(nextStatFoundationsId)
               : () => setPage('stat-foundations')}
+            onSelectModule={openStatFoundationsModule}
             unlocked={unlocked}
             onNavigate={navigate}
           />
@@ -1170,6 +1171,7 @@ export default function App() {
             moduleId={activeRCAFoundationId}
             onBack={() => setPage('rca-foundations')}
             onNext={(() => { const n = getNextRCAFoundationId(activeRCAFoundationId); return n ? () => openRCAFoundationModule(n) : () => setPage('rca-foundations'); })()}
+            onSelectModule={openRCAFoundationModule}
             unlocked={unlocked}
           />
         )}
@@ -1184,6 +1186,7 @@ export default function App() {
             moduleId={activeExpFoundationId}
             onBack={() => setPage('exp-foundations')}
             onNext={(() => { const n = getNextExpFoundationId(activeExpFoundationId); return n ? () => openExpFoundationModule(n) : () => setPage('exp-foundations'); })()}
+            onSelectModule={openExpFoundationModule}
             unlocked={unlocked}
           />
         )}
@@ -1198,6 +1201,7 @@ export default function App() {
             moduleId={activeMetricsFoundationId}
             onBack={() => setPage('metrics-foundations')}
             onNext={(() => { const n = getNextMetricsFoundationId(activeMetricsFoundationId); return n ? () => openMetricsFoundationModule(n) : () => setPage('metrics-foundations'); })()}
+            onSelectModule={openMetricsFoundationModule}
             unlocked={unlocked}
           />
         )}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { metricsFoundationModules } from '../../data/metricsFoundationModules.js';
-import { saveMetricsFoundationProgress, getMetricsFoundationProgress } from '../../utils/metricsFoundationProgress.js';
+import { saveMetricsFoundationProgress, getMetricsFoundationProgress, getAllMetricsFoundationProgress } from '../../utils/metricsFoundationProgress.js';
 import { track } from '../../utils/analytics.js';
 
 const NOTES_KEY = 'pal-notes-v1';
@@ -874,7 +874,7 @@ const MODULE_COMPONENTS = {
 
 // ─── Runner shell ─────────────────────────────────────────────────────────────
 
-export function MetricsFoundationsRunner({ moduleId, onBack, onNext, unlocked }) {
+export function MetricsFoundationsRunner({ moduleId, onBack, onNext, unlocked, onSelectModule }) {
   const module = metricsFoundationModules.find(m => m.id === moduleId);
   const [completed, setCompleted] = useState(() => !!getMetricsFoundationProgress(moduleId));
   const [note, setNote] = useState(() => getNotes('metrics-foundations', moduleId));
@@ -899,8 +899,53 @@ export function MetricsFoundationsRunner({ moduleId, onBack, onNext, unlocked })
     else onBack();
   }
 
+  const completedMap = getAllMetricsFoundationProgress();
+
   return (
-    <div style={{ maxWidth: 780, margin: '0 auto', padding: '1.5rem 1.25rem 3rem' }}>
+    <div style={{ maxWidth: '1120px', margin: '0 auto', padding: '1.5rem 1rem', width: '100%', boxSizing: 'border-box', display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+
+      {/* ── Right nav sidebar ── */}
+      <div className="pal-foundation-nav" style={{
+        width: '190px', flexShrink: 0, order: 2,
+        position: 'sticky', top: '1rem',
+        maxHeight: 'calc(100vh - 2rem)', overflowY: 'auto',
+        background: 'var(--surface)', border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)', padding: '0.75rem 0.5rem',
+      }}>
+        <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', padding: '0 0.4rem', marginBottom: '0.5rem' }}>
+          Metrics Foundations
+        </div>
+        {metricsFoundationModules.map((m) => {
+          const isCurrent = m.id === moduleId;
+          const isDone = !!completedMap[m.id];
+          const isLocked = !m.isFree && !unlocked;
+          return (
+            <button
+              key={m.id}
+              onClick={() => !isLocked && onSelectModule && onSelectModule(m.id)}
+              style={{
+                display: 'flex', alignItems: 'baseline', gap: '0.35rem',
+                width: '100%', textAlign: 'left',
+                padding: '0.28rem 0.4rem', borderRadius: '5px', border: 'none',
+                background: isCurrent ? 'var(--green-bg)' : 'transparent',
+                color: isCurrent ? 'var(--green)' : isLocked ? 'var(--text-muted)' : isDone ? 'var(--teal)' : 'var(--text)',
+                fontSize: '0.75rem', lineHeight: 1.4,
+                cursor: isLocked ? 'default' : 'pointer',
+                opacity: isLocked ? 0.55 : 1,
+                marginBottom: '0.1rem',
+                fontWeight: isCurrent ? 700 : 400,
+              }}
+              title={isLocked ? 'Unlock to access' : m.title}
+            >
+              <span style={{ flexShrink: 0, fontVariantNumeric: 'tabular-nums', fontSize: '0.68rem', color: isCurrent ? 'var(--green)' : 'var(--text-muted)', minWidth: '1.4rem' }}>{m.index}.</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isLocked ? '🔒 ' : isDone && !isCurrent ? '✓ ' : ''}{m.title}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Main content column ── */}
+      <div style={{ flex: 1, minWidth: 0, order: 1 }}>
       {/* Nav bar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer', padding: '0.25rem 0', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
@@ -972,6 +1017,7 @@ export function MetricsFoundationsRunner({ moduleId, onBack, onNext, unlocked })
           }}
         />
       </div>
+      </div>{/* end main content column */}
     </div>
   );
 }

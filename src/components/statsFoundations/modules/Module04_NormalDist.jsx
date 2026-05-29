@@ -20,18 +20,24 @@ const W = 580;
 const H = 175;
 const N_POINTS = 220;
 
+// Fixed height reference: peak PDF at the minimum slider sigma (0.5).
+// Using a constant reference means the curve HEIGHT changes visually as σ changes —
+// narrow σ → tall bell, wide σ → short flat bell.
+const REF_PDF = 1 / (0.5 * Math.sqrt(2 * Math.PI));
+
 export function Module04_NormalDist({ module, onNext }) {
   const [mu, setMu] = useState(0);
   const [sigma, setSigma] = useState(1);
 
-  const { curvePath, fillPath, xMin, xMax, maxPDF, toSvgX, toSvgY } = useMemo(() => {
+  const { curvePath, fillPath, xMin, xMax, maxPDF, toSvgX, toSvgY, peakSvgY } = useMemo(() => {
     const xMin = mu - 4.5 * sigma;
     const xMax = mu + 4.5 * sigma;
     const xRange = xMax - xMin;
     const maxPDF = normalPDF(mu, mu, sigma);
 
     const toSvgX = (x) => ((x - xMin) / xRange) * W;
-    const toSvgY = (pdf) => H - (pdf / maxPDF) * (H * 0.85) - 8;
+    // Use REF_PDF (fixed at σ=0.5) so the curve HEIGHT changes visually when σ changes.
+    const toSvgY = (pdf) => Math.max(2, H - (pdf / REF_PDF) * (H * 0.85) - 8);
 
     const pts = Array.from({ length: N_POINTS }, (_, i) => {
       const x = xMin + (i / (N_POINTS - 1)) * xRange;
@@ -44,7 +50,10 @@ export function Module04_NormalDist({ module, onNext }) {
       curvePath +
       ` L ${pts[pts.length - 1].x.toFixed(2)},${H} L ${pts[0].x.toFixed(2)},${H} Z`;
 
-    return { curvePath, fillPath, xMin, xMax, maxPDF, toSvgX, toSvgY };
+    // SVG y of the current curve peak — used to position labels inside the chart.
+    const peakSvgY = toSvgY(maxPDF);
+
+    return { curvePath, fillPath, xMin, xMax, maxPDF, toSvgX, toSvgY, peakSvgY };
   }, [mu, sigma]);
 
   const sigmaLines = useMemo(() => {
@@ -82,14 +91,13 @@ export function Module04_NormalDist({ module, onNext }) {
           <path d={fillPath} fill="var(--accent-bg)" stroke="none" opacity={0.7} />
 
           {/* Sigma region labels */}
-          {/* 68% band */}
+          {/* 68% band — uses same toSvgY normalization as the main curve */}
           <path
             d={(() => {
               const lo = mu - sigma, hi = mu + sigma;
-              const xRange = xMax - xMin;
               const pts68 = Array.from({ length: 80 }, (_, i) => {
                 const x = lo + (i / 79) * (hi - lo);
-                return { x: toSvgX(x), y: H - (normalPDF(x, mu, sigma) / maxPDF) * (H * 0.85) - 8 };
+                return { x: toSvgX(x), y: toSvgY(normalPDF(x, mu, sigma)) };
               });
               return (
                 'M ' + pts68.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' L ') +
@@ -131,11 +139,11 @@ export function Module04_NormalDist({ module, onNext }) {
             </g>
           ))}
 
-          {/* 68% label */}
-          <text x={toSvgX(mu)} y={H * 0.4} textAnchor="middle" fontSize={11} fill="var(--accent)" fontWeight={700} opacity={0.85}>
+          {/* 68% label — positioned relative to current curve peak */}
+          <text x={toSvgX(mu)} y={Math.max(16, peakSvgY - 14)} textAnchor="middle" fontSize={11} fill="var(--accent)" fontWeight={700} opacity={0.85}>
             68%
           </text>
-          <text x={toSvgX(mu)} y={H * 0.4 + 13} textAnchor="middle" fontSize={9} fill="var(--accent)" opacity={0.7}>
+          <text x={toSvgX(mu)} y={Math.max(28, peakSvgY - 1)} textAnchor="middle" fontSize={9} fill="var(--accent)" opacity={0.7}>
             (±1σ)
           </text>
 

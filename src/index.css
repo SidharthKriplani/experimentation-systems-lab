@@ -770,3 +770,14 @@ button:not(:disabled):active {
   align-items: center;
   gap: 0.35rem;
 }
+
+/* ── Foundation module nav sidebar ──────────────────────────────────────── */
+/* Shown on desktop, hidden on narrow viewports to avoid crowding the module content */
+.pal-foundation-nav {
+  display: block;
+}
+@media (max-width: 900px) {
+  .pal-foundation-nav {
+    display: none;
+  }
+}

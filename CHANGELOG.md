@@ -4,6 +4,20 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.35.5] — 2026-05-30 [UX]
+
+### Module04 reshape fix + right-side nav panel across all 4 foundation runners
+
+**Module04_NormalDist — curve doesn't reshape with σ slider:**
+After fixing the pts spike bug in V4.35.4, the curve still showed no visual difference between σ=0.5 and σ=3 because `toSvgY` normalised each curve to its own peak (`pdf / maxPDF` always = 1 at the peak). Fix: introduced `REF_PDF = 1 / (0.5 * Math.sqrt(2 * Math.PI))` — the peak PDF at σ=0.5 (the slider minimum). Using this fixed reference means HEIGHT changes visually with σ: σ=0.5 fills full SVG height, σ=1 fills ~50%, σ=3 fills ~17%. Updated the 68% band path and the "68% / ±1σ" labels to use `toSvgY` / `peakSvgY` so they track the curve peak correctly. No change to the adaptive x-axis (still ±4.5σ).
+
+**Right-side module nav panel — all 4 foundation runners:**
+All four foundation runners now render a sticky right-side sidebar listing every module in that room, with jump-to navigation. Added `.pal-foundation-nav` CSS utility class to `index.css` (follows established utility class pattern; hides below 900px via `@media`). Outer container changed to flex layout (`maxWidth: 1120px, display: flex`); sidebar is `order: 2` (right), content column is `order: 1` (left). Current module highlighted with room accent colour; completed modules show `✓` in teal; locked modules show `🔒` and are non-clickable. Wired `onSelectModule` prop in `App.jsx` for all 4 runners.
+
+Files changed: `src/components/statsFoundations/StatsFoundationsRunner.jsx`, `src/components/expFoundations/ExpFoundationsRunner.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, `src/components/rcaFoundations/RCAFoundationsRunner.jsx`, `src/App.jsx`, `src/index.css`.
+
+---
+
 ## [4.35.4] — 2026-05-30 [BUG]
 
 ### Stat Foundations — 7 module UI bug fixes
