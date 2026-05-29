@@ -41,6 +41,9 @@ Not data scientists. This distinction matters for copy, onboarding framing, and 
 **Sibling labs (ML Systems Lab, GenAI Systems Lab) are linked passively from Home.jsx only.**
 A "sister labs" footer strip linking to `https://ml-systems-lab-v9xe.vercel.app/` and `https://genai-systems-lab-ivory.vercel.app/` lives at the bottom of `src/pages/Home.jsx` only — muted style, no visual emphasis. No global footer link. No structural coupling between labs (shared auth, shared progress, unified nav). Labs are separate products that acknowledge each other's existence — not a platform. A future hub page is the right interlinking model if cross-lab navigation is ever needed. This was decided in V4.33.0. Do not add sister lab links anywhere outside Home.jsx without an explicit session decision.
 
+**Rooms outside the analytics + experimentation core must not share equal visual weight with the core rooms.**
+The core rooms — Stats, Metrics, Experiment Design, Experiment Review, RCA — are PAL's product identity. Behavioral, Estimation, PM Product Design, and generic career prep are in scope for the product but must not crowd out the core above the fold or in the nav hierarchy. If the landing page or nav treats 16 rooms as equals, the product loses its identity. Homepage and nav framing must reinforce the analytics + experimentation wedge first. Other rooms exist for depth, not for positioning. This rule came from two convergent external reads (ChatGPT cold-read V4.33.7, investor-style review V4.34.0) flagging the same dilution problem. Audit #103 (homepage framing) is the open action item.
+
 **GenAI is a thread, not a room.**
 GenAI content lives inside existing rooms (Playbook articles, RCA cases, Metrics cases). There is no standalone GenAI room. This keeps scope clean and avoids thin content.
 

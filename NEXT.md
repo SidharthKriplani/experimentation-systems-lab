@@ -28,12 +28,14 @@ Subtitle renders in yellow runner header card (correct) AND as first words of bo
 **4. Hardcoded color values — CSS variable pass (audit #92)** `M` `HIGH`
 40+ hardcoded `#fff`, `rgba(0,0,0,x)`, `#333` across RCAFoundationsRunner, AuthModal, Sidebar, LockOverlay, DesignDebriefPanel, MetricChoicePanel. Check `index.css` for existing variables first. Replace all violations. ~1 session.
 
-**5. Sitemap — add 8 missing top-level routes (audit #93)** `S` `MEDIUM`
-Add to `public/sitemap.xml`: home, progress, trainer, unlock, company-tracks, defense-doc, about, search. Runner sub-pages excluded. Quick edit.
+**5. Homepage framing pass (audit #103)** `S` `HIGH`
+Read `src/pages/Home.jsx`. Align copy with the analytics + experimentation core identity — the page should not treat all 16 rooms as equals above the fold. Two independent external reads (ChatGPT cold-read V4.33.7, investor-style review V4.34.0) flagged the same dilution problem. DECISIONS.md now has a standing rule on this. Copy-only, ~20 min. Do not restructure the component — just fix the framing.
 
 ---
 
 ## Deferred to own session
+
+**Sitemap — add 8 missing top-level routes (audit #93)** — Add to `public/sitemap.xml`: home, progress, trainer, unlock, company-tracks, defense-doc, about, search. Runner sub-pages excluded. Moved from queue — homepage framing took priority.
 
 **Supabase auth — finish or cut (audit #104)** — DECISION DUE before Batch 2 outreach. Either complete to production-ready (E2E test with real Supabase project, PROGRESS_KEYS completeness, error handling) or remove entirely. Read DECISIONS.md for the rule. Do not leave half-done.
 

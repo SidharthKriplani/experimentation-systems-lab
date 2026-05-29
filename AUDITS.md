@@ -39,6 +39,25 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XXI — V4.34.0 External Review Audit (investor-style read, all three labs)
+
+Source: Investor-style cold-read of all three lab repos (PAL, ML Systems Lab, GenAI Systems Lab) based on READMEs and package structure. Not a full source audit. Treated as a credible strategic signal — two findings converge with the prior ChatGPT review and are therefore actionable. Items that are speculative, pre-data, or generic startup advice are noted and discarded.
+
+### 109. ⚠️ Product / Creativity — Homepage and nav treat all 16 rooms as equals, diluting the analytics + experimentation identity
+
+**Version:** Open — audit #103, action item in NEXT.md
+**Type:** Creativity / Product + UX / Human Elements
+
+Two independent external reads (ChatGPT V4.33.7, investor read V4.34.0) flagged the same problem: PAL's landing page and nav surface 16 rooms with equal weight, which buries the actual wedge (analytics + experimentation judgment) under behavioral, estimation, PM product design, career prep, and other secondary content. A first-time visitor cannot immediately identify what PAL is specifically for.
+
+**What to fix:** `src/pages/Home.jsx` — copy pass only, no component restructuring. The above-the-fold framing must lead with the core 5 rooms (Stats, Metrics, Experiment Design, Experiment Review, RCA) and position other rooms as depth, not as co-equal entry points.
+
+**Standing rule added:** DECISIONS.md now has an explicit rule — rooms outside the analytics + experimentation core must not share equal visual weight with the core rooms.
+
+**Note on discarded recommendations from this review:** The reviewer also suggested hiding/removing behavioral, estimation, and PM rooms entirely, and proposed specific pricing tiers ($49–$199). Both are pre-data decisions that require user completion signals before acting. Not logged as action items.
+
+---
+
 ## Part XX — V4.33.7 External Review Audit (ChatGPT cold-read)
 
 Source: ChatGPT independent review of all three sister labs (PAL, ML Systems Lab, GenAI Systems Lab) with no prior context. Treated as a credible external signal. Review assessed PAL as 8/10 — most commercially coherent of the three. Gaps identified below are real and logged as audits. Items already known or intentional decisions are noted and not re-logged.
