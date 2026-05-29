@@ -183,7 +183,7 @@ export const prioritizationIndex = [
 export const behavioralIndex = [
   { id: 'BEH01', isFree: true,  title: 'Changing a PM\'s Mind with Cohort Data' },
   { id: 'BEH02', isFree: true,  title: 'Delivering a Metric Miss Before the QBR' },
-  { id: 'BEH03', isFree: false, title: 'Finding the Leaky Bucket Behind Flat DAU' },
+  { id: 'BEH03', isFree: true,  title: 'Finding the Leaky Bucket Behind Flat DAU' },
   { id: 'BEH04', isFree: false, title: 'Stopping a False-Positive A/B Launch Before All-Hands' },
   { id: 'BEH05', isFree: false, title: 'Getting Engineering Buy-In Without Escalation' },
   { id: 'BEH06', isFree: false, title: 'When Time-Spent Going Down Was Actually Good' },

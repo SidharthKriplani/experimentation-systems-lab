@@ -5,10 +5,9 @@
 // When Stripe goes live: isUnlocked() should also accept a valid Stripe session.
 const UNLOCK_KEY = 'pal-access-code-v1';
 
-// Access codes — lowercase comparison at runtime.
-// PAL-BETA-2026  → beta tester community code
-// PAL-FOUNDER-1  → direct founder invite
-const VALID_CODES = ['PAL-BETA-2026', 'PAL-FOUNDER-1'];
+// Access codes — comparison is case-insensitive at runtime.
+// DAI2026 → community code (LinkedIn, word of mouth, direct invite)
+const VALID_CODES = ['DAI2026'];
 
 export function isUnlocked() {
   try {

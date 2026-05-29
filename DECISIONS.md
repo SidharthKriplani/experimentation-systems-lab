@@ -94,7 +94,7 @@ Desktop: Header.jsx right slot. Mobile: mobile topbar right slot. Do not add a s
 ## Paywall + monetization
 
 **Access code gate is live as of V4.29.0. `isUnlocked()` reads localStorage.**
-Located in `src/utils/unlock.js`. Valid codes: `PAL-BETA-2026` (community), `PAL-FOUNDER-1` (direct invite). Stored under key `pal-access-code-v1`. The access code tier is permanent — it remains as the community tier even after Stripe goes live.
+Located in `src/utils/unlock.js`. Valid code: `DAI2026` (single community code — LinkedIn, word of mouth, direct invite). Stored under key `pal-access-code-v1`. The access code tier is permanent — it remains as the community tier even after Stripe goes live.
 
 **Free tier: first 3 cases per room + all Foundations + full Defense Strategy.**
 Every room has exactly `isFree: true` on its first 3 items (Stats has 4). All Foundations modules are fully free. Defense Strategy is fully free. This split is intentional — enough value to hook, enough gate to motivate unlocking.

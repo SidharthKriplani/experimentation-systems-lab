@@ -332,7 +332,7 @@ export function BehavioralBrowser({ onStart, unlocked }) {
 
                   {/* Tags */}
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-                    {question.tags.map(tag => (
+                    {(question.tags || []).map(tag => (
                       <span key={tag} style={{
                         fontSize: '0.72rem', color: 'var(--text-dim)',
                         background: 'var(--surface-2)', borderRadius: '4px',

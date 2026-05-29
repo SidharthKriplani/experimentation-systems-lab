@@ -120,7 +120,7 @@ At the end of each day card, surface one articulation prompt per top-gap skill (
 - **Single forward pointer after case debrief** (from GenAI Lab principle) — upgrade "Forward-pointer card" (Tier 3) to enforce ONE next step, not 3–5 options. Genai lab implemented this as a single "What to do next" card with no menu. Prevents decision paralysis at debrief end.
 
 ### Platform
-- ~~**Access code for moat content (Batch 0 feedback)**~~ — ✅ shipped V4.29.0 (`PAL-BETA-2026` community code, `PAL-FOUNDER-1` direct invite; permanent community tier; Stripe layers on top)
+- ~~**Access code for moat content (Batch 0 feedback)**~~ — ✅ shipped V4.29.0 (`DAI2026` single community code; permanent community tier; Stripe layers on top)
 - **Three front doors IA audit** (from GenAI Lab — Build/Prove/Navigate structure) — audit PAL's home and nav for whether users can identify their entry mode in <5 sec. GenAI lab organizes around Build/Prove/Navigate. PAL equivalent: Practice (rooms) / Assess (Simulator+Trainer) / Navigate (Defense Strategy+Company Tracks). Check if this framing improves cold-start clarity.
 - **Create PARKED.md** (from GenAI Lab pattern) — separate file for consciously cut or deferred features with reasons. Currently IDEAS.md "Retired" section handles this, but a dedicated PARKED.md with more context per item is cleaner. Move Retired section → PARKED.md with migration notes.
 - First-Time User cold walk-through audit with sidebar nav (incognito, every confusion point noted) — sidebar is new in V4.7, cold path not yet audited

@@ -4,6 +4,20 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.30.1] — 2026-05-29
+
+### Fixed — Behavioral room crash
+
+**Root cause:** `BehavioralBrowser.jsx` called `question.tags.map(...)` unconditionally. BEH09–BEH30 (22 of 30 questions) have no `tags` field, so `question.tags` is `undefined`. The browser crashed on render as soon as any of those cards were visible.
+
+**Fix:** Changed `question.tags.map(...)` to `(question.tags || []).map(...)` — safe fallback for tag-less questions.
+
+**Also fixed:** `BEH03` was erroneously set to `isFree: false` in `caseIndex.js`. Per the free tier definition (first 3 per room free), it should be `isFree: true`. Corrected.
+
+**Files:** `src/pages/BehavioralBrowser.jsx`, `src/data/caseIndex.js`
+
+---
+
 ## [4.30.0] — 2026-05-29
 
 ### Added — Defense Strategy plan tracking + momentum nudge
@@ -28,7 +42,7 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ### Added — Freemium access code gate
 
-Implemented the permanent freemium gate. `isUnlocked()` in `src/utils/unlock.js` now reads `localStorage.getItem('pal-access-code-v1')` instead of returning `true`. Valid codes: `PAL-BETA-2026` (community tier, for LinkedIn / word-of-mouth distribution) and `PAL-FOUNDER-1` (direct founder invite). `tryUnlock()` normalises to uppercase before comparing. Added `getStoredCode()` helper.
+Implemented the permanent freemium gate. `isUnlocked()` in `src/utils/unlock.js` now reads `localStorage.getItem('pal-access-code-v1')` instead of returning `true`. Valid code: `DAI2026` (single community code). `tryUnlock()` normalises to uppercase before comparing. Added `getStoredCode()` helper.
 
 **Free tier (no code required):** First 3 cases per room (Stats has 4 free modules). All Foundations modules (Exp, Metrics, RCA, Stats) fully free — every `isFree: false` in the four Foundations data files flipped to `true`. Full Defense Strategy (acquisition hook). Progress tracking.
 
@@ -40,9 +54,9 @@ Implemented the permanent freemium gate. `isUnlocked()` in `src/utils/unlock.js`
 
 **Interview Simulator gated:** `InterviewSimulator.jsx` refactored into outer gate wrapper + `InterviewSimulatorInner` (all hooks live there to satisfy rules-of-hooks). Wrapper returns paywall if `!unlocked`. App.jsx passes `unlocked={unlocked}`.
 
-**Unlock page updated:** Removed dead Stripe button, updated copy and placeholder to match new `PAL-XXXX-XXXX` format. Added free vs. premium comparison grid (2-column layout showing what each tier includes).
+**Unlock page updated:** Removed dead Stripe button, updated copy and placeholder to `DAI2026`. Added free vs. premium comparison grid (2-column layout showing what each tier includes).
 
-**QADashboard fixed:** Was hardcoding old `'exp-lab-unlocked-v1'` localStorage key. Now imports `tryUnlock` and calls `tryUnlock('PAL-FOUNDER-1')` in `handleUnlock()`.
+**QADashboard fixed:** Was hardcoding old `'exp-lab-unlocked-v1'` localStorage key. Now imports `tryUnlock` and calls `tryUnlock('DAI2026')` in `handleUnlock()`.
 
 **MD files updated:** DECISIONS.md (paywall section rewritten), IDEAS.md (3 items marked shipped, exception note added to In Progress), CLAUDE.md (version bump).
 

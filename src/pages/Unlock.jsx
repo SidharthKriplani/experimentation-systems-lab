@@ -114,7 +114,7 @@ export function Unlock({ onUnlocked, alreadyUnlocked, onNavigate }) {
                 type="text"
                 value={code}
                 onChange={e => { setCode(e.target.value); setError(''); }}
-                placeholder="PAL-XXXX-XXXX"
+                placeholder="DAI2026"
                 autoComplete="off"
                 autoCapitalize="characters"
                 style={{

@@ -135,7 +135,7 @@ export function QADashboard({ onNavigate, onOpenItem, unlocked, onUnlock, onLock
   }
 
   function handleUnlock() {
-    tryUnlock('PAL-FOUNDER-1');
+    tryUnlock('DAI2026');
     onUnlock();
   }
 
