@@ -128,6 +128,9 @@ function Module_MF01({ module, onNext }) {
           ))}
         </div>
       </div>
+      <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Click each metric chip to cycle through North Star, L1 Supporting, L2 Operational, and Guardrail. Assign all 8 metrics before hitting Check answers.
+      </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
         {HIERARCHY_ITEMS.map(item => (
           <span key={item.id} style={itemStyle(item)} onClick={() => cycle(item.id)}>
@@ -146,6 +149,9 @@ function Module_MF01({ module, onNext }) {
           {score === 8 ? 'Perfect. L2 metrics (feed CTR, stories completion, push CTR) are experiment targets. L1s (session depth, MAU) are the explanatory layer. DAU is the North Star — too slow for experiments but the ultimate scorecard.' : score + '/8. Key: latency and support contacts are guardrails (protect, don\'t optimise). MAU is L1 — it explains DAU but doesn\'t replace it.'}
         </div>
       )}
+      <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Once all 8 metrics are assigned, click Check answers to see your score and review which tier each metric belongs to.
+      </div>
       <div style={{ display: 'flex', gap: '0.75rem' }}>
         <button onClick={() => allPlaced && !checked && setChecked(true)} disabled={!allPlaced || checked} style={{ padding: '0.5rem 1.2rem', borderRadius: 'var(--radius-sm)', border: 'none', background: allPlaced && !checked ? 'var(--accent)' : 'var(--border)', color: allPlaced && !checked ? '#fff' : 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem', cursor: allPlaced && !checked ? 'pointer' : 'not-allowed' }}>Check answers</button>
         <button onClick={() => { setPlacements({}); setChecked(false); }} style={{ padding: '0.5rem 0.9rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-muted)', fontSize: '0.82rem', cursor: 'pointer' }}>Reset</button>
@@ -207,6 +213,9 @@ function Module_MF02({ module, onNext }) {
       </div>
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1.1rem' }}>
         <div style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>{Q.question}</div>
+        <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Select the answer that identifies which of the four quality criteria this metric fails, then click Submit to see the explanation.
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
           {Q.options.map(opt => (
             <MCQOption key={opt.id} label={opt.text} selected={selected === opt.id} correct={opt.id === Q.correct} revealed={answered} onClick={() => !answered && setSelected(opt.id)} />
@@ -273,13 +282,23 @@ function Module_MF03({ module, onNext }) {
               When diagnosing a ratio change: check numerator, check denominator absolute counts, then check <em>mix of denominator</em> across segments.
             </p>
           </div>
+          <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+            <strong>What to do:</strong> Read the anatomy of ratio metrics above, then click to encounter a real-world paradox that trips up even experienced analysts.
+          </div>
           <button onClick={() => setStep(1)} style={{ alignSelf: 'flex-start', padding: '0.5rem 1.2rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--accent)', color: '#fff', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>See the paradox →</button>
         </>
       )}
       {step >= 1 && (
         <>
+          <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.92rem' }}>
+            Ratio metrics — CVR, CTR, retention rate — are attractive because they normalise for volume. But they hide a trap:
+            <strong> the denominator can change composition</strong> independently of any product change, making the ratio move in a misleading direction.
+          </p>
           <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1.1rem' }}>
             <div style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>{Q.question}</div>
+            <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+              <strong>What to do:</strong> Identify the statistical phenomenon that explains how all three numbers can be simultaneously true, then click Submit.
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               {Q.options.map(opt => (
                 <MCQOption key={opt.id} label={opt.text} selected={selected === opt.id} correct={opt.id === Q.correct} revealed={answered} onClick={() => !answered && setSelected(opt.id)} />
@@ -328,6 +347,9 @@ function Module_MF04({ module, onNext }) {
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1.1rem' }}>
         <div style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.88rem', marginBottom: '0.5rem' }}>
           DAU can be decomposed as the sum of three user segments. Select the three correct components:
+        </div>
+        <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Click exactly three user segment labels that together make up DAU on any given day, then click Check to verify your decomposition.
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem', marginTop: '0.5rem' }}>
           {DECOMP_OPTIONS.map(opt => {
@@ -392,6 +414,9 @@ function Module_MF05({ module, onNext }) {
         <strong> Counter metrics</strong> make that tradeoff explicit before an experiment ships.
         For each primary metric below, select its most important counter metric:
       </p>
+      <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> For each primary metric, select the counter metric that would catch the most important unintended harm if the primary metric is blindly optimised.
+      </div>
       {COUNTER_PAIRS.map((pair, i) => (
         <div key={i} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1.1rem' }}>
           <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.3rem' }}>Primary metric</div>
@@ -414,6 +439,11 @@ function Module_MF05({ module, onNext }) {
           </div>
         </div>
       ))}
+      {allAnswered && !checked && (
+        <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> You have answered all three. Click Check answers to reveal whether each pairing is correct and why.
+        </div>
+      )}
       {allAnswered && !checked && (
         <button onClick={() => setChecked(true)} style={{ alignSelf: 'flex-start', padding: '0.5rem 1.2rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--accent)', color: '#fff', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>Check answers</button>
       )}
@@ -478,6 +508,9 @@ function Module_MF06({ module, onNext }) {
         <p style={{ margin: '0 0 0.6rem', fontSize: '0.83rem', color: 'var(--text-muted)' }}>
           <strong style={{ color: 'var(--text)' }}>Exercise:</strong> Click each metric to label it <span style={{ color: 'var(--accent)', fontWeight: 600 }}>Leading</span> or <span style={{ color: 'var(--purple)', fontWeight: 600 }}>Lagging</span>. Click again to toggle, or a third time to clear.
         </p>
+        <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Click each metric chip once to mark it as Leading, again to mark it as Lagging, and a third time to clear it. Label all six before checking your answers.
+        </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
           {LEADING_ITEMS.map(item => (
             <span key={item.id} style={chipStyle(item)} onClick={() => cycle(item.id)}>
@@ -497,6 +530,11 @@ function Module_MF06({ module, onNext }) {
               </strong>{' — '}{item.reason}
             </div>
           ))}
+        </div>
+      )}
+      {allPlaced && !checked && (
+        <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> All six metrics are labeled. Click Check answers to see detailed reasoning for each classification.
         </div>
       )}
       {allPlaced && !checked && (
@@ -548,6 +586,9 @@ function Module_MF07({ module, onNext }) {
       </div>
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1.1rem' }}>
         <div style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>{Q.question}</div>
+        <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Apply the North Star criteria above — choose the candidate that measures value delivered to users rather than value extracted by the business, then click Submit.
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
           {Q.options.map(opt => (
             <MCQOption key={opt.id} label={opt.text} selected={selected === opt.id} correct={opt.id === Q.correct} revealed={answered} onClick={() => !answered && setSelected(opt.id)} />
@@ -614,6 +655,9 @@ function Module_MF08({ module, onNext }) {
       </div>
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1.1rem' }}>
         <div style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>{Q.question}</div>
+        <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--green)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Calculate the coefficient of variation from the numbers given, then identify which sensitivity factor explains the p=0.21 result before clicking Submit.
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
           {Q.options.map(opt => (
             <MCQOption key={opt.id} label={opt.text} selected={selected === opt.id} correct={opt.id === Q.correct} revealed={answered} onClick={() => !answered && setSelected(opt.id)} />

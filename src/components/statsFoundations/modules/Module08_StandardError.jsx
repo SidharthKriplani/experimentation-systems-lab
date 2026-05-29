@@ -77,6 +77,11 @@ export function Module08_StandardError({ module, onNext }) {
         Critically, you need <em>4× more users</em> to halve the standard error.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Drag the sample size slider and watch the SE formula update in real time. Notice that you need to quadruple n to halve the SE — the square-root relationship. Compare how the current curve (solid blue) compares against the reference curves for n=25, 100, and 400.
+      </div>
+
       {/* Formula card + slider */}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ flex: 1.2, minWidth: 220, background: 'var(--accent-bg)', border: '1.5px solid var(--accent-border)', borderRadius: 'var(--radius)', padding: '1.25rem' }}>

@@ -109,6 +109,11 @@ export function Module25_IV({ module, onNext }) {
         </svg>
       </div>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> For each of the three IV conditions, read the description and the example, then select the option that correctly satisfies that condition. You will see immediate feedback with the testability note. Try to distinguish which conditions can actually be tested versus which require theoretical justification.
+      </div>
+
       {/* Condition cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {CONDITIONS.map((cond, idx) => {

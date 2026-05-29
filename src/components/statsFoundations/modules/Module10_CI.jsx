@@ -102,6 +102,11 @@ export function Module10_CI({ module, onNext }) {
         and sample size. Wider confidence = wider interval = higher chance of capturing the truth.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Select a confidence level and set a sample size, then click "Simulate 20 samples" to generate 20 confidence intervals. Count how many green bars capture the true mean versus how many red bars miss it. The hit rate should match the confidence level you chose over repeated simulations.
+      </div>
+
       {/* Controls row */}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         {/* Confidence level selector */}

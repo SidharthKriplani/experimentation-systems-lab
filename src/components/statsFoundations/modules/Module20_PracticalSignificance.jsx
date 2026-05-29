@@ -101,6 +101,11 @@ export function Module20_PracticalSignificance({ module, onNext }) {
         Effect size and business impact calculation must accompany every p-value.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Set the effect size to a tiny lift like 0.1% and then drag the sample size up to 5M — watch the result go statistically significant while the Cohen's h stays in the "small" zone and the annual revenue impact stays negligible. Then set a 2% lift with a small sample to see the reverse. Find the quadrant in the matrix where both are strong.
+      </div>
+
       {/* Sliders */}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         {/* Lift slider */}

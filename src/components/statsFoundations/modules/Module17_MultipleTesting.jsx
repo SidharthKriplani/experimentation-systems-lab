@@ -42,6 +42,11 @@ export function Module17_MultipleTesting({ module, onNext }) {
         The <strong>family-wise error rate (FWER)</strong> is the probability of getting at least one false positive across all tests — even if every null hypothesis is true.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Drag the slider to increase the number of metrics tested and watch the false positive bar fill up. Then toggle on the Bonferroni correction to see how it controls the error rate — and note the cost note showing how much more data you need to maintain power. Click the reference grid to jump to common n values.
+      </div>
+
       {/* Slider */}
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>

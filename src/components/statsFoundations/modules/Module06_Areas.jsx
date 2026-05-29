@@ -98,6 +98,11 @@ export function Module06_Areas({ module, onNext }) {
         Drag the bounds to shade different regions. The shaded area is exactly P(z₁ &lt; Z &lt; z₂) — the probability that a randomly drawn value falls in that range.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Click a preset or drag the z-bound sliders to shade different regions of the curve. Read the central probability and the tail probabilities — remember that the tails together are the two-sided p-value. Try "Left tail z=−1.96" and confirm both tails sum to 5%.
+      </div>
+
       {/* Preset buttons */}
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
         {PRESETS.map(preset => (

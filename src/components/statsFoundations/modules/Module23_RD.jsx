@@ -1,5 +1,29 @@
 import { useState, useMemo } from 'react';
 
+const MCQ_RD = {
+  question: 'A loyalty program gives a bonus reward to customers who spend over $500 in a month. You want to estimate the causal effect of the reward on next-month retention. Why is regression discontinuity valid here?',
+  options: [
+    {
+      id: 'a',
+      label: 'Customers just above and just below $500 are very similar to each other, so the comparison is nearly as clean as random assignment',
+      correct: true,
+      feedback: 'Correct. The key RD insight: near the threshold, assignment is essentially local random. A customer who spent $499 vs $501 likely differs only by chance, not by meaningful underlying differences. That near-randomness makes the comparison credible.',
+    },
+    {
+      id: 'b',
+      label: 'Customers who hit the $500 threshold are higher-value, which makes them a better control group',
+      correct: false,
+      feedback: 'This gets the logic backwards. Higher-value customers are precisely why you cannot compare them to all other customers. RD works because it compares very similar customers near the threshold, not because the treated group is better.',
+    },
+    {
+      id: 'c',
+      label: 'The $500 threshold was set randomly by the company, so treatment assignment is random',
+      correct: false,
+      feedback: 'RD does not require that the threshold itself was set randomly. It requires that customers cannot precisely control whether they end up just above or just below the threshold. The threshold can be rule-based as long as sorting is imprecise.',
+    },
+  ],
+};
+
 const W = 460;
 const H = 200;
 const PAD = { left: 40, right: 20, top: 20, bottom: 30 };
@@ -53,6 +77,14 @@ function genDensity(hasBunching) {
 export function Module23_RD({ module, onNext }) {
   const [showManipulation, setShowManipulation] = useState(false);
   const [view, setView] = useState('outcome'); // 'outcome' | 'density'
+  const [mcqAnswer, setMcqAnswer] = useState(null);
+  const [mcqRevealed, setMcqRevealed] = useState(false);
+
+  function handleMcq(optId) {
+    if (mcqRevealed) return;
+    setMcqAnswer(optId);
+    setMcqRevealed(true);
+  }
 
   const outcomePoints = useMemo(() => genPoints(showManipulation), [showManipulation]);
   const densityBars = useMemo(() => genDensity(showManipulation), [showManipulation]);
@@ -67,6 +99,11 @@ export function Module23_RD({ module, onNext }) {
         near-random assignment around the threshold makes the comparison almost as credible as a
         randomized experiment — but only if units cannot control which side they land on.
       </p>
+
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Look at the outcome view first — observe the sharp jump in conversion rate at the 680 credit score threshold. Switch to the density view to check the McCrary test (smooth density = valid RD). Then toggle "Show manipulation" to see what bunching looks like and why it invalidates the design.
+      </div>
 
       {/* Controls */}
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -153,6 +190,58 @@ export function Module23_RD({ module, onNext }) {
             ? (showManipulation ? 'Red dots = manipulators above threshold who are systematically different — RD comparison is contaminated.' : 'Sharp jump at 680 is the causal estimate (LATE). Units just below are the counterfactual for units just above.')
             : (showManipulation ? 'McCrary density test: statistically significant bunching above cutoff + dip below = manipulation detected. RD is not valid.' : 'Smooth density through threshold = no manipulation. Local randomization assumption is credible.')
           }
+        </div>
+      </div>
+
+      {/* MCQ Exercise */}
+      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
+        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.6rem' }}>Quick check</div>
+        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.6, marginBottom: '0.75rem' }}>{MCQ_RD.question}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          {MCQ_RD.options.map(opt => {
+            const isChosen = mcqAnswer === opt.id;
+            const borderColor = !mcqRevealed
+              ? 'var(--border)'
+              : isChosen
+                ? (opt.correct ? 'var(--green-border)' : 'var(--red-border)')
+                : opt.correct ? 'var(--green-border)' : 'var(--border)';
+            const bg = !mcqRevealed
+              ? 'var(--surface)'
+              : isChosen
+                ? (opt.correct ? 'var(--green-bg)' : 'var(--red-bg)')
+                : opt.correct ? 'var(--green-bg)' : 'var(--surface)';
+            const color = !mcqRevealed
+              ? 'var(--text-secondary)'
+              : isChosen
+                ? (opt.correct ? 'var(--green)' : 'var(--red)')
+                : opt.correct ? 'var(--green)' : 'var(--text-muted)';
+            return (
+              <div key={opt.id}>
+                <button
+                  onClick={() => handleMcq(opt.id)}
+                  style={{
+                    width: '100%', textAlign: 'left', padding: '0.5rem 0.85rem',
+                    borderRadius: 'var(--radius-sm)', border: `1.5px solid ${borderColor}`,
+                    background: bg, color, fontSize: '0.85rem',
+                    fontWeight: isChosen ? 700 : 500, cursor: mcqRevealed ? 'default' : 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {opt.label}
+                </button>
+                {mcqRevealed && isChosen && (
+                  <div style={{ fontSize: '0.8rem', color: opt.correct ? 'var(--green)' : 'var(--red)', lineHeight: 1.55, marginTop: '0.3rem', paddingLeft: '0.25rem' }}>
+                    {opt.correct ? '✓ ' : '✗ '}{opt.feedback}
+                  </div>
+                )}
+                {mcqRevealed && !isChosen && opt.correct && (
+                  <div style={{ fontSize: '0.8rem', color: 'var(--green)', lineHeight: 1.55, marginTop: '0.3rem', paddingLeft: '0.25rem' }}>
+                    ✓ {opt.feedback}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 

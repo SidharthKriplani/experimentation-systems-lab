@@ -89,10 +89,8 @@ export function Module01_WhatIsData({ module, onNext }) {
       </p>
 
       {/* Instructions */}
-      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
-        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
-          <strong style={{ color: 'var(--text)' }}>How to play:</strong> Use the N and C buttons to place each variable into the Numerical or Categorical bucket. Tap the × on a placed card to remove it. Place all 8, then hit Check.
-        </p>
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.25rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Use the N and C buttons to place each variable into the Numerical or Categorical bucket. Ask yourself: can you do arithmetic on this value — does "twice as much" make sense? Tap the × on a placed card to move it. Place all 8, then hit Check.
       </div>
 
       {/* Unplaced pool */}

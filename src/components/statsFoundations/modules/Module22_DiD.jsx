@@ -1,5 +1,30 @@
 import { useState, useMemo } from 'react';
 
+const MCQ = {
+  id: 'did_interpretation',
+  question: 'City A received a new in-app engagement feature. City B did not. Both cities\' engagement grew after launch, but City A grew more. Which conclusion is valid?',
+  options: [
+    {
+      id: 'a',
+      label: 'City A grew faster, so the feature caused the additional growth above City B\'s trend',
+      correct: true,
+      feedback: 'Correct. DiD isolates the causal effect by subtracting City B\'s background growth trend from City A\'s total growth. The difference is attributable to the feature, assuming the parallel trends assumption holds.',
+    },
+    {
+      id: 'b',
+      label: 'City A\'s total growth after launch is the feature\'s causal effect',
+      correct: false,
+      feedback: 'The total post-launch growth in City A includes background trends that would have happened anyway. Without subtracting City B\'s change, you are overcounting the treatment effect.',
+    },
+    {
+      id: 'c',
+      label: 'City B grew too, which proves the feature had no real effect',
+      correct: false,
+      feedback: 'City B growing does not invalidate the feature\'s effect. DiD expects both groups to have background trends. The question is whether City A grew more than City B — and by how much.',
+    },
+  ],
+};
+
 const PRESETS = [
   { label: 'STAT17 example', tPre: 64, tPost: 71, cPre: 62, cPost: 66 },
   { label: 'No true effect', tPre: 50, tPost: 58, cPre: 50, cPost: 58 },
@@ -13,6 +38,14 @@ export function Module22_DiD({ module, onNext }) {
   const [tPost, setTPost] = useState(71);
   const [cPre, setCPre] = useState(62);
   const [cPost, setCPost] = useState(66);
+  const [mcqAnswer, setMcqAnswer] = useState(null);
+  const [mcqRevealed, setMcqRevealed] = useState(false);
+
+  function handleMcq(optId) {
+    if (mcqRevealed) return;
+    setMcqAnswer(optId);
+    setMcqRevealed(true);
+  }
 
   const tDelta = tPost - tPre;
   const cDelta = cPost - cPre;
@@ -53,6 +86,11 @@ export function Module22_DiD({ module, onNext }) {
             {p.label}
           </button>
         ))}
+      </div>
+
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Enter before and after values for both the treatment and control groups, then read the DiD estimate. Try the "No true effect" preset to see a DiD of 0 — both groups moved the same. Try "Strong effect" to see what a real causal signal looks like. Notice how the raw treatment delta is always misleading without subtracting the control trend.
       </div>
 
       {/* 2×2 input grid */}
@@ -115,6 +153,58 @@ export function Module22_DiD({ module, onNext }) {
         {did !== tDelta && (
           <span style={{ color: 'var(--red)' }}> Reporting the raw {tDelta >= 0 ? '+' : ''}{tDelta}pp as the treatment effect would be {did !== 0 ? `${Math.abs(tDelta - did)}pp wrong` : 'correct — but only because the control trend was zero'}.</span>
         )}
+      </div>
+
+      {/* MCQ Exercise */}
+      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
+        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.6rem' }}>Quick check</div>
+        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.6, marginBottom: '0.75rem' }}>{MCQ.question}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          {MCQ.options.map(opt => {
+            const isChosen = mcqAnswer === opt.id;
+            const borderColor = !mcqRevealed
+              ? 'var(--border)'
+              : isChosen
+                ? (opt.correct ? 'var(--green-border)' : 'var(--red-border)')
+                : opt.correct ? 'var(--green-border)' : 'var(--border)';
+            const bg = !mcqRevealed
+              ? 'var(--surface)'
+              : isChosen
+                ? (opt.correct ? 'var(--green-bg)' : 'var(--red-bg)')
+                : opt.correct ? 'var(--green-bg)' : 'var(--surface)';
+            const color = !mcqRevealed
+              ? 'var(--text-secondary)'
+              : isChosen
+                ? (opt.correct ? 'var(--green)' : 'var(--red)')
+                : opt.correct ? 'var(--green)' : 'var(--text-muted)';
+            return (
+              <div key={opt.id}>
+                <button
+                  onClick={() => handleMcq(opt.id)}
+                  style={{
+                    width: '100%', textAlign: 'left', padding: '0.5rem 0.85rem',
+                    borderRadius: 'var(--radius-sm)', border: `1.5px solid ${borderColor}`,
+                    background: bg, color, fontSize: '0.85rem',
+                    fontWeight: isChosen ? 700 : 500, cursor: mcqRevealed ? 'default' : 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {opt.label}
+                </button>
+                {mcqRevealed && isChosen && (
+                  <div style={{ fontSize: '0.8rem', color: opt.correct ? 'var(--green)' : 'var(--red)', lineHeight: 1.55, marginTop: '0.3rem', paddingLeft: '0.25rem' }}>
+                    {opt.correct ? '✓ ' : '✗ '}{opt.feedback}
+                  </div>
+                )}
+                {mcqRevealed && !isChosen && opt.correct && (
+                  <div style={{ fontSize: '0.8rem', color: 'var(--green)', lineHeight: 1.55, marginTop: '0.3rem', paddingLeft: '0.25rem' }}>
+                    ✓ {opt.feedback}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Key Insight */}

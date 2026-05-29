@@ -152,6 +152,11 @@ export function Module12_Power({ module, onNext }) {
         Low power means you'll run experiments that miss real improvements — wasting time and opportunity.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Adjust the effect size, sample size, and alpha threshold. Watch the green power region grow or shrink as you move each slider. Try setting effect size to 0.1 sigma to see how underpowered tiny-effect experiments are, then increase n until you hit 80% power. Read the required sample size formula at the bottom.
+      </div>
+
       {/* Sliders & alpha controls */}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         {/* Effect size */}

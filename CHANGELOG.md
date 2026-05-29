@@ -4,6 +4,28 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.33.9] — 2026-05-29
+
+### Foundation modules — guiding text pass across all four rooms
+
+Added instruction prompts and intro text to every interactive element across all 46 foundation modules (25 Stat, 7 Exp, 8 Metrics, 6 RCA). Resolves audit #95.
+
+**Stat Foundations (25 modules — individual JSX files):**
+All 25 modules now have a teal instruction box immediately before every interactive element (MCQ options, sliders, simulation controls, matching exercises). Module21–24 (Counterfactuals, DiD, RD, Synthetic Control) were thin skeletons — each received a full MCQ exercise with 3 options, reveal-on-click feedback, and correct answer surfacing on wrong pick.
+
+**Exp Foundations (7 modules — ExpFoundationsRunner.jsx):**
+Added shared `InstructionBox` component (renders teal prompt box, accepts children). 10 instruction boxes placed across EF01–EF07. Intro paragraphs added to all 7 modules. Instruction text covers: why/when to experiment (EF01), spillover and unit-of-randomization thinking (EF02), power/MDE calculation steps (EF03), p-value and CI definitions (EF04), SRM diagnosis (EF05), novelty decay reasoning (EF06), multiple testing threshold adjustment (EF07).
+
+**Metrics Foundations (8 modules — MetricsFoundationsRunner.jsx):**
+12 instruction boxes added across MF01–MF08. Covers: metric tier assignment (MF01), quality criteria MCQ (MF02), ratio paradox reveal + MCQ (MF03), DAU decomposition multi-select (MF04), counter metric pairing (MF05), leading/lagging classification (MF06), north star design MCQ (MF07), sensitivity calculation MCQ (MF08).
+
+**RCA Foundations (6 modules — RCAFoundationsRunner.jsx):**
+6 instruction boxes added plus intro paragraphs upgraded from `var(--text-muted)` to `var(--text-secondary)` across RF01–RF06. RF05 (When the Aggregate Lies) had no intro — one added. Instruction text covers: four-layer classification (RF01), decompose-before-diagnose multi-select (RF02), data quality first MCQ sequence (RF03), seasonality vs external factor binary classify (RF04), mix-shift explanation MCQ (RF05), five-component sequential reveal (RF06).
+
+**Files:** `src/components/statsFoundations/modules/Module*.jsx` (all 25), `src/components/expFoundations/ExpFoundationsRunner.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, `src/components/rcaFoundations/RCAFoundationsRunner.jsx`
+
+---
+
 ## [4.33.8] — 2026-05-29
 
 ### Fix Search — 8 rooms missing from index + shallow field coverage

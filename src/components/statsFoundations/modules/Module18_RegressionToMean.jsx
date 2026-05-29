@@ -82,6 +82,11 @@ export function Module18_RegressionToMean({ module, onNext }) {
         They improve next quarter. Was it the training — or regression to the mean? Without a control group, you can't tell.
       </div>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Click "Run simulation" to take a first measurement of 20 users. The top 5 scorers are highlighted in yellow. Then click "Take second measurement" and watch those highlighted users regress toward the group mean — their scores drop on average, not because they got worse, but because random noise inflated them the first time.
+      </div>
+
       {/* Controls */}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
         {step === 0 && (

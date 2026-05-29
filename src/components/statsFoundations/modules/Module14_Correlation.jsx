@@ -45,6 +45,11 @@ export function Module14_Correlation({ module, onNext }) {
         Covariance is the un-normalized version — it captures direction but not strength on a standardized scale.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Drag the correlation slider from -1.0 to +1.0 and watch the scatter plot reshape. Notice how the cloud tightens into a line at the extremes and scatters randomly at r=0. Check the r-squared value to understand what fraction of variance in Y is explained by X.
+      </div>
+
       {/* Slider */}
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>

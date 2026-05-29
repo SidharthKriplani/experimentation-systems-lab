@@ -110,9 +110,8 @@ function Module_RF01({ onComplete }) {
 
   return (
     <div>
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-        The RCA framework works top-to-bottom through four layers. Classify each signal into its layer.
-        Click an item, then click the layer to assign it.
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        Every metric movement belongs to one of four diagnostic layers. Working top-to-bottom through these layers keeps you from jumping to product conclusions when the data is simply broken, or missing an external event that explains the entire drop.
       </p>
 
       {/* Layers */}
@@ -153,8 +152,11 @@ function Module_RF01({ onComplete }) {
 
       {/* Unassigned items */}
       <div style={{ marginBottom: '1rem' }}>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> For each signal below, click the layer label that best explains it. Assign all six signals before checking your answers.
+        </div>
         <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          Drag to classify:
+          Classify each signal:
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
           {ITEMS.map((item, i) => !assignments[i] && (
@@ -244,12 +246,20 @@ function Module_RF02({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        Aggregate metrics like DAU are sums of components. Jumping to a root cause without decomposing first wastes investigation time and leads to wrong diagnoses. This module trains you to break a top-line metric into the sub-metrics that can actually point to a cause.
+      </p>
+
       <div style={{
         background: 'var(--surface-2)', border: '1px solid var(--border)',
         borderRadius: 'var(--radius-sm)', padding: '0.85rem 1rem', marginBottom: '1.25rem',
         fontSize: '0.88rem', color: 'var(--text)', lineHeight: 1.6,
       }}>
         <strong>Scenario:</strong> {SCENARIO}
+      </div>
+
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Select every metric that belongs in the DAU decomposition — think about which components actually add up to or subtract from DAU.
       </div>
 
       <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '1rem' }}>
@@ -353,6 +363,10 @@ function Module_RF03({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        The first question in any RCA is not "what changed in the product?" — it is "is the data real?" SDK bugs, pipeline failures, and instrumentation gaps routinely produce false signals. This module trains you to spot those patterns before they send an investigation in the wrong direction.
+      </p>
+
       <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
         Data quality is the first layer of every RCA. These scenarios test whether you apply it correctly.
       </p>
@@ -364,6 +378,9 @@ function Module_RF03({ onComplete }) {
         }}>
           <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.85rem', lineHeight: 1.5 }}>
             {q.q}
+          </div>
+          <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+            <strong>What to do:</strong> Pick the single best first action — think about which hypothesis is cheapest to rule out and most likely given the symptom pattern.
           </div>
           {q.options.map((opt, oi) => (
             <MCQOption
@@ -431,10 +448,18 @@ function Module_RF04({ onComplete }) {
 
   return (
     <div>
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        Not every metric movement is caused by the product. Seasonal patterns repeat on a calendar schedule and are detectable with year-over-year comparisons. External factors are one-off market or platform events that require a different kind of awareness. Distinguishing them quickly stops you from filing a bug for a holiday.
+      </p>
+
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '0.75rem' }}>
         Before diagnosing a product problem, you must rule out time-based and external causes.
         Classify each factor as <strong>Seasonal</strong> (time-based, predictable) or <strong>External</strong> (market/platform, unpredictable):
       </p>
+
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> For each factor, click Seasonal or External — ask yourself whether a calendar alone could predict this event, or whether it required something outside your control to happen.
+      </div>
 
       {FACTORS.map((f, i) => {
         const sel = selected[i];
@@ -518,6 +543,10 @@ function Module_RF05({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        Aggregate metrics can move in the wrong direction even when every individual segment is healthy. Mix shifts — changes in the composition of your user base — are one of the most common and misdiagnosed causes of metric drops. This module teaches you to look past the aggregate before raising an alarm.
+      </p>
+
       {step === 0 && (
         <div>
           <div style={{
@@ -554,6 +583,10 @@ function Module_RF05({ onComplete }) {
           <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.85rem' }}>
             What is the most likely explanation for the aggregate D7 drop?
           </p>
+
+          <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+            <strong>What to do:</strong> Study the segmented data in the table above, then pick the answer that best explains why the aggregate moved even though existing-user retention is nearly flat.
+          </div>
 
           {options.map((opt, i) => (
             <MCQOption
@@ -622,9 +655,17 @@ function Module_RF06({ onComplete }) {
 
   return (
     <div>
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        Finding the root cause is only half the job. A complete RCA output includes a precise description of what happened, the evidence-backed cause, a concrete fix with an owner, a pre-committed success metric, and an ongoing monitoring plan. Most analysts stop at step two — this module walks you through all five.
+      </p>
+
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '0.75rem' }}>
         A complete RCA has 5 components. Walk through each one — many analysts stop at diagnosis and skip the recommendation structure.
       </p>
+
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Read the example for the active step and think about how you would write this section for a real investigation — then click Next component to advance through all five steps.
+      </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.25rem' }}>
         {STEPS.map((step, i) => {

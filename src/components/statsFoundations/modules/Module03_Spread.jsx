@@ -115,6 +115,11 @@ export function Module03_Spread({ module, onNext }) {
         </div>
       </div>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Drag the spread multiplier slider left and right. Watch how the deviation lines and the variance and standard deviation values change. Notice that squaring the deviations means outliers contribute disproportionately to variance.
+      </div>
+
       {/* Spread multiplier slider */}
       <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.25rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>

@@ -75,6 +75,11 @@ export function Module15_SimpsonsParadox({ module, onNext }) {
         </p>
       </div>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Start with the aggregated view and note which group wins. Then toggle to the segment view. The result should reverse — treatment wins on every segment. Think about why the aggregated view was misleading before reading the explanation below.
+      </div>
+
       {/* Toggle */}
       <div style={{ display: 'flex', gap: '0.5rem' }}>
         <button style={view === 'aggregated' ? activeBtn : inactiveBtn} onClick={() => setView('aggregated')}>

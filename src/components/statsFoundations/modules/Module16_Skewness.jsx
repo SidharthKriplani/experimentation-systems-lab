@@ -103,6 +103,11 @@ export function Module16_Skewness({ module, onNext }) {
         drag the mean far above the median, making averages misleading.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Toggle between Normal and Log-Normal, then drag the "top 10% contribution" slider for the log-normal case. Watch the mean pull further from the median as skewness increases. Notice the mean/median ratio — when that ratio is high, the mean is not a good description of the typical user.
+      </div>
+
       {/* Toggle */}
       <div style={{ display: 'flex', gap: '0.5rem' }}>
         <button style={distType === 'normal' ? activeBtn : inactiveBtn} onClick={() => setDistType('normal')}>

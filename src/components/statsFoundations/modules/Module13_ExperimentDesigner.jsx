@@ -146,6 +146,11 @@ export function Module13_ExperimentDesigner({ module, onNext }) {
         Use this calculator to build the intuition.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Set your baseline conversion rate, the minimum lift you care about (MDE), significance level, and desired power. Watch the required sample size update instantly. Then try halving the MDE and observe roughly how much more data you need — this builds intuition for the cost of chasing smaller effects.
+      </div>
+
       {/* ── Control panel ──────────────────────────────────────────────────── */}
       <div style={{
         display: 'grid',

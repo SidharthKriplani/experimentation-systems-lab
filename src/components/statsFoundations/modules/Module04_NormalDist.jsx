@@ -144,6 +144,11 @@ export function Module04_NormalDist({ module, onNext }) {
         </svg>
       </div>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Drag both sliders and watch the curve reshape. Notice that changing the mean (mu) slides the whole curve left or right, while changing sigma widens or narrows it — but the 68-95-99.7 percentages stay constant.
+      </div>
+
       {/* Sliders */}
       <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: 220, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>

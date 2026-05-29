@@ -93,6 +93,11 @@ export function Module11_HypothesisTesting({ module, onNext }) {
         It's the red shaded area in the tail(s) of the null distribution. Smaller p = more surprising under H₀ = stronger evidence against it.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Drag the z-score slider from 0 toward 4 and watch the red shaded area (the p-value) shrink. Toggle between two-tailed and one-tailed tests to see how the tails change. Notice where the decision flips from "fail to reject" to "reject" as you cross z = 1.96.
+      </div>
+
       {/* Controls */}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: 1, minWidth: 250, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem' }}>

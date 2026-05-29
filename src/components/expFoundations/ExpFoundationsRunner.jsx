@@ -84,6 +84,18 @@ function CheckBtn({ onClick }) {
   );
 }
 
+function InstructionBox({ children }) {
+  return (
+    <div style={{
+      background: 'var(--teal-bg)', border: '1px solid var(--teal-border)',
+      borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem',
+      fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5,
+    }}>
+      <strong>What to do:</strong> {children}
+    </div>
+  );
+}
+
 // ── Module EF01: Why We Experiment ─────────────────────────────────────────
 function Module_EF01({ onComplete }) {
   const [answer, setAnswer] = useState(null);
@@ -100,6 +112,12 @@ function Module_EF01({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        This module covers why observational data is not enough to establish causality, and how A/B testing solves
+        the fundamental problem of selection bias. Understanding this distinction is the foundation of every
+        experimentation conversation in a PM or analyst interview.
+      </p>
+
       <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
         Observational data seems simple: compare the group that saw the feature with the group that did not.
         But this comparison has a fundamental flaw that A/B testing is designed to fix.
@@ -112,6 +130,11 @@ function Module_EF01({ onComplete }) {
       }}>
         <strong>Question:</strong> {question}
       </div>
+
+      <InstructionBox>
+        Select the answer that best captures the flaw in the PM's reasoning. Focus on what is different
+        about the two groups before any treatment was applied.
+      </InstructionBox>
 
       {options.map((opt, i) => (
         <MCQOption
@@ -195,11 +218,23 @@ function Module_EF02({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        This module covers how to choose the right randomization unit for different experiment types.
+        Picking the wrong unit is one of the most common design mistakes interviewers probe for — it causes
+        inconsistent experiences, spillover contamination, and invalid results.
+      </p>
+
       <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
         The randomization unit determines which entity gets assigned to control or treatment.
         Picking the wrong unit causes inconsistent user experiences, spillover, or inflated false positive rates.
         Classify each scenario to the correct randomization unit.
       </p>
+
+      <InstructionBox>
+        Assign each scenario to the correct randomization unit by clicking one of the four buttons below
+        it. Think about spillover risk and whether the same entity needs a consistent experience across
+        multiple interactions before assigning.
+      </InstructionBox>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1rem' }}>
         {SCENARIOS.map((s, i) => {
@@ -251,12 +286,18 @@ function Module_EF02({ onComplete }) {
       </div>
 
       {!revealed && allAssigned && (
-        <button onClick={() => setRevealed(true)} style={{
-          padding: '0.55rem 1.2rem', background: 'var(--accent)', color: '#fff',
-          border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer',
-        }}>
-          Check answers
-        </button>
+        <>
+          <InstructionBox>
+            Click Check answers to see the correct grouping and learn why each randomization unit applies
+            to that scenario.
+          </InstructionBox>
+          <button onClick={() => setRevealed(true)} style={{
+            padding: '0.55rem 1.2rem', background: 'var(--accent)', color: '#fff',
+            border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer',
+          }}>
+            Check answers
+          </button>
+        </>
       )}
 
       {revealed && (
@@ -306,6 +347,12 @@ function Module_EF03({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        This module covers how to size an experiment before running it. Power calculations and MDE are
+        almost always tested in PM and analyst interviews — knowing the 1/MDE-squared relationship is
+        the difference between a confident answer and a hand-wave.
+      </p>
+
       <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
         Sizing an experiment before you run it is non-negotiable. Running underpowered experiments wastes time
         and produces uninterpretable null results. Two key inputs: minimum detectable effect (MDE) and baseline rate.
@@ -323,6 +370,11 @@ function Module_EF03({ onComplete }) {
           Your baseline CTR is 5%. You want to detect a 0.5pp lift (MDE = 0.5pp) with 80% power at
           alpha = 0.05. You get 10,000 users per day. Roughly how long will the experiment need to run?
         </div>
+
+        <InstructionBox>
+          Select the runtime estimate that best matches the given parameters. Think about how many total
+          users are needed at 80% power before dividing by daily traffic.
+        </InstructionBox>
 
         {part1Options.map((opt, i) => (
           <MCQOption
@@ -367,6 +419,11 @@ function Module_EF03({ onComplete }) {
             You reduce your MDE from 0.5pp to 0.25pp (you want to detect a smaller effect).
             What happens to the required sample size?
           </div>
+
+          <InstructionBox>
+            Select what happens to required sample size when MDE is halved. Recall that sample size
+            scales with 1/MDE squared and apply that relationship to the specific numbers here.
+          </InstructionBox>
 
           {part2Options.map((opt, i) => (
             <MCQOption
@@ -450,10 +507,21 @@ function Module_EF04({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        This module tests whether you can correctly interpret p-values and confidence intervals — the most
+        commonly misquoted statistics in product experimentation. Interviewers routinely probe these
+        definitions to separate candidates who understand the math from those who memorised a formula.
+      </p>
+
       <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
         p-values and confidence intervals are the most misquoted statistics in product experimentation.
         Mark each statement TRUE or FALSE, then check.
       </p>
+
+      <InstructionBox>
+        Read each statement carefully and click TRUE or FALSE. Think about what the statistic actually
+        measures before answering — do not rely on intuition about what "significant" sounds like.
+      </InstructionBox>
 
       {STATEMENTS.map((s, i) => {
         const picked = answers[i];
@@ -551,6 +619,12 @@ function Module_EF05({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        This module covers Sample Ratio Mismatch (SRM) — a data quality check that must happen before
+        reading any metric results. Interviewers testing experiment design will often introduce an SRM
+        scenario to see if you know to pause the experiment rather than proceed.
+      </p>
+
       <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
         Sample Ratio Mismatch (SRM) is one of the most important data quality checks in experimentation.
         Before reading any metric results, always verify that the observed split matches the intended split.
@@ -587,6 +661,11 @@ function Module_EF05({ onComplete }) {
         Your experiment was supposed to split 50/50. Control received 48,200 visitors, treatment received
         51,800. What do you do?
       </div>
+
+      <InstructionBox>
+        Select the correct action given the observed imbalance. Consider whether the imbalance can be
+        corrected statistically, or whether it signals a deeper pipeline problem that invalidates the data.
+      </InstructionBox>
 
       {options.map((opt, i) => (
         <MCQOption
@@ -661,6 +740,12 @@ function Module_EF06({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        This module covers novelty effects and when experiment results can be trusted as a long-run signal.
+        A candidate who ships based on week-one spikes without accounting for novelty decay is a red flag
+        in any PM or analyst interview.
+      </p>
+
       <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
         Not all experiment results are stable. Initial measurements often reflect novelty behavior
         rather than the true long-run effect. Knowing when to trust week-one results is a key skill.
@@ -691,6 +776,11 @@ function Module_EF06({ onComplete }) {
         A new recommendation algorithm shows +8% CTR in week 1. By week 4 it is +2% and by week 8 it is -1%.
         What is the most likely explanation?
       </div>
+
+      <InstructionBox>
+        Select the explanation that best accounts for the decay pattern shown above. Rule out explanations
+        that would not produce a smooth monotonic decline from a strong early positive.
+      </InstructionBox>
 
       {options.map((opt, i) => (
         <MCQOption
@@ -754,6 +844,12 @@ function Module_EF07({ onComplete }) {
 
   return (
     <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        This module covers how tracking multiple metrics simultaneously inflates false positive rates, and
+        what the standard Bonferroni correction does about it. Interviewers will ask this any time you
+        mention guardrail metrics or a multi-metric experiment dashboard.
+      </p>
+
       <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
         Most experiment dashboards track many metrics simultaneously. Each additional metric you test
         at alpha = 0.05 adds another 5% chance of a spurious significant result — even if nothing
@@ -772,6 +868,11 @@ function Module_EF07({ onComplete }) {
           You run one experiment and test 20 metrics simultaneously, each at alpha = 0.05.
           Assuming all null hypotheses are true, how many false positives do you expect by chance?
         </div>
+
+        <InstructionBox>
+          Select the expected number of false positives. Apply the definition of alpha as a per-test
+          error rate and multiply across the number of independent tests.
+        </InstructionBox>
 
         {q1Options.map((opt, i) => (
           <MCQOption
@@ -814,6 +915,11 @@ function Module_EF07({ onComplete }) {
           <div style={{ fontSize: '0.88rem', color: 'var(--text)', lineHeight: 1.6, marginBottom: '1rem' }}>
             You apply Bonferroni correction to those 20 metrics. What does this correction do?
           </div>
+
+          <InstructionBox>
+            Select what Bonferroni correction does mechanically. Think about what it adjusts — the
+            threshold, the sample, or the metric list — and in which direction.
+          </InstructionBox>
 
           {q2Options.map((opt, i) => (
             <MCQOption

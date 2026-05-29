@@ -53,6 +53,11 @@ export function Module19_SelectionBias({ module, onNext }) {
         almost always missing from dashboards, which inflates every quality metric you see.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Start with "Show All Users" to see the full population including churned users. Then switch to "Show Only Active Users" to replicate what most dashboards show. Watch the engagement metric jump upward and notice the inflation factor — that is selection bias inflating every quality metric you report.
+      </div>
+
       {/* Toggle */}
       <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
         <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)' }}>View:</span>

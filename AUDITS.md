@@ -43,6 +43,19 @@ Start here when running an audit. Add rows as new types emerge.
 
 Source: ChatGPT independent review of all three sister labs (PAL, ML Systems Lab, GenAI Systems Lab) with no prior context. Treated as a credible external signal. Review assessed PAL as 8/10 — most commercially coherent of the three. Gaps identified below are real and logged as audits. Items already known or intentional decisions are noted and not re-logged.
 
+### 107. ✅ UX / Human Elements — Foundation modules missing instruction text (audit #95 resolved)
+
+**Version:** Fixed V4.33.9
+**Type:** UX / Human Elements + Content Integrity
+
+All 46 foundation modules across four rooms now have guiding instruction text. Previously interactive elements launched with no indication of what the user should do. Verified originally in Stat Foundations Module02 and Module04; pattern confirmed and fixed across all four rooms in one pass.
+
+**What was added:** Stat Foundations (25 modules) — teal instruction box before every interactive element; Module21–24 skeleton modules received full MCQ exercises. Exp Foundations (7 modules) — shared InstructionBox component + intro paragraphs; 10 instruction boxes. Metrics Foundations (8 modules) — 12 instruction boxes across MF01–MF08. RCA Foundations (6 modules) — 6 instruction boxes + intro paragraph upgrades.
+
+**Files:** All `src/components/statsFoundations/modules/Module*.jsx`, `ExpFoundationsRunner.jsx`, `MetricsFoundationsRunner.jsx`, `RCAFoundationsRunner.jsx`
+
+---
+
 ### 105. ⚠️ BUILD — Missing React error boundaries
 
 **Version:** Logged V4.33.7

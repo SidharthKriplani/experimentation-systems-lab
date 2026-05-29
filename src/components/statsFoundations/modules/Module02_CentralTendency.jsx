@@ -174,6 +174,11 @@ export function Module02_CentralTendency({ module, onNext }) {
         </div>
       </div>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.25rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Click the buttons to add data points to the distribution. Watch how the mean (blue dashed) and median (green dashed) lines move. Notice what happens when you add the outlier — which measure shifts more dramatically?
+      </div>
+
       {/* Controls */}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
         <button

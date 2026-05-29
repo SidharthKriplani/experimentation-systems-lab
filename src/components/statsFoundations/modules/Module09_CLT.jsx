@@ -161,6 +161,11 @@ export function Module09_CLT({ module, onNext }) {
         normally distributed. This is the mathematical foundation that makes statistical inference possible.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Choose a population shape (try "Heavily skewed") then click "Simulate 1000 samples". Change the sample size from 5 to 30 and simulate again. Watch the sampling distribution shift from matching the skewed population shape to becoming approximately normal — that is the Central Limit Theorem in action.
+      </div>
+
       {/* Controls */}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: 220, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem' }}>

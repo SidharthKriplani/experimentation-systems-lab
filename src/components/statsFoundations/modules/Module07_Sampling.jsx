@@ -131,6 +131,11 @@ export function Module07_Sampling({ module, onNext }) {
         The spread of those sample means is controlled by your sample size.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Set a sample size, then click "Draw 20 Samples" to repeatedly sample from the population. Watch the histogram of sample means build up. Compare results at n=5 versus n=100 — notice how a larger sample size produces a tighter, more bell-shaped distribution of means.
+      </div>
+
       {/* Controls */}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: 1, minWidth: 200, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem' }}>

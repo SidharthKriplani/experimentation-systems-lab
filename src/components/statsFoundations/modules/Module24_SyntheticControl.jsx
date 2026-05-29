@@ -1,5 +1,29 @@
 import { useState } from 'react';
 
+const MCQ_SC = {
+  question: 'One state bans a product. You want to estimate the sales impact. No other state implemented the same ban. Which method is most appropriate?',
+  options: [
+    {
+      id: 'a',
+      label: 'DiD using all other states as a single control group',
+      correct: false,
+      feedback: 'Simple DiD pooling all other states assumes they all share a parallel trend with the treated state. If the treated state has a unique trajectory, pooling creates a noisy or biased counterfactual. Synthetic control is better when only one unit is treated.',
+    },
+    {
+      id: 'b',
+      label: 'Synthetic control — construct a weighted combination of donor states that best matched the treated state pre-ban',
+      correct: true,
+      feedback: 'Correct. With a single treated unit and multiple potential controls, synthetic control finds the weighted combination that best replicates the treated state\'s pre-period trend. The post-period divergence is the causal estimate.',
+    },
+    {
+      id: 'c',
+      label: 'Regression discontinuity using states near the ban threshold',
+      correct: false,
+      feedback: 'RD requires a continuous running variable with a sharp threshold. A policy ban is a binary treatment applied to one state, not a threshold on a continuous score. There is no running variable here.',
+    },
+  ],
+};
+
 const W = 460;
 const H = 200;
 const PAD = { left: 40, right: 20, top: 20, bottom: 30 };
@@ -86,6 +110,8 @@ function buildPath(pts, minY, maxY) {
 export function Module24_SyntheticControl({ module, onNext }) {
   const [selected, setSelected] = useState(null);
   const [revealed, setRevealed] = useState(false);
+  const [mcqAnswer, setMcqAnswer] = useState(null);
+  const [mcqRevealed, setMcqRevealed] = useState(false);
 
   function handleSelect(id) {
     if (revealed) return;
@@ -95,6 +121,12 @@ export function Module24_SyntheticControl({ module, onNext }) {
   function handleReveal() {
     if (!selected) return;
     setRevealed(true);
+  }
+
+  function handleMcq(optId) {
+    if (mcqRevealed) return;
+    setMcqAnswer(optId);
+    setMcqRevealed(true);
   }
 
   // Build all time-series data
@@ -126,6 +158,11 @@ export function Module24_SyntheticControl({ module, onNext }) {
         post-treatment. The key validity check: the donor must <em>not</em> itself be treated, and
         must track the target closely before the intervention.
       </p>
+
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Read the description of each donor candidate, then pick the one you think makes the best synthetic control. Pay attention to the pre-period RMSE and whether the donor itself received a treatment. Click "Check answer" to see why your pick is valid or invalid, and watch the chart show the effect gap on the correct donor.
+      </div>
 
       {/* Donor selection */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -254,6 +291,58 @@ export function Module24_SyntheticControl({ module, onNext }) {
         </svg>
         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.3rem' }}>
           Hover / select a donor to highlight it. Causal effect = gap between treated and synthetic control post-intervention.
+        </div>
+      </div>
+
+      {/* MCQ Exercise */}
+      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
+        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.6rem' }}>Quick check</div>
+        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.6, marginBottom: '0.75rem' }}>{MCQ_SC.question}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          {MCQ_SC.options.map(opt => {
+            const isChosen = mcqAnswer === opt.id;
+            const borderColor = !mcqRevealed
+              ? 'var(--border)'
+              : isChosen
+                ? (opt.correct ? 'var(--green-border)' : 'var(--red-border)')
+                : opt.correct ? 'var(--green-border)' : 'var(--border)';
+            const bg = !mcqRevealed
+              ? 'var(--surface)'
+              : isChosen
+                ? (opt.correct ? 'var(--green-bg)' : 'var(--red-bg)')
+                : opt.correct ? 'var(--green-bg)' : 'var(--surface)';
+            const color = !mcqRevealed
+              ? 'var(--text-secondary)'
+              : isChosen
+                ? (opt.correct ? 'var(--green)' : 'var(--red)')
+                : opt.correct ? 'var(--green)' : 'var(--text-muted)';
+            return (
+              <div key={opt.id}>
+                <button
+                  onClick={() => handleMcq(opt.id)}
+                  style={{
+                    width: '100%', textAlign: 'left', padding: '0.5rem 0.85rem',
+                    borderRadius: 'var(--radius-sm)', border: `1.5px solid ${borderColor}`,
+                    background: bg, color, fontSize: '0.85rem',
+                    fontWeight: isChosen ? 700 : 500, cursor: mcqRevealed ? 'default' : 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {opt.label}
+                </button>
+                {mcqRevealed && isChosen && (
+                  <div style={{ fontSize: '0.8rem', color: opt.correct ? 'var(--green)' : 'var(--red)', lineHeight: 1.55, marginTop: '0.3rem', paddingLeft: '0.25rem' }}>
+                    {opt.correct ? '✓ ' : '✗ '}{opt.feedback}
+                  </div>
+                )}
+                {mcqRevealed && !isChosen && opt.correct && (
+                  <div style={{ fontSize: '0.8rem', color: 'var(--green)', lineHeight: 1.55, marginTop: '0.3rem', paddingLeft: '0.25rem' }}>
+                    ✓ {opt.feedback}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 

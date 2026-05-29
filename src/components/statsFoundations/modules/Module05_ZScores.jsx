@@ -84,6 +84,11 @@ export function Module05_ZScores({ module, onNext }) {
         It converts any normally distributed measurement to a universal scale — so you can compare values from different distributions.
       </p>
 
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Adjust the three sliders to set your population mean, standard deviation, and the specific value you want to locate. Watch where the dot lands on the standard normal curve and read the z-score formula. Try pushing x well above or below the mean to see extreme tail positions.
+      </div>
+
       {/* Inputs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
         {[
