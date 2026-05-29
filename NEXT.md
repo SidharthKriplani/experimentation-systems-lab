@@ -10,10 +10,10 @@ Read this at the start of every build session. Do only this. Update before closi
 
 ## Next session
 
-**1. Frameworks + Deep Dives label copy fix (audit #83)** `S` `QUICK WIN`
-- `src/pages/PlaybookBrowser.jsx` — the section/content label currently reads "framework" (or a variant). This is redundant because the page title already says "Frameworks." Change the label to something that describes the content type, not the page identity — e.g. "Reference cards" or simply remove the label. Read the file first to confirm the exact current text.
-- `src/pages/BlogBrowser.jsx` — the content descriptor currently reads "concepts and frameworks." Change to "deep dives" to match the room identity. Read the file first to confirm the exact current text.
-Both are copy-only changes, no component logic changes needed.
+**1. Foundation modules — broken article/playbook links** `S` `BUG`
+Several foundation modules (across one or more of the four rooms) end with a link to a related article or Playbook entry, but the link is a non-functional placeholder — clicking does nothing or navigates nowhere. Needs investigation before fix.
+Steps: read the end sections of a sample of foundation modules across all four rooms (Stat, Exp, Metrics, RCA), identify which links are broken/placeholder vs. wired, determine the correct target (Playbook route, external URL, or internal room), then fix or remove each broken link. Scope is unknown until audit — could be 3 links or 30.
+Files to start: `src/components/statsFoundations/modules/Module*.jsx`, `src/components/expFoundations/ExpFoundationsRunner.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, `src/components/rcaFoundations/RCAFoundationsRunner.jsx`
 
 **2. Metrics Room — linked scenario chips not clickable** `S` `BUG`
 After revealing the answer in MetricsRunner, linked scenario cards appear in the debrief panel but tapping them does nothing. Need to wire `onNavigate` or `onOpen` prop through to each chip so clicking navigates to that case. File: `src/components/metrics/MetricsRunner.jsx` (or wherever debrief linked chips are rendered).
@@ -25,8 +25,8 @@ Subtitle renders in yellow runner header card (correct) AND as first words of bo
 - `src/components/metricsFoundations/modules/`
 - `src/components/rcaFoundations/modules/`
 
-**4. Hardcoded color values — CSS variable pass (audit #92)** `M` `HIGH`
-40+ hardcoded `#fff`, `rgba(0,0,0,x)`, `#333` across RCAFoundationsRunner, AuthModal, Sidebar, LockOverlay, DesignDebriefPanel, MetricChoicePanel. Check `index.css` for existing variables first. Replace all violations. ~1 session.
+**4. Progress page — collapse guided path cards** `S` `UX`
+Guided path cards on `src/pages/Progress.jsx` expand to show every item in the path (5–7 rows with room badges + case names + NEXT labels), making the page feel like a curriculum view rather than a dashboard. Fix: remove the item list from each path card entirely. Keep only path name, progress bar + counter (e.g. 2/7), and the Continue CTA button. The item list adds no information the progress bar + Continue label doesn't already surface. Read Progress.jsx first to confirm the exact JSX structure, then delete the list render block for each path card. Do not touch path data, routing, or the Continue button logic.
 
 **5. Homepage framing pass (audit #103)** `S` `HIGH`
 Read `src/pages/Home.jsx`. Align copy with the analytics + experimentation core identity — the page should not treat all 16 rooms as equals above the fold. Two independent external reads (ChatGPT cold-read V4.33.7, investor-style review V4.34.0) flagged the same dilution problem. DECISIONS.md now has a standing rule on this. Copy-only, ~20 min. Do not restructure the component — just fix the framing.
@@ -35,6 +35,10 @@ Read `src/pages/Home.jsx`. Align copy with the analytics + experimentation core 
 
 ## Deferred to own session
 
+**Hardcoded color values — CSS variable pass (audit #92)** `M` — 40+ hardcoded `#fff`, `rgba(0,0,0,x)`, `#333` across RCAFoundationsRunner, AuthModal, Sidebar, LockOverlay, DesignDebriefPanel, MetricChoicePanel. Check `index.css` for existing variables first. ~1 session. Moved from queue — guided path UX fix took priority.
+
+**Frameworks + Deep Dives label copy fix (audit #83)** — `PlaybookBrowser.jsx` label reads "framework" (redundant with page title — change to "Reference cards" or remove). `BlogBrowser.jsx` reads "concepts and frameworks" (change to "deep dives"). Copy-only, 2 files. Moved from queue — broken links bug took priority.
+
 **Sitemap — add 8 missing top-level routes (audit #93)** — Add to `public/sitemap.xml`: home, progress, trainer, unlock, company-tracks, defense-doc, about, search. Runner sub-pages excluded. Moved from queue — homepage framing took priority.
 
 **Supabase auth — finish or cut (audit #104)** — DECISION DUE before Batch 2 outreach. Either complete to production-ready (E2E test with real Supabase project, PROGRESS_KEYS completeness, error handling) or remove entirely. Read DECISIONS.md for the rule. Do not leave half-done.
@@ -42,8 +46,6 @@ Read `src/pages/Home.jsx`. Align copy with the analytics + experimentation core 
 **Data file validator script (audit #102)** — `scripts/validate-data.js` that checks all `src/data/*.js` for template literals, unescaped apostrophes, missing required fields. Wire as `npm run validate-data`. Prevents the build breaks that have already happened twice. One session.
 
 **React error boundary (audit #105)** — `src/components/shared/ErrorBoundary.jsx`, wrap `<main>` in App.jsx. ~30 min. Fixes white-screen crashes and shows engineering maturity to reviewers.
-
-**Homepage framing pass (audit #103)** — read `src/pages/Home.jsx`, check for stale audience/framing copy, align with README V4.33.7 updates. ~20 min, copy-only.
 
 **Visual pass — Simulator layout + emoji removal + icon consistency (audits #82, #80, #79)**
 All three are related. Dedicated session only: redesign Simulator config screen, remove all UI-chrome emojis, standardize room header icon boxes. Do not mix with a normal bug/fix session.
@@ -56,7 +58,7 @@ Deferred — lower priority than bug fixes above.
 
 ---
 
-## Carry-forward from V4.33.7 session
+## Carry-forward from V4.33.7–V4.34.0 session
 
 **Done today:**
 - Audience labels fixed in onboarding modal + Interview Simulator (V4.32.6)
@@ -75,6 +77,9 @@ Deferred — lower priority than bug fixes above.
 - Search gap fixed — V4.33.8 (8 missing rooms + shallow field coverage, audit #106)
 - Foundation guiding text pass — V4.33.9 (all 46 modules across 4 rooms, audit #95 + #107 resolved)
 - Skeleton depth expansion — V4.34.0 (19 new stubs: ef08–ef15, mf09–mf13, rf07–rf12; devNotes with MICRO/MACRO/INTERACTIVE/PRIORITY for all)
+- Investor-style review of all 3 labs logged — AUDITS.md Part XXI, audit #109 (homepage/nav dilution, open); DECISIONS.md new rule on core room visual weight; actionable items only, pre-data recommendations discarded
+- Foundation broken links bug logged — NEXT.md #1 (investigation needed before fix)
+- Progress page guided path cards logged — NEXT.md #4 (collapse item list, keep name + progress + Continue)
 
 **Still open (in IDEAS.md):**
 - Empty state quality pass (#91) — deferred
