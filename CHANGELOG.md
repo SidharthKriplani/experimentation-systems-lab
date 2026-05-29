@@ -4,6 +4,20 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.31.1] — 2026-05-29
+
+### Brand — unlock moment
+
+Replaced the cold form-submission success state with a proper unlock moment. When a user enters a valid code, the page transitions to a full-screen "You're in." view — CI mark animates in, heading fades up, subtext follows. 1.6s dwell then the product opens. The "already unlocked" state (for returning users) uses the same animation sequence but lands on "Full access active." with a progress CTA.
+
+**Animation:** Three staggered keyframes (`pal-unlock-in`, `pal-mark-pop`, `pal-text-rise`) — scale + fade, 250–300ms each, staggered by 50–80ms per element. No glow, no bounce, no celebration — restrained confidence.
+
+**Also removed:** The in-card green banner success state (was a form confirmation, not a moment). The card wrapper is now gone entirely on success — the view opens up.
+
+**Files:** `src/pages/Unlock.jsx`
+
+---
+
 ## [4.31.0] — 2026-05-29
 
 ### Brand — CI mark shipped as primary logo
