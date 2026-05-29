@@ -12,21 +12,37 @@ import { behavioralQuestions } from '../data/behavioralQuestions.js';
 import { estimationProblems } from '../data/estimationProblems.js';
 import { statsFoundationsModules } from '../data/statsFoundationsModules.js';
 import { growthAnalyticsCases } from '../data/growthAnalyticsCases.js';
+import { biCases } from '../data/biCases.js';
+import { spotTheFlawCases } from '../data/spotTheFlawCases.js';
+import { takehomeCases } from '../data/takehomeCases.js';
+import { instrumentationCases } from '../data/instrumentationCases.js';
+import { challengesCases } from '../data/challengesCases.js';
+import { expFoundationModules } from '../data/expFoundationModules.js';
+import { metricsFoundationModules } from '../data/metricsFoundationModules.js';
+import { rcaFoundationModules } from '../data/rcaFoundationModules.js';
 
 const ROOMS = [
-  { key: 'scenarios',               label: 'Review Scenarios',  page: 'browser',                   idField: 'id', titleField: 'title' },
-  { key: 'statsModules',            label: 'Stats',             page: 'stats',                     idField: 'id', titleField: 'title' },
-  { key: 'metricCases',             label: 'Metrics',           page: 'metrics',                   idField: 'id', titleField: 'title' },
-  { key: 'designScenarios',         label: 'Design',            page: 'design',                    idField: 'id', titleField: 'title' },
-  { key: 'rcaCases',                label: 'RCA',               page: 'rca',                       idField: 'id', titleField: 'title' },
-  { key: 'businessCases',           label: 'Cases',             page: 'cases',                     idField: 'id', titleField: 'title' },
-  { key: 'productDesignScenarios',  label: 'PM Design',         page: 'product-design',            idField: 'id', titleField: 'title' },
-  { key: 'codeModules',             label: 'Code',              page: 'code',                      idField: 'id', titleField: 'title' },
-  { key: 'prioritizationScenarios', label: 'Prioritization',    page: 'prioritization',            idField: 'id', titleField: 'title' },
-  { key: 'behavioralQuestions',     label: 'Behavioral',        page: 'behavioral',                idField: 'id', titleField: 'title' },
-  { key: 'estimationProblems',      label: 'Estimation',        page: 'estimation',                idField: 'id', titleField: 'title' },
-  { key: 'statsFoundationsModules', label: 'Stat Foundations',  page: 'stat-foundations',          idField: 'id', titleField: 'title' },
-  { key: 'growthAnalyticsCases',    label: 'Growth Analytics',  page: 'growth-analytics',          idField: 'id', titleField: 'title' },
+  { key: 'scenarios',               label: 'Review Scenarios',  page: 'browser',            idField: 'id', titleField: 'title' },
+  { key: 'statsModules',            label: 'Stats',             page: 'stats',              idField: 'id', titleField: 'title' },
+  { key: 'metricCases',             label: 'Metrics',           page: 'metrics',            idField: 'id', titleField: 'title' },
+  { key: 'designScenarios',         label: 'Design',            page: 'design',             idField: 'id', titleField: 'title' },
+  { key: 'rcaCases',                label: 'RCA',               page: 'rca',                idField: 'id', titleField: 'title' },
+  { key: 'businessCases',           label: 'Cases',             page: 'cases',              idField: 'id', titleField: 'title' },
+  { key: 'productDesignScenarios',  label: 'PM Design',         page: 'product-design',     idField: 'id', titleField: 'title' },
+  { key: 'codeModules',             label: 'Code',              page: 'code',               idField: 'id', titleField: 'title' },
+  { key: 'prioritizationScenarios', label: 'Prioritization',    page: 'prioritization',     idField: 'id', titleField: 'title' },
+  { key: 'behavioralQuestions',     label: 'Behavioral',        page: 'behavioral',         idField: 'id', titleField: 'title' },
+  { key: 'estimationProblems',      label: 'Estimation',        page: 'estimation',         idField: 'id', titleField: 'title' },
+  { key: 'statsFoundationsModules', label: 'Stat Foundations',  page: 'stat-foundations',   idField: 'id', titleField: 'title' },
+  { key: 'growthAnalyticsCases',    label: 'Growth Analytics',  page: 'growth-analytics',   idField: 'id', titleField: 'title' },
+  { key: 'biCases',                 label: 'BI',                page: 'bi',                 idField: 'id', titleField: 'title' },
+  { key: 'spotTheFlawCases',        label: 'Spot the Flaw',     page: 'spot-the-flaw',      idField: 'id', titleField: 'title' },
+  { key: 'takehomeCases',           label: 'Take-Home',         page: 'take-home',          idField: 'id', titleField: 'title' },
+  { key: 'instrumentationCases',    label: 'Instrumentation',   page: 'instrumentation',    idField: 'id', titleField: 'title' },
+  { key: 'challengesCases',         label: 'Challenges',        page: 'challenges',         idField: 'id', titleField: 'title' },
+  { key: 'expFoundationModules',    label: 'Exp Foundations',   page: 'exp-foundations',    idField: 'id', titleField: 'title' },
+  { key: 'metricsFoundationModules',label: 'Metrics Foundations',page: 'metrics-foundations',idField: 'id', titleField: 'title' },
+  { key: 'rcaFoundationModules',    label: 'RCA Foundations',   page: 'rca-foundations',    idField: 'id', titleField: 'title' },
 ];
 
 const DIFF_COLORS = {
@@ -46,15 +62,21 @@ function getDiffStyle(difficulty) {
   return DIFF_COLORS[key] || { color: 'var(--text-muted)', bg: 'var(--surface-2)', border: 'var(--border)' };
 }
 
+// Fields searched across all rooms
+const SEARCH_FIELDS = ['title', 'subtitle', 'difficulty', 'concept', 'situation', 'scenario',
+  'setup', 'question', 'flawLabel', 'flawType', 'keyInsight', 'domain', 'track'];
+
 function matchesQuery(item, titleField, query) {
   const q = query.toLowerCase();
-  const title = (item[titleField] || item.title || '').toLowerCase();
-  if (title.includes(q)) return true;
-  if (item.subtitle && item.subtitle.toLowerCase().includes(q)) return true;
-  if (item.difficulty && item.difficulty.toLowerCase().includes(q)) return true;
-  if (Array.isArray(item.tags)) {
-    if (item.tags.some(t => t.toLowerCase().includes(q))) return true;
+  // Check all declared string fields
+  for (const field of SEARCH_FIELDS) {
+    const val = item[field];
+    if (typeof val === 'string' && val.toLowerCase().includes(q)) return true;
   }
+  // Check tags array
+  if (Array.isArray(item.tags) && item.tags.some(t => t.toLowerCase().includes(q))) return true;
+  // Check rooms array (Challenges)
+  if (Array.isArray(item.rooms) && item.rooms.some(r => r.toLowerCase().includes(q))) return true;
   return false;
 }
 
@@ -164,7 +186,7 @@ function ResultCard({ item, room, isHighlighted, onNavigate, cardRef }) {
 }
 
 export function SearchPage({ onNavigate }) {
-  const allData = { scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases };
+  const allData = { scenarios, designScenarios, statsModules, metricCases, rcaCases, businessCases, productDesignScenarios, codeModules, prioritizationScenarios, behavioralQuestions, estimationProblems, statsFoundationsModules, growthAnalyticsCases, biCases, spotTheFlawCases, takehomeCases, instrumentationCases, challengesCases, expFoundationModules, metricsFoundationModules, rcaFoundationModules };
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);

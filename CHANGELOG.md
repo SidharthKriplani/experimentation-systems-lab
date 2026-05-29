@@ -4,6 +4,29 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.33.8] — 2026-05-29
+
+### Fix Search — 8 rooms missing from index + shallow field coverage
+
+**Bug:** Search was returning severely incomplete results. Searching "SUTVA" returned 2 results (Review Scenarios only) when 6 matches exist across 4 rooms. Root cause: two separate gaps.
+
+**Gap 1 — 8 rooms not indexed at all:**
+`biCases`, `spotTheFlawCases`, `takehomeCases`, `instrumentationCases`, `challengesCases`, `expFoundationModules`, `metricsFoundationModules`, `rcaFoundationModules` — none imported, none in ROOMS config. Every search was blind to ~40% of PAL's content.
+
+**Gap 2 — shallow field matching:**
+`matchesQuery` only checked `title`, `subtitle`, `tags`, `difficulty`. Fields like `situation`, `scenario`, `setup`, `flawLabel`, `flawType`, `keyInsight`, `concept`, `domain`, `track` — where concepts like SUTVA, network effects, etc. actually appear in scenario bodies — were not searched.
+
+**Fix:**
+- Added 8 imports + 8 ROOMS entries with correct page routes (`bi`, `spot-the-flaw`, `take-home`, `instrumentation`, `challenges`, `exp-foundations`, `metrics-foundations`, `rca-foundations`)
+- Replaced ad-hoc `matchesQuery` field checks with `SEARCH_FIELDS` constant covering 13 fields; added `rooms` array check for Challenges
+- Added all 8 new data sources to `allData` object
+
+**Verified:** "sutva" now returns 6 results across 4 rooms (was 2 across 1).
+
+**File:** `src/pages/SearchPage.jsx`
+
+---
+
 ## [4.33.7] — 2026-05-29
 
 ### Fix Stats Room "By Difficulty" sort — group headers + pinned module numbers
