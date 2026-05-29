@@ -102,7 +102,7 @@ export const productDesignScenarios = [
     difficulty: 'medium',
     category: 'Marketplace',
     tags: ['two-sided marketplace', 'supply-side', 'retention'],
-    isFree: false,
+    isFree: true,
     prompt: 'You are a PM at Airbnb. Data shows that guest booking conversion drops 18% when hosts take more than 12 hours to respond to a booking request. Currently, 31% of requests see a host response time over 12 hours.\n\nDesign a solution to reduce host response lag and improve booking conversion — without harming host satisfaction or causing hosts to accept bookings they\'ll cancel later.',
     phases: [
       {
@@ -189,7 +189,7 @@ export const productDesignScenarios = [
     difficulty: 'hard',
     category: 'B2B / Productivity',
     tags: ['notifications', 'productivity', 'B2B', 'retention'],
-    isFree: false,
+    isFree: true,
     prompt: 'You are a PM at Slack. Research shows that 42% of Slack users report feeling overwhelmed by notifications, and this correlates with users going into "Do Not Disturb" for extended periods or reducing app usage. Notification-overwhelmed users are 2.4x more likely to churn from paid plans within 6 months.\n\nDesign a solution to reduce notification fatigue without reducing the quality of communication or causing users to miss important messages.',
     phases: [
       {

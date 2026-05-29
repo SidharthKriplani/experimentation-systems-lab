@@ -12,7 +12,7 @@ import { businessCases } from '../data/businessCases.js';
 import { learningPaths } from '../data/learningPaths.js';
 import { concepts } from '../data/concepts.js';
 import { runContentAudit, LS_KEYS } from '../utils/contentAudit.js';
-import { lock } from '../utils/unlock.js';
+import { lock, tryUnlock } from '../utils/unlock.js';
 
 const ROOM_COLORS = {
   stats:   { color: 'var(--blue-text)',  bg: 'var(--blue-bg)',   border: 'var(--blue-border)' },
@@ -135,7 +135,7 @@ export function QADashboard({ onNavigate, onOpenItem, unlocked, onUnlock, onLock
   }
 
   function handleUnlock() {
-    try { localStorage.setItem('exp-lab-unlocked-v1', 'true'); } catch {}
+    tryUnlock('PAL-FOUNDER-1');
     onUnlock();
   }
 

@@ -93,14 +93,17 @@ Desktop: Header.jsx right slot. Mobile: mobile topbar right slot. Do not add a s
 
 ## Paywall + monetization
 
-**`isUnlocked()` returns `true` during beta. Do not change this.**
-Located in `src/utils/unlock.js`. Marked with `// TODO: set to false when Stripe goes live`. Real payment infrastructure only after 3+ paid rooms with proven content.
+**Access code gate is live as of V4.29.0. `isUnlocked()` reads localStorage.**
+Located in `src/utils/unlock.js`. Valid codes: `PAL-BETA-2026` (community), `PAL-FOUNDER-1` (direct invite). Stored under key `pal-access-code-v1`. The access code tier is permanent — it remains as the community tier even after Stripe goes live.
 
-**Free tier is always: 1–2 analyst-level cases per room.**
-Every room must have at least one `isFree: true` case. Stats Foundations is fully free — it's the best marketing for the platform.
+**Free tier: first 3 cases per room + all Foundations + full Defense Strategy.**
+Every room has exactly `isFree: true` on its first 3 items (Stats has 4). All Foundations modules are fully free. Defense Strategy is fully free. This split is intentional — enough value to hook, enough gate to motivate unlocking.
+
+**Premium tier (access code required): full case banks, Company Tracks, full Behavioral (BEH04+), Interview Simulator.**
+Company Tracks and Interview Simulator have no `isFree` partial access — they are entirely behind the gate.
 
 **Stripe is scaffolded but not live.**
-`VITE_STRIPE_PAYMENT_LINK` env var is read in the Pricing page but the paywall is not enforced. Do not introduce Stripe logic until the team decides to flip the gate.
+`VITE_STRIPE_PAYMENT_LINK` env var exists but the Stripe flow is not wired. When Stripe goes live, `isUnlocked()` should also accept a valid Stripe session token. The access code community tier coexists with Stripe — it does not go away.
 
 ---
 

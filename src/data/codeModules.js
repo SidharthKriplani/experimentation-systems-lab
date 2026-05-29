@@ -54,7 +54,7 @@ export const codeModules = [
     subtitle: 'SQL · Cohort Analysis · Window Functions',
     track: 'sql',
     difficulty: 'analyst',
-    isFree: false,
+    isFree: true,
     tags: ['retention', 'cohort analysis', 'window functions', 'DATE_DIFF'],
 
     scenario: {
@@ -95,7 +95,7 @@ export const codeModules = [
     subtitle: 'Python · scipy.stats · Confidence Intervals',
     track: 'python',
     difficulty: 'analyst',
-    isFree: false,
+    isFree: true,
     tags: ['A/B testing', 'scipy', 'confidence intervals', 'hypothesis testing'],
 
     scenario: {

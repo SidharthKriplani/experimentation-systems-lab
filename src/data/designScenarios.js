@@ -1100,7 +1100,7 @@ export const designScenarios = [
     id: 'd03-mobile-feature-test',
     title: 'Design the Mobile Feature Test',
     subtitle: 'Vantage Analytics wants to test a redesigned mobile dashboard. Design the experiment — and decide upfront how you\'ll handle the mobile subgroup.',
-    isFree: false,
+    isFree: true,
     difficulty: 'senior',
     industry: 'saas',
     scenarioFamily: 'hte_subgroups',

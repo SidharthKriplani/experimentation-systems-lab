@@ -59,7 +59,7 @@ export const metricsFoundationModules = [
     difficulty: 'Intermediate',
     tags: ['decomposition', 'DAU', 'MAU', 'retention', 'new users', 'resurrection', 'LTV'],
     estimatedMin: 7,
-    isFree: false,
+    isFree: true,
     keyInsight: 'DAU = New + Retained + Resurrected. This decomposition immediately tells you whether a DAU drop is an acquisition problem, a retention problem, or a re-engagement problem — three very different product interventions.',
     connection: 'In RCA, you decompose the metric before diagnosing cause. In experiment design, you decompose the metric to pick the most sensitive sub-metric as your primary. A 1% lift on DAU is hard to detect; a 3% lift on D7 retention for new users is much easier.',
     playbookLinks: [
@@ -75,7 +75,7 @@ export const metricsFoundationModules = [
     difficulty: 'Intermediate',
     tags: ['counter metrics', 'guardrails', 'quality', 'engagement depth', 'tradeoff', 'safety'],
     estimatedMin: 6,
-    isFree: false,
+    isFree: true,
     keyInsight: 'For every metric you optimise, there is a metric you could sacrifice. Counter metrics make the tradeoff explicit and prevent teams from shipping hollow wins — a feature that improves CTR by showing more aggressive notifications at the cost of user satisfaction.',
     connection: 'In A/B tests, guardrails are pre-committed. A guardrail breach (e.g., support contacts up >2% significantly) blocks ship even if the primary metric wins. Without pre-commitment, teams negotiate guardrails after seeing results — which is just rationalization.',
     playbookLinks: [
@@ -91,7 +91,7 @@ export const metricsFoundationModules = [
     difficulty: 'Intermediate',
     tags: ['leading indicator', 'lagging indicator', 'proxy', 'predictive', 'engagement', 'revenue'],
     estimatedMin: 5,
-    isFree: false,
+    isFree: true,
     keyInsight: 'Revenue is the perfect lagging indicator — it confirms what happened but tells you nothing about what to do next. D7 retention is a leading indicator — it predicts LTV and churn before you see the revenue impact. Use lagging for reporting, leading for experimentation.',
     connection: 'A/B tests need fast-moving, sensitive leading indicators as primary metrics — you can\'t wait 90 days to see LTV move. But you report results in terms of the lagging metric (revenue, subscriber count) to make the business case. The skill is knowing which leading metric reliably predicts which lagging outcome.',
     playbookLinks: [
@@ -107,7 +107,7 @@ export const metricsFoundationModules = [
     difficulty: 'Advanced',
     tags: ['north star', 'design', 'single metric', 'alignment', 'long-term value', 'okrs'],
     estimatedMin: 8,
-    isFree: false,
+    isFree: true,
     keyInsight: 'A good North Star captures delivered value to users, not extracted value for the company. DAU captures engagement but not value delivery. "Messages sent" for WhatsApp captures a behaviour that strongly correlates with value. "Revenue" is a lagging extraction metric — important but a poor North Star.',
     connection: 'North Stars fail in experiments because they are too stable week-over-week to detect short-term treatment effects. You use them for long-run holdouts or to validate that your L1/L2 metrics are actually correlated with North Star improvement over cohort data.',
     playbookLinks: [
@@ -123,7 +123,7 @@ export const metricsFoundationModules = [
     difficulty: 'Advanced',
     tags: ['sensitivity', 'variance', 'sample size', 'MDE', 'metric selection', 'power'],
     estimatedMin: 7,
-    isFree: false,
+    isFree: true,
     keyInsight: 'Sensitivity = signal-to-noise ratio. High variance metrics (revenue per user, time on site) need enormous samples to detect real effects. Low variance proxies (add-to-cart rate, session start rate) are detectable with far less data — but only if they are genuinely predictive of the high-variance outcome.',
     connection: 'Choosing a high-variance primary metric for an A/B test is not just a statistical nuisance — it is a business risk. An experiment on revenue per user might need 8 weeks to reach power; a 2-week test on conversion rate of the checkout step reaches significance much faster, and you can later validate the revenue link via holdout.',
     playbookLinks: [

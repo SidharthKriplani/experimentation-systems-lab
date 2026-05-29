@@ -127,7 +127,7 @@ export const estimationProblems = [
     title: 'WhatsApp Users in India',
     subtitle: 'Market Sizing · Messaging',
     difficulty: 'Analyst',
-    isFree: false,
+    isFree: true,
     tags: ['WhatsApp', 'India', 'DAU/MAU', 'messaging'],
     category: 'market-sizing',
     approach: 'top-down',

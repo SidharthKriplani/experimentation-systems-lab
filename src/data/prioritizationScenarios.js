@@ -110,7 +110,7 @@ export const prioritizationScenarios = [
     subtitle: 'Categorize 8 initiatives on a 2×2, then defend your quick wins',
     company: 'Airbnb',
     difficulty: 'Intermediate',
-    isFree: false,
+    isFree: true,
     tags: ['effort-impact', '2×2 matrix', 'quick wins'],
     context: 'You\'re a PM on Airbnb\'s Host Experience team. A new VP has joined and wants to know: "What can we ship in 60 days that will meaningfully move host satisfaction?" You have a list of 8 initiatives your team has scoped. Your job is to map them onto an effort–impact matrix and identify the quick wins.',
     items: [
@@ -168,7 +168,7 @@ export const prioritizationScenarios = [
     subtitle: 'When does slowing down to speed up make business sense?',
     company: 'Notion',
     difficulty: 'Advanced',
-    isFree: false,
+    isFree: true,
     tags: ['technical debt', 'velocity', 'PM-engineering alignment'],
     context: 'Notion\'s growth team has been shipping fast for 18 months. The engineering lead comes to you (PM) with a proposal: "We need a full quarter — 3 months — to pay down sync infrastructure debt. We\'re burning 40% of sprint velocity on incident response and workarounds." The CPO wants a new AI features roadmap delivered this quarter. You need to frame this tradeoff for the exec team.',
     situation: {

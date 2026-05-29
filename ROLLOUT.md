@@ -86,7 +86,16 @@ Full product surface — all rooms, all tools, all nav paths.
 All checklist items green. No room throws a runtime error. Defense Strategy 3-step flow completes end-to-end on both desktop and mobile.
 
 ### Feedback collected
-Founder self-vet complete. 5 bugs found. All fixed in V4.28.0. Re-vet mobile post-deploy before opening Batch 1.
+Founder self-vet complete. 5 bugs found and fixed in V4.28.0. Additional feature feedback recorded below. Re-vet mobile post-deploy before opening Batch 1.
+
+**Feature feedback from Batch 0 (not bugs — logged to IDEAS.md for prioritization)**
+
+- **RCA Room** — solid, no issues. Confirmed working as expected.
+- **Metrics Room — linked scenarios not clickable** — after revealing the senior metric design answer, linked scenario cards appear in the debrief but are not navigable. Users expect to be able to tap through. Logged to IDEAS.md (Tier 1).
+- **Code Room — SQL not executable** — the Run Code button only works for Python (Pyodide). SQL modules show code but there is no way to execute or validate a query. Ideally the Code Room becomes a lightweight SQL playground. Logged to IDEAS.md (Tier 2).
+- **Timer — needs play/pause + tooltip** — the running timer has no pause control and no explanation of what it's for. Users don't know whether it's tracking their speed for scoring or just informational. A hover tooltip and play/pause button would reduce confusion. Logged to IDEAS.md (Tier 2).
+- **Interview Simulator — needs significant expansion** — current modes (DS / PM) are too broad. Feedback: split into specific roles (Product Analyst, Business Analyst, Data Analyst, PM) with a Senior / Staff tier per role. Remove the generic DS mode. Adjust question counts per session type: Quick = 5–10, Standard = 10–15, Full Loop = 20–30, Marathon = 30–40. Current question bank is thin — needs depth to support these tiers. Logged to IDEAS.md (Tier 1, large scope).
+- **Access code for moat content** — idea: instead of (or alongside) Stripe paywall, lock deep-value content behind a shareable access code. One generic code for the community (LinkedIn, word of mouth), individual codes for direct invites. Creates exclusivity signal and a low-friction conversion path before Stripe goes live. Logged to IDEAS.md (Tier 2).
 
 ---
 

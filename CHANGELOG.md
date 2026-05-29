@@ -4,6 +4,30 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.29.0] — 2026-05-29
+
+### Added — Freemium access code gate
+
+Implemented the permanent freemium gate. `isUnlocked()` in `src/utils/unlock.js` now reads `localStorage.getItem('pal-access-code-v1')` instead of returning `true`. Valid codes: `PAL-BETA-2026` (community tier, for LinkedIn / word-of-mouth distribution) and `PAL-FOUNDER-1` (direct founder invite). `tryUnlock()` normalises to uppercase before comparing. Added `getStoredCode()` helper.
+
+**Free tier (no code required):** First 3 cases per room (Stats has 4 free modules). All Foundations modules (Exp, Metrics, RCA, Stats) fully free — every `isFree: false` in the four Foundations data files flipped to `true`. Full Defense Strategy (acquisition hook). Progress tracking.
+
+**Premium tier (code required):** Full case banks (150+ cases), Company Tracks, full Behavioral bank (BEH04+), Interview Simulator.
+
+**`isFree` flags audited and set deliberately across all 16 case/module data files.** Previous state was 1–2 free per room, often non-consecutive. Now: each room has exactly its first 3 items as `isFree: true` (first-N ordering ensures predictable lock UX).
+
+**Company Tracks gated:** `CompanyTracks.jsx` now accepts `unlocked` prop; shows access code paywall if `!unlocked`. App.jsx passes `unlocked={unlocked}` to the component.
+
+**Interview Simulator gated:** `InterviewSimulator.jsx` refactored into outer gate wrapper + `InterviewSimulatorInner` (all hooks live there to satisfy rules-of-hooks). Wrapper returns paywall if `!unlocked`. App.jsx passes `unlocked={unlocked}`.
+
+**Unlock page updated:** Removed dead Stripe button, updated copy and placeholder to match new `PAL-XXXX-XXXX` format. Added free vs. premium comparison grid (2-column layout showing what each tier includes).
+
+**QADashboard fixed:** Was hardcoding old `'exp-lab-unlocked-v1'` localStorage key. Now imports `tryUnlock` and calls `tryUnlock('PAL-FOUNDER-1')` in `handleUnlock()`.
+
+**MD files updated:** DECISIONS.md (paywall section rewritten), IDEAS.md (3 items marked shipped, exception note added to In Progress), CLAUDE.md (version bump).
+
+---
+
 ## [4.28.0] — 2026-05-29
 
 ### Fixed — Batch 0 self-vet bug sweep (5 bugs)
@@ -20,7 +44,7 @@ Founder completed Batch 0 self-vet on live product. Five bugs found and fixed be
 
 **Bug 5 — Code Room execute button invisible + Python execution broken (MEDIUM).** Run button only appears after Reveal with no prior indication. Also: stray `import { track }` JS statement was embedded inside a Python `runPython()` string, causing SyntaxError on every run; `track` not imported at module level. Fixed: proper import added, stray statement removed, "▶ Run Code appears after reveal" hint shown pre-reveal for Python modules. *File: `src/components/code/CodeRunner.jsx`*
 
-**MD files updated:** ROLLOUT.md (Batch 0 → COMPLETE, all findings documented), AUDITS.md (Audit #77, 5 sub-findings), CLAUDE.md (version bump).
+**MD files updated:** ROLLOUT.md (Batch 0 → COMPLETE, bugs + feature feedback documented), AUDITS.md (Audit #77, 5 sub-findings), IDEAS.md (5 Batch 0 feedback items added — Metrics linked scenarios, Interview Simulator expansion, Code Room SQL playground, timer UX, access code), CLAUDE.md (version bump).
 
 ---
 

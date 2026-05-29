@@ -416,7 +416,7 @@ export const rcaCases = [
     title: 'Buyer Cancellations Up 40% in Three Cities',
     subtitle: 'Crafted · Two-Sided Marketplace · Fulfillment',
     difficulty: 'analyst',
-    isFree: false,
+    isFree: true,
     companies: ['Airbnb', 'DoorDash', 'Uber Eats'],
     domain: 'marketplace',
     linkedConceptIds: ['segmentation', 'marketplace-interference', 'funnel-decomposition'],
@@ -2464,7 +2464,7 @@ export const rcaCases = [
     title: 'Push Notification CTR Dropped 40% in One Week',
     subtitle: 'Orion · Consumer Mobile · Re-engagement',
     difficulty: 'analyst',
-    isFree: true,
+    isFree: false,
     domain: 'engagement',
     linkedConceptIds: ['segmentation', 'data-quality-check', 'funnel-decomposition'],
     context: {

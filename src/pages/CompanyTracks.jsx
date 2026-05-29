@@ -477,7 +477,7 @@ function TrackDetail({ track, onBack, onNavigate }) {
   );
 }
 
-export function CompanyTracks({ onNavigate, onBack }) {
+export function CompanyTracks({ onNavigate, onBack, unlocked }) {
   const [view, setView] = useState('grid');
   const [selectedTrack, setSelectedTrack] = useState(null);
 
@@ -489,6 +489,31 @@ export function CompanyTracks({ onNavigate, onBack }) {
   function handleBackToGrid() {
     setView('grid');
     setSelectedTrack(null);
+  }
+
+  // Company Tracks are fully premium — no free tier
+  if (!unlocked) {
+    return (
+      <div style={{ maxWidth: '480px', margin: '4rem auto', padding: '2rem 1.5rem', textAlign: 'center' }}>
+        <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🔒</div>
+        <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', marginBottom: '0.5rem' }}>
+          Company Tracks — Full Access Only
+        </h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+          Company-specific prep tracks are part of full access. Enter your access code to unlock them alongside all other premium content.
+        </p>
+        <button
+          onClick={() => onNavigate('unlock')}
+          style={{
+            background: 'var(--accent)', color: '#fff', border: 'none',
+            borderRadius: '6px', padding: '0.6rem 1.5rem',
+            fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
+          }}
+        >
+          Enter Access Code →
+        </button>
+      </div>
+    );
   }
 
   return (

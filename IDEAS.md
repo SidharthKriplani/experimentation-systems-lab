@@ -16,6 +16,8 @@ _No new features until PostHog baseline is established._
 
 **Exception shipped V4.27.0:** Defense Strategy rebuild — triggered by real interview prep use case (Meesho SBA). Qualifies as a quality improvement to an existing tool, not a net-new feature.
 
+**Exception shipped V4.29.0:** Access code freemium gate — activated `isUnlocked()` to check localStorage for valid code (`PAL-BETA-2026` / `PAL-FOUNDER-1`). Free tier = first 3 cases per room + all Foundations + Defense Strategy. Premium = full case banks + Company Tracks + Simulator. Access code is the permanent community tier; Stripe will layer on top.
+
 **Defense Strategy future layers (not yet built):**
 - Layer 4: Company track cross-referencing — if prepping for Meesho, weight RCA 40% heavier, surface supply-demand framing. Needs company track data to be trustworthy.
 - Layer 5: Live plan that updates as you practice — as rooms are completed, Defense Strategy re-scores gaps and updates priorities. Requires tying room completion events back to Defense Strategy state. V5 territory.
@@ -36,9 +38,10 @@ _No new features until PostHog baseline is established._
 - ~~Search within a single room (room-level filter on global search)~~ — ✅ shipped V4.11.0 (room filter chips in SearchPage)
 - ~~Frameworks (Playbook) page redesign~~ — ✅ shipped V4.14.0 (reference-card layout, 3-col grid, category filter tabs, distinct from Deep Dives)
 - ~~Consult page — overlaps with Search~~ — ✅ cut V4.14.0
-- Stripe paywall activation — flip isUnlocked() → false, test end-to-end
+- ~~Stripe paywall activation — flip isUnlocked() → false~~ — ✅ access code gate live V4.29.0; Stripe layer is next step
 - ~~**Mobile audit #75 — fix 75-A through 75-C (critical/high)**~~ — ✅ shipped V4.26.0
-- **`gated: true` per-case paywall flag** (from GenAI Lab — 163 questions pre-tagged) — add `isFree` boolean to every case/module that should be free-tier; currently all gating is coarse (isUnlocked() global). Enables surgical free tier without touching paywall logic. Zero UX change; prerequisite for Stripe activation.
+- ~~**`gated: true` per-case paywall flag**~~ — ✅ shipped V4.29.0 (`isFree` flags deliberate on all data files; first 3 per room free, all Foundations free, Defense Strategy free)
+- **Interview Simulator expansion (Batch 0 feedback — large scope)** — current DS/PM modes are too broad. Feedback: split into specific roles (Product Analyst, Business Analyst, Data Analyst, PM) each with a Senior / Staff tier. Remove the generic DS mode. Target question counts per session: Quick = 5–10, Standard = 10–15, Full Loop = 20–30, Marathon = 30–40. Question bank needs depth to support these tiers before shipping. Do not build until PostHog shows Simulator usage worth investing in.
 - Confirm `VITE_POSTHOG_KEY` is live in Vercel prod and establish WAU baseline
 - ~~**Next-case highlight for all 15 remaining case room browsers** (audit #72)~~ — ✅ shipped V4.25.0 (all 16 browsers now have firstUnstartedId + accent border + "Next →" badge, each using room color var)
 - ~~**Sticky next CTA for RCARunner, CaseRunner, BIRunner** (audit #72)~~ — ✅ shipped V4.25.0 (position-fixed bottom bar with back + next buttons)
@@ -47,6 +50,7 @@ _No new features until PostHog baseline is established._
 - ~~**Sign-in button in mobile topbar** (audit #73)~~ — ✅ shipped V4.25.0 (sign-in button + avatar added to mobile-topbar right slot)
 
 ### Bugs
+- **Metrics Room — linked scenarios not clickable (Batch 0 feedback)** — after revealing the senior metric design answer, linked scenario cards appear in the debrief but tapping them does nothing. Users expect to navigate directly. Small fix, high friction when it fails.
 - ~~**`onResetAllProgress` missing 9 keys** (audit #62)~~ — ✅ fixed V4.6.1 (8 keys added, reset now covers all rooms)
 - ~~**`case_opened` missing from 4 open functions** (audit #61)~~ — ✅ fixed V4.6.1 (BI, STF, Take-Home, Instrumentation now tracked)
 - ~~**Sitemap missing 8 V4.x routes** (audit #63)~~ — ✅ fixed V4.6.1 (22 URLs, all rooms indexed)
@@ -88,6 +92,8 @@ At the end of each day card, surface one articulation prompt per top-gap skill (
 - **"Analytics Failures" catalog** (from GenAI Lab Debug pattern) — 25 named failure patterns: bad event taxonomy, selection bias in A/B, cohort leakage, Simpson's Paradox in segmentation, metric definition drift, silent imputation, etc. Failure modes catalog for RCA, Metrics, Growth rooms.
 
 ### Features
+- **Code Room — SQL playground (Batch 0 feedback)** — the Run Code button only works for Python. SQL modules display code with no execution path. Ideal end state: lightweight in-browser SQL execution (e.g. sql.js / DuckDB-WASM) with a sample dataset pre-loaded per module so users can run and validate queries. Adds significant value for the SQL-strong/experimentation-weak Batch 1 profile.
+- **Timer — play/pause + tooltip (Batch 0 feedback)** — the running timer has no pause and no explanation. Users don't know if it affects scoring or is just informational. Add: play/pause button, hover/tap tooltip ("tracks time for self-awareness — does not affect scoring"), and warning color at >10 min. Low effort.
 - Stripe payment flow activation (link already scaffolded in `VITE_STRIPE_PAYMENT_LINK`) — requires flipping paywall gate + end-to-end test
 - ~~Company track completion badges~~ — ✅ shipped V4.14.0 (green Complete badge on card + 🎉 banner in TrackDetail)
 - ~~Dark/light mode persistence fix~~ — ✅ already in place via index.html inline script (was pre-existing)
@@ -107,6 +113,7 @@ At the end of each day card, surface one articulation prompt per top-gap skill (
 - **Single forward pointer after case debrief** (from GenAI Lab principle) — upgrade "Forward-pointer card" (Tier 3) to enforce ONE next step, not 3–5 options. Genai lab implemented this as a single "What to do next" card with no menu. Prevents decision paralysis at debrief end.
 
 ### Platform
+- ~~**Access code for moat content (Batch 0 feedback)**~~ — ✅ shipped V4.29.0 (`PAL-BETA-2026` community code, `PAL-FOUNDER-1` direct invite; permanent community tier; Stripe layers on top)
 - **Three front doors IA audit** (from GenAI Lab — Build/Prove/Navigate structure) — audit PAL's home and nav for whether users can identify their entry mode in <5 sec. GenAI lab organizes around Build/Prove/Navigate. PAL equivalent: Practice (rooms) / Assess (Simulator+Trainer) / Navigate (Defense Strategy+Company Tracks). Check if this framing improves cold-start clarity.
 - **Create PARKED.md** (from GenAI Lab pattern) — separate file for consciously cut or deferred features with reasons. Currently IDEAS.md "Retired" section handles this, but a dedicated PARKED.md with more context per item is cleaner. Move Retired section → PARKED.md with migration notes.
 - First-Time User cold walk-through audit with sidebar nav (incognito, every confusion point noted) — sidebar is new in V4.7, cold path not yet audited

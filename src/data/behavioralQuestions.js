@@ -94,7 +94,7 @@ export const behavioralQuestions = [
     title: 'Finding the Leaky Bucket Behind Flat DAU',
     subtitle: 'Data Impact · Proactive Insight',
     difficulty: 'Mid-level',
-    isFree: false,
+    isFree: true,
     tags: ['proactive analysis', 'DAU/MAU', 'cohort analysis', 'acquisition quality', 'dashboard'],
     category: 'data-impact',
 

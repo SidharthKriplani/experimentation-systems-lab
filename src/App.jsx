@@ -1130,7 +1130,7 @@ export default function App() {
           />
         )}
 
-        {page === 'simulator' && <InterviewSimulator onBack={() => setPage('home')} onNavigate={navigate} />}
+        {page === 'simulator' && <InterviewSimulator unlocked={unlocked} onBack={() => setPage('home')} onNavigate={navigate} />}
         {page === 'ab-interpreter' && <ABTestInterpreter onBack={() => setPage('home')} />}
         {page === 'consult' && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
@@ -1160,6 +1160,7 @@ export default function App() {
         {page === 'company-tracks' && (
           <Suspense fallback={<div style={{padding:'2rem',textAlign:'center',color:'var(--text-muted)'}}>Loading…</div>}>
             <CompanyTracks
+              unlocked={unlocked}
               onBack={() => setPage('home')}
               onNavigate={(targetPage, itemId) => {
                 if (itemId) {

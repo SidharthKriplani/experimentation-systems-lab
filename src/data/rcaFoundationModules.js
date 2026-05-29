@@ -58,7 +58,7 @@ export const rcaFoundationModules = [
     difficulty: 'Intermediate',
     tags: ['seasonality', 'external factors', 'day-of-week', 'holidays', 'competitor', 'app store'],
     estimatedMin: 6,
-    isFree: false,
+    isFree: true,
     keyInsight: 'Before blaming the product, rule out time-based and external causes: day-of-week effects, holidays, competitor launches, app store ranking changes, marketing spend drops, platform outages. These are the null hypothesis. If you cannot rule out seasonality, you have not done RCA.',
     connection: 'Seasonality is also the most common confounder in A/B tests — if your treatment group was exposed during a holiday week, your results are confounded. RCA and experiment analysis share the same seasonality awareness.',
     playbookLinks: [
@@ -74,7 +74,7 @@ export const rcaFoundationModules = [
     difficulty: 'Intermediate',
     tags: ['Simpson\'s paradox', 'mix shift', 'segmentation', 'aggregate vs segment', 'cohort'],
     estimatedMin: 7,
-    isFree: false,
+    isFree: true,
     keyInsight: 'An aggregate metric drop can mask that every individual segment is flat or improving — the mix shifted. A DAU drop may mean fewer low-engagement users (churning low-value users looks like a DAU drop but may be healthy). Always break the aggregate into meaningful segments before concluding there is a problem.',
     connection: 'Simpson\'s Paradox is the shared villain of RCA and A/B test analysis. In experiments, it causes conversion rate to move in the opposite direction at the segment level vs the aggregate. In RCA, it causes a metric drop to reverse when you segment properly.',
     playbookLinks: [
@@ -90,7 +90,7 @@ export const rcaFoundationModules = [
     difficulty: 'Advanced',
     tags: ['recommendation', 'communication', 'executive summary', 'fix', 'monitoring', 'prevention'],
     estimatedMin: 7,
-    isFree: false,
+    isFree: true,
     keyInsight: 'RCA ends with a recommendation, not just a cause. The complete structure: (1) what dropped and by how much, (2) the confirmed root cause with evidence, (3) the proposed fix and owner, (4) how you will measure success of the fix, (5) what you will monitor to catch recurrence. Missing step 4 or 5 means the RCA is incomplete.',
     connection: 'The RCA communication structure is identical to the A/B test readout structure: what changed, why, what we recommend, how we will know if we are right. Both are hypothesis-driven, evidence-backed narratives for a decision-maker.',
     playbookLinks: [

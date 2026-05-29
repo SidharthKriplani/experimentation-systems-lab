@@ -506,7 +506,7 @@ export const businessCases = [
     title: 'Should We Replace Tier-1 Support With a GenAI Bot?',
     subtitle: 'Threadline · B2B SaaS · AI Product Strategy',
     difficulty: 'senior',
-    isFree: false,
+    isFree: true,
     domain: 'genai',
     linkedConceptIds: ['proxy-metric', 'guardrail-metric', 'metric-gaming'],
     context: {

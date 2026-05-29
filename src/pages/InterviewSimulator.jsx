@@ -111,7 +111,34 @@ const SESSION_MODE_OPTIONS = [
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const hasSpeech = !!SpeechRecognition;
 
-export function InterviewSimulator({ onBack, onNavigate }) {
+export function InterviewSimulator({ onBack, onNavigate, unlocked }) {
+  if (!unlocked) {
+    return (
+      <div style={{ maxWidth: '480px', margin: '4rem auto', padding: '2rem 1.5rem', textAlign: 'center' }}>
+        <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🔒</div>
+        <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', marginBottom: '0.5rem' }}>
+          Interview Simulator — Full Access Only
+        </h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+          The Interview Simulator is part of full access. Enter your access code to run mock sessions across all roles and formats.
+        </p>
+        <button
+          onClick={() => onNavigate('unlock')}
+          style={{
+            background: 'var(--accent)', color: '#fff', border: 'none',
+            borderRadius: '6px', padding: '0.6rem 1.5rem',
+            fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
+          }}
+        >
+          Enter Access Code →
+        </button>
+      </div>
+    );
+  }
+  return <InterviewSimulatorInner onBack={onBack} onNavigate={onNavigate} />;
+}
+
+function InterviewSimulatorInner({ onBack, onNavigate }) {
   const [screen, setScreen] = useState('setup'); // 'setup' | 'active' | 'debrief'
   const [role, setRole] = useState(null);
   const [sessionLength, setSessionLength] = useState(5); // default Standard
