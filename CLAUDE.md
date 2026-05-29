@@ -189,9 +189,10 @@ Make a product + engineering call first. Not everything belongs. Ask: does this 
 | `CLAUDE.md` | This file. Read every session. |
 | `NEXT.md` | Session queue — max 5 items, ordered. Read before IDEAS.md. Update at end of every session. |
 | `DECISIONS.md` | Prescriptive rulebook — architectural + product standing rules. Check before making any structural choice. |
-| `LINEAGE.md` / `CHANGELOG.md` | Build history. `CHANGELOG.md` is terse (version + bullets). Full narrative lineage is embedded in `CHANGELOG.md` as detailed entries. Covers V1.0 through V4.13.1. |
+| `LINEAGE.md` | Narrative history of PAL — origin, major pivots, identity decisions, access/monetization arc. Written in prose, not version entries. Reconstructed from CHANGELOG.md. Read when you need to understand how the product got here. |
+| `CHANGELOG.md` | Full technical build log — every version with what changed, why, and which files. Terse version entries at the top; detailed narrative entries below. Source of truth for LINEAGE.md. |
 | `IDEAS.md` | Tiered backlog — In Progress / Tier 1 / Tier 2 / Tier 3 / Retired. |
-| `AUDITS.md` | Health log — 70 audits to date, with ✅ resolved / ⚠️ open status. |
+| `AUDITS.md` | Health log — 111 audits to date, with ✅ resolved / ⚠️ open status. |
 | `METRICS.md` | Tracked events, user funnel, success metrics, localStorage keys. |
 | `docs/CONTENT_QUALITY_BAR.md` | 8-dimension standard every case must pass before shipping. |
 | `docs/SCENARIO_BANK_TAXONOMY.md` | 15 scenario families for the Review Room. |

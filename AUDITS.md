@@ -39,6 +39,13 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XXIII — V4.35.3 Audience Coverage Audit (Indian market gap)
+
+**⚠️ #111 — Case bank skews US-tech; Indian analyst/PM audience not served (Content staleness / Coverage)**
+Cross-diagnosis of PAL against interview prep needs for Indian BA/SBA/PM roles surfaced a structural gap: all 155+ cases are grounded in US-tech companies (Meta, Google, Stripe, Airbnb, etc.). Indian e-commerce and fintech failure modes — COD failure rate, RTO, category GMV decomposition, supplier activation, tier-2/3 buyer behavior, low AOV economics, logistics cost as first-order variable — do not exist in any current case. This is not just cosmetic company branding; the business logic is genuinely different. A candidate prepping for Meesho, Swiggy, Zepto, Flipkart, Razorpay, or Zomato cannot practice the actual interview content in PAL today. Three fixes logged to IDEAS.md Tier 2: Meesho Company Track (expanded), Indian tech case cluster (RCA + Metrics + Cases rooms, 6–8 cases), marketplace metric tree interactive module (Metrics Foundations). Gate: PostHog confirms Indian users on platform or explicit community outreach produces Batch 1-equivalent signal. Do not build without demand evidence.
+
+---
+
 ## Part XXII — V4.35.x Animation System Audit
 
 Three-pass audit of the full animation layer: system design (V4.35.0), bold moment animations (V4.35.1), and coverage completeness (V4.35.2). All resolved.

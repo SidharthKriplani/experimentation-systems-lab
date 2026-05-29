@@ -180,7 +180,7 @@ No implicit data collection. Every tracked event is a deliberate `track()` call 
 `sanitize_properties` strips `email`, `name`, `ip` from every event. Do not add user-identifiable properties to any event.
 
 **Event naming convention: `snake_case`.**
-Current events: `page_viewed`, `case_opened`, `paywall_hit`, `unlocked`, `open_challenge`. New events follow the same pattern. Document in `METRICS.md`.
+Current events: `page_viewed`, `case_opened`, `case_completed`, `paywall_hit`, `unlocked`, `open_challenge`. New events follow the same pattern. Document in `METRICS.md`.
 
 ---
 

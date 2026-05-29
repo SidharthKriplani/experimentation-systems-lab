@@ -115,6 +115,10 @@ All progress state lives in localStorage. Every key must be included in `onReset
 | `pal-role-toggle` | Home page DS/PM role filter | `'DS + PM' \| 'Product DS' \| 'Product PM'` |
 | `pal-first-visit` | First-run onboarding modal shown flag | boolean |
 | `pal-exp-foundation-progress-v1` | Experimentation Foundations Room | per-module object (`completedAt` per moduleId) |
+| `pal-metrics-foundation-progress-v1` | Metrics Foundations Room | per-module object |
+| `pal-rca-foundation-progress-v1` | RCA Foundations Room | per-module object |
+| `pal-access-code-v1` | Access code unlock gate | stored code string (`DAI2026`) |
+| `pal-defense-plan-v1` | Defense Strategy generated plan | serialized room + case ID pairs per day |
 | `pal-last-visited-*` | Last visited timestamp per room | ISO timestamp |
 
 ---
