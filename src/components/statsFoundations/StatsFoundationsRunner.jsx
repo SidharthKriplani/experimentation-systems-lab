@@ -427,27 +427,6 @@ ${(module.tags || []).join(', ')}${playbookSection}`;
       {!isLocked && (
         <>
           <ModuleErrorBoundary><ModuleComponent module={module} onNext={handleNext} /></ModuleErrorBoundary>
-          {module.playbookLinks?.length > 0 && (
-            <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 16px 32px', boxSizing: 'border-box' }}>
-              <div style={{ padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>📖 Playbook Reading</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {module.playbookLinks.map(link => (
-                    <span
-                      key={link.id}
-                      onClick={() => onNavigate && onNavigate('playbook')}
-                      title="Open Playbook"
-                      style={{ fontSize: '0.82rem', color: 'var(--accent)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', padding: '4px 10px', cursor: onNavigate ? 'pointer' : 'default', textDecoration: 'none', transition: 'opacity 0.15s' }}
-                      onMouseEnter={e => { if (onNavigate) e.currentTarget.style.opacity = '0.75'; }}
-                      onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
-                    >
-                      {link.label} →
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
           {/* Debrief bookmark button */}
           <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 16px 32px', boxSizing: 'border-box' }}>
             <button

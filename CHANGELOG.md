@@ -4,6 +4,36 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.36.0] — 2026-05-30 [CONTENT]
+
+### Foundation stubs — full interactive module population (12 modules)
+
+Replaced all 12 remaining "Coming Soon" stub placeholders across three foundation rooms with full interactive modules. Each module includes a visualization or interactive exercise, MCQ with reveal, and key insight.
+
+**Experimentation Foundations (ef12–ef15):**
+- ef12 Holdout Groups — SVG 28-day trajectory chart (holdout vs. treated), sum-of-parts paradox reveal button (+4% individual lifts vs. +11.2% holdout gap), MCQ on primary purpose
+- ef13 Multi-Armed Bandits — interactive epsilon-greedy simulator (6 pre-computed rounds, traffic shifts from 33/34/33 to 13/76/11 toward winning variant), A/B vs bandit comparison cards, MCQ on when bandits beat fixed splits
+- ef14 Geo Experiments — 4-scenario User/Cluster/Geo classification exercise with per-scenario explanations, MCQ on power limitations
+- ef15 Switchback Experiments — SVG alternating C/T window timeline, 3-question sequential MCQ drill (SUTVA violation → temporal autocorrelation → canonical use case)
+
+**Metrics Foundations (mf11–mf13):**
+- mf11 Composite Metrics — 3-component OEC builder with range sliders (weights 0–80%), live composite score, masking-risk warning when retention weight drops below threshold, MCQ
+- mf12 Guardrail Metrics — 4 ship/no-ship decision cards (primary win with guardrail breach, clean win, revenue gain masking support spike, neutral result), MCQ on pre-commitment governance
+- mf13 Metric Sensitivity — CV slider (0.3–3.0) with live sample size calculation and normal distribution visualization showing width change, reference table (CTR/Session/Revenue CV ranges), MCQ
+
+**RCA Foundations (rf08–rf12):**
+- rf08 SQL Diagnosis Patterns — 3-step query walkthrough (time-series → platform split → YoY), mock table results, MCQ
+- rf09 Seasonality and Trend Separation — SVG line chart with YoY toggle revealing near-identical lines, MCQ on seasonal interpretation
+- rf10 Data Quality First — 3-symptom diagnosis exercise (platform-specific = SDK, event-specific = logging bug, pipeline-wide = pipeline failure), MCQ
+- rf11 External Factor Identification — 5-event classify-into-4-categories exercise (Seasonal/Competitor/Platform/Macro), MCQ on handling competitor-confounded experiments
+- rf12 Multi-Level RCA — 3 toggleable cause bars (pipeline delay -8%, seasonal -7%, product regression -7%) summing to -22% total drop, MCQ on RCA completion test
+
+Also removed `isStub: true` from all 19 stub module entries across 3 data files (ef08–ef15, mf09–mf13, rf07–rf12). Modules now appear as normal clickable nav items.
+
+Files: `src/components/expFoundations/ExpFoundationsRunner.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, `src/components/rcaFoundations/RCAFoundationsRunner.jsx`, `src/data/expFoundationModules.js`, `src/data/metricsFoundationModules.js`, `src/data/rcaFoundationModules.js`
+
+---
+
 ## [4.35.6] — 2026-05-30 [UX]
 
 ### Foundation nav — stub greying

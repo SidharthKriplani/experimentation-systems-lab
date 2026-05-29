@@ -73,7 +73,6 @@ export function Module02_CentralTendency({ module, onNext }) {
   return (
     <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
-        {module?.subtitle || 'Mean, median, and mode each summarize the "center" of your data differently.'}{' '}
         The mean weighs every value equally — so one extreme outlier can drag it far from the rest. The median only cares about rank order, making it robust to extremes.
       </p>
 

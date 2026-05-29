@@ -4,32 +4,26 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.35.6 (2026-05-30)*
+*Last updated: V4.36.0 (2026-05-30)*
 
 ---
 
 ## Next session
 
-**1. Foundation modules — broken article/playbook links** `S` `BUG`
-Several foundation modules (across one or more of the four rooms) end with a link to a related article or Playbook entry, but the link is a non-functional placeholder — clicking does nothing or navigates nowhere. Needs investigation before fix.
-Steps: read the end sections of a sample of foundation modules across all four rooms (Stat, Exp, Metrics, RCA), identify which links are broken/placeholder vs. wired, determine the correct target (Playbook route, external URL, or internal room), then fix or remove each broken link. Scope is unknown until audit — could be 3 links or 30.
-Files to start: `src/components/statsFoundations/modules/Module*.jsx`, `src/components/expFoundations/ExpFoundationsRunner.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, `src/components/rcaFoundations/RCAFoundationsRunner.jsx`
+**1. Remove isStub nav logic from data files (already done) — verify build** `S` `VERIFY`
+All 19 isStub flags removed from data files. Foundation nav items should now render as normal clickable items. Verify the build (npm run dev locally) and confirm all 12 new interactive modules render correctly. If any module has a render error, fix before next session.
 
-**2. Metrics Room — linked scenario chips not clickable** `S` `BUG`
-After revealing the answer in MetricsRunner, linked scenario cards appear in the debrief panel but tapping them does nothing. Need to wire `onNavigate` or `onOpen` prop through to each chip so clicking navigates to that case. File: `src/components/metrics/MetricsRunner.jsx` (or wherever debrief linked chips are rendered).
+**2. Hardcoded color values — CSS variable pass (audit #92)** `M` `BUG`
+40+ hardcoded `#fff`, `rgba(0,0,0,x)`, `#333` across RCAFoundationsRunner, AuthModal, Sidebar, LockOverlay, DesignDebriefPanel, MetricChoicePanel. Check `index.css` for existing variables first. Moved from Deferred — enough surface area built now to justify this pass.
 
-**3. Foundation module subtitle duplication bug (audit #94)** `S` `BUG`
-Subtitle renders in yellow runner header card (correct) AND as first words of body paragraph (wrong, no separator). Confirm the pattern in one module component, then apply fix across all four foundation module directories:
-- `src/components/statsFoundations/modules/`
-- `src/components/expFoundations/modules/`
-- `src/components/metricsFoundations/modules/`
-- `src/components/rcaFoundations/modules/`
+**3. Foundation module task instructions + depth (audits #95, #96)** `M` `UX`
+All interactive foundation elements need "What to do" framing (InstructionBox or equivalent). Audit all 4 runners. Also: assess depth on RCA/Metrics/Exp modules — are the new stubs deep enough for senior-level prep or do they need a second layer? ~1 session per room.
 
-**4. Progress page — collapse guided path cards** `S` `UX`
-Guided path cards on `src/pages/Progress.jsx` expand to show every item in the path (5–7 rows with room badges + case names + NEXT labels), making the page feel like a curriculum view rather than a dashboard. Fix: remove the item list from each path card entirely. Keep only path name, progress bar + counter (e.g. 2/7), and the Continue CTA button. The item list adds no information the progress bar + Continue label doesn't already surface. Read Progress.jsx first to confirm the exact JSX structure, then delete the list render block for each path card. Do not touch path data, routing, or the Continue button logic.
+**4. Sitemap — add 8 missing top-level routes (audit #93)** `S` `SEO`
+Add to `public/sitemap.xml`: home, progress, trainer, unlock, company-tracks, defense-doc, about, search. Runner sub-pages excluded. ~20 min.
 
-**5. Homepage framing pass (audit #103)** `S` `HIGH`
-Read `src/pages/Home.jsx`. Align copy with the analytics + experimentation core identity — the page should not treat all 16 rooms as equals above the fold. Two independent external reads (ChatGPT cold-read V4.33.7, investor-style review V4.34.0) flagged the same dilution problem. DECISIONS.md now has a standing rule on this. Copy-only, ~20 min. Do not restructure the component — just fix the framing.
+**5. Frameworks + Deep Dives label copy fix (audit #83)** `S` `COPY`
+`PlaybookBrowser.jsx` label reads "framework" (redundant — change to "Reference cards"). `BlogBrowser.jsx` reads "concepts and frameworks" (change to "deep dives"). Copy-only, 2 files.
 
 ---
 
@@ -88,6 +82,7 @@ Deferred — lower priority than bug fixes above.
 - Indian e-commerce field intelligence logged — V4.35.3 (Meesho Company Track expanded in Tier 2 Platform; Indian tech case cluster + marketplace metric tree module added to Tier 2 Content; IDEAS.md + CHANGELOG.md updated)
 - Module04 σ reshape fix + foundation nav panel — V4.35.5 (REF_PDF constant for fixed-height normalization; sticky right-side nav sidebar across all 4 foundation runners with jump-to navigation, progress state, lock state)
 - Foundation nav stub greying — V4.35.6 (isStub: true on 19 stub entries across 3 data files; 0.4 opacity, non-clickable, tooltip "Coming soon" in all 4 runner nav sidebars)
+- Foundation stub population — V4.36.0 (12 interactive modules: ef12–ef15, mf11–mf13, rf08–rf12; SVG charts, sliders, classify exercises, MCQs; isStub flags removed from all 3 data files)
 
 **Still open (in IDEAS.md):**
 - Empty state quality pass (#91) — deferred

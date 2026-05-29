@@ -681,70 +681,389 @@ function Module_MF08({ module, onNext }) {
 
 // ─── Module 9: Funnel Metrics ─────────────────────────────────────────────────
 
+const FUNNEL_SCENARIOS = {
+  baseline: [10000, 4200, 2100, 1600, 900],
+  emailbug: [10000, 4200, 2100, 840, 900],
+  trafficquality: [10000, 2100, 2100, 1600, 900],
+};
+
+const FUNNEL_STEP_NAMES = ['Visit', 'Signup click', 'Form complete', 'Email verify', 'Profile done'];
+
+const MF09_MCQ = {
+  question: 'In the baseline funnel, which step has the largest absolute user loss?',
+  options: [
+    'Visit → Signup click (5,800 users lost)',
+    'Signup click → Form complete (2,100 users lost)',
+    'Form complete → Email verify (500 users lost)',
+    'Email verify → Profile done (700 users lost)',
+  ],
+  correct: 'Signup click → Form complete (2,100 users lost)',
+  explanation: 'Visit to Signup click loses 5,800 users in absolute terms — that is the largest single-step drop. Signup click to Form complete loses 2,100. End-to-end conversion fixation misses this; the largest absolute loss is always the priority.',
+};
+
 function Module_MF09({ module, onNext }) {
+  const [scenario, setScenario] = useState('baseline');
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+
+  const counts = FUNNEL_SCENARIOS[scenario];
+  const maxCount = counts[0];
+
+  const biggestDropIdx = counts.reduce(function(bestIdx, _val, i) {
+    if (i === 0) return bestIdx;
+    const drop = counts[i - 1] - counts[i];
+    const bestDrop = counts[bestIdx - 1] - counts[bestIdx];
+    return drop > bestDrop ? i : bestIdx;
+  }, 1);
+
+  const biggestDropPct = Math.round(((counts[biggestDropIdx - 1] - counts[biggestDropIdx]) / counts[biggestDropIdx - 1]) * 100);
+
+  function handleCheck() {
+    if (selected !== null) setRevealed(true);
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This module teaches you to read funnel data the way interviewers expect: not by fixating on end-to-end conversion, but by isolating the step with the sharpest marginal drop. You will practice decomposing a multi-step funnel, distinguishing a product problem from a traffic problem, and framing the right diagnostic questions before reaching for a root cause.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
-      </div>
-      {module && module.keyInsight && (
-        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+      <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0 }}>
+        Funnel analysis is how analysts find where value is lost in a multi-step flow. The end-to-end conversion rate is almost never the right number to report — the step-to-step drop rate is. Switch between scenarios below and watch how the pattern of loss shifts.
+      </p>
+
+      <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.25rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+          {[
+            { key: 'baseline', label: 'Baseline' },
+            { key: 'emailbug', label: 'Email bug (verify drops 60%)' },
+            { key: 'trafficquality', label: 'Traffic quality issue (click drops 50%)' },
+          ].map(function(s) {
+            return (
+              <button
+                key={s.key}
+                onClick={function() { setScenario(s.key); }}
+                style={{
+                  padding: '0.4rem 0.85rem',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '1.5px solid ' + (scenario === s.key ? 'var(--green)' : 'var(--border)'),
+                  background: scenario === s.key ? 'var(--green-bg)' : 'var(--surface)',
+                  color: scenario === s.key ? 'var(--green)' : 'var(--text-muted)',
+                  fontWeight: scenario === s.key ? 700 : 400,
+                  fontSize: '0.82rem',
+                  cursor: 'pointer',
+                }}
+              >{s.label}</button>
+            );
+          })}
         </div>
-      )}
-      {module && module.connection && (
-        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+          {FUNNEL_STEP_NAMES.map(function(name, i) {
+            const pct = Math.round((counts[i] / maxCount) * 100);
+            const dropPct = i > 0 ? Math.round(((counts[i - 1] - counts[i]) / counts[i - 1]) * 100) : null;
+            const isWorstDrop = i === biggestDropIdx;
+            return (
+              <div key={name}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.2rem' }}>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', width: '100px', flexShrink: 0 }}>{name}</div>
+                  <div style={{ flex: 1, background: 'var(--surface-2, var(--border))', borderRadius: '4px', height: '20px', overflow: 'hidden' }}>
+                    <div style={{
+                      width: pct + '%',
+                      height: '100%',
+                      background: isWorstDrop ? 'var(--red)' : 'var(--green)',
+                      borderRadius: '4px',
+                      transition: 'width 0.35s ease',
+                    }} />
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text)', fontWeight: 600, width: '52px', flexShrink: 0, textAlign: 'right' }}>
+                    {counts[i].toLocaleString()}
+                  </div>
+                  {dropPct !== null && (
+                    <div style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      color: isWorstDrop ? 'var(--red)' : 'var(--text-muted)',
+                      width: '56px',
+                      flexShrink: 0,
+                      textAlign: 'right',
+                    }}>
+                      -{dropPct}%
+                    </div>
+                  )}
+                  {dropPct === null && <div style={{ width: '56px', flexShrink: 0 }} />}
+                </div>
+              </div>
+            );
+          })}
         </div>
-      )}
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
       </div>
+
+      <div style={{
+        background: 'var(--yellow-bg)',
+        border: '1.5px solid var(--yellow-border)',
+        borderRadius: 'var(--radius)',
+        padding: '0.85rem 1.1rem',
+        fontSize: '0.85rem',
+        color: 'var(--text-secondary)',
+        lineHeight: 1.55,
+      }}>
+        <strong style={{ color: 'var(--yellow)' }}>Biggest drop: </strong>
+        {FUNNEL_STEP_NAMES[biggestDropIdx - 1]} to {FUNNEL_STEP_NAMES[biggestDropIdx]} — {biggestDropPct}% falloff. This is where to focus first.
+      </div>
+
+      <div style={{ fontSize: '0.83rem', color: 'var(--text-muted)', lineHeight: 1.6, fontStyle: 'italic' }}>
+        Switch between scenarios and notice how the pattern of drop changes. Traffic quality issues appear at step 1; product bugs appear mid-funnel.
+      </div>
+
+      <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
+        <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.75rem' }}>{MF09_MCQ.question}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginBottom: '0.75rem' }}>
+          {MF09_MCQ.options.map(function(opt) {
+            return (
+              <MCQOption
+                key={opt}
+                label={opt}
+                selected={selected === opt}
+                correct={opt === MF09_MCQ.correct}
+                revealed={revealed}
+                onClick={function() { if (!revealed) setSelected(opt); }}
+              />
+            );
+          })}
+        </div>
+        {!revealed && (
+          <button
+            onClick={handleCheck}
+            disabled={selected === null}
+            style={{
+              padding: '0.5rem 1.1rem',
+              borderRadius: 'var(--radius-sm)',
+              border: 'none',
+              background: selected !== null ? 'var(--green)' : 'var(--border)',
+              color: selected !== null ? '#fff' : 'var(--text-muted)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              cursor: selected !== null ? 'pointer' : 'default',
+            }}
+          >Check answer</button>
+        )}
+        {revealed && (
+          <div className="pal-reveal-in" style={{
+            marginTop: '0.75rem',
+            background: selected === MF09_MCQ.correct ? 'var(--green-bg)' : 'var(--red-bg)',
+            border: '1px solid ' + (selected === MF09_MCQ.correct ? 'var(--green-border)' : 'var(--red-border)'),
+            borderRadius: 'var(--radius-sm)',
+            padding: '0.75rem 1rem',
+            fontSize: '0.85rem',
+            color: 'var(--text-secondary)',
+            lineHeight: 1.55,
+          }}>
+            <strong>{selected === MF09_MCQ.correct ? 'Correct. ' : 'Not quite. '}</strong>{MF09_MCQ.explanation}
+          </div>
+        )}
+      </div>
+
+      <InsightBox label="Key Insight" color="var(--green)" bg="var(--green-bg)" border="var(--green-border)">{module.keyInsight}</InsightBox>
+      <InsightBox label="Connects to Experiments" color="var(--accent)" bg="var(--accent-bg)" border="var(--accent-border)">{module.connection}</InsightBox>
+      <NextBtn onClick={onNext} label="Complete module →" />
     </div>
   );
 }
 
 // ─── Module 10: Ratio Metrics in Depth ───────────────────────────────────────
 
+const MF10_MCQ = {
+  question: 'Overall conversion rate fell from 3.2% to 2.8%. Mobile conversion is 2.0% (unchanged). Desktop conversion is 5.0% (unchanged). What happened?',
+  options: [
+    'There is a measurement error — both segment rates are unchanged so overall cannot fall',
+    'Mobile traffic share grew — mix shift pulled the overall rate down even though both segments are healthy',
+    'Desktop conversion must have actually fallen; the data is inconsistent',
+    'The denominator shrank, which mechanically reduced the overall rate',
+  ],
+  correct: 'Mobile traffic share grew — mix shift pulled the overall rate down even though both segments are healthy',
+  explanation: 'This is a textbook mix shift (Simpson\'s Paradox). Mobile converts at 2% and desktop at 5%. If the share of mobile sessions grows, the weighted average falls — even with zero change inside either segment. Always check the denominator composition before diagnosing a conversion drop.',
+};
+
 function Module_MF10({ module, onNext }) {
+  const [mobileSessions, setMobileSessions] = useState(6000);
+  const [mobileRPS, setMobileRPS] = useState(1.20);
+  const [desktopSessions, setDesktopSessions] = useState(4000);
+  const [desktopRPS, setDesktopRPS] = useState(3.50);
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+
+  const totalSessions = mobileSessions + desktopSessions;
+  const totalRevenue = mobileSessions * mobileRPS + desktopSessions * desktopRPS;
+  const overallRPS = totalSessions > 0 ? totalRevenue / totalSessions : 0;
+  const mobilePct = totalSessions > 0 ? Math.round((mobileSessions / totalSessions) * 100) : 0;
+  const isMixWarning = mobilePct > 70;
+
+  function applyPreset() {
+    setMobileSessions(8500);
+    setDesktopSessions(4000);
+    setMobileRPS(1.20);
+    setDesktopRPS(3.50);
+  }
+
+  function handleCheck() {
+    if (selected !== null) setRevealed(true);
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This module goes deeper on ratio metrics than the introduction in MF03. You will learn to fully decompose any rate change into numerator movement, denominator movement, and mix shift — the three independent levers that together explain every ratio metric surprise you will encounter in interviews and on the job.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
-      </div>
-      {module && module.keyInsight && (
-        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+      <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0 }}>
+        Every ratio metric has three levers: numerator movement, denominator movement, and mix shift. A rate can fall even when every individual segment improves — if the mix shifts toward lower-converting segments. Use the explorer below to see this live.
+      </p>
+
+      <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.25rem' }}>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '1rem' }}>Revenue per Session decomposition</div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(260px, 100%), 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+          <div>
+            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>
+              Mobile sessions: <strong style={{ color: 'var(--text)' }}>{mobileSessions.toLocaleString()}</strong>
+            </label>
+            <input
+              type="range"
+              min="1000"
+              max="9000"
+              step="100"
+              value={mobileSessions}
+              onChange={function(e) { setMobileSessions(Number(e.target.value)); }}
+              style={{ width: '100%', accentColor: 'var(--green)' }}
+            />
+          </div>
+          <div>
+            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>
+              Mobile RPSession: <strong style={{ color: 'var(--text)' }}>${mobileRPS.toFixed(2)}</strong>
+            </label>
+            <input
+              type="range"
+              min="0.50"
+              max="3.00"
+              step="0.05"
+              value={mobileRPS}
+              onChange={function(e) { setMobileRPS(Number(e.target.value)); }}
+              style={{ width: '100%', accentColor: 'var(--green)' }}
+            />
+          </div>
+          <div>
+            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>
+              Desktop sessions: <strong style={{ color: 'var(--text)' }}>{desktopSessions.toLocaleString()}</strong>
+            </label>
+            <input
+              type="range"
+              min="1000"
+              max="9000"
+              step="100"
+              value={desktopSessions}
+              onChange={function(e) { setDesktopSessions(Number(e.target.value)); }}
+              style={{ width: '100%', accentColor: 'var(--accent)' }}
+            />
+          </div>
+          <div>
+            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>
+              Desktop RPSession: <strong style={{ color: 'var(--text)' }}>${desktopRPS.toFixed(2)}</strong>
+            </label>
+            <input
+              type="range"
+              min="1.00"
+              max="6.00"
+              step="0.10"
+              value={desktopRPS}
+              onChange={function(e) { setDesktopRPS(Number(e.target.value)); }}
+              style={{ width: '100%', accentColor: 'var(--accent)' }}
+            />
+          </div>
         </div>
-      )}
-      {module && module.connection && (
-        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, 100%), 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Total sessions</div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text)' }}>{totalSessions.toLocaleString()}</div>
+          </div>
+          <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Overall RPSession</div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--green)' }}>${overallRPS.toFixed(2)}</div>
+          </div>
+          <div style={{ background: isMixWarning ? 'var(--yellow-bg)' : 'var(--surface-2, var(--surface))', border: '1.5px solid ' + (isMixWarning ? 'var(--yellow-border)' : 'var(--border)'), borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem' }}>
+            <div style={{ fontSize: '0.7rem', color: isMixWarning ? 'var(--yellow)' : 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Mobile share</div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: isMixWarning ? 'var(--yellow)' : 'var(--text)' }}>{mobilePct}%</div>
+          </div>
         </div>
-      )}
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
+
+        {isMixWarning && (
+          <div className="pal-reveal-in" style={{ fontSize: '0.83rem', color: 'var(--yellow)', background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 0.9rem', lineHeight: 1.55 }}>
+            Mix shift — mobile is dominating; RPSession will fall even if both segments improve.
+          </div>
+        )}
+
+        <div style={{ marginTop: '0.85rem' }}>
+          <button
+            onClick={applyPreset}
+            style={{
+              padding: '0.45rem 1rem',
+              borderRadius: 'var(--radius-sm)',
+              border: '1.5px solid var(--accent-border)',
+              background: 'var(--accent-bg)',
+              color: 'var(--accent)',
+              fontWeight: 600,
+              fontSize: '0.82rem',
+              cursor: 'pointer',
+            }}
+          >Add mobile users (preset)</button>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginLeft: '0.6rem' }}>Sets mobile to 8,500; desktop stays. Watch overall RPSession fall.</span>
+        </div>
       </div>
+
+      <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
+        <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.75rem' }}>{MF10_MCQ.question}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginBottom: '0.75rem' }}>
+          {MF10_MCQ.options.map(function(opt) {
+            return (
+              <MCQOption
+                key={opt}
+                label={opt}
+                selected={selected === opt}
+                correct={opt === MF10_MCQ.correct}
+                revealed={revealed}
+                onClick={function() { if (!revealed) setSelected(opt); }}
+              />
+            );
+          })}
+        </div>
+        {!revealed && (
+          <button
+            onClick={handleCheck}
+            disabled={selected === null}
+            style={{
+              padding: '0.5rem 1.1rem',
+              borderRadius: 'var(--radius-sm)',
+              border: 'none',
+              background: selected !== null ? 'var(--green)' : 'var(--border)',
+              color: selected !== null ? '#fff' : 'var(--text-muted)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              cursor: selected !== null ? 'pointer' : 'default',
+            }}
+          >Check answer</button>
+        )}
+        {revealed && (
+          <div className="pal-reveal-in" style={{
+            marginTop: '0.75rem',
+            background: selected === MF10_MCQ.correct ? 'var(--green-bg)' : 'var(--red-bg)',
+            border: '1px solid ' + (selected === MF10_MCQ.correct ? 'var(--green-border)' : 'var(--red-border)'),
+            borderRadius: 'var(--radius-sm)',
+            padding: '0.75rem 1rem',
+            fontSize: '0.85rem',
+            color: 'var(--text-secondary)',
+            lineHeight: 1.55,
+          }}>
+            <strong>{selected === MF10_MCQ.correct ? 'Correct. ' : 'Not quite. '}</strong>{MF10_MCQ.explanation}
+          </div>
+        )}
+      </div>
+
+      <InsightBox label="Key Insight" color="var(--green)" bg="var(--green-bg)" border="var(--green-border)">{module.keyInsight}</InsightBox>
+      <InsightBox label="Connects to Experiments" color="var(--accent)" bg="var(--accent-bg)" border="var(--accent-border)">{module.connection}</InsightBox>
+      <NextBtn onClick={onNext} label="Complete module →" />
     </div>
   );
 }
@@ -752,33 +1071,136 @@ function Module_MF10({ module, onNext }) {
 // ─── Module 11: Composite Metrics ────────────────────────────────────────────
 
 function Module_MF11({ module, onNext }) {
+  const [wA, setWA] = useState(40);
+  const [wB, setWB] = useState(35);
+  const [wC, setWC] = useState(25);
+  const [answer, setAnswer] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+
+  // Three component metrics with fixed underlying values
+  // A: Engagement (score 0-100, currently 72)
+  // B: Retention (score 0-100, currently 58)
+  // C: Revenue efficiency (score 0-100, currently 81)
+  var valA = 72; var valB = 58; var valC = 81;
+
+  // Composite = weighted average, normalized to 0-100
+  var totalW = wA + wB + wC;
+  var composite = totalW > 0 ? ((wA * valA + wB * valB + wC * valC) / (totalW * 100)) * 100 : 0;
+  var compositeDisplay = Math.round(composite * 10) / 10;
+
+  var mcqOptions = [
+    { label: 'A. Composite metrics move too slowly to detect experiment effects.', correct: false },
+    { label: 'B. A component metric can quietly degrade while the composite stays flat — the composite masks individual signal.', correct: true },
+    { label: 'C. Composite metrics are always arbitrary and should never be used.', correct: false },
+    { label: 'D. They require more statistical samples than individual metrics.', correct: false },
+  ];
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This module covers composite metrics and index scores — tools that combine multiple signals into one number to simplify ship decisions. You will learn when composites are genuinely useful (conflicting individual metrics, company-wide OKR alignment) and when they are dangerous (hidden component degradation, arbitrary weighting). You will also work through Microsoft-style OEC reasoning that comes up in senior PM and experimentation interviews.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
+      <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 }}>
+        A composite metric (or Overall Evaluation Criterion, OEC) combines multiple signals into one
+        number to simplify ship decisions when individual metrics conflict. Microsoft\'s experimentation
+        team pioneered this for cases where no single metric tells the full story.
+      </p>
+
+      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '1rem' }}>
+          Build your OEC — adjust component weights
+        </div>
+
+        {[
+          { label: 'Engagement score', val: valA, w: wA, setter: setWA, color: 'var(--accent)' },
+          { label: 'Retention score', val: valB, w: wB, setter: setWB, color: 'var(--teal)' },
+          { label: 'Revenue efficiency', val: valC, w: wC, setter: setWC, color: 'var(--green)' },
+        ].map(function(metric) {
+          return (
+            <div key={metric.label} style={{ marginBottom: '0.85rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text)', fontWeight: 600 }}>{metric.label}</span>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Value: <strong style={{ color: metric.color }}>{metric.val}</strong> &nbsp;|&nbsp; Weight: <strong>{metric.w}%</strong></span>
+              </div>
+              <input
+                type="range" min={0} max={80} step={5}
+                value={metric.w}
+                onChange={function(e) { metric.setter(parseInt(e.target.value, 10)); }}
+                style={{ width: '100%', accentColor: metric.color }}
+              />
+            </div>
+          );
+        })}
+
+        <div style={{ marginTop: '0.5rem', padding: '0.85rem 1rem', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent)' }}>OEC Score</span>
+          <span style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--accent)' }}>{compositeDisplay}</span>
+        </div>
+
+        {wB < 15 && (
+          <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.9rem', background: 'var(--red-bg)', border: '1px solid var(--red-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: 'var(--red)', lineHeight: 1.45 }}>
+            Warning: Retention weight is low. A feature that tanks retention could still show a positive OEC score — the OEC is now masking a critical signal.
+          </div>
+        )}
       </div>
-      {module && module.keyInsight && (
-        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+        {[
+          { label: 'Use composites when', items: ['Multiple metrics conflict at ship decision', 'You need a single OKR to align teams', 'Component importance is stable and agreed-upon'] },
+          { label: 'Avoid composites when', items: ['Individual metric health matters independently', 'Weights are politically negotiated post-hoc', 'A component could degrade catastrophically'] },
+        ].map(function(card) {
+          return (
+            <div key={card.label} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1rem' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>{card.label}</div>
+              {card.items.map(function(item, i) {
+                return <div key={i} style={{ fontSize: '0.82rem', color: 'var(--text)', lineHeight: 1.5, marginBottom: '0.2rem' }}>{item}</div>;
+              })}
+            </div>
+          );
+        })}
+      </div>
+
+      <div>
+        <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.75rem' }}>
+          What is the primary risk of using a composite metric as your primary experiment decision criterion?
         </div>
-      )}
-      {module && module.connection && (
-        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
-        </div>
-      )}
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
+
+        {mcqOptions.map(function(opt, i) {
+          var sel = answer === i;
+          var bg = 'var(--surface-2)';
+          var border = 'var(--border)';
+          var color = 'var(--text)';
+          if (revealed) {
+            if (opt.correct) { bg = 'var(--teal-bg)'; border = 'var(--teal-border)'; color = 'var(--teal)'; }
+            else if (sel) { bg = 'var(--red-bg)'; border = 'var(--red-border)'; color = 'var(--red)'; }
+          } else if (sel) { border = 'var(--accent-border)'; }
+          return (
+            <button key={i} onClick={function() { if (!revealed) setAnswer(i); }} disabled={revealed}
+              style={{ display: 'block', width: '100%', textAlign: 'left', padding: '0.7rem 1rem', marginBottom: '0.5rem', background: bg, border: '1.5px solid ' + border, borderRadius: 'var(--radius-sm)', color: color, fontSize: '0.88rem', cursor: revealed ? 'default' : 'pointer', transition: 'all 0.15s' }}>
+              {opt.label}
+            </button>
+          );
+        })}
+
+        {answer !== null && !revealed && (
+          <button onClick={function() { setRevealed(true); }} style={{ marginTop: '0.5rem', padding: '0.5rem 1.1rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>
+            Check
+          </button>
+        )}
+
+        {revealed && (
+          <div className="pal-reveal-in">
+            <div style={{ marginTop: '0.5rem', padding: '0.65rem 0.85rem', background: mcqOptions[answer] && mcqOptions[answer].correct ? 'var(--teal-bg)' : 'var(--red-bg)', border: '1px solid ' + (mcqOptions[answer] && mcqOptions[answer].correct ? 'var(--teal-border)' : 'var(--red-border)'), borderRadius: 'var(--radius-sm)', fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.5 }}>
+              Composite metrics can mask individual signal. If retention drops 20% but engagement and revenue surge, the OEC may stay flat or even improve — signaling a healthy product when one foundational metric is collapsing. This is why guardrail metrics exist: to catch what the OEC cannot.
+            </div>
+            <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', marginTop: '1.25rem' }}>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>Key Insight</div>
+              <div style={{ fontSize: '0.88rem', color: 'var(--text)', lineHeight: 1.6 }}>
+                A composite metric is only as good as its weights and the independence of its components. Weights that are negotiated politically rather than derived empirically create a metric that can be gamed. And when a team optimizes for the OEC, they optimize away from the individual metrics you actually care about.
+              </div>
+            </div>
+            <button onClick={onNext} className="pal-glow-pulse" style={{ marginTop: '1.5rem', padding: '0.65rem 1.6rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+              Next →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -787,34 +1209,164 @@ function Module_MF11({ module, onNext }) {
 // ─── Module 12: Guardrail Metrics ─────────────────────────────────────────────
 
 function Module_MF12({ module, onNext }) {
+  const [decisions, setDecisions] = useState({});
+  const [explanations, setExplanations] = useState({});
+  const [answer, setAnswer] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  const [allDone, setAllDone] = useState(false);
+
+  var scenarios = [
+    {
+      id: 's1',
+      primary: '+3.2% DAU',
+      guardrail: 'Page load time +180ms (threshold: +100ms)',
+      breached: true,
+      ship: false,
+      explanation: 'Guardrail breached — do not ship. A 180ms load time regression affects user experience for the entire user base. The DAU gain does not justify degrading performance beyond the pre-committed threshold.',
+    },
+    {
+      id: 's2',
+      primary: '+1.8% session length',
+      guardrail: 'Crash rate unchanged',
+      breached: false,
+      ship: true,
+      explanation: 'Ship. Primary metric positive, guardrail healthy. This is a clean win.',
+    },
+    {
+      id: 's3',
+      primary: '+5.1% revenue',
+      guardrail: 'Support ticket volume +22% (threshold: +10%)',
+      breached: true,
+      ship: false,
+      explanation: 'Do not ship. Revenue gain driven by user confusion generates downstream costs and erodes trust. The guardrail exists precisely to catch this pattern.',
+    },
+    {
+      id: 's4',
+      primary: 'Neutral (0.1%, not significant)',
+      guardrail: 'All guardrails healthy',
+      breached: false,
+      ship: false,
+      explanation: 'Do not ship — primary metric neutral. Shipping a neutral result consumes engineering maintenance overhead for no measured user benefit. Wait for a stronger signal or iterate.',
+    },
+  ];
+
+  function decide(sid, shipDecision) {
+    if (decisions[sid] !== undefined) return;
+    var s = scenarios.find(function(sc) { return sc.id === sid; });
+    var correct = shipDecision === s.ship;
+    setDecisions(function(prev) { var n = Object.assign({}, prev); n[sid] = shipDecision; return n; });
+    setExplanations(function(prev) { var n = Object.assign({}, prev); n[sid] = { correct: correct, text: s.explanation }; return n; });
+    var allDecided = scenarios.every(function(sc) { return sc.id === sid || decisions[sc.id] !== undefined; });
+    if (allDecided) { setAllDone(true); }
+  }
+
+  var mcqOptions = [
+    { label: 'A. So the team has time to instrument the guardrail metric before running the experiment.', correct: false },
+    { label: 'B. Because pre-commitment removes the ability to renegotiate the threshold after seeing results — preventing p-hacking the guardrail.', correct: true },
+    { label: 'C. Legal compliance requires pre-registration of all experiment metrics.', correct: false },
+    { label: 'D. Post-hoc guardrails are more accurate because they account for the actual experiment data.', correct: false },
+  ];
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This module focuses on why guardrail metrics only work when they are pre-committed, and what happens when teams negotiate them post-hoc. You will work through realistic ship/no-ship decisions where the primary metric wins but a guardrail is breached — exactly the scenario interviewers use to probe whether you understand the role of pre-commitment in experimentation governance.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
+      <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 }}>
+        Guardrail metrics are the metrics a team commits to <em>not degrading</em> before an experiment launches.
+        They act as a veto on the primary metric — if the primary wins but a guardrail is breached, the
+        feature does not ship. Their power comes entirely from pre-commitment.
+      </p>
+
+      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.9rem' }}>
+          Ship or no ship? Click your decision for each scenario.
+        </div>
+
+        {scenarios.map(function(s) {
+          var dec = decisions[s.id];
+          var exp = explanations[s.id];
+          return (
+            <div key={s.id} style={{ background: 'var(--surface)', border: '1px solid ' + (exp ? (exp.correct ? 'var(--teal-border)' : 'var(--red-border)') : 'var(--border)'), borderRadius: 'var(--radius-sm)', padding: '0.85rem 1rem', marginBottom: '0.65rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.65rem' }}>
+                <div>
+                  <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Primary metric</div>
+                  <div style={{ fontSize: '0.88rem', color: 'var(--text)', fontWeight: 600 }}>{s.primary}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.65rem', fontWeight: 700, color: s.breached ? 'var(--red)' : 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.2rem' }}>Guardrail</div>
+                  <div style={{ fontSize: '0.85rem', color: s.breached ? 'var(--red)' : 'var(--text-muted)' }}>{s.guardrail}</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {[true, false].map(function(shipVal) {
+                  var isSelected = dec === shipVal;
+                  var label = shipVal ? 'Ship' : 'Do not ship';
+                  var bg = 'var(--surface-2)';
+                  var color = 'var(--text-muted)';
+                  if (isSelected && !exp) { bg = 'var(--accent-bg)'; color = 'var(--accent)'; }
+                  if (exp && isSelected) { bg = exp.correct ? 'var(--teal)' : 'var(--red)'; color = '#fff'; }
+                  return (
+                    <button key={String(shipVal)} onClick={function() { decide(s.id, shipVal); }}
+                      disabled={dec !== undefined}
+                      style={{ padding: '0.35rem 0.85rem', fontSize: '0.82rem', fontWeight: 600, background: bg, color: color, border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', cursor: dec !== undefined ? 'default' : 'pointer' }}>
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+              {exp && (
+                <div className="pal-reveal-in" style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>
+                  {exp.text}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
-      {module && module.keyInsight && (
-        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+
+      {allDone && (
+        <div className="pal-reveal-in">
+          <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.75rem' }}>
+            Why must guardrail thresholds be pre-committed before an experiment launches?
+          </div>
+
+          {mcqOptions.map(function(opt, i) {
+            var sel = answer === i;
+            var bg = 'var(--surface-2)'; var border = 'var(--border)'; var color = 'var(--text)';
+            if (revealed) {
+              if (opt.correct) { bg = 'var(--teal-bg)'; border = 'var(--teal-border)'; color = 'var(--teal)'; }
+              else if (sel) { bg = 'var(--red-bg)'; border = 'var(--red-border)'; color = 'var(--red)'; }
+            } else if (sel) { border = 'var(--accent-border)'; }
+            return (
+              <button key={i} onClick={function() { if (!revealed) setAnswer(i); }} disabled={revealed}
+                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '0.7rem 1rem', marginBottom: '0.5rem', background: bg, border: '1.5px solid ' + border, borderRadius: 'var(--radius-sm)', color: color, fontSize: '0.88rem', cursor: revealed ? 'default' : 'pointer', transition: 'all 0.15s' }}>
+                {opt.label}
+              </button>
+            );
+          })}
+
+          {answer !== null && !revealed && (
+            <button onClick={function() { setRevealed(true); }} style={{ marginTop: '0.5rem', padding: '0.5rem 1.1rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>
+              Check
+            </button>
+          )}
+
+          {revealed && (
+            <div className="pal-reveal-in">
+              <div style={{ marginTop: '0.5rem', padding: '0.65rem 0.85rem', background: mcqOptions[answer] && mcqOptions[answer].correct ? 'var(--teal-bg)' : 'var(--red-bg)', border: '1px solid ' + (mcqOptions[answer] && mcqOptions[answer].correct ? 'var(--teal-border)' : 'var(--red-border)'), borderRadius: 'var(--radius-sm)', fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.5 }}>
+                Post-hoc guardrail negotiation is the most common form of p-hacking in enterprise experimentation. If a team can adjust the threshold after seeing results, the guardrail provides no actual protection — it becomes a rubber stamp on whatever the team wanted to ship. Pre-commitment is the mechanism that gives guardrails their teeth.
+              </div>
+              <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', marginTop: '1.25rem' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>Key Insight</div>
+                <div style={{ fontSize: '0.88rem', color: 'var(--text)', lineHeight: 1.6 }}>
+                  Guardrail metrics are a governance mechanism, not just a technical one. A team that consistently renegotiates guardrails post-experiment is signaling that shipping velocity is prioritized over product health. Senior interviewers test whether you understand this distinction.
+                </div>
+              </div>
+              <button onClick={onNext} className="pal-glow-pulse" style={{ marginTop: '1.5rem', padding: '0.65rem 1.6rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+                Next →
+              </button>
+            </div>
+          )}
         </div>
       )}
-      {module && module.connection && (
-        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
-        </div>
-      )}
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
-      </div>
     </div>
   );
 }
@@ -822,33 +1374,158 @@ function Module_MF12({ module, onNext }) {
 // ─── Module 13: Metric Sensitivity ───────────────────────────────────────────
 
 function Module_MF13({ module, onNext }) {
+  const [cv, setCv] = useState(1.2);
+  const [answer, setAnswer] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+
+  // Sample size approximation: n ~ (z_alpha + z_beta)^2 * sigma^2 / delta^2
+  // Simplified: n ~ CV^2 * constant (holding delta/mean fixed)
+  // Base case: cv=0.5 gives n=250, cv=2.0 gives n=4000
+  var baseN = 250;
+  var sampN = Math.round(baseN * (cv / 0.5) * (cv / 0.5));
+
+  // SVG for distribution visualization
+  var W = 420; var H = 100;
+  var padL = 10; var padR = 10; var padT = 10; var padB = 20;
+  var innerW = W - padL - padR; var innerH = H - padT - padB;
+
+  // Draw approximate normal distribution curve for given CV
+  var pts = 60;
+  function gauss(x, sigma) {
+    return Math.exp(-0.5 * (x / sigma) * (x / sigma));
+  }
+
+  function makeCurvePath(sigma) {
+    var result = [];
+    for (var i = 0; i < pts; i++) {
+      var t = i / (pts - 1);
+      var x = -3 + t * 6;
+      var y = gauss(x, sigma);
+      var svgX = padL + t * innerW;
+      var svgY = padT + innerH - y * innerH * 0.88;
+      result.push((i === 0 ? 'M' : 'L') + ' ' + svgX + ' ' + svgY);
+    }
+    return result.join(' ');
+  }
+
+  var narrowPath = makeCurvePath(0.8);
+  var widePath = makeCurvePath(cv);
+
+  var mcqOptions = [
+    { label: 'A. Revenue per user — because it is the most important business metric.', correct: false },
+    { label: 'B. Click-through rate — it has lower variance relative to its mean, making small effects detectable with fewer users.', correct: true },
+    { label: 'C. Revenue per user — because it directly measures monetization impact.', correct: false },
+    { label: 'D. Session length — because it is correlated with engagement.', correct: false },
+  ];
+
+  var cvLabel = Math.round(cv * 10) / 10;
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This advanced module gives you a working model of metric sensitivity — why coefficient of variation (CV = SD / mean) determines sample requirements, why zero-inflated distributions like revenue per user are so expensive to detect effects in, and how to select a sensitive proxy that predicts the high-variance outcome you actually care about. These concepts appear in senior PM, data science, and experimentation specialist interviews at companies running experiments at scale.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
+      <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 }}>
+        Metric sensitivity determines how quickly an experiment can detect a real effect. A metric
+        with high variance relative to its mean (high CV = SD / mean) requires far more samples to
+        detect the same lift. This is why revenue per user is notoriously expensive to experiment
+        with — a small number of high spenders creates extreme variance.
+      </p>
+
+      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.9rem' }}>
+          Adjust coefficient of variation (CV) — watch sample size requirements change
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+              <span style={{ fontSize: '0.82rem', color: 'var(--text)', fontWeight: 600 }}>CV (SD / mean)</span>
+              <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--accent)' }}>{cvLabel}</span>
+            </div>
+            <input type="range" min={0.3} max={3.0} step={0.1} value={cv}
+              onChange={function(e) { setCv(parseFloat(e.target.value)); }}
+              style={{ width: '100%', accentColor: 'var(--accent)' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              <span>0.3 (low)</span><span>3.0 (high)</span>
+            </div>
+          </div>
+          <div style={{ textAlign: 'center', padding: '0.85rem', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 'var(--radius-sm)' }}>
+            <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.3rem' }}>Required sample size</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent)' }}>{sampN.toLocaleString()}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>per arm, to detect 5% lift</div>
+          </div>
+        </div>
+
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem' }}>
+          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: '0.4rem', textAlign: 'center' }}>Distribution width at CV = {cvLabel}</div>
+          <svg viewBox={'0 0 ' + W + ' ' + H} width="100%" style={{ display: 'block' }}>
+            <line x1={padL} y1={padT + innerH} x2={W - padR} y2={padT + innerH} stroke="var(--border)" strokeWidth="1" />
+            <path d={narrowPath} fill="none" stroke="var(--teal)" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.6" />
+            <path d={widePath} fill="none" stroke="var(--accent)" strokeWidth="2" />
+            <text x={padL + 8} y={padT + 16} fontSize="9" fill="var(--teal)" opacity="0.8">Low CV (reference)</text>
+            <text x={padL + 8} y={padT + 30} fontSize="9" fill="var(--accent)" fontWeight="700">CV = {cvLabel}</text>
+            <line x1={W / 2} y1={padT} x2={W / 2} y2={padT + innerH} stroke="var(--border)" strokeWidth="0.5" strokeDasharray="2 2" />
+            <text x={W / 2} y={H - 2} textAnchor="middle" fontSize="8" fill="var(--text-muted)">mean</text>
+          </svg>
+        </div>
+
+        <div style={{ marginTop: '0.75rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+          {[
+            { metric: 'Click-through rate', cv: '~0.3-0.5', note: 'Most sensitive — binary outcomes' },
+            { metric: 'Session length', cv: '~0.8-1.2', note: 'Moderate — right-skewed' },
+            { metric: 'Revenue per user', cv: '~1.5-3.5', note: 'Least sensitive — zero-inflated' },
+          ].map(function(row) {
+            return (
+              <div key={row.metric} style={{ padding: '0.5rem 0.7rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)' }}>
+                <div style={{ fontWeight: 600, color: 'var(--text)', marginBottom: '0.15rem' }}>{row.metric}</div>
+                <div>CV: {row.cv}</div>
+                <div>{row.note}</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
-      {module && module.keyInsight && (
-        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+
+      <div>
+        <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.75rem' }}>
+          You are testing a new feature and need to detect a 3% lift. Which metric should you choose as your primary outcome to minimize experiment runtime?
         </div>
-      )}
-      {module && module.connection && (
-        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
-        </div>
-      )}
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Complete module →
-        </button>
+
+        {mcqOptions.map(function(opt, i) {
+          var sel = answer === i;
+          var bg = 'var(--surface-2)'; var border = 'var(--border)'; var color = 'var(--text)';
+          if (revealed) {
+            if (opt.correct) { bg = 'var(--teal-bg)'; border = 'var(--teal-border)'; color = 'var(--teal)'; }
+            else if (sel) { bg = 'var(--red-bg)'; border = 'var(--red-border)'; color = 'var(--red)'; }
+          } else if (sel) { border = 'var(--accent-border)'; }
+          return (
+            <button key={i} onClick={function() { if (!revealed) setAnswer(i); }} disabled={revealed}
+              style={{ display: 'block', width: '100%', textAlign: 'left', padding: '0.7rem 1rem', marginBottom: '0.5rem', background: bg, border: '1.5px solid ' + border, borderRadius: 'var(--radius-sm)', color: color, fontSize: '0.88rem', cursor: revealed ? 'default' : 'pointer', transition: 'all 0.15s' }}>
+              {opt.label}
+            </button>
+          );
+        })}
+
+        {answer !== null && !revealed && (
+          <button onClick={function() { setRevealed(true); }} style={{ marginTop: '0.5rem', padding: '0.5rem 1.1rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>
+            Check
+          </button>
+        )}
+
+        {revealed && (
+          <div className="pal-reveal-in">
+            <div style={{ marginTop: '0.5rem', padding: '0.65rem 0.85rem', background: mcqOptions[answer] && mcqOptions[answer].correct ? 'var(--teal-bg)' : 'var(--red-bg)', border: '1px solid ' + (mcqOptions[answer] && mcqOptions[answer].correct ? 'var(--teal-border)' : 'var(--red-border)'), borderRadius: 'var(--radius-sm)', fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.5 }}>
+              CTR is a binary metric (clicked vs. not clicked) — its variance is determined by p*(1-p), which is tightly bounded. Revenue per user has a long right tail driven by a small number of heavy spenders, making its SD several times its mean. To detect the same 3% lift, you might need 20x more users for revenue vs. CTR.
+            </div>
+            <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', marginTop: '1.25rem' }}>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>Key Insight</div>
+              <div style={{ fontSize: '0.88rem', color: 'var(--text)', lineHeight: 1.6 }}>
+                When you cannot change the metric you care about, change what you measure in the experiment. If you must detect a revenue effect but revenue-per-user requires 6 months, find a proxy metric — a leading indicator with lower CV that predicts long-term revenue. CUPED can also reduce effective CV by 30-50%.
+              </div>
+            </div>
+            <button onClick={onNext} className="pal-glow-pulse" style={{ marginTop: '1.5rem', padding: '0.65rem 1.6rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+              Complete module →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

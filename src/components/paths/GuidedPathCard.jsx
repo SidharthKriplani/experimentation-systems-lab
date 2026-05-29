@@ -56,49 +56,6 @@ export function GuidedPathCard({ path, completionMap, onNavigate }) {
         }} />
       </div>
 
-      {/* Sequence list */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginBottom: '0.85rem' }}>
-        {path.sequence.map((item, i) => {
-          const done = !!completionMap[`${item.room}:${item.itemId}`];
-          const isNext = nextItem?.itemId === item.itemId && nextItem?.room === item.room;
-          return (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', gap: '0.5rem',
-              opacity: done ? 0.65 : 1,
-            }}>
-              <div style={{
-                width: '14px', height: '14px', borderRadius: '50%', flexShrink: 0,
-                background: done ? path.color : isNext ? path.bg : 'var(--surface-2)',
-                border: `1.5px solid ${done ? path.color : isNext ? path.border : 'var(--border)'}`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.5rem', color: done ? '#fff' : 'transparent',
-              }}>
-                {done ? '✓' : ''}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flex: 1, minWidth: 0 }}>
-                <span style={{
-                  fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em',
-                  color: 'var(--text-dim)', flexShrink: 0,
-                }}>{item.room}</span>
-                <span style={{
-                  fontSize: '0.8rem',
-                  color: isNext ? 'var(--text)' : done ? 'var(--text-dim)' : 'var(--text-secondary)',
-                  fontWeight: isNext ? 600 : 400,
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>{item.label}</span>
-                {isNext && (
-                  <span style={{
-                    fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
-                    color: path.color, background: path.bg, border: `1px solid ${path.border}`,
-                    borderRadius: '3px', padding: '0.05rem 0.3rem', flexShrink: 0,
-                  }}>Next</span>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
       {/* CTA */}
       {nextItem && (
         <button

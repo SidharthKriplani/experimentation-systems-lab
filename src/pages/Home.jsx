@@ -372,15 +372,15 @@ export function Home({ onNavigate }) {
                 fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.65,
                 maxWidth: 500, margin: '0 0 1.75rem', position: 'relative',
               }}>
-                Interview prep for product analysts and PMs. 17 practice rooms — A/B testing,
-                metric diagnosis, RCA, growth analytics, and more. Each case puts you in a real
-                scenario and tests your judgment, not your memory.
+                The hands-on prep platform for product analysts and PMs. Master experiment design,
+                metric diagnosis, and root cause analysis — the three skills that decide every
+                product analytics interview. Each scenario tests judgment, not recall.
               </p>
 
               {/* CTAs */}
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.1rem', position: 'relative' }}>
                 <button
-                  onClick={() => onNavigate('stat-foundations')}
+                  onClick={() => onNavigate('stats')}
                   style={{
                     background: 'var(--accent)', color: '#fff', border: 'none',
                     borderRadius: 'var(--radius)', padding: '0.75rem 1.6rem',
@@ -388,7 +388,7 @@ export function Home({ onNavigate }) {
                     boxShadow: '0 2px 8px rgba(67,56,202,0.35)',
                   }}
                 >
-                  Start practicing →
+                  Start with A/B testing →
                 </button>
                 <button
                   onClick={() => onNavigate('pricing')}

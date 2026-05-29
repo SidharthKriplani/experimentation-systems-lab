@@ -84,7 +84,6 @@ export function Module01_WhatIsData({ module, onNext }) {
     <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Explanation */}
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
-        {module?.subtitle || 'Data comes in two fundamental types: numerical (you can do math on it) and categorical (it describes a group).'}{' '}
         Every experiment metric is a numerical variable measured on each user — but knowing the type shapes how you summarize and test it.
       </p>
 

@@ -736,180 +736,1123 @@ function Module_RF06({ onComplete }) {
 }
 
 // ── Module rf07: Metric Tree Construction ──────────────────────────────────
+
+const RF07_QUESTIONS = [
+  {
+    id: 'q1',
+    prompt: 'DAU fell 15%. Your metric tree shows: New users -2%, Retained users -18%, Resurrected users -5%. Where do you focus first?',
+    options: [
+      'New users — any new-user drop signals top-of-funnel acquisition problems',
+      'Retained users — the largest absolute contributor to the drop',
+      'Resurrected users — re-engagement is cheapest to fix',
+      'All three equally — you cannot prioritize without more data',
+    ],
+    correct: 'Retained users — the largest absolute contributor to the drop',
+    explanation: 'Retained users make up the bulk of DAU at any mature product. An 18% drop in that branch dwarfs the 2% new-user fall in absolute terms. The tree tells you where the mass is — always start with the branch whose absolute contribution is largest.',
+  },
+  {
+    id: 'q2',
+    prompt: 'Retained users = Day-N users x Retention rate. Retention rate held completely flat. What does that tell you?',
+    options: [
+      'The product is fine — retention held, so the issue is external',
+      'The issue is in the denominator — fewer users reached Day-N, meaning the new-user cohort from N days ago was smaller or lower quality',
+      'The issue is in the numerator — active retained users dropped',
+      'Retention rate and Day-N users both moved but offset each other',
+    ],
+    correct: 'The issue is in the denominator — fewer users reached Day-N, meaning the new-user cohort from N days ago was smaller or lower quality',
+    explanation: 'If Retained users = Day-N users x Retention rate, and Retention rate is flat, then the only explanation is that Day-N users fell. That points backward in time — the new-user cohort that should have reached Day-N was smaller or churned before reaching it. The current product experience is not the problem; acquisition quality from N days ago is.',
+  },
+  {
+    id: 'q3',
+    prompt: 'Which of the following would NOT appear in a DAU metric tree?',
+    options: [
+      'Day-7 retention rate',
+      'New installs converting to activated users',
+      'Revenue per user',
+      'Resurrected user count',
+    ],
+    correct: 'Revenue per user',
+    explanation: 'Revenue per user belongs in a revenue tree, not a DAU tree. DAU = New users + Retained users + Resurrected users, decomposed further by activation, retention, and re-engagement rates. Revenue is a separate dimension. A common interview mistake is conflating engagement trees with monetization trees.',
+  },
+];
+
 function Module_RF07({ onComplete }) {
+  const [qIdx, setQIdx] = useState(0);
+  const [selections, setSelections] = useState({});
+  const [revealed, setRevealed] = useState({});
+
+  const currentQ = RF07_QUESTIONS[qIdx];
+  const currentSelected = selections[currentQ.id] || null;
+  const currentRevealed = revealed[currentQ.id] || false;
+  const allDone = qIdx >= RF07_QUESTIONS.length - 1 && currentRevealed;
+
+  function handleSelect(opt) {
+    if (!currentRevealed) {
+      setSelections(function(prev) {
+        const next = Object.assign({}, prev);
+        next[currentQ.id] = opt;
+        return next;
+      });
+    }
+  }
+
+  function handleCheck() {
+    if (currentSelected !== null) {
+      setRevealed(function(prev) {
+        const next = Object.assign({}, prev);
+        next[currentQ.id] = true;
+        return next;
+      });
+    }
+  }
+
+  function handleNext() {
+    if (qIdx < RF07_QUESTIONS.length - 1) setQIdx(qIdx + 1);
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This module teaches you to decompose any top-line metric into its multiplicative drivers — building the exhaustive tree that tells you exactly which branch a drop lives in. You will practise constructing metric trees for DAU, revenue, and engagement metrics from scratch, then use the tree to prioritise which node to investigate first.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
+      <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0 }}>
+        A metric tree makes RCA exhaustive — every drop lives in exactly one branch. Work through the DAU tree below. Answer each question, then advance to the next.
+      </p>
+
+      <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem 1.25rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.9rem' }}>DAU Metric Tree</div>
+        <div style={{ fontSize: '0.88rem', color: 'var(--text)', lineHeight: 1.7 }}>
+          <div style={{ fontWeight: 700, marginBottom: '0.4rem' }}>DAU</div>
+          <div style={{ paddingLeft: '1.25rem', borderLeft: '2px solid var(--teal-border)', marginBottom: '0.3rem' }}>
+            <div style={{ fontWeight: 600, color: 'var(--teal)', marginBottom: '0.25rem' }}>New users</div>
+            <div style={{ paddingLeft: '1rem', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>= New installs x Activation rate</div>
+          </div>
+          <div style={{ paddingLeft: '1.25rem', borderLeft: '2px solid var(--teal-border)', marginBottom: '0.3rem' }}>
+            <div style={{ fontWeight: 600, color: 'var(--teal)', marginBottom: '0.25rem' }}>Retained users</div>
+            <div style={{ paddingLeft: '1rem', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>= Day-N users x Retention rate</div>
+          </div>
+          <div style={{ paddingLeft: '1.25rem', borderLeft: '2px solid var(--teal-border)' }}>
+            <div style={{ fontWeight: 600, color: 'var(--teal)', marginBottom: '0.25rem' }}>Resurrected users</div>
+            <div style={{ paddingLeft: '1rem', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>= Lapsed users x Re-engagement rate</div>
+          </div>
+        </div>
       </div>
-      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>A metric tree forces you to be exhaustive: revenue = users x sessions x conversion x AOV. Every drop lives in exactly one node — the tree tells you where to look, not what you will find.</div>
+
+      <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.85rem' }}>
+          <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            Question {qIdx + 1} of {RF07_QUESTIONS.length}
+          </div>
+          <div style={{ display: 'flex', gap: '0.3rem' }}>
+            {RF07_QUESTIONS.map(function(_q, i) {
+              return (
+                <div key={i} style={{
+                  width: '8px', height: '8px', borderRadius: '50%',
+                  background: i < qIdx || (i === qIdx && currentRevealed) ? 'var(--teal)' : i === qIdx ? 'var(--teal-border)' : 'var(--border)',
+                }} />
+              );
+            })}
+          </div>
+        </div>
+
+        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text)', marginBottom: '0.75rem', lineHeight: 1.5 }}>
+          {currentQ.prompt}
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginBottom: '0.75rem' }}>
+          {currentQ.options.map(function(opt) {
+            return (
+              <MCQOption
+                key={opt}
+                label={opt}
+                selected={currentSelected === opt}
+                correct={opt === currentQ.correct}
+                revealed={currentRevealed}
+                onClick={function() { handleSelect(opt); }}
+              />
+            );
+          })}
+        </div>
+
+        {!currentRevealed && (
+          <button
+            onClick={handleCheck}
+            disabled={currentSelected === null}
+            style={{
+              padding: '0.5rem 1.1rem',
+              borderRadius: 'var(--radius-sm)',
+              border: 'none',
+              background: currentSelected !== null ? 'var(--teal)' : 'var(--border)',
+              color: currentSelected !== null ? '#fff' : 'var(--text-muted)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              cursor: currentSelected !== null ? 'pointer' : 'default',
+            }}
+          >Check answer</button>
+        )}
+
+        {currentRevealed && (
+          <div className="pal-reveal-in" style={{
+            marginTop: '0.75rem',
+            background: currentSelected === currentQ.correct ? 'var(--teal-bg)' : 'var(--red-bg)',
+            border: '1px solid ' + (currentSelected === currentQ.correct ? 'var(--teal-border)' : 'var(--red-border)'),
+            borderRadius: 'var(--radius-sm)',
+            padding: '0.75rem 1rem',
+            fontSize: '0.85rem',
+            color: 'var(--text-secondary)',
+            lineHeight: 1.55,
+          }}>
+            <strong>{currentSelected === currentQ.correct ? 'Correct. ' : 'Not quite. '}</strong>{currentQ.explanation}
+          </div>
+        )}
+
+        {currentRevealed && qIdx < RF07_QUESTIONS.length - 1 && (
+          <button
+            onClick={handleNext}
+            style={{
+              marginTop: '0.85rem',
+              padding: '0.5rem 1.1rem',
+              borderRadius: 'var(--radius-sm)',
+              border: 'none',
+              background: 'var(--teal)',
+              color: '#fff',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+            }}
+          >Next question →</button>
+        )}
       </div>
-      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Metric trees are the backbone of experiment debrief analysis — when a metric moves, the tree tells you which sub-metric drove it and whether that is the one you wanted to move.</div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
-      </div>
+
+      {allDone && (
+        <div>
+          <InsightBox>
+            A metric tree forces you to be exhaustive: revenue = users x sessions x conversion x AOV. Every drop lives in exactly one branch. Without the tree, analysts chase symptoms instead of root causes — spending hours on a leaf node when the trunk is the problem. Drawing one live signals senior analytical thinking immediately.
+          </InsightBox>
+          <NextBtn onClick={onComplete} label="Complete module →" />
+        </div>
+      )}
     </div>
   );
 }
 
 // ── Module rf08: SQL Diagnosis Patterns ────────────────────────────────────
 function Module_RF08({ onComplete }) {
+  const STEPS = [
+    {
+      label: 'Query 1: Time-series event count by day',
+      query: 'SELECT DATE(event_time) AS day, COUNT(*) AS events\nFROM events\nWHERE event_name = \'checkout_complete\'\n  AND event_time >= CURRENT_DATE - 21\nGROUP BY 1\nORDER BY 1;',
+      headers: ['day', 'events'],
+      rows: [
+        ['2024-03-10', '4210'], ['2024-03-11', '4180'], ['2024-03-12', '4225'],
+        ['2024-03-13', '4190'], ['2024-03-14', '4150'], ['2024-03-15', '2540'],
+        ['2024-03-16', '2510'], ['2024-03-17', '2490'], ['2024-03-18', '2520'],
+        ['2024-03-19', '2535'],
+      ],
+      highlight: [5, 6, 7, 8, 9],
+      finding: 'Drop begins abruptly on day 15 (Mar 15). Event counts halve overnight — this is a step change, not a gradual trend.',
+    },
+    {
+      label: 'Query 2: Platform split',
+      query: 'SELECT platform, DATE(event_time) AS day, COUNT(*) AS events\nFROM events\nWHERE event_name = \'checkout_complete\'\n  AND event_time >= CURRENT_DATE - 7\nGROUP BY 1, 2\nORDER BY 2, 1;',
+      headers: ['platform', 'day', 'events'],
+      rows: [
+        ['android', '2024-03-14', '1940'], ['ios', '2024-03-14', '2210'],
+        ['android', '2024-03-15', '1920'], ['ios', '2024-03-15', '620'],
+        ['android', '2024-03-16', '1910'], ['ios', '2024-03-16', '600'],
+        ['android', '2024-03-17', '1935'], ['ios', '2024-03-17', '555'],
+      ],
+      highlight: [3, 5, 7],
+      finding: 'iOS drops from ~2,200 to ~600 on Mar 15. Android is completely stable. This is a platform-specific signal — points toward SDK change or iOS app release.',
+    },
+    {
+      label: 'Query 3: Year-over-year comparison',
+      query: 'SELECT DATE(event_time) AS day,\n       COUNT(*) AS events_this_year,\n       LAG(COUNT(*), 365) OVER (ORDER BY DATE(event_time)) AS events_last_year\nFROM events\nWHERE event_name = \'checkout_complete\'\nGROUP BY 1\nORDER BY 1 DESC\nLIMIT 10;',
+      headers: ['day', 'this year', 'last year'],
+      rows: [
+        ['2024-03-19', '2535', '2498'], ['2024-03-18', '2520', '2470'],
+        ['2024-03-17', '2490', '4320'], ['2024-03-16', '2510', '4290'],
+        ['2024-03-15', '2540', '4280'], ['2024-03-14', '4150', '4160'],
+        ['2024-03-13', '4190', '4180'], ['2024-03-12', '4225', '4190'],
+      ],
+      highlight: [2, 3, 4],
+      finding: 'Last year on Mar 15-17 the metric was healthy (~4,300). This drop is NOT seasonal — it is a new event starting on exactly Mar 15, 2024.',
+    },
+  ];
+
+  const RF08_MCQ = {
+    question: 'Which of these SQL patterns should you run FIRST in any RCA?',
+    options: [
+      'Join events to user profiles to identify affected user segments',
+      'Time-series the raw event count by day to confirm the drop and identify when it started',
+      'Compare conversion rates across experiment variants to isolate the cause',
+      'Pull funnel drop-off rates at each step for the affected event',
+    ],
+    correct: 1,
+    explanation: 'Time-series the raw event count by day is always first. It confirms the drop is real (not a dashboard filter issue), shows when it started, and reveals whether it is a step change or a gradual drift — all before you touch more complex joins.',
+  };
+
+  const [step, setStep] = useState(0);
+  const [ranSteps, setRanSteps] = useState({});
+  const [mcqSel, setMcqSel] = useState(null);
+  const [mcqRevealed, setMcqRevealed] = useState(false);
+
+  const allStepsRan = STEPS.every((_, i) => ranSteps[i]);
+
+  function runStep(i) {
+    setRanSteps(prev => ({ ...prev, [i]: true }));
+    if (i < STEPS.length - 1) setStep(i + 1);
+  }
+
+  const currentStep = STEPS[step];
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This module walks through the three SQL queries every analyst should run in the first 30 minutes of an investigation: time-series the raw event count by day, break it by platform and region, and compare this period to the same period last year. You will practise writing each query against a realistic schema and interpreting what the output tells you about where the investigation should focus next.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
+    <div>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        The first 30 minutes of any RCA follow the same SQL playbook: confirm the signal is real, narrow to a platform or segment, then check whether the pattern has historical precedent. Walk through each query below and read what the output tells you.
+      </p>
+
+      {/* Step tabs */}
+      <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.85rem', flexWrap: 'wrap' }}>
+        {STEPS.map((s, i) => (
+          <button
+            key={i}
+            onClick={() => setStep(i)}
+            style={{
+              padding: '0.35rem 0.8rem', borderRadius: 'var(--radius-sm)',
+              border: '1.5px solid ' + (step === i ? 'var(--teal-border)' : (ranSteps[i] ? 'var(--teal-border)' : 'var(--border)')),
+              background: step === i ? 'var(--teal-bg)' : (ranSteps[i] ? 'var(--teal-bg)' : 'var(--surface-2)'),
+              color: step === i ? 'var(--teal)' : (ranSteps[i] ? 'var(--teal)' : 'var(--text-muted)'),
+              fontSize: '0.8rem', fontWeight: step === i ? 700 : 400, cursor: 'pointer',
+            }}
+          >
+            {ranSteps[i] ? 'Query ' + (i + 1) + ' done' : 'Query ' + (i + 1)}
+          </button>
+        ))}
       </div>
-      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The first three SQL moves in any RCA are always the same: time-series the raw event count by day, break it by platform and region, and compare this week to last week and last year. Analysts who jump to complex joins before these three queries have not yet confirmed whether the signal is real.</div>
+
+      {/* Query card */}
+      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', marginBottom: '0.85rem' }}>
+        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.55rem' }}>
+          {currentStep.label}
+        </div>
+        <pre style={{
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem',
+          fontSize: '0.78rem', color: 'var(--text)', lineHeight: 1.65,
+          overflowX: 'auto', margin: '0 0 0.85rem', whiteSpace: 'pre-wrap',
+        }}>{currentStep.query}</pre>
+
+        {ranSteps[step] ? (
+          <div>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.45rem' }}>Result</div>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+                <thead>
+                  <tr>
+                    {currentStep.headers.map((h, hi) => (
+                      <th key={hi} style={{ textAlign: 'left', padding: '0.35rem 0.6rem', borderBottom: '1.5px solid var(--border)', color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentStep.rows.map((row, ri) => {
+                    const isHighlighted = currentStep.highlight.indexOf(ri) !== -1;
+                    return (
+                      <tr key={ri} style={{ background: isHighlighted ? 'var(--red-bg)' : 'transparent' }}>
+                        {row.map((cell, ci) => (
+                          <td key={ci} style={{ padding: '0.3rem 0.6rem', borderBottom: '1px solid var(--border)', color: isHighlighted ? 'var(--red)' : 'var(--text)', fontWeight: isHighlighted && ci === row.length - 1 ? 700 : 400 }}>{cell}</td>
+                        ))}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div style={{ marginTop: '0.75rem', padding: '0.65rem 0.9rem', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.55 }}>
+              <strong>Finding:</strong> {currentStep.finding}
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => runStep(step)}
+            style={{
+              padding: '0.5rem 1.1rem', borderRadius: 'var(--radius-sm)',
+              border: 'none', background: 'var(--teal)', color: '#fff',
+              fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
+            }}
+          >
+            {'Run query ' + (step + 1)}
+          </button>
+        )}
       </div>
-      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The same SQL patterns that surface a metric drop also validate experiment results — a time-series of your outcome metric split by variant is the first sanity check after any A/B test launches.</div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
-      </div>
+
+      {/* MCQ after all steps done */}
+      {allStepsRan && (
+        <div style={{ marginTop: '1.25rem' }}>
+          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.65rem' }}>{RF08_MCQ.question}</div>
+          {RF08_MCQ.options.map((opt, oi) => (
+            <MCQOption
+              key={oi}
+              label={opt}
+              selected={mcqSel === oi}
+              correct={oi === RF08_MCQ.correct}
+              revealed={mcqRevealed}
+              onClick={() => !mcqRevealed && setMcqSel(oi)}
+            />
+          ))}
+          {mcqSel !== null && !mcqRevealed && (
+            <button
+              onClick={() => setMcqRevealed(true)}
+              style={{ marginTop: '0.4rem', padding: '0.45rem 1rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--teal)', color: '#fff', fontWeight: 700, fontSize: '0.83rem', cursor: 'pointer' }}
+            >Check</button>
+          )}
+          {mcqRevealed && (
+            <div>
+              <div style={{ marginTop: '0.5rem', padding: '0.65rem 0.85rem', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.55 }}>
+                {RF08_MCQ.explanation}
+              </div>
+              <InsightBox>
+                The three SQL moves — time-series by day, platform split, YoY comparison — are not optional. They confirm the signal is real, narrow the scope, and rule out seasonality. Analysts who skip ahead to complex joins often spend hours diagnosing a logging bug as a product problem.
+              </InsightBox>
+              <NextBtn onClick={onComplete} label="Complete module →" />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
 // ── Module rf09: Seasonality and Trend Separation ──────────────────────────
 function Module_RF09({ onComplete }) {
+  const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const THIS_YEAR = [820, 810, 790, 765, 720, 680, 600];
+  const LAST_YEAR = [815, 808, 785, 760, 718, 675, 596];
+
+  const RF09_MCQ = {
+    question: 'A metric is down 13% WoW. The same metric was also down 13% in the same week last year. What does this most likely indicate?',
+    options: [
+      'A product regression introduced last week — file a bug immediately',
+      'This is a seasonal pattern — investigate YoY, not a product regression',
+      'A data pipeline failure — check ingestion logs before drawing any conclusion',
+      'A competitor launch — check for external news from the past 7 days',
+    ],
+    correct: 1,
+    explanation: 'When the current drop matches last year\'s drop in the same week, the pattern is almost certainly seasonal. The correct response is to confirm YoY alignment, set a seasonality-adjusted baseline, and close the investigation — not to open a bug or launch an engineering investigation.',
+  };
+
+  const [showYoY, setShowYoY] = useState(false);
+  const [mcqSel, setMcqSel] = useState(null);
+  const [mcqRevealed, setMcqRevealed] = useState(false);
+
+  // SVG chart constants
+  const W = 500;
+  const H = 200;
+  const PAD_L = 42;
+  const PAD_R = 16;
+  const PAD_T = 16;
+  const PAD_B = 32;
+  const chartW = W - PAD_L - PAD_R;
+  const chartH = H - PAD_T - PAD_B;
+  const allVals = THIS_YEAR.concat(LAST_YEAR);
+  const minV = Math.min.apply(null, allVals) - 30;
+  const maxV = Math.max.apply(null, allVals) + 30;
+
+  function xPos(i) {
+    return PAD_L + (i / (DAYS.length - 1)) * chartW;
+  }
+  function yPos(v) {
+    return PAD_T + chartH - ((v - minV) / (maxV - minV)) * chartH;
+  }
+
+  function makePath(vals) {
+    return vals.map(function(v, i) {
+      return (i === 0 ? 'M' : 'L') + xPos(i).toFixed(1) + ',' + yPos(v).toFixed(1);
+    }).join(' ');
+  }
+
+  const yTicks = [600, 680, 760, 820];
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This module teaches you to separate a true trend from calendar-driven seasonality — so you can answer whether a metric drop is a genuine deterioration or a predictable cycle. You will practise constructing seasonality-adjusted baselines using WoW and YoY comparisons, and learn to identify when an apparent drop is actually within normal seasonal variance.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
+    <div>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        Not every week-over-week drop is a product regression. Before raising an alarm, overlay the same metric from the same week last year. If the shapes match, you are looking at a predictable seasonal cycle — not a broken feature.
+      </p>
+
+      {/* Chart */}
+      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem', marginBottom: '0.85rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Daily DAU — current week</div>
+          <button
+            onClick={() => setShowYoY(function(v) { return !v; })}
+            style={{
+              padding: '0.3rem 0.8rem', borderRadius: 'var(--radius-sm)',
+              border: '1.5px solid ' + (showYoY ? 'var(--accent-border)' : 'var(--border)'),
+              background: showYoY ? 'var(--accent-bg)' : 'var(--surface)',
+              color: showYoY ? 'var(--accent)' : 'var(--text-muted)',
+              fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+            }}
+          >
+            {showYoY ? 'Hide YoY' : 'Show YoY'}
+          </button>
+        </div>
+
+        <svg viewBox={'0 0 ' + W + ' ' + H} style={{ width: '100%', maxWidth: W + 'px', display: 'block', overflow: 'visible' }}>
+          {/* Y grid + labels */}
+          {yTicks.map(function(tick) {
+            const y = yPos(tick);
+            return (
+              <g key={tick}>
+                <line x1={PAD_L} y1={y} x2={W - PAD_R} y2={y} stroke='var(--border)' strokeWidth='1' />
+                <text x={PAD_L - 6} y={y + 4} textAnchor='end' fontSize='9' fill='var(--text-muted)'>{tick}</text>
+              </g>
+            );
+          })}
+          {/* X labels */}
+          {DAYS.map(function(day, i) {
+            return (
+              <text key={day} x={xPos(i)} y={H - 6} textAnchor='middle' fontSize='9' fill='var(--text-muted)'>{day}</text>
+            );
+          })}
+          {/* YoY line */}
+          {showYoY && (
+            <g>
+              <path d={makePath(LAST_YEAR)} fill='none' stroke='var(--accent)' strokeWidth='2' strokeDasharray='5,3' />
+              {LAST_YEAR.map(function(v, i) {
+                return <circle key={i} cx={xPos(i)} cy={yPos(v)} r='3.5' fill='var(--accent)' />;
+              })}
+            </g>
+          )}
+          {/* Current week line */}
+          <path d={makePath(THIS_YEAR)} fill='none' stroke='var(--teal)' strokeWidth='2.5' />
+          {THIS_YEAR.map(function(v, i) {
+            return <circle key={i} cx={xPos(i)} cy={yPos(v)} r='4' fill='var(--teal)' />;
+          })}
+        </svg>
+
+        {/* Legend */}
+        <div style={{ display: 'flex', gap: '1.25rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            <span style={{ display: 'inline-block', width: 22, height: 3, background: 'var(--teal)', borderRadius: 2 }} />
+            Current week
+          </div>
+          {showYoY && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+              <span style={{ display: 'inline-block', width: 22, height: 2, background: 'var(--accent)', borderRadius: 2, borderTop: '2px dashed var(--accent)' }} />
+              Same week last year
+            </div>
+          )}
+        </div>
+
+        {showYoY && (
+          <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.9rem', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.55 }}>
+            The two lines are nearly identical. The current week\'s decline mirrors last year\'s pattern almost exactly — this drop is seasonal, not a regression.
+          </div>
+        )}
       </div>
-      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>A metric that is down 12% week-over-week may be perfectly healthy if the same week last year was also down 12%. Analysts who lack a seasonality-adjusted baseline mistake calendar effects for product problems every single quarter.</div>
-      </div>
-      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Seasonality is also the primary confounder in long-running A/B tests — an experiment that spans a holiday week has treatment and control groups exposed to different demand environments, invalidating the comparison if not accounted for.</div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
-      </div>
+
+      {/* MCQ — show after YoY toggled */}
+      {showYoY && (
+        <div style={{ marginTop: '1.25rem' }}>
+          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.65rem' }}>{RF09_MCQ.question}</div>
+          {RF09_MCQ.options.map(function(opt, oi) {
+            return (
+              <MCQOption
+                key={oi}
+                label={opt}
+                selected={mcqSel === oi}
+                correct={oi === RF09_MCQ.correct}
+                revealed={mcqRevealed}
+                onClick={function() { if (!mcqRevealed) setMcqSel(oi); }}
+              />
+            );
+          })}
+          {mcqSel !== null && !mcqRevealed && (
+            <button
+              onClick={function() { setMcqRevealed(true); }}
+              style={{ marginTop: '0.4rem', padding: '0.45rem 1rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--teal)', color: '#fff', fontWeight: 700, fontSize: '0.83rem', cursor: 'pointer' }}
+            >Check</button>
+          )}
+          {mcqRevealed && (
+            <div>
+              <div style={{ marginTop: '0.5rem', padding: '0.65rem 0.85rem', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.55 }}>
+                {RF09_MCQ.explanation}
+              </div>
+              <InsightBox>
+                WoW comparisons are noisy without a seasonal baseline. Every analyst should have a YoY overlay as a standing check before any RCA escalation. If current week and same week last year are down by the same amount, the product is fine — close the investigation.
+              </InsightBox>
+              <NextBtn onClick={onComplete} label="Complete module →" />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
 // ── Module rf10: Data Quality First (Advanced) ─────────────────────────────
 function Module_RF10({ onComplete }) {
+  const DIAGNOSES = ['SDK change', 'Logging bug', 'Pipeline failure'];
+  const DIAGNOSIS_COLORS = {
+    'SDK change': { bg: 'var(--yellow-bg)', border: 'var(--yellow-border)', text: 'var(--yellow)' },
+    'Logging bug': { bg: 'var(--accent-bg)', border: 'var(--accent-border)', text: 'var(--accent)' },
+    'Pipeline failure': { bg: 'var(--red-bg)', border: 'var(--red-border)', text: 'var(--red)' },
+  };
+
+  const SYMPTOMS = [
+    {
+      id: 'A',
+      symptom: 'iOS event count drops -40% starting Monday. Android and Web are stable. All event types on iOS are affected equally — session_start, checkout, add_to_cart all down the same proportion.',
+      correct: 'SDK change',
+      explanation: 'When one platform is uniformly affected across all event types, the instrumentation layer is broken — not a specific feature. SDK updates, library version changes, or OS-level permission changes cause exactly this pattern.',
+    },
+    {
+      id: 'B',
+      symptom: 'All platforms show normal event volumes for every event type except checkout_complete, which dropped 90% on Wednesday. session_start, add_to_cart, product_view are all normal.',
+      correct: 'Logging bug',
+      explanation: 'When a single event type drops across all platforms while all others are healthy, someone broke the specific event\'s instrumentation — a parameter rename, a missing trigger condition, or a typo in the event name.',
+    },
+    {
+      id: 'C',
+      symptom: 'All platforms affected, all event types dropped simultaneously at 3:14 AM. Raw table row counts are near zero from 3:14 AM onward. Downstream dashboards show flatlines.',
+      correct: 'Pipeline failure',
+      explanation: 'A simultaneous drop across all platforms and all events, with near-zero raw table rows, is a data engineering failure — an ingestion job, ETL pipeline, or Kafka consumer stopped processing. No product or SDK change produces this pattern.',
+    },
+  ];
+
+  const RF10_MCQ = {
+    question: 'Why should data quality be checked before product hypotheses in an RCA?',
+    options: [
+      'Data quality issues are rare but catastrophic, so they should be ruled out early for safety',
+      'Data quality issues are cheap to rule out and are the most common source of false alarms in RCA',
+      'Product hypotheses require more data to test, so they naturally come later in the process',
+      'Checking data quality first is a political move to protect engineering teams from blame',
+    ],
+    correct: 1,
+    explanation: 'Data quality checks take minutes and are the most frequent cause of false RCA alarms. SDK check logs, pipeline run history, and event counts by platform are fast queries. If you skip to product hypotheses first, you risk pulling engineers into a multi-day investigation for a 5-minute logging fix.',
+  };
+
+  const [selections, setSelections] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [mcqSel, setMcqSel] = useState(null);
+  const [mcqRevealed, setMcqRevealed] = useState(false);
+
+  const allCorrect = SYMPTOMS.every(function(s) { return revealed[s.id] && selections[s.id] === s.correct; });
+  const allRevealed = SYMPTOMS.every(function(s) { return revealed[s.id]; });
+
+  function selectDiagnosis(symptomId, diagnosis) {
+    if (revealed[symptomId]) return;
+    setSelections(function(prev) { return Object.assign({}, prev, { [symptomId]: diagnosis }); });
+  }
+
+  function checkSymptom(symptomId) {
+    setRevealed(function(prev) { return Object.assign({}, prev, { [symptomId]: true }); });
+  }
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This advanced module drills the complete data quality checklist that senior analysts run before touching product hypotheses: SDK and library version changes, pipeline run history, event-level row counts by platform, and denominator inflation checks. You will work through realistic failure scenarios — platform-specific drops, event-specific anomalies, and pipeline-wide collapses — and practise diagnosing each pattern in under five minutes.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
+    <div>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        Three data quality failure patterns account for the vast majority of false alarms in RCA. Each has a distinct signature. Match each symptom pattern to the correct diagnosis, then check your answer before moving to the next.
+      </p>
+
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+        {DIAGNOSES.map(function(d) {
+          const c = DIAGNOSIS_COLORS[d];
+          return (
+            <span key={d} style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '4px', background: c.bg, border: '1px solid ' + c.border, color: c.text }}>
+              {d}
+            </span>
+          );
+        })}
       </div>
-      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Platform-specific drops almost always mean an SDK change, not a product problem. Event-specific drops almost always mean a logging bug. Pipeline-wide drops almost always mean a data engineering failure. These three patterns are recognizable in under five minutes if you know what to look for.</div>
-      </div>
-      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Data quality checks are equally critical in A/B test analysis: a sudden metric movement in the control group after experiment launch almost always signals an instrumentation change, not treatment spillover.</div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
-      </div>
+
+      {SYMPTOMS.map(function(s) {
+        const sel = selections[s.id];
+        const isRevealed = !!revealed[s.id];
+        const isCorrect = sel === s.correct;
+        return (
+          <div key={s.id} style={{
+            marginBottom: '1.1rem', background: 'var(--surface-2)', border: '1px solid ' + (isRevealed ? (isCorrect ? 'var(--teal-border)' : 'var(--red-border)') : 'var(--border)'),
+            borderRadius: 'var(--radius)', padding: '1rem 1.1rem',
+          }}>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Symptom {s.id}</div>
+            <div style={{ fontSize: '0.86rem', color: 'var(--text)', lineHeight: 1.6, marginBottom: '0.75rem' }}>{s.symptom}</div>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.6rem' }}>
+              {DIAGNOSES.map(function(d) {
+                const c = DIAGNOSIS_COLORS[d];
+                const isSelected = sel === d;
+                const isCorrDiag = d === s.correct;
+                let bg = 'var(--surface)';
+                let border = 'var(--border)';
+                let color = 'var(--text-muted)';
+                if (isRevealed) {
+                  if (isCorrDiag) { bg = c.bg; border = c.border; color = c.text; }
+                  else if (isSelected && !isCorrDiag) { bg = 'var(--red-bg)'; border = 'var(--red-border)'; color = 'var(--red)'; }
+                } else if (isSelected) {
+                  bg = c.bg; border = c.border; color = c.text;
+                }
+                return (
+                  <button
+                    key={d}
+                    onClick={function() { selectDiagnosis(s.id, d); }}
+                    disabled={isRevealed}
+                    style={{
+                      padding: '0.3rem 0.75rem', borderRadius: 'var(--radius-sm)',
+                      border: '1.5px solid ' + border, background: bg, color,
+                      fontSize: '0.8rem', fontWeight: isSelected || (isRevealed && isCorrDiag) ? 700 : 400,
+                      cursor: isRevealed ? 'default' : 'pointer', transition: 'all 0.15s',
+                    }}
+                  >{d}</button>
+                );
+              })}
+            </div>
+            {sel && !isRevealed && (
+              <button
+                onClick={function() { checkSymptom(s.id); }}
+                style={{ padding: '0.35rem 0.85rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--teal)', color: '#fff', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
+              >Check</button>
+            )}
+            {isRevealed && (
+              <div style={{ marginTop: '0.45rem', padding: '0.55rem 0.8rem', background: isCorrect ? 'var(--teal-bg)' : 'var(--red-bg)', border: '1px solid ' + (isCorrect ? 'var(--teal-border)' : 'var(--red-border)'), borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: isCorrect ? 'var(--teal)' : 'var(--red)', lineHeight: 1.55 }}>
+                <strong>{isCorrect ? 'Correct. ' : 'Incorrect — the answer is ' + s.correct + '. '}</strong>{s.explanation}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {allRevealed && (
+        <div style={{ marginTop: '1.1rem' }}>
+          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.65rem' }}>{RF10_MCQ.question}</div>
+          {RF10_MCQ.options.map(function(opt, oi) {
+            return (
+              <MCQOption
+                key={oi}
+                label={opt}
+                selected={mcqSel === oi}
+                correct={oi === RF10_MCQ.correct}
+                revealed={mcqRevealed}
+                onClick={function() { if (!mcqRevealed) setMcqSel(oi); }}
+              />
+            );
+          })}
+          {mcqSel !== null && !mcqRevealed && (
+            <button
+              onClick={function() { setMcqRevealed(true); }}
+              style={{ marginTop: '0.4rem', padding: '0.45rem 1rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--teal)', color: '#fff', fontWeight: 700, fontSize: '0.83rem', cursor: 'pointer' }}
+            >Check</button>
+          )}
+          {mcqRevealed && (
+            <div>
+              <div style={{ marginTop: '0.5rem', padding: '0.65rem 0.85rem', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.55 }}>
+                {RF10_MCQ.explanation}
+              </div>
+              <InsightBox>
+                Platform-specific drops point to SDK. Event-specific drops point to a logging bug. All-platforms, all-events drops point to pipeline failure. These three signatures are learnable in one session and save hours of investigation time in practice.
+              </InsightBox>
+              <NextBtn onClick={onComplete} label="Complete module →" />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
 // ── Module rf11: External Factor Identification ────────────────────────────
 function Module_RF11({ onComplete }) {
+  const CATEGORIES = ['Seasonal', 'Competitor', 'Platform', 'Macro'];
+  const CAT_COLORS = {
+    'Seasonal':   { bg: 'var(--green-bg)',  border: 'var(--green-border)',  text: 'var(--green)' },
+    'Competitor': { bg: 'var(--yellow-bg)', border: 'var(--yellow-border)', text: 'var(--yellow)' },
+    'Platform':   { bg: 'var(--accent-bg)', border: 'var(--accent-border)', text: 'var(--accent)' },
+    'Macro':      { bg: 'var(--red-bg)',    border: 'var(--red-border)',    text: 'var(--red)' },
+  };
+
+  const EVENTS = [
+    {
+      id: 0,
+      text: 'DAU drops every Sunday vs Saturday consistently across 12 weeks',
+      correct: 'Seasonal',
+      explanation: 'Predictable, repeating calendar pattern — day-of-week seasonality. No external event required.',
+    },
+    {
+      id: 1,
+      text: 'A competitor launched a feature identical to your core product last Tuesday',
+      correct: 'Competitor',
+      explanation: 'A one-off market event outside your control. Check product news and app store reviews around the launch date.',
+    },
+    {
+      id: 2,
+      text: 'App Store rejected your update last week, reducing new install volume',
+      correct: 'Platform',
+      explanation: 'A platform policy or review decision — not a product regression, not seasonal. Check your App Store Connect dashboard.',
+    },
+    {
+      id: 3,
+      text: 'Central bank raised interest rates — users in your fintech app are reducing discretionary spend',
+      correct: 'Macro',
+      explanation: 'Macroeconomic shifts affect user behavior across the whole market. No product fix exists — this requires monitoring and potentially an adjusted forecast.',
+    },
+    {
+      id: 4,
+      text: 'Revenue drops every December 25-26 on your B2B productivity tool',
+      correct: 'Seasonal',
+      explanation: 'A predictable holiday pattern. B2B tools always see drops when businesses are closed. Expected and not actionable.',
+    },
+  ];
+
+  const RF11_MCQ = {
+    question: 'A major competitor launched a clone of your core feature 3 days before your A/B test result read-out. What should you do?',
+    options: [
+      'Cancel the experiment — the result is invalid and cannot be trusted',
+      'Ignore the competitor launch — A/B randomization protects against external events',
+      'Note the confound in the experiment writeup, extend or rerun if the effect was borderline, and treat results with caution',
+      'Immediately ship the winning variant before the competitive window closes',
+    ],
+    correct: 2,
+    explanation: 'A competitor launch during an experiment window is a confound — it affects treatment and control differently if it changes user behavior directionally. The correct response is to document it, assess whether the effect size was borderline or decisive, and flag it in the experiment writeup. Do not simply cancel or ignore it.',
+  };
+
+  const [selections, setSelections] = useState({});
+  const [revealed, setRevealed] = useState({});
+  const [mcqSel, setMcqSel] = useState(null);
+  const [mcqRevealed, setMcqRevealed] = useState(false);
+
+  const allRevealed = EVENTS.every(function(e) { return !!revealed[e.id]; });
+
+  function selectCat(id, cat) {
+    if (revealed[id]) return;
+    setSelections(function(prev) { return Object.assign({}, prev, { [id]: cat }); });
+  }
+
+  function checkEvent(id) {
+    setRevealed(function(prev) { return Object.assign({}, prev, { [id]: true }); });
+  }
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This module expands your external factor taxonomy beyond obvious seasonality to include competitor launches, app store policy changes, macro economic shifts, and marketing spend fluctuations. You will practise building a live external context log and using it to rapidly rule out non-product causes in a timed investigation scenario.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
+    <div>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.1rem' }}>
+        External factors explain a large share of metric movements that have no product fix. Classifying them correctly stops engineering teams from chasing non-existent regressions. Classify each event below into one of four categories.
+      </p>
+
+      {/* Category legend */}
+      <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+        {CATEGORIES.map(function(cat) {
+          const c = CAT_COLORS[cat];
+          return (
+            <span key={cat} style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.65rem', borderRadius: '4px', background: c.bg, border: '1px solid ' + c.border, color: c.text }}>
+              {cat}
+            </span>
+          );
+        })}
       </div>
-      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The best analysts maintain a live external context log — a running list of competitor moves, platform policy changes, macro events, and marketing spend shifts. Without this log, external factors look like product problems, and engineers get pulled into investigations that have no product fix.</div>
-      </div>
-      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>External factor awareness is also required for valid A/B test interpretation: if a major competitor launched during your experiment window, your treatment effect estimate is confounded by the market shift, not just the feature you tested.</div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
-      </div>
+
+      {EVENTS.map(function(ev) {
+        const sel = selections[ev.id];
+        const isRevealed = !!revealed[ev.id];
+        const isCorrect = sel === ev.correct;
+        return (
+          <div key={ev.id} style={{
+            marginBottom: '0.9rem', background: 'var(--surface-2)',
+            border: '1px solid ' + (isRevealed ? (isCorrect ? 'var(--teal-border)' : 'var(--red-border)') : 'var(--border)'),
+            borderRadius: 'var(--radius)', padding: '0.85rem 1rem',
+          }}>
+            <div style={{ fontSize: '0.86rem', color: 'var(--text)', lineHeight: 1.6, marginBottom: '0.65rem' }}>{ev.text}</div>
+            <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+              {CATEGORIES.map(function(cat) {
+                const c = CAT_COLORS[cat];
+                const isSelected = sel === cat;
+                const isCorrCat = cat === ev.correct;
+                let bg = 'var(--surface)';
+                let border = 'var(--border)';
+                let color = 'var(--text-muted)';
+                if (isRevealed) {
+                  if (isCorrCat) { bg = c.bg; border = c.border; color = c.text; }
+                  else if (isSelected && !isCorrCat) { bg = 'var(--red-bg)'; border = 'var(--red-border)'; color = 'var(--red)'; }
+                } else if (isSelected) {
+                  bg = c.bg; border = c.border; color = c.text;
+                }
+                return (
+                  <button
+                    key={cat}
+                    onClick={function() { selectCat(ev.id, cat); }}
+                    disabled={isRevealed}
+                    style={{
+                      padding: '0.25rem 0.65rem', borderRadius: 'var(--radius-sm)',
+                      border: '1.5px solid ' + border, background: bg, color,
+                      fontSize: '0.78rem', fontWeight: isSelected || (isRevealed && isCorrCat) ? 700 : 400,
+                      cursor: isRevealed ? 'default' : 'pointer', transition: 'all 0.15s',
+                    }}
+                  >{cat}</button>
+                );
+              })}
+            </div>
+            {sel && !isRevealed && (
+              <button
+                onClick={function() { checkEvent(ev.id); }}
+                style={{ padding: '0.3rem 0.75rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--teal)', color: '#fff', fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer' }}
+              >Check</button>
+            )}
+            {isRevealed && (
+              <div style={{ marginTop: '0.4rem', padding: '0.5rem 0.75rem', background: isCorrect ? 'var(--teal-bg)' : 'var(--red-bg)', border: '1px solid ' + (isCorrect ? 'var(--teal-border)' : 'var(--red-border)'), borderRadius: 'var(--radius-sm)', fontSize: '0.81rem', color: isCorrect ? 'var(--teal)' : 'var(--red)', lineHeight: 1.5 }}>
+                <strong>{isCorrect ? 'Correct. ' : 'Not quite — the answer is ' + ev.correct + '. '}</strong>{ev.explanation}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {allRevealed && (
+        <div style={{ marginTop: '1.1rem' }}>
+          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.65rem' }}>{RF11_MCQ.question}</div>
+          {RF11_MCQ.options.map(function(opt, oi) {
+            return (
+              <MCQOption
+                key={oi}
+                label={opt}
+                selected={mcqSel === oi}
+                correct={oi === RF11_MCQ.correct}
+                revealed={mcqRevealed}
+                onClick={function() { if (!mcqRevealed) setMcqSel(oi); }}
+              />
+            );
+          })}
+          {mcqSel !== null && !mcqRevealed && (
+            <button
+              onClick={function() { setMcqRevealed(true); }}
+              style={{ marginTop: '0.4rem', padding: '0.45rem 1rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--teal)', color: '#fff', fontWeight: 700, fontSize: '0.83rem', cursor: 'pointer' }}
+            >Check</button>
+          )}
+          {mcqRevealed && (
+            <div>
+              <div style={{ marginTop: '0.5rem', padding: '0.65rem 0.85rem', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.55 }}>
+                {RF11_MCQ.explanation}
+              </div>
+              <InsightBox>
+                External factor classification is a fast mental check that belongs in the first 10 minutes of any investigation. Seasonal, Competitor, Platform, and Macro patterns all have distinct sources — and none of them have a product fix. Naming the category out loud in a review meeting signals analytical maturity immediately.
+              </InsightBox>
+              <NextBtn onClick={onComplete} label="Complete module →" />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
 // ── Module rf12: Multi-Level RCA ───────────────────────────────────────────
 function Module_RF12({ onComplete }) {
+  const TOTAL_DROP = 22;
+  const CAUSES = [
+    {
+      id: 'pipeline',
+      label: 'Cause 1: Data pipeline delay',
+      contribution: 8,
+      color: 'var(--yellow)',
+      bg: 'var(--yellow-bg)',
+      border: 'var(--yellow-border)',
+      tag: 'Data Quality',
+      tagBg: 'var(--yellow-bg)',
+      tagBorder: 'var(--yellow-border)',
+      tagColor: 'var(--yellow)',
+      description: 'Platform migration delayed event ingestion by 6 hours — not a real user loss. Events arrived late, causing an apparent 8% drop in reported metrics.',
+    },
+    {
+      id: 'seasonal',
+      label: 'Cause 2: Seasonal baseline',
+      contribution: 7,
+      color: 'var(--green)',
+      bg: 'var(--green-bg)',
+      border: 'var(--green-border)',
+      tag: 'External / Seasonal',
+      tagBg: 'var(--green-bg)',
+      tagBorder: 'var(--green-border)',
+      tagColor: 'var(--green)',
+      description: 'Post-holiday traffic normalization. Same week last year showed the same 7% dip — expected, not actionable.',
+    },
+    {
+      id: 'regression',
+      label: 'Cause 3: Product regression',
+      contribution: 7,
+      color: 'var(--red)',
+      bg: 'var(--red-bg)',
+      border: 'var(--red-border)',
+      tag: 'Product Change',
+      tagBg: 'var(--red-bg)',
+      tagBorder: 'var(--red-border)',
+      tagColor: 'var(--red)',
+      description: 'Checkout flow bug introduced in v2.3.1 — confirmed by platform-specific funnel drop beginning exactly at release time. This is the true regression requiring a fix.',
+    },
+  ];
+
+  const RF12_MCQ = {
+    question: 'An RCA concludes when...',
+    options: [
+      'The engineering team has identified at least one plausible cause and a fix is in progress',
+      'The first cause found is large enough to explain the majority of the drop',
+      'You can account for 100% of the metric delta with attributable causes — and removing each cause would restore the metric to baseline',
+      'The incident has been open for more than 48 hours and the team needs to move on',
+    ],
+    correct: 2,
+    explanation: 'An RCA is complete when every percentage point of the delta is attributed — and when you can logically demonstrate that removing each cause would restore the metric. Stopping at the first large cause leaves hidden regressions in production and produces misleading post-mortems.',
+  };
+
+  const [active, setActive] = useState({ pipeline: true, seasonal: true, regression: true });
+  const [mcqSel, setMcqSel] = useState(null);
+  const [mcqRevealed, setMcqRevealed] = useState(false);
+
+  function toggle(id) {
+    setActive(function(prev) { return Object.assign({}, prev, { [id]: !prev[id] }); });
+  }
+
+  const explainedDrop = CAUSES.reduce(function(sum, c) {
+    return sum + (active[c.id] ? c.contribution : 0);
+  }, 0);
+  const unexplained = Math.max(0, TOTAL_DROP - explainedDrop);
+  const allToggledOn = CAUSES.every(function(c) { return active[c.id]; });
+
+  const BAR_W = 400;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
-        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
-          This capstone module tackles the hardest RCA scenario: incidents with two or three interacting causes that span multiple diagnostic layers simultaneously. You will practise disentangling compounding factors — a data quality issue masking a product regression layered on top of a seasonal dip — and learn the test for knowing when your RCA is actually complete versus prematurely stopped.
-        </p>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-          This module is in development. The Key Insight below gives you the core concept to internalize now.
-        </p>
+    <div>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.1rem' }}>
+        A total metric drop of -22% is explained by three overlapping causes across different diagnostic layers. Toggle each cause on or off to see how the unexplained gap changes — and to understand why stopping at the first plausible cause produces an incomplete RCA.
+      </p>
+
+      {/* Total drop banner */}
+      <div style={{ background: 'var(--red-bg)', border: '1px solid var(--red-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <span style={{ fontSize: '0.85rem', color: 'var(--red)', fontWeight: 700 }}>Observed metric drop: -22%</span>
+        <span style={{ fontSize: '0.82rem', color: unexplained === 0 ? 'var(--teal)' : 'var(--red)', fontWeight: 700 }}>
+          {unexplained === 0 ? 'Fully explained' : 'Unexplained: -' + unexplained + '%'}
+        </span>
       </div>
-      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Real incidents often have two or three contributing causes that interact. Analysts who stop at the first plausible cause produce incomplete RCAs. The test: remove each cause and ask — would the full drop still exist?</div>
+
+      {/* Contribution bar */}
+      <div style={{ marginBottom: '1rem' }}>
+        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>Delta attribution</div>
+        <div style={{ position: 'relative', height: 28, borderRadius: 'var(--radius-sm)', overflow: 'hidden', background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+          {(function() {
+            let offset = 0;
+            return CAUSES.map(function(c) {
+              const pct = (c.contribution / TOTAL_DROP) * 100;
+              const show = active[c.id];
+              const left = (offset / TOTAL_DROP) * 100;
+              if (show) offset += c.contribution;
+              return (
+                <div
+                  key={c.id}
+                  style={{
+                    position: 'absolute', top: 0, left: left + '%',
+                    width: show ? pct + '%' : '0%',
+                    height: '100%', background: c.color,
+                    transition: 'width 0.35s, left 0.35s',
+                    opacity: 0.85,
+                  }}
+                />
+              );
+            });
+          })()}
+          {unexplained > 0 && (
+            <div style={{
+              position: 'absolute', top: 0,
+              left: ((explainedDrop / TOTAL_DROP) * 100) + '%',
+              width: ((unexplained / TOTAL_DROP) * 100) + '%',
+              height: '100%', background: 'var(--border)', opacity: 0.5,
+            }} />
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
+          {CAUSES.map(function(c) {
+            return (
+              <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', color: active[c.id] ? c.color : 'var(--text-muted)', opacity: active[c.id] ? 1 : 0.5 }}>
+                <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, background: c.color }} />
+                {'-' + c.contribution + '%'}
+              </div>
+            );
+          })}
+          {unexplained > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, background: 'var(--border)' }} />
+              {'unexplained: -' + unexplained + '%'}
+            </div>
+          )}
+        </div>
       </div>
-      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
-        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Multi-level causal thinking is the senior skill in both RCA and experiment analysis. When a primary metric moves unexpectedly in an A/B test, the cause is often a combination of an interaction effect, a novelty effect, and a segment composition shift — not a single clean explanation.</div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onComplete} className="pal-glow-pulse" style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
-          Next →
-        </button>
+
+      {/* Cause cards */}
+      {CAUSES.map(function(c) {
+        const isOn = active[c.id];
+        return (
+          <div key={c.id} style={{
+            marginBottom: '0.75rem', background: isOn ? c.bg : 'var(--surface-2)',
+            border: '1px solid ' + (isOn ? c.border : 'var(--border)'),
+            borderRadius: 'var(--radius)', padding: '0.85rem 1rem',
+            transition: 'background 0.2s, border-color 0.2s', opacity: isOn ? 1 : 0.55,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.4rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '0.15rem 0.55rem', borderRadius: '4px', background: c.tagBg, border: '1px solid ' + c.tagBorder, color: c.tagColor }}>{c.tag}</span>
+                <span style={{ fontSize: '0.83rem', fontWeight: 700, color: isOn ? c.color : 'var(--text-muted)' }}>{c.label}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: isOn ? c.color : 'var(--text-muted)' }}>{'-' + c.contribution + '%'}</span>
+                <button
+                  onClick={function() { toggle(c.id); }}
+                  style={{
+                    padding: '0.22rem 0.65rem', borderRadius: 'var(--radius-sm)',
+                    border: '1.5px solid ' + (isOn ? c.border : 'var(--border)'),
+                    background: isOn ? c.color : 'var(--surface)',
+                    color: isOn ? '#fff' : 'var(--text-muted)',
+                    fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
+                  }}
+                >{isOn ? 'Remove' : 'Add back'}</button>
+              </div>
+            </div>
+            {isOn && (
+              <div style={{ fontSize: '0.82rem', color: 'var(--text)', lineHeight: 1.55 }}>{c.description}</div>
+            )}
+          </div>
+        );
+      })}
+
+      {/* Completion note when all accounted for */}
+      {unexplained === 0 && (
+        <div style={{ marginTop: '0.75rem', padding: '0.65rem 0.9rem', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.55 }}>
+          All 22 percentage points are attributed. The RCA is complete. Note that only Cause 3 (product regression) requires a code fix — the other two are informational and close without action.
+        </div>
+      )}
+
+      {/* MCQ */}
+      <div style={{ marginTop: '1.25rem' }}>
+        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.65rem' }}>{RF12_MCQ.question}</div>
+        {RF12_MCQ.options.map(function(opt, oi) {
+          return (
+            <MCQOption
+              key={oi}
+              label={opt}
+              selected={mcqSel === oi}
+              correct={oi === RF12_MCQ.correct}
+              revealed={mcqRevealed}
+              onClick={function() { if (!mcqRevealed) setMcqSel(oi); }}
+            />
+          );
+        })}
+        {mcqSel !== null && !mcqRevealed && (
+          <button
+            onClick={function() { setMcqRevealed(true); }}
+            style={{ marginTop: '0.4rem', padding: '0.45rem 1rem', borderRadius: 'var(--radius-sm)', border: 'none', background: 'var(--teal)', color: '#fff', fontWeight: 700, fontSize: '0.83rem', cursor: 'pointer' }}
+          >Check</button>
+        )}
+        {mcqRevealed && (
+          <div>
+            <div style={{ marginTop: '0.5rem', padding: '0.65rem 0.85rem', background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.55 }}>
+              {RF12_MCQ.explanation}
+            </div>
+            <InsightBox>
+              Multi-cause RCAs require you to account for 100% of the delta. The senior move is to decompose the drop into layers — data quality, seasonal, product — then confirm each attribution is removable independently. A single cause that gets 70% there is not a closed investigation.
+            </InsightBox>
+            <NextBtn onClick={onComplete} label="Complete module →" />
+          </div>
+        )}
       </div>
     </div>
   );

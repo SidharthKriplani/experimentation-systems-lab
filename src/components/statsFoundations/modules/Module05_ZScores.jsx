@@ -80,7 +80,6 @@ export function Module05_ZScores({ module, onNext }) {
   return (
     <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0, fontSize: '0.95rem' }}>
-        {module?.subtitle || 'A z-score tells you how many standard deviations a value is from the mean.'}{' '}
         It converts any normally distributed measurement to a universal scale — so you can compare values from different distributions.
       </p>
 
