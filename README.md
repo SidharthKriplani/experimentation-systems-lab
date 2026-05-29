@@ -1,10 +1,10 @@
 # Product Analytics Lab
 
-**The end-to-end interview prep platform for Data Scientists and Product Managers.**
+**An interactive judgment system for product analysts, data analysts, and PMs preparing for senior-level interviews.**
 
-PAL is a React + Vite SPA covering the full stack of analytical work: statistics, experiment design, A/B test readouts, root cause analysis, metrics, SQL/Python, product sense, and business intelligence — 155+ interactive cases, 69 long-form articles, and a suite of practice tools, all running in the browser with no backend.
+PAL is a React + Vite SPA covering the full stack of analytical work: statistics, experiment design, A/B test readouts, root cause analysis, metrics, SQL/Python, product sense, and business intelligence — 155+ interactive cases, 69 long-form articles, and a suite of practice tools. Every scenario is a decision problem, not a recall test. The bar is knowing which concept applies, what it means for the specific business context, and where the common misread is.
 
-> Live at [productanalyticslab.com](https://productanalyticslab.com) · Zero account required · All progress in `localStorage`
+> Live at [productanalyticslab.com](https://productanalyticslab.com) · Zero account required · Progress stored in `localStorage` · Optional sign-in for cross-device sync
 
 ---
 
@@ -102,15 +102,16 @@ npm run build
 | Layer | Choice |
 |-------|--------|
 | Framework | React + Vite |
-| Hosting | Vercel (static SPA, zero backend) |
+| Hosting | Vercel (static SPA) |
+| Auth / sync | Supabase (optional — env-var gated) |
 | Charts | Recharts |
 | Python runtime | Pyodide (in-browser, Code Room only) |
 | Analytics | PostHog (env-var gated) |
-| State / persistence | `localStorage` only |
+| State / persistence | `localStorage`-first; optional Supabase sync |
 
-### No Backend
+### Client-first architecture
 
-PAL has no server, no database, and no API calls at runtime. All scenario content is static data bundled at build time. All scoring is pre-computed. Vercel free tier handles any traffic level.
+PAL runs without a server. All scenario content is static data bundled at build time; all scoring is pre-computed. Vercel free tier handles any traffic level. When Supabase env vars are present, sign-in unlocks cross-device progress sync — but the app is fully functional without them. There is no API dependency at runtime.
 
 ### Code Splitting
 
@@ -162,4 +163,4 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the full version history and upcomi
 
 ---
 
-*Product Analytics Lab — V4.5*
+*Product Analytics Lab — V4.33.7*
