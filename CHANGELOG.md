@@ -4,6 +4,25 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.33.7] — 2026-05-29
+
+### Fix Stats Room "By Difficulty" sort — group headers + pinned module numbers
+
+**Bug:** Batch 1 tester Prageet reported the "By Difficulty" button in the Stats Room appeared to do nothing. Root cause: two compounding issues. (1) The sort was working at the data level but produced no visible grouping — the first 7 cards remain foundational/analyst in both default and sorted order, so the top of the page looked unchanged; without section headers the user has no visual signal that a reorder occurred. (2) Module number badges used the loop index `i + 1`, so after sorting, module 17 would show "08" — inconsistent and confusing.
+
+**Fix:**
+- Extracted `ModuleCard` as a standalone component (removes duplicated card JSX between default and grouped render paths)
+- Added `moduleOriginalIndex = new Map(statsModules.map((m, i) => [m.id, i + 1]))` — each card now always shows its original module number regardless of sort order
+- Added `diffGroups` computed value: when `sortBy === 'difficulty'`, modules are split into three groups — Foundational · Analyst (group 0), Intermediate · Senior (group 1), Advanced · Staff (group 2)
+- When grouped, each section renders a colored group header badge ("FOUNDATIONAL · ANALYST — 8 modules") so the sort result is immediately visible
+- When `sortBy === 'default'`, flat list renders as before with no group headers
+
+**Distribution verified:** 8 foundational/analyst modules (01–07, 17), 9 intermediate/senior (08, 10, 13–16, 18–20), 3 advanced (09, 11, 12). Sort produces a meaningful visible reorder.
+
+**File:** `src/pages/StatsBrowser.jsx`
+
+---
+
 ## [4.33.6] — 2026-05-29
 
 ### Deep bug sweep — imperative DOM mutation pattern + null deref

@@ -4,7 +4,7 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.33.4 (2026-05-29)*
+*Last updated: V4.33.7 (2026-05-29)*
 
 ---
 
@@ -46,7 +46,7 @@ Deferred — lower priority than bug fixes above.
 
 ---
 
-## Carry-forward from V4.33.4 session
+## Carry-forward from V4.33.7 session
 
 **Done today:**
 - Audience labels fixed in onboarding modal + Interview Simulator (V4.32.6)
@@ -59,6 +59,9 @@ Deferred — lower priority than bug fixes above.
 - NEXT.md created as session queue
 - Full codebase audit — audits #92, #93 logged (V4.33.3)
 - Foundation module UX issues logged — audits #94, #95, #96 (V4.33.4)
+- MCQ Trainer mobile hover bug fixed — V4.33.5 (imperative DOM mutation, 4 components)
+- Deep bug sweep — V4.33.6 (null deref in Module25_IV + DECISIONS.md spine pass)
+- Stats Room "By Difficulty" sort fixed — V4.33.7 (group headers + pinned module numbers, audit #101)
 
 **Still open (in IDEAS.md):**
 - Empty state quality pass (#91) — deferred

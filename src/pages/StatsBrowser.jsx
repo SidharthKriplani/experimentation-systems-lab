@@ -21,6 +21,9 @@ const LEVEL_CFG = {
 };
 
 const DIFF_ORDER = { analyst: 0, foundational: 0, intermediate: 1, senior: 1, advanced: 2, staff: 2 };
+const DIFF_GROUP_LABELS = { 0: 'Foundational · Analyst', 1: 'Intermediate · Senior', 2: 'Advanced · Staff' };
+
+const moduleOriginalIndex = new Map(statsModules.map((m, i) => [m.id, i + 1]));
 
 export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
   const [sortBy, setSortBy] = useState('default');
@@ -33,6 +36,15 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
   const displayModules = sortBy === 'difficulty'
     ? [...statsModules].sort((a, b) => (DIFF_ORDER[a.difficulty] ?? 1) - (DIFF_ORDER[b.difficulty] ?? 1))
     : statsModules;
+
+  // Build grouped structure when sorted by difficulty
+  const diffGroups = sortBy === 'difficulty'
+    ? [0, 1, 2].map(tier => ({
+        tier,
+        label: DIFF_GROUP_LABELS[tier],
+        modules: displayModules.filter(m => (DIFF_ORDER[m.difficulty] ?? 1) === tier),
+      })).filter(g => g.modules.length > 0)
+    : null;
 
   const firstUnstartedId = statsModules.find(m => !completedIds.has(m.id))?.id;
 
@@ -121,99 +133,31 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
 
       {/* Module cards */}
       {!theoryActive && (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {displayModules.map((module, i) => {
-          const progress = allProgress[module.id];
-          const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
-          const diffCfg = DIFF_CFG[module.difficulty] || DIFF_CFG.foundational;
-          const isNextUnstarted = module.id === firstUnstartedId;
-
-          return (
-            <div
-              key={module.id}
-              role="button"
-              tabIndex={0}
-              onClick={() => onSelectModule(module.id)}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectModule(module.id); } }}
-              style={{
-                background: 'var(--surface)',
-                border: '1.5px solid var(--border)',
-                borderLeft: isNextUnstarted ? '3px solid var(--accent)' : `3px solid ${diffCfg.color}`,
-                borderRadius: 'var(--radius)',
-                padding: '1.1rem 1.25rem',
-                cursor: 'pointer',
-                transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
-                display: 'flex', alignItems: 'flex-start', gap: '1rem',
-                position: 'relative',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'var(--accent-border)';
-                e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'var(--border)';
-                e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
-              {isNextUnstarted && (
-                <span style={{
-                  position: 'absolute', top: '0.6rem', right: '0.7rem',
-                  fontSize: '0.68rem', fontWeight: 700,
-                  color: 'var(--accent)', background: 'var(--accent-bg)',
-                  border: '1px solid var(--accent-border)',
-                  borderRadius: 4, padding: '0.1rem 0.4rem',
+      <div style={{ display: 'flex', flexDirection: 'column', gap: diffGroups ? '1.5rem' : '0.75rem' }}>
+        {diffGroups
+          ? diffGroups.map(group => (
+              <div key={group.tier}>
+                {/* Group header */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '0.6rem',
+                  marginBottom: '0.75rem',
                 }}>
-                  Next →
-                </span>
-              )}
-              {/* Module number */}
-              <div style={{
-                width: '2rem', height: '2rem', flexShrink: 0,
-                background: levelCfg ? levelCfg.bg : 'var(--surface-2)',
-                border: `1px solid ${levelCfg ? levelCfg.border : 'var(--border)'}`,
-                borderRadius: 'var(--radius-sm)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.72rem', fontWeight: 800,
-                color: levelCfg ? levelCfg.color : 'var(--text-dim)',
-              }}>
-                {levelCfg ? '✓' : String(i + 1).padStart(2, '0')}
-              </div>
-
-              {/* Content */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
                   <span style={{
-                    fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-                    color: diffCfg.color, background: diffCfg.bg, border: `1px solid ${diffCfg.border}`,
-                    borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
-                  }}>{diffCfg.label}</span>
-                  <span style={{
-                    fontSize: '0.68rem', fontWeight: 600,
-                    color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em',
-                  }}>{module.concept}</span>
-                  {levelCfg && (
-                    <span style={{
-                      fontSize: '0.68rem', fontWeight: 700,
-                      color: levelCfg.color, background: levelCfg.bg, border: `1px solid ${levelCfg.border}`,
-                      borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em',
-                    }}>{levelCfg.label}</span>
-                  )}
+                    fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em',
+                    color: group.tier === 0 ? 'var(--accent)' : group.tier === 1 ? 'var(--teal)' : 'var(--purple)',
+                    background: group.tier === 0 ? 'var(--accent-bg)' : group.tier === 1 ? 'var(--teal-bg)' : 'var(--purple-bg)',
+                    border: `1px solid ${group.tier === 0 ? 'var(--accent-border)' : group.tier === 1 ? 'var(--teal-border)' : 'var(--purple-border)'}`,
+                    borderRadius: 'var(--radius-sm)', padding: '0.2rem 0.6rem',
+                  }}>{group.label}</span>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{group.modules.length} module{group.modules.length !== 1 ? 's' : ''}</span>
                 </div>
-                <h3 style={{ fontSize: '0.97rem', fontWeight: 800, color: 'var(--text)', margin: '0 0 0.25rem', letterSpacing: '-0.01em' }}>
-                  {module.title}
-                </h3>
-                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                  {module.subtitle}
-                </p>
-
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {group.modules.map(module => <ModuleCard key={module.id} module={module} allProgress={allProgress} firstUnstartedId={firstUnstartedId} onSelectModule={onSelectModule} />)}
+                </div>
               </div>
-
-              {/* Arrow */}
-              <span style={{ color: 'var(--text-dim)', fontSize: '0.82rem', flexShrink: 0, paddingTop: '0.2rem' }}>→</span>
-            </div>
-          );
-        })}
+            ))
+          : displayModules.map(module => <ModuleCard key={module.id} module={module} allProgress={allProgress} firstUnstartedId={firstUnstartedId} onSelectModule={onSelectModule} />)
+        }
       </div>
       )}
 
@@ -244,6 +188,100 @@ export function StatsBrowser({ onSelectModule, onOpenArticle, onNavigate }) {
         </div>
       )}
 
+    </div>
+  );
+}
+
+function ModuleCard({ module, allProgress, firstUnstartedId, onSelectModule }) {
+  const progress = allProgress[module.id];
+  const levelCfg = progress?.bestLevel ? LEVEL_CFG[progress.bestLevel] : null;
+  const diffCfg = DIFF_CFG[module.difficulty] || DIFF_CFG.foundational;
+  const isNextUnstarted = module.id === firstUnstartedId;
+  const origNum = moduleOriginalIndex.get(module.id) || 0;
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onSelectModule(module.id)}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectModule(module.id); } }}
+      style={{
+        background: 'var(--surface)',
+        border: '1.5px solid var(--border)',
+        borderLeft: isNextUnstarted ? '3px solid var(--accent)' : `3px solid ${diffCfg.color}`,
+        borderRadius: 'var(--radius)',
+        padding: '1.1rem 1.25rem',
+        cursor: 'pointer',
+        transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
+        display: 'flex', alignItems: 'flex-start', gap: '1rem',
+        position: 'relative',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = 'var(--accent-border)';
+        e.currentTarget.style.boxShadow = 'var(--shadow)';
+        e.currentTarget.style.transform = 'translateY(-2px)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = 'var(--border)';
+        e.currentTarget.style.boxShadow = 'none';
+        e.currentTarget.style.transform = 'translateY(0)';
+      }}
+    >
+      {isNextUnstarted && (
+        <span style={{
+          position: 'absolute', top: '0.6rem', right: '0.7rem',
+          fontSize: '0.68rem', fontWeight: 700,
+          color: 'var(--accent)', background: 'var(--accent-bg)',
+          border: '1px solid var(--accent-border)',
+          borderRadius: 4, padding: '0.1rem 0.4rem',
+        }}>
+          Next →
+        </span>
+      )}
+      {/* Module number — always reflects original position */}
+      <div style={{
+        width: '2rem', height: '2rem', flexShrink: 0,
+        background: levelCfg ? levelCfg.bg : 'var(--surface-2)',
+        border: `1px solid ${levelCfg ? levelCfg.border : 'var(--border)'}`,
+        borderRadius: 'var(--radius-sm)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: '0.72rem', fontWeight: 800,
+        color: levelCfg ? levelCfg.color : 'var(--text-dim)',
+      }}>
+        {levelCfg ? '✓' : String(origNum).padStart(2, '0')}
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+          <span style={{
+            fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+            color: diffCfg.color, background: diffCfg.bg, border: `1px solid ${diffCfg.border}`,
+            borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem',
+          }}>{diffCfg.label}</span>
+          <span style={{
+            fontSize: '0.68rem', fontWeight: 600,
+            color: 'var(--text-dim)', background: 'var(--surface-2)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}>{module.concept}</span>
+          {levelCfg && (
+            <span style={{
+              fontSize: '0.68rem', fontWeight: 700,
+              color: levelCfg.color, background: levelCfg.bg, border: `1px solid ${levelCfg.border}`,
+              borderRadius: 'var(--radius-sm)', padding: '0.08rem 0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em',
+            }}>{levelCfg.label}</span>
+          )}
+        </div>
+        <h3 style={{ fontSize: '0.97rem', fontWeight: 800, color: 'var(--text)', margin: '0 0 0.25rem', letterSpacing: '-0.01em' }}>
+          {module.title}
+        </h3>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
+          {module.subtitle}
+        </p>
+      </div>
+
+      {/* Arrow */}
+      <span style={{ color: 'var(--text-dim)', fontSize: '0.82rem', flexShrink: 0, paddingTop: '0.2rem' }}>→</span>
     </div>
   );
 }

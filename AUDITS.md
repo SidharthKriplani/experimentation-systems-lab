@@ -39,6 +39,34 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XIX — V4.33.7 Tester Bug Fixes
+
+### 101. ✅ UX / Human Elements — Stats Room "By Difficulty" sort had no visible output
+
+**Version:** Fixed V4.33.7
+**Type:** UX / Human Elements + BUILD
+**Source:** Batch 1 tester Prageet Surheley — direct report: "By Difficulty button, on page I have not seen anything related to Difficulty & also when I click on it nothing was happening."
+
+**Root cause (two compounding issues):**
+1. Sort was working at the data layer but produced no visual grouping feedback. Default order starts with 7 foundational/analyst cards; sorted order also starts with 8 foundational/analyst cards. To a user not studying individual card positions, the page looks unchanged. No section headers, no confirmation of sort applied.
+2. Module number badges used loop index `i + 1` — after sort, module 17 (analyst) appeared as "08" because it moved to position 8 in the sorted array. Inconsistent numbering that could confuse a user who noticed the reorder but got wrong numbers.
+
+**Verified distribution (from statsModules.js difficulty field scan):**
+- Group 0 — Foundational/Analyst: modules 01, 02, 03, 04, 05, 06, 07, 17 = 8 modules
+- Group 1 — Intermediate/Senior: modules 08, 10, 13, 14, 15, 16, 18, 19, 20 = 9 modules
+- Group 2 — Advanced: modules 09, 11, 12 = 3 modules
+
+**Fix applied:**
+- `moduleOriginalIndex = new Map(statsModules.map((m, i) => [m.id, i + 1]))` — stable original position pinned at module-list level
+- `diffGroups` computed value: when `sortBy === 'difficulty'`, builds three group objects with label and filtered module list; `null` otherwise
+- Render path branches: when `diffGroups !== null`, renders color-coded group header badges ("FOUNDATIONAL · ANALYST — 8 modules") before each group's card list; when `null`, flat list as before
+- Module number badge now uses `moduleOriginalIndex.get(module.id)` — always shows original position regardless of sort
+- Extracted `ModuleCard` as standalone component — eliminates duplicated JSX between flat and grouped render paths
+
+**Files:** `src/pages/StatsBrowser.jsx`
+
+---
+
 ## Part XVIII — V4.33.6 Deep Bug Audit
 
 ### 100. ⚠️ Build Audit — Imperative DOM Mutations (cosmetic hover, lower risk)
