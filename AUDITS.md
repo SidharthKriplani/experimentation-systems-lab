@@ -41,6 +41,83 @@ Start here when running an audit. Add rows as new types emerge.
 
 ## Part XVI — V4.30–V4.32 Session Audits
 
+### 80. ⚠️ Visual Audit — Emoji Removal Across All Pages
+**Version:** V4.32.5
+**Type:** Visual Consistency + Creativity / Product
+
+User feedback: emojis give a childish, unserious feeling to a product that should feel professional and rigorous. This is a positioning problem — PAL targets senior IC and staff interview candidates, not a casual audience.
+
+**Scope (full audit needed):**
+- Room browser headers: many use emoji icons inside the 36×36 icon box (e.g. 📝 Take-Home, 📡 Instrumentation, 🔖 Bookmarks)
+- Foundation pages: A/B Foundations uses 🧪 emoji
+- Sidebar: some nav items have emojis
+- Locked/paywall states: use 🔒 emoji
+- Tool pages: Defense Strategy uses 🛡 emoji; MCQ Quiz uses 🎯 emoji
+
+**Proposed fix:** Replace all UI emojis with SVG icons (using existing Icon component) or clean typographic symbols (→, ↗, ·). The `Icon` component already covers most cases (book-open, target, shield, bar-chart, etc.). Any gap should use a simple CSS shape, not an emoji.
+
+**Do not fix:** emojis inside article/case *content text* (data files) — those are author-voice and acceptable. Fix only the *UI chrome*.
+
+**Status:** ⚠️ Open — needs systematic pass
+
+---
+
+### 79. ⚠️ Visual Audit — Icon Inconsistency Across Room Headers
+**Version:** V4.32.5
+**Type:** Visual Consistency
+
+Room header icons are not consistent. Growth Analytics uses a bare "↗" character as the icon element (no box, no color fill). Other rooms (Instrumentation, Take-Home, Bookmarks) use a 36×36 box with border, background color, and an emoji inside. A/B Foundations and others use an emoji directly in the title line. Stats Room, RCA Room, Metrics Room have no icon at all — just the h1.
+
+**Expected pattern (established in InstrumentationBrowser, TakehomeBrowser):**
+```
+<span style={{ width: 36, height: 36, borderRadius: 9, background: 'var(--X-bg)', border: '1px solid var(--X-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <Icon name="..." size={18} color="var(--X)" />
+</span>
+```
+
+**Rooms needing audit:** GrowthAnalyticsBrowser (↗ character), ExpFoundationsBrowser (emoji in h1), StatsBrowser (no icon), MetricsBrowser (no icon), RCABrowser (no icon), DesignBrowser (no icon), ScenarioBrowser (no icon), ChallengesBrowser (emoji box). Full pass needed.
+
+**Status:** ⚠️ Open — needs systematic pass
+
+---
+
+### 78. ✅ Copy Audit — Code Lab, Challenges, Frameworks (V4.32.5)
+**Version:** V4.32.5
+**Type:** UX / Human Elements + First-Time User
+
+Three pages reviewed after user flagged them as still feeling wrong post-V4.32.4.
+
+**Findings:**
+- Code Lab opened defensively ("Not generic coding drills") without stating the real bar
+- Challenges described the format ("2–3 rooms simultaneously") without explaining why that matters at the interview moment
+- Frameworks jumped into positioning without first answering: why do frameworks matter at all? Candidates use them as vocabulary; the payoff is when they change your conclusion
+
+**Resolution (V4.32.5):** All three rewritten around the actual failure mode each page protects against.
+
+**Status:** ✅ Resolved
+
+---
+
+### 77. ✅ Copy Audit — 6 Rooms Incorrectly Left Untouched in V4.32.2 (V4.32.4)
+**Version:** V4.32.4
+**Type:** UX / Human Elements + First-Time User
+
+V4.32.2 judgment call to leave 6 rooms "untouched" was wrong. User screenshots confirmed A/B Design, Stats Room, RCA Room, and Metrics Room descriptions were still mechanic-heavy. Product Design and Prioritization also failed the cold-user test.
+
+**Findings:**
+- A/B Design: "Set the primary metric, randomization unit, trust checks" — a task list
+- Stats Room: "Read the situation, inspect the data, make the call" — describes the exercise, not the stakes
+- RCA Room: "Walks you through the exact reasoning process step by step" — passive instruction framing
+- Metrics Room: "Choose your primary metric, diagnostics, guardrails, grain" — mechanic inventory
+- Product Design: "Work through 5 phases" — pure mechanic
+- Prioritization: "Practice RICE scoring, effort-impact matrices" — framework listing with no stakes
+
+**Resolution (V4.32.4):** All 6 rewritten with the same stakes-first pattern.
+
+**Status:** ✅ Resolved
+
+---
+
 ### 76. ✅ Copy Audit — Tool/Utility Page Descriptions (V4.32.3)
 **Version:** V4.32.3
 **Type:** UX / Human Elements + First-Time User

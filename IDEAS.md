@@ -49,6 +49,10 @@ _No new features until PostHog baseline is established._
 - ~~**Delete Header.jsx or document it as unused** (audit #73)~~ — ✅ shipped V4.25.0 (comment added noting Sidebar.jsx is the real nav)
 - ~~**Sign-in button in mobile topbar** (audit #73)~~ — ✅ shipped V4.25.0 (sign-in button + avatar added to mobile-topbar right slot)
 
+### Visual Polish
+- **Emoji removal — full UI pass (audit #80)** — emojis in room headers, icon boxes, locked states, and nav give a childish, unserious feeling inconsistent with the senior-IC positioning. Replace all UI-chrome emojis with Icon component SVGs or typographic symbols. Scope: all browser header icon boxes, foundation page headers, paywall lock states, tool page headers. Do not touch emojis inside case/article content text (author-voice). Medium effort — systematic search-and-replace across ~20 files.
+- **Room header icon consistency — full pass (audit #79)** — icon treatment is inconsistent across room browsers. Growth Analytics uses bare "↗" character; A/B Foundations uses 🧪 in the h1; Stats/Metrics/RCA/Design rooms have no icon at all; others have the 36×36 colored box pattern. Standardize to the box pattern (36×36, var(--X-bg) fill, var(--X-border) border, Icon component inside) across all room browsers and foundation pages. Should be done in the same pass as audit #80.
+
 ### Bugs
 - **Metrics Room — linked scenarios not clickable (Batch 0 feedback)** — after revealing the senior metric design answer, linked scenario cards appear in the debrief but tapping them does nothing. Users expect to navigate directly. Small fix, high friction when it fails.
 - ~~**`onResetAllProgress` missing 9 keys** (audit #62)~~ — ✅ fixed V4.6.1 (8 keys added, reset now covers all rooms)
