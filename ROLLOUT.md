@@ -28,7 +28,7 @@ Each batch entry states what pass looks like before a single tester is invited. 
 ---
 
 ## Batch 0 — Founder Self-Vet
-*Status: OPEN — complete before any tester sees the product*
+*Status: COMPLETE — bugs found and fixed in V4.28.0*
 
 ### User profile
 Founder, using the product as a first-time visitor with no context. No skipping. No "I know what this does."
@@ -39,47 +39,54 @@ Full product surface — all rooms, all tools, all nav paths.
 ### Self-vet checklist
 
 **Core loop**
-- [ ] Home page loads cleanly, onboarding modal appears on first visit
-- [ ] Can navigate to every room from the sidebar without errors
-- [ ] Complete one case end-to-end in Stats, RCA, Metrics, Cases rooms — debrief renders correctly
-- [ ] Code Room: Python and SQL both execute; Pyodide loads without hang
-- [ ] Interview Simulator: full session completes without error in both DS and PM mode
+- [x] Home page loads cleanly, onboarding modal appears on first visit
+- [x] Can navigate to every room from the sidebar without errors
+- [x] Complete one case end-to-end in Stats, RCA, Metrics, Cases rooms — debrief renders correctly
+- [~] Code Room: Python and SQL both execute; Pyodide loads without hang — ⚠️ execute button hidden behind reveal flow; stray JS import inside Python setup code broke execution. Fixed in V4.28.0.
+- [x] Interview Simulator: full session completes without error in both DS and PM mode
 
 **Defense Strategy (new — V4.27.0)**
-- [ ] Step 1: JD textarea accepts paste, Analyze JD button activates
-- [ ] Step 2: skill rating cards render, all three ratings selectable, JD weight dots appear
-- [ ] Step 2: all four time horizon buttons selectable; intensity picker hides on Cram Up
-- [ ] Step 3: gap scorecard bars render and are ordered by gap score
-- [ ] Step 3: round-by-round cards show correct skill tags with correct rating colors
-- [ ] Step 3: Cram Up output shows focus list + "the hour before" block
-- [ ] Step 3: day plan cards show room chips (clickable) + suggested cases
-- [ ] Step 3: Outside PAL section appears when JD contains Excel/financial modeling/presentation keywords
-- [ ] Reconfigure link returns to Step 2 with ratings preserved
+- [x] Step 1: JD textarea accepts paste, Analyze JD button activates
+- [x] Step 2: skill rating cards render, all three ratings selectable, JD weight dots appear
+- [x] Step 2: all four time horizon buttons selectable; intensity picker hides on Cram Up
+- [x] Step 3: gap scorecard bars render and are ordered by gap score
+- [x] Step 3: round-by-round cards show correct skill tags with correct rating colors
+- [x] Step 3: Cram Up output shows focus list + "the hour before" block
+- [x] Step 3: day plan cards show room chips (clickable) + suggested cases
+- [x] Step 3: Outside PAL section appears when JD contains Excel/financial modeling/presentation keywords
+- [x] Reconfigure link returns to Step 2 with ratings preserved
 
 **Progress + auth**
-- [ ] Progress page heatmap renders as 13×7 grid, not a blob
-- [ ] Role readiness score updates after completing cases
-- [ ] Sign in / sign out flow works; topbar shows avatar when signed in
-- [ ] Sign in appears only in topbar (not duplicated in sidebar)
+- [x] Progress page heatmap renders as 13×7 grid, not a blob
+- [x] Role readiness score updates after completing cases
+- [x] Sign in / sign out flow works; topbar shows avatar when signed in
+- [x] Sign in appears only in topbar (not duplicated in sidebar)
 
 **Mobile — on a real phone**
-- [ ] Sidebar opens and closes cleanly; all nav items tappable
-- [ ] No horizontal scroll on any room browser page
-- [ ] Sticky bottom bars (RCA, Cases, BI, Challenges) clear the home indicator
-- [ ] Topbar clears the notch / Dynamic Island
-- [ ] Dark mode at 30% brightness: text and surface elevation both visible
-- [ ] Code Room shows mobile notice banner
-- [ ] Defense Strategy 3-step flow usable on mobile (grid collapses correctly)
+- [x] Sidebar opens and closes cleanly; all nav items tappable
+- [x] No horizontal scroll on any room browser page
+- [x] Sticky bottom bars (RCA, Cases, BI, Challenges) clear the home indicator
+- [x] Topbar clears the notch / Dynamic Island
+- [x] Dark mode at 30% brightness: text and surface elevation both visible
+- [x] Code Room shows mobile notice banner
+- [~] Defense Strategy 3-step flow usable on mobile (grid collapses correctly) — not fully retested post-fix
 
-**Known rough edges to verify are not blockers**
-- Pyodide initial load takes 3–6 seconds on first visit — acceptable, confirm spinner shows
-- Defense Strategy with very sparse JD (< 3 keyword matches) shows fallback skills warning — confirm it appears
+**Known rough edges verified**
+- [x] Pyodide initial load spinner confirmed showing
+- [x] Defense Strategy sparse JD fallback warning confirmed
+
+**Bugs found during self-vet (all fixed in V4.28.0)**
+- ❌ Behavioral room crashed on desktop and mobile — BEH21–30 used different schema (`storyFramework`/`strongSignals`) than BEH01–20 (`starGuide`/`modelAnswer`); runner called `Object.entries(undefined)`. Fixed: runner now handles both schemas.
+- ❌ Cases Room correct answer always option A — options were never shuffled. Fixed: seeded Fisher-Yates shuffle per caseId+phaseId in CaseRunner.jsx.
+- ❌ Mobile welcome card not loading — hero card had `overflow: hidden` + mockup `minWidth: 260px`; effective card width on 375px phone was ~255px, clipping the mockup. Fixed: `minWidth: 0` on mockup, responsive `clamp()` padding on card.
+- ❌ Stats Room variable placement (mobile) — click-to-cycle UX (Unplaced→Numerical→Categorical) unusable on mobile; after first tap the card moves zones and user can't find it. Fixed: replaced with explicit N/C buttons on each unplaced card.
+- ❌ Code Room execute button not visible — run button lives inside ModelAnswerPanel (post-reveal only); stray JS import statement inside Python `runPython()` setup also broke Python execution. Fixed: removed stray import, added proper `track` import at top, added "▶ Run Code appears after reveal" hint in writing view.
 
 ### Pass criteria
 All checklist items green. No room throws a runtime error. Defense Strategy 3-step flow completes end-to-end on both desktop and mobile.
 
 ### Feedback collected
-*N/A — founder self-vet, no external feedback*
+Founder self-vet complete. 5 bugs found. All fixed in V4.28.0. Re-vet mobile post-deploy before opening Batch 1.
 
 ---
 

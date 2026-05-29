@@ -4,6 +4,26 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.28.0] — 2026-05-29
+
+### Fixed — Batch 0 self-vet bug sweep (5 bugs)
+
+Founder completed Batch 0 self-vet on live product. Five bugs found and fixed before any tester sees the product.
+
+**Bug 1 — Behavioral room crash on BEH21–30 (CRITICAL).** BEH21–30 use a different schema than BEH01–20 (`storyFramework`/`strongSignals`/`weakSignals`/`whatTheyreReallyAsking` instead of `starGuide`/`modelAnswer`/`strongAnswerMarkers`). Runner called `Object.entries(question.starGuide)` unconditionally — crash on any BEH21+ question. Fixed: runner detects schema and renders both correctly. Both 30-question schemas fully supported. *File: `src/components/behavioral/BehavioralRunner.jsx`*
+
+**Bug 2 — Cases Room correct answer always option A (CRITICAL).** All data files define the `strong` (correct) option first with `id: 'a'`. No shuffling existed. Fixed: seeded Fisher-Yates shuffle (`caseId + phase.id + phaseIndex` as seed) in `CaseRunner.jsx` via `useMemo`. Deterministic per user, correct option no longer pinned to position A. Scoring unaffected. *File: `src/components/cases/CaseRunner.jsx`*
+
+**Bug 3 — Mobile welcome card clipped on narrow screens (HIGH).** Hero had `overflow: hidden` + product mockup `minWidth: 260px`. On 375px iPhone, inner card width was ~255px — mockup overflowed and was clipped. Fixed: `minWidth: 0` on mockup, card padding → `clamp(1.25rem, 4vw, 2.5rem)`. *File: `src/pages/Home.jsx`*
+
+**Bug 4 — Stats Room mobile variable placement broken (MEDIUM).** Module01 click-to-cycle interaction (Unplaced→Numerical→Categorical) was unusable on mobile — after first tap the card moved zones and users couldn't find it. Fixed: explicit N / C buttons on each unplaced card; × to unplace from bucket. *File: `src/components/statsFoundations/modules/Module01_WhatIsData.jsx`*
+
+**Bug 5 — Code Room execute button invisible + Python execution broken (MEDIUM).** Run button only appears after Reveal with no prior indication. Also: stray `import { track }` JS statement was embedded inside a Python `runPython()` string, causing SyntaxError on every run; `track` not imported at module level. Fixed: proper import added, stray statement removed, "▶ Run Code appears after reveal" hint shown pre-reveal for Python modules. *File: `src/components/code/CodeRunner.jsx`*
+
+**MD files updated:** ROLLOUT.md (Batch 0 → COMPLETE, all findings documented), AUDITS.md (Audit #77, 5 sub-findings), CLAUDE.md (version bump).
+
+---
+
 ## [4.27.1] — 2026-05-28
 
 ### Added — ROLLOUT.md

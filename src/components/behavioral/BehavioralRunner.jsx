@@ -21,8 +21,8 @@ function saveNote(room, id, text) {
 }
 
 const RATINGS = [
-  { id: 'strong',  label: 'Nailed the structure + insight',        sub: 'Strong STAR structure and hit the key principle' },
-  { id: 'partial', label: 'Had the structure, missed a key principle', sub: 'Solid framework but missing a nuance or a key move' },
+  { id: 'strong',  label: 'Nailed the structure + insight',        sub: 'Strong structure and hit the key principle' },
+  { id: 'partial', label: 'Had the structure, missed a key principle', sub: 'Solid framework but missing a nuance or key move' },
   { id: 'miss',    label: 'Needs more practice',                   sub: 'Story was unclear or missing the most important part' },
 ];
 
@@ -32,27 +32,44 @@ const RATING_STYLE = {
   miss:    { color: 'var(--red)',    bg: 'var(--red-bg)',    border: 'var(--red-border)' },
 };
 
-const STAR_LABEL_COLOR = {
+// Covers both STAR keys (BEH01-20) and framework keys (BEH21-30)
+const FRAME_LABEL_COLOR = {
   situation: 'var(--accent)',
   task:      'var(--purple)',
   action:    'var(--teal)',
   result:    'var(--green)',
+  behavior:  'var(--teal)',
+  outcome:   'var(--green)',
 };
-
-const STAR_LABEL = {
+const FRAME_LABEL = {
   situation: 'Situation',
   task:      'Task',
   action:    'Action',
   result:    'Result',
+  behavior:  'Behavior',
+  outcome:   'Outcome',
 };
 
 export function BehavioralRunner({ caseId, onBack, onNext }) {
   const question = behavioralQuestions.find(q => q.id === caseId);
+
+  // Guard: if question not found, bail out gracefully rather than crash
+  if (!question) {
+    return (
+      <div style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+        <button onClick={onBack} className="pal-back-btn" style={{ marginBottom: '1.5rem' }}>
+          <Icon name="arrow-left" size={14} color="currentColor" />Back to Behavioral
+        </button>
+        <p style={{ color: 'var(--text-muted)' }}>Question not found.</p>
+      </div>
+    );
+  }
+
   const existing = getBehavioralProgress(question.id);
   const [response, setResponse] = useState(existing?.response || '');
   const [revealed, setRevealed] = useState(!!existing?.rating);
   const [rating, setRating] = useState(existing?.rating || null);
-  const [starOpen, setStarOpen] = useState(false);
+  const [frameOpen, setFrameOpen] = useState(false);
   const [userNote, setUserNote] = useState('');
   const [noteSaved, setNoteSaved] = useState(false);
 
@@ -93,8 +110,14 @@ export function BehavioralRunner({ caseId, onBack, onNext }) {
     setResponse('');
     setRevealed(false);
     setRating(null);
-    setStarOpen(false);
+    setFrameOpen(false);
   }
+
+  // Determine schema type
+  const isStarSchema = !!question.starGuide;
+  const frameData = isStarSchema ? question.starGuide : question.storyFramework;
+  const guideLabel = isStarSchema ? 'STAR Guide' : 'Story Framework';
+  const strongMarkers = question.strongAnswerMarkers || question.strongSignals;
 
   return (
     <div style={{ maxWidth: '860px', margin: '0 auto', padding: '2rem 1.5rem' }}>
@@ -113,8 +136,12 @@ export function BehavioralRunner({ caseId, onBack, onNext }) {
           <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-dim)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
             {question.id}
           </span>
-          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>·</span>
-          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'capitalize' }}>{question.category}</span>
+          {question.category && (
+            <>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>·</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'capitalize' }}>{question.category}</span>
+            </>
+          )}
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>·</span>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{question.difficulty}</span>
           <span className={`pal-timer${elapsed > 600 ? ' warning' : ''}`} style={{ marginLeft: 'auto' }}>
@@ -137,36 +164,52 @@ export function BehavioralRunner({ caseId, onBack, onNext }) {
         </p>
       </div>
 
-      {/* STAR Guide collapsible */}
-      <button
-        onClick={() => setStarOpen(o => !o)}
-        style={{
-          width: '100%', textAlign: 'left', background: 'var(--surface)', border: '1px solid var(--border)',
-          borderRadius: '8px', padding: '0.75rem 1rem', cursor: 'pointer', marginBottom: '1rem',
-          color: 'var(--text-muted)', fontSize: '0.84rem', fontWeight: 500,
-        }}
-      >
-        {starOpen ? '▾' : '▸'} STAR Guide
-        {!starOpen && <span style={{ marginLeft: '0.5rem', fontSize: '0.78rem', color: 'var(--text-dim)' }}>(try first, then check)</span>}
-      </button>
-      {starOpen && (
-        <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {Object.entries(question.starGuide).map(([key, text]) => (
-              <div key={key} style={{ display: 'flex', gap: '0.75rem' }}>
-                <span style={{
-                  fontSize: '0.72rem', fontWeight: 700,
-                  color: STAR_LABEL_COLOR[key],
-                  textTransform: 'uppercase', letterSpacing: '0.05em',
-                  minWidth: '72px', flexShrink: 0, paddingTop: '0.1rem',
-                }}>
-                  {STAR_LABEL[key]}
-                </span>
-                <span style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{text}</span>
-              </div>
-            ))}
+      {/* What they're really asking — BEH21+ only */}
+      {question.whatTheyreReallyAsking && (
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', padding: '0.9rem 1.1rem', marginBottom: '1rem' }}>
+          <div style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.4rem' }}>
+            What They're Really Asking
           </div>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', lineHeight: 1.65, margin: 0 }}>
+            {question.whatTheyreReallyAsking}
+          </p>
         </div>
+      )}
+
+      {/* STAR / Story Framework guide — collapsible */}
+      {frameData && (
+        <>
+          <button
+            onClick={() => setFrameOpen(o => !o)}
+            style={{
+              width: '100%', textAlign: 'left', background: 'var(--surface)', border: '1px solid var(--border)',
+              borderRadius: '8px', padding: '0.75rem 1rem', cursor: 'pointer', marginBottom: '1rem',
+              color: 'var(--text-muted)', fontSize: '0.84rem', fontWeight: 500,
+            }}
+          >
+            {frameOpen ? '▾' : '▸'} {guideLabel}
+            {!frameOpen && <span style={{ marginLeft: '0.5rem', fontSize: '0.78rem', color: 'var(--text-dim)' }}>(try first, then check)</span>}
+          </button>
+          {frameOpen && (
+            <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {Object.entries(frameData).map(([key, text]) => (
+                  <div key={key} style={{ display: 'flex', gap: '0.75rem' }}>
+                    <span style={{
+                      fontSize: '0.72rem', fontWeight: 700,
+                      color: FRAME_LABEL_COLOR[key] || 'var(--text-muted)',
+                      textTransform: 'uppercase', letterSpacing: '0.05em',
+                      minWidth: '72px', flexShrink: 0, paddingTop: '0.1rem',
+                    }}>
+                      {FRAME_LABEL[key] || key}
+                    </span>
+                    <span style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Response area */}
@@ -175,7 +218,7 @@ export function BehavioralRunner({ caseId, onBack, onNext }) {
           <textarea
             value={response}
             onChange={e => setResponse(e.target.value)}
-            placeholder="Walk through your answer using STAR — Situation, Task, Action, Result. The Action part is the most important: how did you approach it, what was your thinking, how did you handle pushback?"
+            placeholder="Walk through your answer — use the framework above as your guide. Be specific: name the actual decision, the data you used, the stakeholder involved, and what changed."
             rows={11}
             style={{
               width: '100%', boxSizing: 'border-box',
@@ -239,57 +282,101 @@ export function BehavioralRunner({ caseId, onBack, onNext }) {
             <p style={{ color: 'var(--text-muted)', fontSize: '0.87rem', lineHeight: 1.65, margin: 0, whiteSpace: 'pre-wrap' }}>{response}</p>
           </div>
 
-          {/* Model Answer — STAR blocks */}
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
-            <div style={{ fontWeight: 700, fontSize: '0.82rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '1.25rem' }}>
-              Model Answer
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-              {Object.entries(question.modelAnswer).map(([key, text]) => (
-                <div key={key} style={{ display: 'flex', gap: '1rem' }}>
-                  <div style={{
-                    fontSize: '0.7rem', fontWeight: 700,
-                    color: STAR_LABEL_COLOR[key],
-                    textTransform: 'uppercase', letterSpacing: '0.06em',
-                    minWidth: '72px', flexShrink: 0, paddingTop: '0.15rem',
-                  }}>
-                    {STAR_LABEL[key]}
+          {/* Model Answer — STAR blocks (BEH01-20 only) */}
+          {question.modelAnswer && (
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.82rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '1.25rem' }}>
+                Model Answer
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+                {Object.entries(question.modelAnswer).map(([key, text]) => (
+                  <div key={key} style={{ display: 'flex', gap: '1rem' }}>
+                    <div style={{
+                      fontSize: '0.7rem', fontWeight: 700,
+                      color: FRAME_LABEL_COLOR[key] || 'var(--text-muted)',
+                      textTransform: 'uppercase', letterSpacing: '0.06em',
+                      minWidth: '72px', flexShrink: 0, paddingTop: '0.15rem',
+                    }}>
+                      {FRAME_LABEL[key] || key}
+                    </div>
+                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.72 }}>{text}</p>
                   </div>
-                  <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.72 }}>{text}</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Strong Answer Markers */}
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
-            <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
-              What a Strong Answer Includes
+          {/* Story Framework — revealed for BEH21+ */}
+          {!question.modelAnswer && question.storyFramework && (
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.82rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '1.25rem' }}>
+                Strong Story Structure
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+                {Object.entries(question.storyFramework).map(([key, text]) => (
+                  <div key={key} style={{ display: 'flex', gap: '1rem' }}>
+                    <div style={{
+                      fontSize: '0.7rem', fontWeight: 700,
+                      color: FRAME_LABEL_COLOR[key] || 'var(--text-muted)',
+                      textTransform: 'uppercase', letterSpacing: '0.06em',
+                      minWidth: '72px', flexShrink: 0, paddingTop: '0.15rem',
+                    }}>
+                      {FRAME_LABEL[key] || key}
+                    </div>
+                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.72 }}>{text}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
-              {question.strongAnswerMarkers.map((marker, i) => <li key={i}>{marker}</li>)}
-            </ul>
-          </div>
+          )}
+
+          {/* Strong markers (works for both schemas) */}
+          {strongMarkers && strongMarkers.length > 0 && (
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
+              <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
+                Strong Answer Signals
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
+                {strongMarkers.map((marker, i) => <li key={i}>{marker}</li>)}
+              </ul>
+            </div>
+          )}
+
+          {/* Weak signals — BEH21+ only */}
+          {question.weakSignals && question.weakSignals.length > 0 && (
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--yellow-border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
+              <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--yellow)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
+                Weak Answer Signals
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
+                {question.weakSignals.map((s, i) => <li key={i}>{s}</li>)}
+              </ul>
+            </div>
+          )}
 
           {/* Key Principles */}
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
-            <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
-              Key Principles
+          {question.keyPrinciples && question.keyPrinciples.length > 0 && (
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' }}>
+              <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
+                Key Principles
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
+                {question.keyPrinciples.map((p, i) => <li key={i}>{p}</li>)}
+              </ul>
             </div>
-            <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
-              {question.keyPrinciples.map((p, i) => <li key={i}>{p}</li>)}
-            </ul>
-          </div>
+          )}
 
           {/* What to Avoid */}
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--red-border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1.5rem' }}>
-            <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--red)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
-              What to Avoid
+          {question.antiPatterns && question.antiPatterns.length > 0 && (
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--red-border)', borderRadius: '10px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+              <div style={{ fontWeight: 600, fontSize: '0.82rem', color: 'var(--red)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.75rem' }}>
+                What to Avoid
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
+                {question.antiPatterns.map((ap, i) => <li key={i}>{ap}</li>)}
+              </ul>
             </div>
-            <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.8 }}>
-              {question.antiPatterns.map((ap, i) => <li key={i}>{ap}</li>)}
-            </ul>
-          </div>
+          )}
 
           {/* Your notes */}
           {userNote && (

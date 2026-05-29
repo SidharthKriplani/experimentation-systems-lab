@@ -321,7 +321,7 @@ export function Home({ onNavigate }) {
       {visitedRooms.length === 0 && (
         <div style={{
           marginBottom: '2.25rem',
-          padding: '2.5rem 2.25rem',
+          padding: 'clamp(1.25rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2.25rem)',
           background: 'var(--surface)',
           border: '1px solid var(--border)',
           borderRadius: 'var(--radius-lg)',
@@ -421,7 +421,7 @@ export function Home({ onNavigate }) {
 
             {/* RIGHT: product preview mockup */}
             <div style={{
-              flex: '0 1 300px', minWidth: 260, maxWidth: 320,
+              flex: '0 1 300px', minWidth: 0, maxWidth: 320,
               background: 'var(--surface-2)', border: '1px solid var(--border)',
               borderRadius: 'var(--radius)', overflow: 'hidden',
               boxShadow: 'var(--shadow)',

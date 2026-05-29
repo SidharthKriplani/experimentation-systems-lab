@@ -1,10 +1,32 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { businessCases } from '../../data/businessCases.js';
 import { CaseStepPanel } from './CaseStepPanel.jsx';
 import { CaseScoreReveal } from './CaseScoreReveal.jsx';
 import { CaseDebriefPanel } from './CaseDebriefPanel.jsx';
 import { saveCaseAttempt, clearCaseProgress } from '../../utils/caseProgress.js';
 import { track } from '../../utils/analytics.js';
+
+// ─── Seeded shuffle helpers ───
+// Deterministic per caseId+phaseId so the same tester sees the same order
+// but the strong option is not locked to position A
+function hashStr(str) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = (h * 0x01000193) >>> 0;
+  }
+  return h;
+}
+function seededShuffle(arr, seed) {
+  const result = [...arr];
+  let s = seed >>> 0;
+  for (let i = result.length - 1; i > 0; i--) {
+    s = ((s * 1664525) + 1013904223) >>> 0;
+    const j = s % (i + 1);
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
 
 const NOTES_KEY = 'pal-notes-v1';
 
@@ -78,7 +100,13 @@ export function CaseRunner({ caseId, savedProgress, unlocked, onBack, onNext }) 
   const [note, setNote] = useState(() => getNotes('cases', businessCase.id));
   useEffect(() => { setNote(getNotes('cases', businessCase.id)); }, [businessCase.id]);
 
-  const phases = businessCase.phases;
+  // Shuffle answer options per phase — seeded so same user sees same order,
+  // but the strong option is no longer pinned to position A
+  const phases = useMemo(() => businessCase.phases.map((phase, idx) => {
+    const seed = hashStr(caseId + phase.id + idx);
+    return { ...phase, options: seededShuffle(phase.options, seed) };
+  }), [caseId]);
+
   const currentPhase = phases[currentPhaseIndex];
   const isLastPhase = currentPhaseIndex === phases.length - 1;
   const isCurrentSubmitted = !!submittedChoices[currentPhase.id];

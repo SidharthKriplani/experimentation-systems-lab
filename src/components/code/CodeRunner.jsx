@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { codeModules } from '../../data/codeModules.js';
 import { saveCodeAttempt } from '../../utils/codeProgress.js';
+import { track } from '../../utils/analytics.js';
 
 const NOTES_KEY = 'pal-notes-v1';
 
@@ -206,24 +207,30 @@ export function CodeRunner({ caseId, savedProgress, onBack, onNext }) {
         <PartialCodePanel code={module.partialCode} trackColor={trackColor} />
       )}
 
-      {/* Reveal button */}
+      {/* Reveal button + Python hint */}
       {!revealed && (
-        <button
-          onClick={handleReveal}
-          disabled={!canReveal}
-          style={{
-            background: canReveal ? 'var(--yellow-bg)' : 'var(--surface-2)',
-            border: `1.5px solid ${canReveal ? 'var(--yellow-border)' : 'var(--border)'}`,
-            color: canReveal ? 'var(--yellow)' : 'var(--text-muted)',
-            borderRadius: 'var(--radius)',
-            padding: '0.65rem 1.4rem',
-            fontSize: '0.85rem', fontWeight: 700,
-            cursor: canReveal ? 'pointer' : 'not-allowed',
-            marginBottom: '1.5rem',
-          }}
-        >
-          Reveal model answer
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={handleReveal}
+            disabled={!canReveal}
+            style={{
+              background: canReveal ? 'var(--yellow-bg)' : 'var(--surface-2)',
+              border: `1.5px solid ${canReveal ? 'var(--yellow-border)' : 'var(--border)'}`,
+              color: canReveal ? 'var(--yellow)' : 'var(--text-muted)',
+              borderRadius: 'var(--radius)',
+              padding: '0.65rem 1.4rem',
+              fontSize: '0.85rem', fontWeight: 700,
+              cursor: canReveal ? 'pointer' : 'not-allowed',
+            }}
+          >
+            Reveal model answer
+          </button>
+          {module.track === 'python' && (
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>
+              ▶ Run Code appears after reveal
+            </span>
+          )}
+        </div>
       )}
 
       {/* Model answer */}
@@ -319,13 +326,7 @@ function ModelAnswerPanel({ module, trackColor, rating, onRate, onRetry, onNext,
     try {
       const py = await loadPyodideInstance();
       setPyLoading('running');
-      py.runPython(`
-import sys
-import io
-import { track } from '../../utils/analytics.js';
-_stdout_capture = io.StringIO()
-sys.stdout = _stdout_capture
-`);
+      py.runPython(`import sys\nimport io\n_stdout_capture = io.StringIO()\nsys.stdout = _stdout_capture\n`);
       try {
         py.runPython(codeToRun);
       } catch (err) {

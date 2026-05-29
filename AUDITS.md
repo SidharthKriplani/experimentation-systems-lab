@@ -1011,3 +1011,70 @@ The mobile topbar uses `height: 46px` with `position: sticky, top: 0`. On iPhone
 **Fix:** Removed the `!user` branch (sign-in button) from Sidebar.jsx. The sidebar now only renders auth state when the user is signed in (email display + sign out). Sign-in lives exclusively in the topbar — always visible, compact, one clear entry point. Signed-in state remains in the sidebar since it has room to show the full email address.
 
 **File:** `src/components/layout/Sidebar.jsx`
+
+---
+
+## Audit #77 — Batch 0 Self-Vet Bug Sweep — 2026-05-29
+
+**Scope:** Full product surface — all rooms, all tools, all nav paths (founder self-vet)
+**Status:** ✅ Resolved — V4.28.0
+
+### Finding 77-A — Behavioral room crash on BEH21–30 ✅ RESOLVED
+
+**Observed:** Behavioral room crashed on both desktop and mobile for any question BEH21–BEH30.
+
+**Root cause:** BEH01–20 use `starGuide`/`modelAnswer`/`strongAnswerMarkers`. BEH21–30 use a different schema: `storyFramework`/`strongSignals`/`weakSignals`/`whatTheyreReallyAsking`. `BehavioralRunner.jsx` called `Object.entries(question.starGuide)` and `question.strongAnswerMarkers.map()` unconditionally — `TypeError: Cannot convert undefined or null to object` for any BEH21+ question.
+
+**Fix:** Rewrote `BehavioralRunner.jsx` to handle both schemas. STAR Guide section now detects schema and labels button "STAR Guide" vs "Story Framework". Model answer section only renders when `question.modelAnswer` exists. `strongMarkers` resolves from either field. `weakSignals` section added for BEH21+. Added null guard for missing `question`.
+
+**File:** `src/components/behavioral/BehavioralRunner.jsx`
+
+---
+
+### Finding 77-B — Cases Room correct answer always option A ✅ RESOLVED
+
+**Observed:** In the Cases Room, the correct answer was always displayed as option A. All question data files define the `strong` option first with `id: 'a'`.
+
+**Root cause:** `CaseRunner.jsx` passed `phase.options` directly to `CaseStepPanel` with no shuffling. Options were always rendered in their original order.
+
+**Fix:** Added `seededShuffle()` + `hashStr()` helpers to `CaseRunner.jsx`. Phases are now pre-shuffled via `useMemo` using a seed derived from `caseId + phase.id + phaseIndex`. Shuffle is deterministic (same user sees same order) but the `strong` option is no longer locked to position A. Option ids are preserved, so scoring and progress tracking are unaffected.
+
+**File:** `src/components/cases/CaseRunner.jsx`
+
+---
+
+### Finding 77-C — Mobile welcome card clipped on narrow screens ✅ RESOLVED
+
+**Observed:** The first-visit hero card ("You know the framework. Can you diagnose the drop?") did not render visible content on mobile.
+
+**Root cause:** The hero card had `overflow: hidden`. The product mockup on the right had `minWidth: 260px`. On a 375px iPhone, the effective inner width of the card (after page padding 1.5rem×2 + card padding 2.25rem×2) was ~255px — 5px short. With `flexWrap: wrap`, the mockup wrapped to a new row but still tried to be 260px wide, overflowing the 255px container. `overflow: hidden` clipped it.
+
+**Fix:** Changed mockup `minWidth: 260` → `0` (flex-basis 300px already handles sizing). Changed hero card padding to `clamp(1.25rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2.25rem)` for responsive scaling.
+
+**File:** `src/pages/Home.jsx`
+
+---
+
+### Finding 77-D — Stats Room variable placement broken on mobile ✅ RESOLVED
+
+**Observed:** In Stat Foundations Module 01 (What Is Data), tapping an unplaced variable on mobile placed it in the Numerical bucket only. No way to place it in Categorical.
+
+**Root cause:** The interaction cycled cards: Unplaced → Numerical → Categorical → Unplaced. After the first tap, the card disappeared from the Unplaced zone and reappeared in the Numerical zone. Mobile users didn't know to tap it again in its new location. The affordance was invisible.
+
+**Fix:** Replaced the click-to-cycle interaction with explicit **N** and **C** buttons on each unplaced variable card. Placed cards show a **×** button to unplace them. Instructions updated. Works identically on desktop and mobile with no ambiguity.
+
+**File:** `src/components/statsFoundations/modules/Module01_WhatIsData.jsx`
+
+---
+
+### Finding 77-E — Code Room execute button not visible + Python setup crash ✅ RESOLVED
+
+**Observed:** No visible "Run Code" button in the Code Room. Python execution would also have silently failed.
+
+**Root cause (visibility):** The Run Code button lives inside `ModelAnswerPanel`, which only renders after the user types 30+ chars and clicks "Reveal model answer." Users opening the Code Room saw no indication that code execution exists.
+
+**Root cause (Python crash):** A stray JS import statement `import { track } from '../../utils/analytics.js'` was accidentally placed inside a Python `runPython()` template literal instead of at the top of the file. This produced a Python `SyntaxError` on every execution attempt. Additionally, `track` was not imported at the module level, so `handleRate()` was calling an undefined function.
+
+**Fix:** Added `import { track }` at the top of the file. Removed the stray import from the Python setup string. Added "▶ Run Code appears after reveal" hint text next to the Reveal button for Python modules.
+
+**File:** `src/components/code/CodeRunner.jsx`
