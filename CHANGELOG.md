@@ -15,7 +15,9 @@ The welcome modal incorrectly described PAL's audience as "DS and PM" and offere
 - Button 2: "I'm a Product Manager" → "I'm a PM / TPM / Product Lead"
 - Navigation targets unchanged (analyst → stat-foundations, PM → product-design)
 
-**File:** `src/pages/Home.jsx`
+**Files:** `src/pages/Home.jsx`, `src/pages/InterviewSimulator.jsx`
+
+Also fixed the same "Data Scientist" / "Product Manager" labels in the Interview Simulator role selection cards and the debrief summary roleLabel variable.
 
 ---
 

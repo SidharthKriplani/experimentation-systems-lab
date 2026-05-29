@@ -325,7 +325,7 @@ function InterviewSimulatorInner({ onBack, onNavigate }) {
           >
             <div style={{ fontSize: '1.75rem', marginBottom: '0.6rem' }}>📊</div>
             <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text)', marginBottom: '0.4rem' }}>
-              Data Scientist
+              Data / Product Analyst
             </div>
             <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', lineHeight: 1.5 }}>
               Stats + RCA + Metrics + Estimation + Behavioral
@@ -350,7 +350,7 @@ function InterviewSimulatorInner({ onBack, onNavigate }) {
           >
             <div style={{ fontSize: '1.75rem', marginBottom: '0.6rem' }}>🎯</div>
             <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text)', marginBottom: '0.4rem' }}>
-              Product Manager
+              PM / TPM / Product Lead
             </div>
             <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', lineHeight: 1.5 }}>
               Product Design + Prioritization + Estimation + Behavioral + Cases
@@ -771,7 +771,7 @@ function InterviewSimulatorInner({ onBack, onNavigate }) {
 
     const sessionLengthLabel = SESSION_LENGTH_OPTIONS.find(o => o.count === sessionLength)?.label || 'Standard';
     const sessionModeLabel = SESSION_MODE_OPTIONS.find(o => o.value === sessionMode)?.label || 'Open-ended';
-    const roleLabel = role === 'ds' ? 'Data Scientist' : 'Product Manager';
+    const roleLabel = role === 'ds' ? 'Data / Product Analyst' : 'PM / TPM / Product Lead';
     const hasMCQResults = sessionMode === 'mcq' || sessionMode === 'mixed';
 
     return (
