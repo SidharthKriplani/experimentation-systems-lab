@@ -4,7 +4,7 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.36.3 (2026-05-30)*
+*Last updated: V4.36.4 (2026-05-30)*
 
 ---
 
@@ -54,7 +54,8 @@ Gate: PostHog confirms real Defense Strategy usage from Batch 1. Do not build un
 - Label copy fixes — confirmed present, audit #83 ✅ resolved
 - Data validator script — V4.36.2 (audit #102 ✅, scripts/validate-data.js)
 - Depth palette pass — V4.36.3 (audit #122 ✅, dark mode deepening, --discovery token, DECISIONS rule)
-- All MD files updated — V4.36.3
+- RCA Foundations depth pass — V4.36.4 (rf01 framework viz, rf05 mix-shift playground, rf07 SVG metric tree)
+- All MD files updated — V4.36.4
 
 **Still open:**
 - PostHog live in Vercel prod — confirm `VITE_POSTHOG_KEY` is set in Vercel dashboard

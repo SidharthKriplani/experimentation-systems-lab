@@ -96,6 +96,25 @@ Dark mode surface stack deepened (bg #0D101E, surface #151929, surface-2 #1C2035
 
 ---
 
+### 123. ✅ Content / Creativity — RCA Foundations depth pass: rf01, rf05, rf07 (audit #96 partial)
+
+**Version:** Fixed V4.36.4
+**Type:** Creativity & Product / Content Integrity
+
+Three RCA Foundation modules upgraded from text-only to interactive-visual:
+
+**rf01 — The RCA Framework:** Replaced static layer list with a collapsible accordion stack. Each of the four layers (Data Quality → External/Seasonal → Product Change → User Behaviour) has an expand-to-reveal rationale with time-estimate chips using room colour tokens (`var(--red)`, `var(--teal)`, `var(--accent)`, `var(--purple)`). Drag-to-assign MCQ replaced with a click-to-assign pattern. Post-reveal cost table shows relative investigation time per layer. No static imports; accordion state via `useState(null)`.
+
+**rf05 — When the Aggregate Lies:** Replaced text explanation of Simpson's Paradox with a live mix-shift slider playground. User drags slider (5–80% new users in DAU). Three retention bars update in real time: Existing Users (fixed 38%), Campaign Users (fixed 14%), Aggregate (dynamic — drops as new-user mix rises). Composition bar shows the DAU split visually. Discovery-token callout (`--discovery` amber border + tint) appears on first slider interaction. MCQ gated behind `sliderInteracted === true` — user must experience the paradox before answering.
+
+**rf07 — Metric Tree Construction:** Replaced indented text tree with a live SVG node-link diagram (`MetricTree` component). Eight nodes (DAU → New/Retained/Resurrected → Installs/Activation/Day-N/Retention%) connected by bezier edge paths. Highlighted node changes per question index (`RF07_HIGHLIGHT` map), with non-highlighted nodes dimmed to 0.3 opacity. Tree functions as a visual reference throughout the question sequence.
+
+`--discovery` token used exactly as DECISIONS.md scoping rule specifies: InsightBox left-border + bg-tint in rf05 insight callout. No nav, CTA, or UI chrome usage.
+
+**Files:** `src/components/rcaFoundations/RcaFoundationsRunner.jsx`
+
+---
+
 ### 117. ✅ Visual Consistency — Hardcoded color values across 7 component files (audit #92)
 
 ### 117. ✅ Visual Consistency — Hardcoded color values across 7 component files (audit #92)

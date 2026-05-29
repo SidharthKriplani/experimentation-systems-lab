@@ -4,6 +4,23 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.36.4] — 2026-05-30 [CONTENT]
+
+### RCA Foundations depth pass — rf01, rf05, rf07 (audit #95 partial)
+
+**Module rf01 — The RCA Framework:**
+Replaced the flat 4-card layer grid with an ordered, expandable vertical stack showing the investigation sequence. Each layer shows: numbered badge, layer name + color, time-to-rule-out badge, description. Clicking any layer expands a "why here first" rationale panel. Item classification redesigned as a clean list (each item shows all 4 layer buttons below it, highlights correct/wrong after reveal). Post-reveal adds a compact cost-table showing why the order matters.
+
+**Module rf05 — When the Aggregate Lies (Mix Shifts / Simpson's Paradox):**
+Replaced static data table + MCQ with an interactive slider playground. Slider controls "campaign users as % of DAU" (5–80%). Two retention bars (existing: 38%, campaign: 14%) stay fixed; aggregate bar dynamically recomputes as mix shifts. Composition bar shows the DAU split. After slider interaction: discovery-token insight callout explains Simpson's Paradox, then MCQ unlocks. Makes the concept click without reading a single word of explanation.
+
+**Module rf07 — Metric Tree Construction:**
+Added `MetricTree` SVG component — a live node-link tree diagram (DAU → New/Retained/Resurrected → leaf nodes) with curved bezier edges. Each question in the 3-MCQ sequence highlights the relevant node in the tree (Retained branch for Q1, Day-N node for Q2). Nodes dim/activate on highlight. Replaces the previous indented-text tree display.
+
+Files: `src/components/rcaFoundations/RcaFoundationsRunner.jsx`
+
+---
+
 ## [4.36.3] — 2026-05-30 [VISUAL]
 
 ### Depth palette pass — dark mode deepening + --discovery token (V4.36.3)

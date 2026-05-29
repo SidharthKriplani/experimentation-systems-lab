@@ -75,118 +75,181 @@ function MCQOption({ label, selected, correct, revealed, onClick }) {
 // ── Module rf01: The RCA Framework ─────────────────────────────────────────
 function Module_RF01({ onComplete }) {
   const LAYERS = [
-    { id: 'dq',  label: 'Data Quality',          desc: 'Did tracking or a pipeline change? Is this a real signal?', color: 'var(--red)' },
-    { id: 'ext', label: 'External / Seasonal',   desc: 'Holiday? Competitor launch? Platform outage? Day-of-week?', color: 'var(--yellow)' },
-    { id: 'prod',label: 'Product Change',         desc: 'Did we ship something? A/B test? Infra change? Ranking algorithm?', color: 'var(--accent)' },
-    { id: 'beh', label: 'User Behaviour Shift',  desc: 'Cohort mix change? Organic behaviour evolution? Market saturation?', color: 'var(--purple)' },
+    {
+      id: 'dq', label: 'Data Quality', num: 1,
+      desc: 'Did tracking or a pipeline change? Is this a real signal?',
+      why: 'Cheapest to rule out — check pipeline logs, SDK version, event counts by platform. Takes 10 minutes. The most common false alarm.',
+      time: '~10 min', color: 'var(--red)', timeBg: 'var(--red-bg)', timeBorder: 'var(--red-border)',
+    },
+    {
+      id: 'ext', label: 'External / Seasonal', num: 2,
+      desc: 'Holiday? Competitor launch? Platform outage? Day-of-week?',
+      why: 'Free data — calendars, public announcements, app store changelogs. Rules out an entire class of causes without touching any internal system.',
+      time: '~30 min', color: 'var(--yellow)', timeBg: 'var(--yellow-bg)', timeBorder: 'var(--yellow-border)',
+    },
+    {
+      id: 'prod', label: 'Product Change', num: 3,
+      desc: 'Did we ship something? A/B test? Infra change? Ranking algorithm?',
+      why: 'Deployment logs and experiment records are internal — queryable but require cross-team coordination. More investigative.',
+      time: '1–2 h', color: 'var(--accent)', timeBg: 'var(--accent-bg)', timeBorder: 'var(--accent-border)',
+    },
+    {
+      id: 'beh', label: 'User Behaviour Shift', num: 4,
+      desc: 'Cohort mix change? Organic behaviour evolution? Market saturation?',
+      why: 'Hardest to confirm. Requires longitudinal cohort analysis and external benchmarks. Takes days to weeks to establish confidently.',
+      time: 'Days–weeks', color: 'var(--purple)', timeBg: 'var(--purple-bg)', timeBorder: 'var(--purple-border)',
+    },
   ];
 
   const ITEMS = [
     { text: 'Event logging stopped firing on iOS 17.2', layer: 'dq' },
-    { text: 'Christmas week — all consumer apps see traffic spike', layer: 'ext' },
+    { text: 'Christmas week — all consumer apps see a traffic spike', layer: 'ext' },
     { text: 'Pushed a nav redesign that buried the share button', layer: 'prod' },
-    { text: 'New user cohort from paid acquisition has lower baseline engagement', layer: 'beh' },
+    { text: 'New paid-acquisition cohort has lower baseline engagement', layer: 'beh' },
     { text: 'Data warehouse pipeline had a 6-hour backfill delay', layer: 'dq' },
-    { text: 'Competitor launched a free tier that matches our core feature set', layer: 'ext' },
+    { text: 'Competitor launched a free tier matching our core feature set', layer: 'ext' },
   ];
 
   const [assignments, setAssignments] = useState({});
   const [revealed, setRevealed] = useState(false);
+  const [expanded, setExpanded] = useState(null);
 
   function assign(itemIdx, layerId) {
     if (revealed) return;
     setAssignments(prev => ({ ...prev, [itemIdx]: layerId }));
   }
 
-  function allAssigned() {
-    return ITEMS.every((_, i) => assignments[i]);
-  }
-
-  function check() {
-    setRevealed(true);
-  }
-
-  const correct = ITEMS.filter((item, i) => assignments[i] === item.layer).length;
+  const allAssigned = ITEMS.every((_, i) => assignments[i]);
+  const correctCount = ITEMS.filter((item, i) => assignments[i] === item.layer).length;
 
   return (
     <div>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-        Every metric movement belongs to one of four diagnostic layers. Working top-to-bottom through these layers keeps you from jumping to product conclusions when the data is simply broken, or missing an external event that explains the entire drop.
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+        Every metric movement belongs to one of four diagnostic layers. The order is not arbitrary — it is sorted by investigation cost and frequency of false alarms. Data quality is the most common false alarm and takes 10 minutes to rule out. User behaviour shifts can take weeks. Work top-to-bottom, always.
       </p>
 
-      {/* Layers */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, 100%), 1fr))', gap: '0.6rem', marginBottom: '1.25rem' }}>
-        {LAYERS.map(layer => (
-          <div key={layer.id} style={{
-            background: 'var(--surface-2)', border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-sm)', padding: '0.65rem 0.8rem',
-          }}>
-            <div style={{ fontWeight: 700, fontSize: '0.8rem', color: layer.color, marginBottom: '0.25rem' }}>
-              {layer.label}
-            </div>
-            <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)', lineHeight: 1.4, marginBottom: '0.5rem' }}>
-              {layer.desc}
-            </div>
-            <div style={{ minHeight: 32 }}>
-              {ITEMS.map((item, i) => assignments[i] === layer.id && (
-                <div key={i} style={{
-                  fontSize: '0.72rem', padding: '0.2rem 0.4rem', marginBottom: '0.2rem',
-                  borderRadius: 3,
-                  background: revealed
-                    ? (item.layer === layer.id ? 'var(--teal-bg)' : 'var(--red-bg)')
-                    : 'var(--accent-bg)',
-                  color: revealed
-                    ? (item.layer === layer.id ? 'var(--teal)' : 'var(--red)')
-                    : 'var(--accent)',
-                  border: '1px solid ' + (revealed
-                    ? (item.layer === layer.id ? 'var(--teal-border)' : 'var(--red-border)')
-                    : 'var(--accent-border)'),
+      {/* Visual ordered framework */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.65rem' }}>
+          The four-layer investigation sequence — click any layer to expand
+        </div>
+        {LAYERS.map((layer, i) => {
+          const isOpen = expanded === layer.id;
+          return (
+            <div key={layer.id}>
+              <div
+                onClick={() => setExpanded(isOpen ? null : layer.id)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.75rem',
+                  padding: '0.7rem 1rem',
+                  background: isOpen ? 'var(--surface-raised)' : 'var(--surface-2)',
+                  border: '1.5px solid ' + (isOpen ? layer.color : 'var(--border)'),
+                  borderRadius: 'var(--radius-sm)',
+                  cursor: 'pointer', transition: 'all 0.15s',
+                  userSelect: 'none',
+                }}
+              >
+                <div style={{
+                  width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+                  background: layer.color, display: 'flex', alignItems: 'center',
+                  justifyContent: 'center', fontSize: '0.72rem', fontWeight: 800, color: '#fff',
                 }}>
-                  {item.text}
+                  {layer.num}
                 </div>
-              ))}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.88rem', color: layer.color }}>{layer.label}</span>
+                    <span style={{
+                      fontSize: '0.67rem', fontWeight: 700, padding: '0.1rem 0.4rem',
+                      borderRadius: 3, background: layer.timeBg,
+                      border: '1px solid ' + layer.timeBorder, color: layer.color,
+                    }}>
+                      {layer.time}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.45, marginTop: '0.15rem' }}>
+                    {layer.desc}
+                  </div>
+                </div>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', flexShrink: 0, transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▾</span>
+              </div>
+              {isOpen && (
+                <div style={{
+                  padding: '0.7rem 1rem 0.7rem 3.25rem',
+                  background: 'var(--surface-2)',
+                  borderLeft: '1.5px solid ' + layer.color,
+                  borderRight: '1.5px solid ' + layer.color,
+                  borderBottom: '1.5px solid ' + layer.color,
+                  borderRadius: '0 0 var(--radius-sm) var(--radius-sm)',
+                  marginTop: -2,
+                  fontSize: '0.81rem', color: 'var(--text-secondary)', lineHeight: 1.55,
+                  fontStyle: 'italic',
+                }}>
+                  {layer.why}
+                </div>
+              )}
+              {i < LAYERS.length - 1 && (
+                <div style={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: '1.15rem', padding: '0.15rem 0 0.15rem 1.15rem' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>↓</span>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* Unassigned items */}
-      <div style={{ marginBottom: '1rem' }}>
-        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
-          <strong>What to do:</strong> For each signal below, click the layer label that best explains it. Assign all six signals before checking your answers.
-        </div>
-        <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          Classify each signal:
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-          {ITEMS.map((item, i) => !assignments[i] && (
-            <div key={i} style={{ position: 'relative' }}>
-              <div style={{
-                fontSize: '0.78rem', padding: '0.3rem 0.6rem',
-                background: 'var(--surface-2)', border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-sm)', color: 'var(--text)',
-                cursor: 'pointer', marginBottom: '0.4rem',
-              }}>
+      {/* Instruction */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '1rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> For each signal below, pick the layer that best explains it. Assign all six, then check.
+      </div>
+
+      {/* Item list */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
+        {ITEMS.map((item, i) => {
+          const asgn = assignments[i];
+          const aLayer = LAYERS.find(l => l.id === asgn);
+          const isCorrect = revealed && asgn === item.layer;
+          const isWrong = revealed && asgn && asgn !== item.layer;
+          const correctLayer = LAYERS.find(l => l.id === item.layer);
+          return (
+            <div key={i} style={{
+              padding: '0.65rem 0.9rem',
+              background: isCorrect ? 'var(--teal-bg)' : isWrong ? 'var(--red-bg)' : asgn ? 'var(--surface-raised)' : 'var(--surface-2)',
+              border: '1.5px solid ' + (isCorrect ? 'var(--teal-border)' : isWrong ? 'var(--red-border)' : asgn ? 'var(--border-strong)' : 'var(--border)'),
+              borderRadius: 'var(--radius-sm)', transition: 'all 0.15s',
+            }}>
+              <div style={{ fontSize: '0.85rem', color: isCorrect ? 'var(--teal)' : isWrong ? 'var(--red)' : 'var(--text)', lineHeight: 1.5, marginBottom: asgn || !revealed ? '0.4rem' : 0 }}>
                 {item.text}
               </div>
-              <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
-                {LAYERS.map(layer => (
-                  <button key={layer.id} onClick={() => assign(i, layer.id)} style={{
-                    fontSize: '0.68rem', padding: '0.15rem 0.4rem',
-                    background: 'var(--surface)', border: '1px solid var(--border)',
-                    borderRadius: 3, color: layer.color, cursor: 'pointer', fontWeight: 600,
-                  }}>
-                    {layer.label}
-                  </button>
-                ))}
-              </div>
+              {!revealed && (
+                <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                  {LAYERS.map(layer => (
+                    <button key={layer.id} onClick={() => assign(i, layer.id)} style={{
+                      fontSize: '0.72rem', padding: '0.2rem 0.55rem',
+                      background: asgn === layer.id ? layer.color : 'var(--surface)',
+                      border: '1px solid ' + (asgn === layer.id ? layer.color : 'var(--border)'),
+                      borderRadius: 3, color: asgn === layer.id ? '#fff' : 'var(--text-muted)',
+                      cursor: 'pointer', fontWeight: asgn === layer.id ? 700 : 400, transition: 'all 0.1s',
+                    }}>
+                      {layer.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {revealed && (
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: isCorrect ? 'var(--teal)' : 'var(--red)' }}>
+                  {isCorrect
+                    ? aLayer.label + ' ✓'
+                    : 'Correct: ' + correctLayer.label}
+                </div>
+              )}
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
-      {!revealed && allAssigned() && (
-        <button onClick={check} style={{
+      {!revealed && allAssigned && (
+        <button onClick={() => setRevealed(true)} style={{
           padding: '0.55rem 1.2rem', background: 'var(--teal)', color: '#fff',
           border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 700,
           fontSize: '0.88rem', cursor: 'pointer',
@@ -198,15 +261,36 @@ function Module_RF01({ onComplete }) {
       {revealed && (
         <div>
           <div style={{
-            padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', marginTop: '0.75rem',
-            background: correct === ITEMS.length ? 'var(--teal-bg)' : 'var(--yellow-bg)',
-            border: '1px solid ' + (correct === ITEMS.length ? 'var(--teal-border)' : 'var(--yellow-border)'),
-            color: correct === ITEMS.length ? 'var(--teal)' : 'var(--yellow)',
+            padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', marginTop: '0.75rem', marginBottom: '1.25rem',
+            background: correctCount === ITEMS.length ? 'var(--teal-bg)' : 'var(--yellow-bg)',
+            border: '1px solid ' + (correctCount === ITEMS.length ? 'var(--teal-border)' : 'var(--yellow-border)'),
+            color: correctCount === ITEMS.length ? 'var(--teal)' : 'var(--yellow)',
             fontWeight: 700, fontSize: '0.88rem',
           }}>
-            {correct}/{ITEMS.length} correct
-            {correct < ITEMS.length && ' — review the highlighted items above'}
+            {correctCount}/{ITEMS.length} correct{correctCount < ITEMS.length ? ' — review the highlighted items' : ' — perfect'}
           </div>
+
+          {/* Why this order — compact cost table */}
+          <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.85rem 1rem', marginBottom: '1.25rem' }}>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.6rem' }}>
+              Why this order matters
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+              {LAYERS.map(layer => (
+                <div key={layer.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: layer.color, flexShrink: 0, marginTop: '0.35rem' }} />
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: layer.color }}>{layer.label}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginLeft: '0.4rem' }}>({layer.time})</span>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginLeft: '0.4rem' }}>
+                      — {layer.why.split('.')[0].toLowerCase()}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <InsightBox>
             RCA works top-to-bottom: Data Quality → External → Product → Behaviour. This order exists because data quality is cheap to rule out and the most common false alarm. Never skip to product hypotheses before confirming the data is real.
           </InsightBox>
@@ -526,11 +610,22 @@ function Module_RF04({ onComplete }) {
 
 // ── Module rf05: When the Aggregate Lies ───────────────────────────────────
 function Module_RF05({ onComplete }) {
-  const [step, setStep] = useState(0);
-  const [answer, setAnswer] = useState(null);
-  const [revealed, setRevealed] = useState(false);
+  const EXISTING_RETENTION = 38;
+  const CAMPAIGN_RETENTION = 14;
+  const BASELINE_NEW_PCT = 18;
 
-  const scenario = 'A fitness app\'s overall D7 retention drops from 32% to 28% (-4pp) after a major new user acquisition campaign. The growth team is worried.';
+  const [newUserPct, setNewUserPct] = useState(BASELINE_NEW_PCT);
+  const [mcqAnswer, setMcqAnswer] = useState(null);
+  const [mcqRevealed, setMcqRevealed] = useState(false);
+
+  const existingPct = 100 - newUserPct;
+  const aggregate = Math.round((existingPct / 100) * EXISTING_RETENTION + (newUserPct / 100) * CAMPAIGN_RETENTION);
+  const baselineAggregate = Math.round((82 / 100) * EXISTING_RETENTION + (18 / 100) * CAMPAIGN_RETENTION);
+
+  const barWidth = 260;
+  const retMax = 45;
+
+  function retToX(r) { return (r / retMax) * barWidth; }
 
   const options = [
     { label: 'A. The product experience degraded — investigate recent product changes', correct: false },
@@ -539,93 +634,165 @@ function Module_RF05({ onComplete }) {
     { label: 'D. D7 retention calculation is incorrect — check the pipeline', correct: false },
   ];
 
-  const explanation = 'When you run a large acquisition campaign, you add a wave of new users who have not yet proven they will retain. The aggregate D7 retention drops not because existing users retained less, but because the mix of users shifted toward a younger, less-proven cohort. Always segment retention by acquisition cohort before concluding there is a product problem.';
+  const sliderInteracted = newUserPct !== BASELINE_NEW_PCT;
 
   return (
     <div>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-        Aggregate metrics can move in the wrong direction even when every individual segment is healthy. Mix shifts — changes in the composition of your user base — are one of the most common and misdiagnosed causes of metric drops. This module teaches you to look past the aggregate before raising an alarm.
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+        Aggregate metrics can move in the wrong direction even when every individual segment is healthy. Move the slider below and watch what happens to overall D7 retention — without touching either segment.
       </p>
 
-      {step === 0 && (
+      {/* ── Interactive playground ── */}
+      <div style={{ background: 'var(--surface-2)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem 1.25rem', marginBottom: '1.25rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '1rem' }}>
+          Mix-shift playground
+        </div>
+
+        {/* Slider */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+            <label style={{ fontSize: '0.83rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+              Campaign users as % of DAU
+            </label>
+            <span style={{ fontSize: '1rem', fontWeight: 800, color: newUserPct > 35 ? 'var(--red)' : 'var(--text)', minWidth: '3rem', textAlign: 'right' }}>
+              {newUserPct}%
+            </span>
+          </div>
+          <input
+            type="range"
+            min={5}
+            max={80}
+            step={1}
+            value={newUserPct}
+            onChange={e => setNewUserPct(Number(e.target.value))}
+            style={{ width: '100%', accentColor: 'var(--teal)', cursor: 'pointer' }}
+          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+            <span>5% (normal)</span>
+            <span>80% (aggressive campaign)</span>
+          </div>
+        </div>
+
+        {/* Retention bars */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1rem' }}>
+          {[
+            { label: 'Existing user D7', value: EXISTING_RETENTION, color: 'var(--teal)', stable: true },
+            { label: 'Campaign cohort D7', value: CAMPAIGN_RETENTION, color: 'var(--accent)', stable: true },
+            { label: 'Overall D7 (aggregate)', value: aggregate, color: aggregate < baselineAggregate - 1 ? 'var(--red)' : 'var(--teal)', stable: false, highlight: true },
+          ].map((row, i) => (
+            <div key={i}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem' }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', minWidth: 170 }}>{row.label}</span>
+                <span style={{ fontSize: '0.82rem', fontWeight: row.highlight ? 800 : 600, color: row.color, minWidth: '2.5rem' }}>
+                  {row.value}%
+                </span>
+                {row.stable && <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>unchanged</span>}
+                {row.highlight && aggregate !== baselineAggregate && (
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: aggregate < baselineAggregate ? 'var(--red)' : 'var(--teal)' }}>
+                    {aggregate < baselineAggregate ? '↓ ' + (baselineAggregate - aggregate) + 'pp' : '↑ ' + (aggregate - baselineAggregate) + 'pp'}
+                  </span>
+                )}
+              </div>
+              <div style={{ height: 10, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 5, overflow: 'hidden' }}>
+                <div style={{
+                  height: '100%', borderRadius: 5,
+                  width: retToX(row.value) + 'px',
+                  background: row.color,
+                  transition: 'width 0.2s, background 0.2s',
+                }} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Segments composition bar */}
         <div>
-          <div style={{
-            background: 'var(--surface-2)', border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-sm)', padding: '0.85rem 1rem', marginBottom: '1.25rem',
-          }}>
-            <div style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem' }}>
-              The aggregate view
-            </div>
-            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-              {[
-                { label: 'Overall D7 retention', before: '32%', after: '28%', change: '-4pp', bad: true },
-                { label: 'Existing user D7 retention', before: '38%', after: '37%', change: '-1pp', bad: false },
-                { label: 'New campaign cohort D7', before: 'N/A', after: '14%', change: 'new', bad: false },
-                { label: 'New user % of DAU', before: '18%', after: '41%', change: '+23pp', bad: false },
-              ].map((row, i) => (
-                <div key={i} style={{ minWidth: 140 }}>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>{row.label}</div>
-                  <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>{row.before}</span>
-                    <span style={{ fontSize: '0.1rem' }}>→</span>
-                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: row.bad ? 'var(--red)' : 'var(--text)' }}>{row.after}</span>
-                    <span style={{ fontSize: '0.72rem', color: row.bad ? 'var(--red)' : 'var(--text-muted)' }}>({row.change})</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.3rem', fontWeight: 600 }}>
+            DAU composition
           </div>
+          <div style={{ display: 'flex', height: 14, borderRadius: 5, overflow: 'hidden', border: '1px solid var(--border)' }}>
+            <div style={{ width: existingPct + '%', background: 'var(--teal)', transition: 'width 0.2s' }} />
+            <div style={{ width: newUserPct + '%', background: 'var(--accent)', transition: 'width 0.2s' }} />
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '0.3rem' }}>
+            <span style={{ fontSize: '0.7rem', color: 'var(--teal)' }}>■ Existing {existingPct}%</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--accent)' }}>■ Campaign {newUserPct}%</span>
+          </div>
+        </div>
 
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '1rem' }}>
-            {scenario}
-          </p>
+        {sliderInteracted && (
+          <div style={{ marginTop: '0.9rem', padding: '0.6rem 0.85rem', background: aggregate < baselineAggregate - 1 ? 'var(--red-bg)' : 'var(--teal-bg)', border: '1px solid ' + (aggregate < baselineAggregate - 1 ? 'var(--red-border)' : 'var(--teal-border)'), borderRadius: 'var(--radius-sm)', fontSize: '0.82rem', color: aggregate < baselineAggregate - 1 ? 'var(--red)' : 'var(--teal)', lineHeight: 1.5 }}>
+            {aggregate < baselineAggregate - 1
+              ? 'Aggregate fell to ' + aggregate + '% — but both segments are unchanged. The drop is caused entirely by the mix shift, not product quality.'
+              : 'Aggregate is close to baseline — the mix is similar to normal.'}
+          </div>
+        )}
+      </div>
 
-          <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.85rem' }}>
-            What is the most likely explanation for the aggregate D7 drop?
-          </p>
+      {/* Insight callout — revealed after slider interaction */}
+      {sliderInteracted && (
+        <div style={{
+          borderLeft: '3px solid var(--discovery, #E8A033)',
+          background: 'rgba(232,160,51,0.07)',
+          borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
+          padding: '0.75rem 1rem', marginBottom: '1.25rem',
+        }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--yellow)', marginBottom: '0.3rem' }}>Key observation</div>
+          <div style={{ fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.55 }}>
+            Neither segment retention changed. Existing users still retain at {EXISTING_RETENTION}%. Campaign users still retain at {CAMPAIGN_RETENTION}%. The aggregate fell purely because the user mix shifted — this is Simpson&apos;s Paradox in action.
+          </div>
+        </div>
+      )}
 
+      {/* MCQ — show after slider has been interacted with */}
+      {sliderInteracted && (
+        <div>
           <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 1rem', marginBottom: '0.75rem', fontSize: '0.84rem', color: 'var(--teal)', lineHeight: 1.5 }}>
-            <strong>What to do:</strong> Study the segmented data in the table above, then pick the answer that best explains why the aggregate moved even though existing-user retention is nearly flat.
+            <strong>What to do:</strong> Based on what the playground showed you, pick the correct explanation for the aggregate D7 drop.
           </div>
-
+          <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.85rem' }}>
+            A fitness app&apos;s overall D7 retention drops from 32% to 28% after a major acquisition campaign. What explains it?
+          </div>
           {options.map((opt, i) => (
             <MCQOption
               key={i}
               label={opt.label}
-              selected={answer === i}
+              selected={mcqAnswer === i}
               correct={opt.correct}
-              revealed={revealed}
-              onClick={() => !revealed && setAnswer(i)}
+              revealed={mcqRevealed}
+              onClick={() => !mcqRevealed && setMcqAnswer(i)}
             />
           ))}
-
-          {answer !== null && !revealed && (
-            <button onClick={() => setRevealed(true)} style={{
+          {mcqAnswer !== null && !mcqRevealed && (
+            <button onClick={() => setMcqRevealed(true)} style={{
               marginTop: '0.5rem', padding: '0.5rem 1.1rem',
               background: 'var(--teal)', color: '#fff', border: 'none',
               borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
-            }}>
-              Check
-            </button>
+            }}>Check</button>
           )}
-
-          {revealed && (
+          {mcqRevealed && (
             <div>
               <div style={{
                 marginTop: '0.5rem', padding: '0.65rem 0.85rem',
-                background: options[answer]?.correct ? 'var(--teal-bg)' : 'var(--red-bg)',
-                border: '1px solid ' + (options[answer]?.correct ? 'var(--teal-border)' : 'var(--red-border)'),
+                background: options[mcqAnswer]?.correct ? 'var(--teal-bg)' : 'var(--red-bg)',
+                border: '1px solid ' + (options[mcqAnswer]?.correct ? 'var(--teal-border)' : 'var(--red-border)'),
                 borderRadius: 'var(--radius-sm)', fontSize: '0.83rem', color: 'var(--text)', lineHeight: 1.5,
               }}>
-                {explanation}
+                When you run a large acquisition campaign, you add a wave of users who have not yet proven they will retain. The aggregate D7 retention drops not because existing users retained less, but because the mix shifted toward a lower-retaining cohort. Always segment by acquisition cohort before concluding there is a product problem.
               </div>
               <InsightBox>
-                Mix shifts are the silent killer of aggregate metrics. When the composition of your user base changes — more new users, more mobile users, more low-intent users — the aggregate metric moves even if every segment is healthy. Always segment by acquisition cohort, platform, and user vintage before concluding the product has a problem.
+                Mix shifts are the silent killer of aggregate metrics. When your user composition changes — more new users, more mobile users, more low-intent users — the aggregate moves even if every segment is healthy. The fix: always segment by cohort vintage, platform, and acquisition channel before raising an alarm.
               </InsightBox>
               <NextBtn onClick={onComplete} label="Complete module →" />
             </div>
           )}
         </div>
+      )}
+
+      {!sliderInteracted && (
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '0.5rem' }}>
+          Move the slider above to see what happens to the aggregate — then the follow-up question unlocks.
+        </p>
       )}
     </div>
   );
@@ -735,6 +902,83 @@ function Module_RF06({ onComplete }) {
   );
 }
 
+// ── SVG Metric Tree component ───────────────────────────────────────────────
+function MetricTree({ highlighted }) {
+  const nodes = [
+    { id: 'dau',   label: 'DAU', x: 200, y: 20,  w: 80,  color: 'var(--teal)',   desc: null },
+    { id: 'new',   label: 'New users', x: 60,  y: 100, w: 100, color: 'var(--teal)',   desc: '= New installs × Activation rate' },
+    { id: 'ret',   label: 'Retained', x: 190, y: 100, w: 100, color: 'var(--accent)', desc: '= Day-N users × Retention rate' },
+    { id: 'res',   label: 'Resurrected', x: 320, y: 100, w: 110, color: 'var(--purple)', desc: '= Lapsed users × Re-engagement rate' },
+    { id: 'inst',  label: 'Installs', x: 20,  y: 190, w: 80,  color: 'var(--teal)',   desc: 'App store + referral + paid' },
+    { id: 'activ', label: 'Activation %', x: 110, y: 190, w: 95,  color: 'var(--teal)',   desc: 'Users who complete onboarding' },
+    { id: 'dayn',  label: 'Day-N users', x: 175, y: 190, w: 95,  color: 'var(--accent)', desc: 'Cohort that reached Day-N' },
+    { id: 'retpct',label: 'Retention %', x: 280, y: 190, w: 90,  color: 'var(--accent)', desc: 'Rate of returning after Day-N' },
+  ];
+
+  const edges = [
+    ['dau', 'new'], ['dau', 'ret'], ['dau', 'res'],
+    ['new', 'inst'], ['new', 'activ'],
+    ['ret', 'dayn'], ['ret', 'retpct'],
+  ];
+
+  const H = 250;
+  const nodeH = 28;
+
+  function cx(n) { return n.x + n.w / 2; }
+  function cy(n, row) { return n.y + nodeH / 2; }
+
+  const nodeMap = {};
+  nodes.forEach(n => { nodeMap[n.id] = n; });
+
+  return (
+    <svg viewBox={'0 0 420 ' + H} style={{ width: '100%', display: 'block', overflow: 'visible' }}>
+      {/* Edges */}
+      {edges.map(([from, to]) => {
+        const fn = nodeMap[from];
+        const tn = nodeMap[to];
+        const x1 = cx(fn); const y1 = fn.y + nodeH;
+        const x2 = cx(tn); const y2 = tn.y;
+        const my = (y1 + y2) / 2;
+        return (
+          <path
+            key={from + '-' + to}
+            d={'M ' + x1 + ' ' + y1 + ' C ' + x1 + ' ' + my + ' ' + x2 + ' ' + my + ' ' + x2 + ' ' + y2}
+            fill="none"
+            stroke={highlighted === tn.id ? tn.color : 'var(--border-strong)'}
+            strokeWidth={highlighted === tn.id ? 2 : 1.5}
+            strokeDasharray={highlighted === tn.id ? 'none' : '4,2'}
+            opacity={highlighted && highlighted !== tn.id && highlighted !== fn.id ? 0.3 : 1}
+          />
+        );
+      })}
+      {/* Nodes */}
+      {nodes.map(n => {
+        const isHL = highlighted === n.id;
+        const isDim = highlighted && !isHL && n.id !== 'dau';
+        return (
+          <g key={n.id} opacity={isDim ? 0.3 : 1}>
+            <rect
+              x={n.x} y={n.y} width={n.w} height={nodeH} rx={5}
+              fill={isHL ? n.color : 'var(--surface-2)'}
+              stroke={isHL ? n.color : 'var(--border)'}
+              strokeWidth={isHL ? 2 : 1}
+            />
+            <text
+              x={n.x + n.w / 2} y={n.y + nodeH / 2 + 4}
+              textAnchor="middle"
+              fontSize="10"
+              fontWeight={isHL ? '700' : '400'}
+              fill={isHL ? '#fff' : 'var(--text-secondary)'}
+            >
+              {n.label}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 // ── Module rf07: Metric Tree Construction ──────────────────────────────────
 
 const RF07_QUESTIONS = [
@@ -776,6 +1020,9 @@ const RF07_QUESTIONS = [
   },
 ];
 
+// Question-to-highlighted-node mapping
+const RF07_HIGHLIGHT = { q1: 'ret', q2: 'dayn', q3: null };
+
 function Module_RF07({ onComplete }) {
   const [qIdx, setQIdx] = useState(0);
   const [selections, setSelections] = useState({});
@@ -785,6 +1032,7 @@ function Module_RF07({ onComplete }) {
   const currentSelected = selections[currentQ.id] || null;
   const currentRevealed = revealed[currentQ.id] || false;
   const allDone = qIdx >= RF07_QUESTIONS.length - 1 && currentRevealed;
+  const highlightNode = RF07_HIGHLIGHT[currentQ.id] || null;
 
   function handleSelect(opt) {
     if (!currentRevealed) {
@@ -812,32 +1060,28 @@ function Module_RF07({ onComplete }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0 }}>
-        A metric tree makes RCA exhaustive — every drop lives in exactly one branch. Work through the DAU tree below. Answer each question, then advance to the next.
+      <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0 }}>
+        A metric tree makes RCA exhaustive — every drop lives in exactly one branch. The tree below is live: the highlighted node shows which branch each question is about. Answer each question, then advance.
       </p>
 
-      <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem 1.25rem' }}>
-        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.9rem' }}>DAU Metric Tree</div>
-        <div style={{ fontSize: '0.88rem', color: 'var(--text)', lineHeight: 1.7 }}>
-          <div style={{ fontWeight: 700, marginBottom: '0.4rem' }}>DAU</div>
-          <div style={{ paddingLeft: '1.25rem', borderLeft: '2px solid var(--teal-border)', marginBottom: '0.3rem' }}>
-            <div style={{ fontWeight: 600, color: 'var(--teal)', marginBottom: '0.25rem' }}>New users</div>
-            <div style={{ paddingLeft: '1rem', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>= New installs x Activation rate</div>
-          </div>
-          <div style={{ paddingLeft: '1.25rem', borderLeft: '2px solid var(--teal-border)', marginBottom: '0.3rem' }}>
-            <div style={{ fontWeight: 600, color: 'var(--teal)', marginBottom: '0.25rem' }}>Retained users</div>
-            <div style={{ paddingLeft: '1rem', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>= Day-N users x Retention rate</div>
-          </div>
-          <div style={{ paddingLeft: '1.25rem', borderLeft: '2px solid var(--teal-border)' }}>
-            <div style={{ fontWeight: 600, color: 'var(--teal)', marginBottom: '0.25rem' }}>Resurrected users</div>
-            <div style={{ paddingLeft: '1rem', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>= Lapsed users x Re-engagement rate</div>
-          </div>
+      {/* Live SVG tree */}
+      <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.6rem' }}>
+          DAU metric tree — highlighted node is the focus of the current question
         </div>
+        <MetricTree highlighted={highlightNode} />
+        {highlightNode && (
+          <div style={{ marginTop: '0.5rem', fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+            {highlightNode === 'ret' && 'Current focus: Retained users branch'}
+            {highlightNode === 'dayn' && 'Current focus: Day-N users (the denominator of the Retained branch)'}
+          </div>
+        )}
       </div>
 
+      {/* Question card */}
       <div style={{ background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.1rem' }}>
-        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
-          <strong>What to do:</strong> Select the best answer to each metric tree question, then click Check answer — advance through all three questions before continuing.
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Read the tree, then select the best answer — advance through all three questions before completing.
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.85rem' }}>
           <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -847,7 +1091,7 @@ function Module_RF07({ onComplete }) {
             {RF07_QUESTIONS.map(function(_q, i) {
               return (
                 <div key={i} style={{
-                  width: '8px', height: '8px', borderRadius: '50%',
+                  width: 8, height: 8, borderRadius: '50%',
                   background: i < qIdx || (i === qIdx && currentRevealed) ? 'var(--teal)' : i === qIdx ? 'var(--teal-border)' : 'var(--border)',
                 }} />
               );
@@ -879,13 +1123,10 @@ function Module_RF07({ onComplete }) {
             onClick={handleCheck}
             disabled={currentSelected === null}
             style={{
-              padding: '0.5rem 1.1rem',
-              borderRadius: 'var(--radius-sm)',
-              border: 'none',
+              padding: '0.5rem 1.1rem', borderRadius: 'var(--radius-sm)', border: 'none',
               background: currentSelected !== null ? 'var(--teal)' : 'var(--border)',
               color: currentSelected !== null ? '#fff' : 'var(--text-muted)',
-              fontWeight: 700,
-              fontSize: '0.85rem',
+              fontWeight: 700, fontSize: '0.85rem',
               cursor: currentSelected !== null ? 'pointer' : 'default',
             }}
           >Check answer</button>
@@ -896,11 +1137,8 @@ function Module_RF07({ onComplete }) {
             marginTop: '0.75rem',
             background: currentSelected === currentQ.correct ? 'var(--teal-bg)' : 'var(--red-bg)',
             border: '1px solid ' + (currentSelected === currentQ.correct ? 'var(--teal-border)' : 'var(--red-border)'),
-            borderRadius: 'var(--radius-sm)',
-            padding: '0.75rem 1rem',
-            fontSize: '0.85rem',
-            color: 'var(--text-secondary)',
-            lineHeight: 1.55,
+            borderRadius: 'var(--radius-sm)', padding: '0.75rem 1rem',
+            fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.55,
           }}>
             <strong>{currentSelected === currentQ.correct ? 'Correct. ' : 'Not quite. '}</strong>{currentQ.explanation}
           </div>
@@ -910,15 +1148,10 @@ function Module_RF07({ onComplete }) {
           <button
             onClick={handleNext}
             style={{
-              marginTop: '0.85rem',
-              padding: '0.5rem 1.1rem',
-              borderRadius: 'var(--radius-sm)',
-              border: 'none',
-              background: 'var(--teal)',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
+              marginTop: '0.85rem', padding: '0.5rem 1.1rem',
+              borderRadius: 'var(--radius-sm)', border: 'none',
+              background: 'var(--teal)', color: '#fff',
+              fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer',
             }}
           >Next question →</button>
         )}
@@ -927,7 +1160,7 @@ function Module_RF07({ onComplete }) {
       {allDone && (
         <div>
           <InsightBox>
-            A metric tree forces you to be exhaustive: revenue = users x sessions x conversion x AOV. Every drop lives in exactly one branch. Without the tree, analysts chase symptoms instead of root causes — spending hours on a leaf node when the trunk is the problem. Drawing one live signals senior analytical thinking immediately.
+            A metric tree forces you to be exhaustive: DAU = New + Retained + Resurrected. Every drop lives in exactly one branch. Without the tree, analysts chase symptoms — spending hours on a leaf node when the trunk is the problem. Drawing one live in an interview signals senior analytical thinking immediately.
           </InsightBox>
           <NextBtn onClick={onComplete} label="Complete module →" />
         </div>
