@@ -99,7 +99,7 @@ export function BIBrowser({ onSelectCase, unlocked, onOpenArticle }) {
           color: 'var(--text-muted)', fontSize: '0.95rem',
           margin: '0 0 0.75rem', maxWidth: '640px', lineHeight: 1.6,
         }}>
-          Dashboard design, KPI frameworks, data storytelling, attribution, and executive communication
+          BI work is where analytics meets executive decisions — dashboards, attribution models, KPI frameworks, and data storytelling. The interview test isn't whether you can build a dashboard; it's whether you know which metric belongs on it, why, and what story it's actually telling. This room trains that judgment across real BI scenarios.
         </p>
 
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>

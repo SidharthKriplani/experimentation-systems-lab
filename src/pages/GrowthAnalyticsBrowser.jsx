@@ -76,7 +76,7 @@ export function GrowthAnalyticsBrowser({ onSelectCase, unlocked, onOpenArticle, 
           color: 'var(--text-muted)', fontSize: '0.95rem',
           margin: '0 0 0.75rem', maxWidth: '640px', lineHeight: 1.6,
         }}>
-          DAU decomposition, retention curves, funnel analysis, LTV, and acquisition quality — the practitioner toolkit for diagnosing growth.
+          Growth analytics is where "the metric is up" most often hides a real problem — acquisition gaming, retention hollowed out by churned power users, LTV inflated by one segment. The interview test is diagnostic instinct: can you decompose before you celebrate, segment before you conclude, and spot what the top-line number is obscuring? This room builds that through real practitioner scenarios.
         </p>
 
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>

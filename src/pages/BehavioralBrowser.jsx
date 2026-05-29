@@ -107,7 +107,7 @@ export function BehavioralBrowser({ onStart, unlocked }) {
           </h1>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: 0, maxWidth: '640px' }}>
-          Practice the storytelling behind the data. "Tell me about a time..." questions that senior DS/PM roles care about most.
+          Behavioral questions are the ones most candidates underestimate. A weak STAR answer gets marked down even if your technical thinking is strong — interviewers are assessing ownership, judgment, and communication, not just what happened. This room covers 30 real questions across influence, conflict, prioritization, and failure, with model answers that show what strong actually looks like.
         </p>
         <div style={{ marginTop: '0.75rem', display: 'flex', gap: '1.5rem' }}>
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>

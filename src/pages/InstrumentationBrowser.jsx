@@ -83,7 +83,7 @@ export function InstrumentationBrowser({ onSelectCase, unlocked, onOpenArticle }
           color: 'var(--text-muted)', fontSize: '0.95rem',
           margin: '0 0 0.75rem', maxWidth: '640px', lineHeight: 1.6,
         }}>
-          Event tracking, measurement plans, data contracts, and data quality
+          Bad tracking is invisible until it's too late — you've run a six-week experiment on data you can't trust, or shipped a feature with no way to measure it. Instrumentation is tested in senior interviews because it separates analysts who can design measurement systems from those who can only query them. This room covers event tracking, measurement plans, data contracts, and how to catch quality issues before they corrupt your analysis.
         </p>
 
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>

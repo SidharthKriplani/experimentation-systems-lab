@@ -94,7 +94,7 @@ export function TakehomeBrowser({ onSelectCase, unlocked, onOpenArticle }) {
           color: 'var(--text-muted)', fontSize: '0.95rem',
           margin: '0 0 0.75rem', maxWidth: '640px', lineHeight: 1.6,
         }}>
-          Timed open-ended challenges — write a full analysis, self-grade against the rubric
+          Take-home assignments are where the bar is highest — no interviewer to course-correct you, no time pressure as an excuse, and the expectation that your thinking is fully structured end-to-end. This room simulates that format: timed, open-ended, self-graded against a detailed rubric. Each challenge mirrors a real take-home from top companies, and the rubric shows exactly where strong candidates separate from the rest.
         </p>
 
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>

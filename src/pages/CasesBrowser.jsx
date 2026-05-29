@@ -21,7 +21,7 @@ export function CasesBrowser({ onSelectCase, unlocked, onUnlock, onNavigate }) {
           Cases Room
         </h1>
         <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem', lineHeight: 1.6, maxWidth: '540px' }}>
-          Structure ambiguous business and product analytics questions.
+          The most common interview opener is deceptively simple: "How would you measure success for X?" Most candidates jump straight to metrics. Strong candidates pause, clarify the question, and build a structured answer. This room trains that habit — constraint, clarity, then answer — across the ambiguous business and product scenarios that show up most in interviews.
         </p>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: '0.4rem',

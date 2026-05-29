@@ -58,8 +58,7 @@ export function ExpFoundationsBrowser({ onStart, unlocked, onNavigate }) {
           </h1>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0 0 1rem', lineHeight: 1.5 }}>
-          The theory behind A/B testing — before you practice design and review.
-          7 interactive modules covering causality, randomization units, statistical power, p-values, SRM, novelty effects, and multiple testing.
+          Most candidates who've "done A/B testing" can describe the mechanics. Far fewer can explain why the randomization unit changes your validity, what an SRM means for your conclusion, or when statistical significance doesn't imply you should ship. These 7 modules build the conceptual foundation that makes the A/B Design and Review rooms actually click — and that separates you in an interview when the follow-up questions start.
         </p>
 
         {/* Progress bar */}

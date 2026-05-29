@@ -115,7 +115,7 @@ export function EstimationBrowser({ onStart, unlocked }) {
           </h1>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: '0 0 0.75rem', maxWidth: '640px', lineHeight: 1.6 }}>
-          Back-of-envelope calculations and Fermi problems. Market sizing, cost estimation, and product metric estimation — the mental math skills that top DS interviews test.
+          Estimation questions catch candidates who can't reason without data. When an interviewer asks "How many Uber rides happen in London per day?", they're not testing your knowledge of Uber — they're testing whether you can decompose a problem, make reasonable assumptions, and arrive at a credible answer out loud. This room builds that muscle across market sizing, cost estimation, and product metric estimation.
         </p>
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.82rem', color: 'var(--text-dim)' }}>
