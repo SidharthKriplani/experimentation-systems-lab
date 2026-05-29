@@ -43,6 +43,24 @@ Start here when running an audit. Add rows as new types emerge.
 
 Source: ChatGPT independent review of all three sister labs (PAL, ML Systems Lab, GenAI Systems Lab) with no prior context. Treated as a credible external signal. Review assessed PAL as 8/10 — most commercially coherent of the three. Gaps identified below are real and logged as audits. Items already known or intentional decisions are noted and not re-logged.
 
+### 108. ✅ Coverage — Foundation rooms lacked skeleton depth beyond existing modules
+
+**Version:** Fixed V4.34.0
+**Type:** Coverage + UX / Human Elements
+
+Exp, Metrics, and RCA Foundations each stopped abruptly at their final live module with no indication of what comes next. Learners had no visibility into the planned curriculum arc. Stat Foundations was expanded first (sf26–sf32 in prior session); this pass completed the remaining three rooms.
+
+**What was added:**
+- Exp Foundations: 8 stubs (ef08–ef15) — A/A Testing, CUPED, Sequential Testing, Network Effects in Experiments, Holdout Groups, Multi-Armed Bandits, Geo Experiments, Switchback Experiments. Total: 15 modules.
+- Metrics Foundations: 5 stubs (mf09–mf13) — Funnel Metrics, Ratio Metrics in Depth, Composite Metrics, Guardrail Metrics, Metric Sensitivity. Total: 13 modules.
+- RCA Foundations: 6 stubs (rf07–rf12) — Metric Tree Construction, SQL Diagnosis Patterns, Seasonality and Trend Separation, Data Quality First, External Factor Identification, Multi-Level RCA. Total: 12 modules.
+
+Each stub provides: Coming Soon badge + user-facing brief (what they will learn), Key Insight card (internalize now), Connects to Experiments card, Next button. Internal devNote field (MICRO/MACRO/INTERACTIVE/PRIORITY) in data file for build planning.
+
+**Files:** `src/data/expFoundationModules.js`, `src/data/metricsFoundationModules.js`, `src/data/rcaFoundationModules.js`, `src/components/expFoundations/ExpFoundationsRunner.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, `src/components/rcaFoundations/RCAFoundationsRunner.jsx`
+
+---
+
 ### 107. ✅ UX / Human Elements — Foundation modules missing instruction text (audit #95 resolved)
 
 **Version:** Fixed V4.33.9

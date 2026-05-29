@@ -4,7 +4,7 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.33.9 (2026-05-29)*
+*Last updated: V4.34.0 (2026-05-29)*
 
 ---
 
@@ -72,6 +72,7 @@ Deferred — lower priority than bug fixes above.
 - Stats Room "By Difficulty" sort fixed — V4.33.7 (group headers + pinned module numbers, audit #101)
 - Search gap fixed — V4.33.8 (8 missing rooms + shallow field coverage, audit #106)
 - Foundation guiding text pass — V4.33.9 (all 46 modules across 4 rooms, audit #95 + #107 resolved)
+- Skeleton depth expansion — V4.34.0 (19 new stubs: ef08–ef15, mf09–mf13, rf07–rf12; devNotes with MICRO/MACRO/INTERACTIVE/PRIORITY for all)
 
 **Still open (in IDEAS.md):**
 - Empty state quality pass (#91) — deferred

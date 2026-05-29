@@ -4,6 +4,27 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.34.0] — 2026-05-29
+
+### Skeleton depth expansion — Exp, Metrics, RCA Foundations
+
+Added skeleton stub modules across the three inline-runner foundation rooms to extend their learning arc with Coming Soon stubs. Each stub provides a user-facing brief (what the module will teach), a Key Insight the user can internalize now, and an internal devNote (MICRO/MACRO/INTERACTIVE/PRIORITY) for build planning.
+
+**Exp Foundations (+8 stubs, ef08–ef15):**
+A/A Testing, CUPED / Variance Reduction, Sequential Testing, Network Effects in Experiments, Holdout Groups, Multi-Armed Bandits, Geo Experiments, Switchback Experiments. Total: 15 modules.
+
+**Metrics Foundations (+5 stubs, mf09–mf13):**
+Funnel Metrics, Ratio Metrics in Depth, Composite Metrics, Guardrail Metrics (advanced), Metric Sensitivity (advanced). Total: 13 modules.
+
+**RCA Foundations (+6 stubs, rf07–rf12):**
+Metric Tree Construction, SQL Diagnosis Patterns, Seasonality and Trend Separation, Data Quality First, External Factor Identification, Multi-Level RCA (capstone). Total: 12 modules.
+
+**Pattern:** All stubs follow the Coming Soon card → Key Insight card → connection card → Next button layout. devNotes are internal only (in data file), not rendered to users. Module counts update automatically via array length in each runner.
+
+**Files:** `src/data/expFoundationModules.js`, `src/data/metricsFoundationModules.js`, `src/data/rcaFoundationModules.js`, `src/components/expFoundations/ExpFoundationsRunner.jsx`, `src/components/metricsFoundations/MetricsFoundationsRunner.jsx`, `src/components/rcaFoundations/RCAFoundationsRunner.jsx`
+
+---
+
 ## [4.33.9] — 2026-05-29
 
 ### Foundation modules — guiding text pass across all four rooms

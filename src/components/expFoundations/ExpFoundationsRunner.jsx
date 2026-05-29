@@ -967,6 +967,246 @@ function Module_EF07({ onComplete }) {
   );
 }
 
+// ── Module EF08: A/A Testing ────────────────────────────────────────────────
+function Module_EF08({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module teaches you how to run an A/A test — an experiment where both groups receive identical treatment — as a validation step before trusting any A/B results. You will learn how to interpret an A/A that fails, diagnose whether the root cause is a randomization bug, a variance estimation error, or a logging inconsistency, and explain to a skeptical stakeholder why a clean A/A is a prerequisite to confident experimentation.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(234,179,8,0.08)', border: '1.5px solid rgba(234,179,8,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>An A/A test where both groups receive identical treatment should show no significant difference — if it does, your randomization or variance estimation is broken.</div>
+      </div>
+      <div style={{ background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>A/A testing is a prerequisite to trusting any A/B result. If your platform has systematic bias, every experiment you run is compromised. Interviewers use A/A scenarios to probe whether you validate infrastructure before drawing conclusions.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Complete module →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module EF09: CUPED / Variance Reduction ─────────────────────────────────
+function Module_EF09({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module covers CUPED (Controlled-experiment Using Pre-Experiment Data), the variance reduction technique that allows you to detect smaller effects with the same sample size — or equivalently, reach statistical significance faster with the same target effect. You will learn the mechanics of how pre-experiment covariates reduce noise, when the technique helps most, and how to explain the power gain to a non-technical PM.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(234,179,8,0.08)', border: '1.5px solid rgba(234,179,8,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>CUPED subtracts the component of the outcome metric that is predictable from pre-experiment behavior. Removing this noise reduces variance, which means smaller MDEs become detectable with the same sample — or equivalently, the same MDE requires less runtime.</div>
+      </div>
+      <div style={{ background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>CUPED is the practical answer to the question of how to run faster experiments without compromising power. It extends the power module (ef03) — once you understand why n scales with 1/MDE squared, CUPED gives you a lever to shift that curve without adding traffic.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Complete module →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module EF10: Sequential Testing ─────────────────────────────────────────
+function Module_EF10({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module tackles the peeking problem — the inflation of false positive rates that occurs when teams check results before the planned end date and stop early whenever p crosses 0.05. You will learn why ad-hoc peeking is statistically invalid, what alpha spending and always-valid inference frameworks do to solve it, and how to push back when a PM asks to call an experiment early.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(234,179,8,0.08)', border: '1.5px solid rgba(234,179,8,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Peeking at results and stopping early when p is below 0.05 inflates the true false positive rate well above 5%. Sequential testing methods like alpha spending and always-valid inference let you make early decisions with valid error control — but they require planning the stopping rule before you start.</div>
+      </div>
+      <div style={{ background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The peeking problem is one of the most common ways teams accidentally p-hack without realizing it. Sequential testing is the designed solution — knowing the difference between a planned interim analysis and ad-hoc peeking is exactly what interviewers probe when they ask about experiment velocity.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Complete module →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module EF11: Network Effects in Experiments ──────────────────────────────
+function Module_EF11({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module covers SUTVA violations — what happens to your experiment estimates when users in treatment and control interact with each other. You will learn to identify when a product creates interference (social networks, marketplaces, referral programs), understand why standard A/B estimates are biased in these settings, and know which design alternatives exist to handle it.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(234,179,8,0.08)', border: '1.5px solid rgba(234,179,8,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>SUTVA requires that one unit's outcome is unaffected by another unit's treatment. Social networks, marketplaces, and referral programs violate this — treatment effects spill between users, making standard experiment estimates biased in unpredictable directions.</div>
+      </div>
+      <div style={{ background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Network effects are why the randomization unit module covers cluster randomization — it is the structural fix for SUTVA violations. Understanding interference makes you fluent in why two-sided marketplace experiments and social feed tests require fundamentally different designs than simple product UI tests.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Complete module →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module EF12: Holdout Groups ──────────────────────────────────────────────
+function Module_EF12({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module covers long-term holdout groups — a technique for measuring the cumulative impact of an entire feature launch program, not just individual experiments. You will learn why the sum of individual experiment lifts does not equal compound business impact, how to design and size a holdout group, and how to interpret the gap between holdout and fully-treated user trajectories.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(234,179,8,0.08)', border: '1.5px solid rgba(234,179,8,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>A holdout group is a slice of users permanently excluded from all new features. Comparing their trajectory to the fully-treated population gives you the cumulative causal impact of your entire launch program — something individual A/B tests cannot provide because they only measure one change at a time.</div>
+      </div>
+      <div style={{ background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Holdout groups answer the question that individual experiments cannot: are all these small wins adding up to real business impact? Candidates who know holdouts understand that the sum of individual experiment lifts rarely equals the true compound effect.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Complete module →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module EF13: Multi-Armed Bandits ─────────────────────────────────────────
+function Module_EF13({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module contrasts multi-armed bandit algorithms with fixed A/B testing, helping you articulate when each paradigm is the right tool. You will learn the explore-exploit tradeoff at the heart of bandit methods, understand the mechanics of epsilon-greedy and Thompson sampling at a conceptual level, and know the practical conditions under which a bandit beats a fixed split — and when it does not.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(234,179,8,0.08)', border: '1.5px solid rgba(234,179,8,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>A/B tests fix traffic allocation for the experiment duration — they optimize for measurement. Bandits shift traffic toward better-performing variants in real time — they optimize for reward during the experiment. The tradeoff is inference quality vs. opportunity cost of running a losing variant.</div>
+      </div>
+      <div style={{ background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The explore-exploit tradeoff shows up in PM interviews about personalization, recommendation systems, and ad serving. Knowing when a bandit is better than a fixed A/B test — and when it is not — is a practical design judgment interviewers test for.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Complete module →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module EF14: Geo Experiments ─────────────────────────────────────────────
+function Module_EF14({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module covers geo experiments — the technique for testing interventions where user-level randomization is impossible, such as TV advertising, pricing changes, or offline channel tests. You will learn how matched-market design works, why low unit count limits statistical power, and how to interpret incrementality estimates from geographic holdouts in an interview context.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(234,179,8,0.08)', border: '1.5px solid rgba(234,179,8,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Geo experiments randomize at the geographic unit (city, DMA, country) rather than the user. This sidesteps network spillover and enables testing of channels where user-level assignment is impossible. The tradeoff is dramatically fewer randomization units, which limits statistical power.</div>
+      </div>
+      <div style={{ background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Geo experiments are the practical answer to the SUTVA problem for offline channels and marketplace interventions. They also connect to incrementality measurement in marketing — a domain where product analysts at growth-stage companies are routinely expected to design and interpret these tests.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Complete module →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module EF15: Switchback Experiments ──────────────────────────────────────
+function Module_EF15({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module covers switchback experiments — the canonical design for two-sided marketplace interventions where demand and supply interact at a market level, making user-level randomization meaningless. You will learn how time-based randomization handles supply-demand interference, why temporal autocorrelation must be modeled explicitly, and how to sketch a switchback design in an interview for a company like Uber, DoorDash, or Instacart.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(234,179,8,0.08)', border: '1.5px solid rgba(234,179,8,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Switchback experiments randomize over time periods rather than users — alternating treatment and control windows within the same market. This handles the two-sided marketplace problem where splitting users creates within-platform interference, but it introduces temporal autocorrelation that must be modeled explicitly.</div>
+      </div>
+      <div style={{ background: 'rgba(99,102,241,0.08)', border: '1.5px solid rgba(99,102,241,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Switchback designs are the canonical solution for ride-sharing, food delivery, and other dense marketplace experiments where demand and supply interact at a market level. Knowing this design signals fluency with the hardest class of experiment problems interviewers raise for marketplace PMs and analysts.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Complete module →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Module registry ─────────────────────────────────────────────────────────
 const MODULE_COMPONENTS = {
   ef01: Module_EF01,
@@ -976,6 +1216,14 @@ const MODULE_COMPONENTS = {
   ef05: Module_EF05,
   ef06: Module_EF06,
   ef07: Module_EF07,
+  ef08: Module_EF08,
+  ef09: Module_EF09,
+  ef10: Module_EF10,
+  ef11: Module_EF11,
+  ef12: Module_EF12,
+  ef13: Module_EF13,
+  ef14: Module_EF14,
+  ef15: Module_EF15,
 };
 
 // ── Runner shell ────────────────────────────────────────────────────────────

@@ -45,6 +45,13 @@ import { Module22_DiD } from './modules/Module22_DiD.jsx';
 import { Module23_RD } from './modules/Module23_RD.jsx';
 import { Module24_SyntheticControl } from './modules/Module24_SyntheticControl.jsx';
 import { Module25_IV } from './modules/Module25_IV.jsx';
+import { Module26_BayesianThinking } from './modules/Module26_BayesianThinking.jsx';
+import { Module27_EffectSize } from './modules/Module27_EffectSize.jsx';
+import { Module28_Bootstrap } from './modules/Module28_Bootstrap.jsx';
+import { Module29_ChiSquare } from './modules/Module29_ChiSquare.jsx';
+import { Module30_SUTVA } from './modules/Module30_SUTVA.jsx';
+import { Module31_ANOVA } from './modules/Module31_ANOVA.jsx';
+import { Module32_NonParametric } from './modules/Module32_NonParametric.jsx';
 import { track } from '../../utils/analytics.js';
 
 const NOTES_KEY = 'pal-notes-v1';
@@ -90,6 +97,13 @@ const MODULE_COMPONENTS = {
   sf23: Module23_RD,
   sf24: Module24_SyntheticControl,
   sf25: Module25_IV,
+  sf26: Module26_BayesianThinking,
+  sf27: Module27_EffectSize,
+  sf28: Module28_Bootstrap,
+  sf29: Module29_ChiSquare,
+  sf30: Module30_SUTVA,
+  sf31: Module31_ANOVA,
+  sf32: Module32_NonParametric,
 };
 
 const TOTAL = statsFoundationsModules.length;

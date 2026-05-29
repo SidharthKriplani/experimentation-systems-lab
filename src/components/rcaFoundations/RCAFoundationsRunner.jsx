@@ -735,6 +735,186 @@ function Module_RF06({ onComplete }) {
   );
 }
 
+// ── Module rf07: Metric Tree Construction ──────────────────────────────────
+function Module_RF07({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module teaches you to decompose any top-line metric into its multiplicative drivers — building the exhaustive tree that tells you exactly which branch a drop lives in. You will practise constructing metric trees for DAU, revenue, and engagement metrics from scratch, then use the tree to prioritise which node to investigate first.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>A metric tree forces you to be exhaustive: revenue = users x sessions x conversion x AOV. Every drop lives in exactly one node — the tree tells you where to look, not what you will find.</div>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Metric trees are the backbone of experiment debrief analysis — when a metric moves, the tree tells you which sub-metric drove it and whether that is the one you wanted to move.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module rf08: SQL Diagnosis Patterns ────────────────────────────────────
+function Module_RF08({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module walks through the three SQL queries every analyst should run in the first 30 minutes of an investigation: time-series the raw event count by day, break it by platform and region, and compare this period to the same period last year. You will practise writing each query against a realistic schema and interpreting what the output tells you about where the investigation should focus next.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The first three SQL moves in any RCA are always the same: time-series the raw event count by day, break it by platform and region, and compare this week to last week and last year. Analysts who jump to complex joins before these three queries have not yet confirmed whether the signal is real.</div>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The same SQL patterns that surface a metric drop also validate experiment results — a time-series of your outcome metric split by variant is the first sanity check after any A/B test launches.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module rf09: Seasonality and Trend Separation ──────────────────────────
+function Module_RF09({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module teaches you to separate a true trend from calendar-driven seasonality — so you can answer whether a metric drop is a genuine deterioration or a predictable cycle. You will practise constructing seasonality-adjusted baselines using WoW and YoY comparisons, and learn to identify when an apparent drop is actually within normal seasonal variance.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>A metric that is down 12% week-over-week may be perfectly healthy if the same week last year was also down 12%. Analysts who lack a seasonality-adjusted baseline mistake calendar effects for product problems every single quarter.</div>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Seasonality is also the primary confounder in long-running A/B tests — an experiment that spans a holiday week has treatment and control groups exposed to different demand environments, invalidating the comparison if not accounted for.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module rf10: Data Quality First (Advanced) ─────────────────────────────
+function Module_RF10({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This advanced module drills the complete data quality checklist that senior analysts run before touching product hypotheses: SDK and library version changes, pipeline run history, event-level row counts by platform, and denominator inflation checks. You will work through realistic failure scenarios — platform-specific drops, event-specific anomalies, and pipeline-wide collapses — and practise diagnosing each pattern in under five minutes.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Platform-specific drops almost always mean an SDK change, not a product problem. Event-specific drops almost always mean a logging bug. Pipeline-wide drops almost always mean a data engineering failure. These three patterns are recognizable in under five minutes if you know what to look for.</div>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Data quality checks are equally critical in A/B test analysis: a sudden metric movement in the control group after experiment launch almost always signals an instrumentation change, not treatment spillover.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module rf11: External Factor Identification ────────────────────────────
+function Module_RF11({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module expands your external factor taxonomy beyond obvious seasonality to include competitor launches, app store policy changes, macro economic shifts, and marketing spend fluctuations. You will practise building a live external context log and using it to rapidly rule out non-product causes in a timed investigation scenario.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>The best analysts maintain a live external context log — a running list of competitor moves, platform policy changes, macro events, and marketing spend shifts. Without this log, external factors look like product problems, and engineers get pulled into investigations that have no product fix.</div>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>External factor awareness is also required for valid A/B test interpretation: if a major competitor launched during your experiment window, your treatment effect estimate is confounded by the market shift, not just the feature you tested.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Module rf12: Multi-Level RCA ───────────────────────────────────────────
+function Module_RF12({ onComplete }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This capstone module tackles the hardest RCA scenario: incidents with two or three interacting causes that span multiple diagnostic layers simultaneously. You will practise disentangling compounding factors — a data quality issue masking a product regression layered on top of a seasonal dip — and learn the test for knowing when your RCA is actually complete versus prematurely stopped.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.08)', border: '1.5px solid rgba(20,184,166,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Key Insight</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Real incidents often have two or three contributing causes that interact. Analysts who stop at the first plausible cause produce incomplete RCAs. The test: remove each cause and ask — would the full drop still exist?</div>
+      </div>
+      <div style={{ background: 'rgba(20,184,166,0.05)', border: '1.5px solid rgba(20,184,166,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+        <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>Multi-level causal thinking is the senior skill in both RCA and experiment analysis. When a primary metric moves unexpectedly in an A/B test, the cause is often a combination of an interaction effect, a novelty effect, and a segment composition shift — not a single clean explanation.</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onComplete} style={{ padding: '0.65rem 1.5rem', background: 'var(--teal)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Module registry ─────────────────────────────────────────────────────────
 const MODULE_COMPONENTS = {
   rf01: Module_RF01,
@@ -743,6 +923,12 @@ const MODULE_COMPONENTS = {
   rf04: Module_RF04,
   rf05: Module_RF05,
   rf06: Module_RF06,
+  rf07: Module_RF07,
+  rf08: Module_RF08,
+  rf09: Module_RF09,
+  rf10: Module_RF10,
+  rf11: Module_RF11,
+  rf12: Module_RF12,
 };
 
 // ── Runner shell ────────────────────────────────────────────────────────────

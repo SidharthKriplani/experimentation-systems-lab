@@ -679,6 +679,181 @@ function Module_MF08({ module, onNext }) {
   );
 }
 
+// ─── Module 9: Funnel Metrics ─────────────────────────────────────────────────
+
+function Module_MF09({ module, onNext }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module teaches you to read funnel data the way interviewers expect: not by fixating on end-to-end conversion, but by isolating the step with the sharpest marginal drop. You will practice decomposing a multi-step funnel, distinguishing a product problem from a traffic problem, and framing the right diagnostic questions before reaching for a root cause.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      {module && module.keyInsight && (
+        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+        </div>
+      )}
+      {module && module.connection && (
+        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
+        </div>
+      )}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Module 10: Ratio Metrics in Depth ───────────────────────────────────────
+
+function Module_MF10({ module, onNext }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module goes deeper on ratio metrics than the introduction in MF03. You will learn to fully decompose any rate change into numerator movement, denominator movement, and mix shift — the three independent levers that together explain every ratio metric surprise you will encounter in interviews and on the job.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      {module && module.keyInsight && (
+        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+        </div>
+      )}
+      {module && module.connection && (
+        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
+        </div>
+      )}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Module 11: Composite Metrics ────────────────────────────────────────────
+
+function Module_MF11({ module, onNext }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module covers composite metrics and index scores — tools that combine multiple signals into one number to simplify ship decisions. You will learn when composites are genuinely useful (conflicting individual metrics, company-wide OKR alignment) and when they are dangerous (hidden component degradation, arbitrary weighting). You will also work through Microsoft-style OEC reasoning that comes up in senior PM and experimentation interviews.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      {module && module.keyInsight && (
+        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+        </div>
+      )}
+      {module && module.connection && (
+        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
+        </div>
+      )}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Module 12: Guardrail Metrics ─────────────────────────────────────────────
+
+function Module_MF12({ module, onNext }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This module focuses on why guardrail metrics only work when they are pre-committed, and what happens when teams negotiate them post-hoc. You will work through realistic ship/no-ship decisions where the primary metric wins but a guardrail is breached — exactly the scenario interviewers use to probe whether you understand the role of pre-commitment in experimentation governance.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      {module && module.keyInsight && (
+        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+        </div>
+      )}
+      {module && module.connection && (
+        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
+        </div>
+      )}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Module 13: Metric Sensitivity ───────────────────────────────────────────
+
+function Module_MF13({ module, onNext }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ background: 'var(--surface-2, var(--surface))', border: '1.5px solid var(--border)', borderRadius: 'var(--radius, 12px)', padding: '1.5rem' }}>
+        <div style={{ display: 'inline-block', fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '4px', padding: '2px 8px', marginBottom: '0.75rem' }}>Coming Soon</div>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary, var(--text-muted))', lineHeight: 1.65, margin: '0 0 0.6rem' }}>
+          This advanced module gives you a working model of metric sensitivity — why coefficient of variation (CV = SD / mean) determines sample requirements, why zero-inflated distributions like revenue per user are so expensive to detect effects in, and how to select a sensitive proxy that predicts the high-variance outcome you actually care about. These concepts appear in senior PM, data science, and experimentation specialist interviews at companies running experiments at scale.
+        </p>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+          This module is in development. The Key Insight below gives you the core concept to internalize now.
+        </p>
+      </div>
+      {module && module.keyInsight && (
+        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1.5px solid rgba(34,197,94,0.2)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Key Insight</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.keyInsight}</div>
+        </div>
+      )}
+      {module && module.connection && (
+        <div style={{ background: 'rgba(34,197,94,0.05)', border: '1.5px solid rgba(34,197,94,0.15)', borderRadius: 'var(--radius, 12px)', padding: '1.25rem 1.5rem' }}>
+          <div style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '0.5rem' }}>Connects to Experiments</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.65 }}>{module.connection}</div>
+        </div>
+      )}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button onClick={onNext} style={{ padding: '0.65rem 1.5rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--radius, 12px)', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+          Complete module →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Module registry ──────────────────────────────────────────────────────────
 
 const MODULE_COMPONENTS = {
@@ -690,6 +865,11 @@ const MODULE_COMPONENTS = {
   mf06: Module_MF06,
   mf07: Module_MF07,
   mf08: Module_MF08,
+  mf09: Module_MF09,
+  mf10: Module_MF10,
+  mf11: Module_MF11,
+  mf12: Module_MF12,
+  mf13: Module_MF13,
 };
 
 // ─── Runner shell ─────────────────────────────────────────────────────────────
