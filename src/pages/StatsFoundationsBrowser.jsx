@@ -133,7 +133,7 @@ export function StatsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
           fontSize: '0.88rem', color: 'var(--text-secondary)',
           margin: '0 0 1.25rem', lineHeight: 1.6, maxWidth: '540px',
         }}>
-          Ground-up statistical intuition — from data types to hypothesis testing
+          Statistical fluency is what separates analysts who can have an opinion from those who just run queries. In interviews, you'll need to explain what a p-value actually means, catch a false positive before it ships, or design a valid experiment under time pressure. These 25 modules build that foundation from scratch — not by memorising formulas, but by building the reasoning that makes the numbers make sense.
         </p>
 
         {/* Progress bar */}

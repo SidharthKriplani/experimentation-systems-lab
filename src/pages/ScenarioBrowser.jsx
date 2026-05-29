@@ -41,9 +41,11 @@ export function ScenarioBrowser({ allProgress, onSelect, unlocked, onUnlock, onO
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.025em', marginBottom: '0.35rem' }}>
           Experiment Review Room
         </h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: 0 }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: '0 0 0.5rem' }}>
           {completedCount} of {scenarios.length} completed
-          {' · '}Read the readout, make the call, see the senior debrief.
+        </p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: 0, maxWidth: '600px', lineHeight: 1.6 }}>
+          Every experiment ends in a decision meeting — ship, kill, or dig deeper. This room puts you in that seat. You read a realistic readout, spot what the numbers are actually saying (and what's being glossed over), and make the call. It's one of the most tested formats in senior analyst interviews and the one most candidates are least prepared for.
         </p>
       </div>
 

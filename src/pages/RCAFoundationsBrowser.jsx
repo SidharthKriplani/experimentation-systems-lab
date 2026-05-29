@@ -57,8 +57,7 @@ export function RCAFoundationsBrowser({ onStart, unlocked, onNavigate }) {
           </h1>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0 0 1rem', lineHeight: 1.5 }}>
-          6 interactive modules covering the RCA framework, decomposition, data quality checks, seasonality, Simpson's Paradox, and recommendation structure.
-          Build the diagnostic discipline that makes every RCA case click.
+          When a key metric drops, the first question you'll face is: why? Root cause analysis (RCA) is the structured process of answering that without guessing — and it's one of the most tested skills for senior analyst and PM roles. Most candidates fail it by jumping to explanations before ruling out data quality issues or external factors. These 6 modules build the discipline to work through it correctly, every time.
         </p>
 
         {/* Progress bar */}

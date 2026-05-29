@@ -57,8 +57,7 @@ export function MetricsFoundationsBrowser({ onStart, unlocked, onNavigate }) {
           </h1>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0 0 1rem', lineHeight: 1.5 }}>
-          8 interactive modules covering metric hierarchy, ratio traps, decomposition, and sensitivity.
-          Build the mental models that make every Metrics Room case click.
+          Metrics questions are the most common interview format for product analysts and PMs — yet most candidates answer them by listing obvious KPIs. What separates strong candidates is understanding why metrics move, how they can be gamed, and how to design ones that actually measure what you intend. These 8 modules build that foundation.
         </p>
 
         {/* Progress bar */}

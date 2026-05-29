@@ -74,7 +74,7 @@ export function SpotTheFlawBrowser({ onSelectCase, unlocked, onNavigate }) {
           color: 'var(--text-muted)', fontSize: '0.95rem',
           margin: '0 0 0.75rem', maxWidth: '640px', lineHeight: 1.6,
         }}>
-          Identify broken analyses, bad metrics, and flawed experiments before they cause damage.
+          In a real role, you'll regularly see analyses that look right but aren't — an experiment with a hidden SRM, a metric moving for the wrong reason, a chart that proves the wrong thing. Interviewers test this directly: they hand you a flawed analysis and ask what's broken. Most candidates miss it entirely. This room trains the habit of looking for what's wrong before accepting what's shown.
         </p>
 
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
