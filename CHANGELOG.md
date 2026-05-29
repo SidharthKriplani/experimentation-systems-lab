@@ -4,6 +4,16 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.35.6] — 2026-05-30 [UX]
+
+### Foundation nav — stub greying
+
+Added `isStub: true` to 19 stub module entries across three data files: ef08–ef15 (`expFoundationModules.js`), mf09–mf13 (`metricsFoundationModules.js`), rf07–rf12 (`rcaFoundationModules.js`). Updated all 4 foundation runner nav sidebars to read `isStub` and render stub items at 0.4 opacity, non-clickable, `cursor: default`, tooltip "Coming soon", and no `✓` / `🔒` prefix — clearly distinct from both completed items and locked items. Stats Foundations has no stubs so nav logic is unchanged for that room (but updated for consistency with the new `isBlocked` pattern).
+
+Files: `src/data/expFoundationModules.js`, `src/data/metricsFoundationModules.js`, `src/data/rcaFoundationModules.js`, all 4 runner files.
+
+---
+
 ## [4.35.5] — 2026-05-30 [UX]
 
 ### Module04 reshape fix + right-side nav panel across all 4 foundation runners

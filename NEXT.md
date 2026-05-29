@@ -4,7 +4,7 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.35.5 (2026-05-30)*
+*Last updated: V4.35.6 (2026-05-30)*
 
 ---
 
@@ -87,6 +87,7 @@ Deferred — lower priority than bug fixes above.
 - Stat Foundations 7-module UI bug fix pass — V4.35.4 (bell curve spike, SE overflow, power slider distance, correlation layout shift, Bonferroni n=1, regression overlap, selection bias clip)
 - Indian e-commerce field intelligence logged — V4.35.3 (Meesho Company Track expanded in Tier 2 Platform; Indian tech case cluster + marketplace metric tree module added to Tier 2 Content; IDEAS.md + CHANGELOG.md updated)
 - Module04 σ reshape fix + foundation nav panel — V4.35.5 (REF_PDF constant for fixed-height normalization; sticky right-side nav sidebar across all 4 foundation runners with jump-to navigation, progress state, lock state)
+- Foundation nav stub greying — V4.35.6 (isStub: true on 19 stub entries across 3 data files; 0.4 opacity, non-clickable, tooltip "Coming soon" in all 4 runner nav sidebars)
 
 **Still open (in IDEAS.md):**
 - Empty state quality pass (#91) — deferred

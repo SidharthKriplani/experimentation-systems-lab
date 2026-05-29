@@ -967,27 +967,29 @@ export function RCAFoundationsRunner({ moduleId, onBack, onNext, unlocked, onSel
         {rcaFoundationModules.map((m) => {
           const isCurrent = m.id === moduleId;
           const isDone = !!completedMap[m.id];
+          const isStub = !!m.isStub;
           const isLocked = !m.isFree && !unlocked;
+          const isBlocked = isStub || isLocked;
           return (
             <button
               key={m.id}
-              onClick={() => !isLocked && onSelectModule && onSelectModule(m.id)}
+              onClick={() => !isBlocked && onSelectModule && onSelectModule(m.id)}
               style={{
                 display: 'flex', alignItems: 'baseline', gap: '0.35rem',
                 width: '100%', textAlign: 'left',
                 padding: '0.28rem 0.4rem', borderRadius: '5px', border: 'none',
                 background: isCurrent ? 'var(--teal-bg)' : 'transparent',
-                color: isCurrent ? 'var(--teal)' : isLocked ? 'var(--text-muted)' : isDone ? 'var(--teal)' : 'var(--text)',
+                color: isCurrent ? 'var(--teal)' : (isStub || isLocked) ? 'var(--text-muted)' : isDone ? 'var(--teal)' : 'var(--text)',
                 fontSize: '0.75rem', lineHeight: 1.4,
-                cursor: isLocked ? 'default' : 'pointer',
-                opacity: isLocked ? 0.55 : 1,
+                cursor: isBlocked ? 'default' : 'pointer',
+                opacity: isStub ? 0.4 : isLocked ? 0.55 : 1,
                 marginBottom: '0.1rem',
                 fontWeight: isCurrent ? 700 : 400,
               }}
-              title={isLocked ? 'Unlock to access' : m.title}
+              title={isStub ? 'Coming soon' : isLocked ? 'Unlock to access' : m.title}
             >
               <span style={{ flexShrink: 0, fontVariantNumeric: 'tabular-nums', fontSize: '0.68rem', color: isCurrent ? 'var(--teal)' : 'var(--text-muted)', minWidth: '1.4rem' }}>{m.index}.</span>
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isLocked ? '🔒 ' : isDone && !isCurrent ? '✓ ' : ''}{m.title}</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{isStub ? '' : isLocked ? '🔒 ' : isDone && !isCurrent ? '✓ ' : ''}{m.title}</span>
             </button>
           );
         })}
