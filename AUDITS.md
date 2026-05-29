@@ -41,6 +41,106 @@ Start here when running an audit. Add rows as new types emerge.
 
 ## Part XVI — V4.30–V4.32 Session Audits
 
+### 91. ⚠️ UX Audit — Empty State Quality (Sibling lab signal)
+**Version:** Logged V4.32.9, fix deferred
+**Type:** UX / Human Elements
+
+Empty states in PAL have never been audited. GenAI Lab found all empty states were blank — no copy, no orientation, no next step. Same risk exists in PAL.
+
+**Surfaces to audit:**
+- Bookmarks (no saves yet) — blank or generic?
+- Progress page with zero rooms completed — what does a cold user see?
+- Locked room state when access code not entered — clear path to unlock?
+- Search with no results (if search is live)
+- MCQ Trainer with no attempts yet
+
+**Fix:** Each empty state should do three things — acknowledge the state, explain what belongs here, and give a specific next action. Small copy + CTA pass, ~1 session.
+
+---
+
+### 90. ⚠️ Content Audit — Deep Dives Post-to-Post Related Arrays Missing (Sibling lab signal)
+**Version:** Logged V4.32.9, fix deferred
+**Type:** Navigation & Discoverability + Content Integrity
+
+GenAI Lab found 202 posts with zero `related[]` arrays — no horizontal navigation between posts. Users read one post and hit a dead end. They fixed it with a curated related-post graph injected into each post\'s data.
+
+PAL\'s BlogBrowser.jsx has the same problem. Each post object has a `room` field (routes to a practice CTA) but no `related` array linking to adjacent posts. Users cannot "keep reading" between posts without returning to the full list.
+
+**Fix:** Add a `related: []` field to each post in the POSTS array pointing to 2–3 thematically adjacent post IDs. Build a "Keep reading" strip at the bottom of each expanded post using those IDs. Part of the Tier 2 Deep Dives overhaul (audit #84) — resolve in that pass, not before.
+
+---
+
+### 89. ⚠️ Content Integrity Audit — Stat Count Consistency (Sibling lab signal)
+**Version:** Logged V4.32.9, fix deferred
+**Type:** Content Integrity
+
+GenAI Lab found three different case/post counts stated across index.html, Home.jsx, and IDEAS.md — all different, none updated after content adds.
+
+PAL states case counts in multiple places: home welcome card, room browser headers, CLAUDE.md description, and any marketing copy. These have never been audited for consistency after each content batch.
+
+**Fix:** Single pass — grep for all numeric claims ("150+ cases", "17 rooms", etc.) across src/, public/, CLAUDE.md and verify against actual data file counts. Quick audit, ~30 minutes.
+
+---
+
+### 88. ⚠️ Build Audit — Timer Cleanup on Navigation (Sibling lab signal)
+**Version:** Logged V4.32.9, check needed
+**Type:** BUILD + Framework / Technical
+
+ML Systems Lab found their timed session (CombinatorTab) continued running in the background after the user navigated away — interval was never cleared. PAL shipped the shared TimerButton component in V4.32.0 across 5 runners.
+
+**Check needed:** Does the timer interval clear when `onBack` fires? If the runner unmounts without clearing `setInterval`, the timer leaks and continues ticking in background, potentially affecting localStorage or causing ghost state on re-entry.
+
+**Files to check:** `src/components/shared/TimerButton.jsx` (or wherever the interval lives), all 5 runner components that use it. Verify `clearInterval` is called in a cleanup return from `useEffect` or in the `onBack` handler.
+
+---
+
+### 87. ⚠️ Content Quality Audit — MCQ Trainer Distractor Quality (Sibling lab signal)
+**Version:** Logged V4.32.9, fix deferred
+**Type:** Content Quality
+
+ML Systems Lab found MCQ wrong options were too obviously eliminable — distractors that no practitioner would confuse with the right answer. Candidates learn to spot the obviously-wrong options rather than engaging with the underlying concept.
+
+The standard for good distractors: each wrong option should be correct in a *different* context, or adjacent-but-subtly-wrong in the current context. A candidate who understands the concept should have to think about why each distractor is wrong.
+
+**Scope:** PAL\'s `src/data/trainerMCQ.js` — 40 questions. Run a pass: for each question, are the 3 wrong options genuinely plausible to someone who half-knows the concept, or obviously eliminable? Rewrite any that fail.
+
+**Effort:** Medium — full content pass on 40 questions. Can be done in one session.
+
+---
+
+### 86. ⚠️ Content Quality Audit — Case Debrief Explanation Depth (Sibling lab signal)
+**Version:** Logged V4.32.9, fix deferred
+**Type:** Content Quality + UX / Human Elements
+
+ML Systems Lab audited their MCQ explanations and found they stated the correct answer but didn\'t explain the failure mode — what goes wrong in a real interview or production scenario when you get this wrong. They fixed it with an explicit pattern: "In production, this breaks as X. The tell is Y."
+
+PAL\'s case debriefs almost certainly have the same gap. They explain what the right framework or answer is, but may not close the loop on: *what does a weak answer look like, and why does it fail in an actual interview?* That\'s the content that makes debriefs sticky.
+
+**Proposed standard for PAL debriefs:**
+- What is the right answer / framework
+- What does the weak answer look like (the actual mistake candidates make)
+- Why it fails under interviewer pressure (the specific follow-up that exposes the gap)
+
+**Scope:** All case debrief fields across every room data file. High effort — full content audit. Prioritize the rooms with the highest completion rates first (RCA, Metrics, Stats based on expected usage).
+
+---
+
+### 85. ⚠️ Analytics Audit — PostHog Autocapture PII Risk (Sibling lab signal — HIGH)
+**Version:** Logged V4.32.9, fix needed
+**Type:** Framework / Technical + SEO / Social
+
+ML Systems Lab found PostHog\'s default configuration has `autocapture: true` — PostHog automatically captures all clicks, form inputs, and text entered into input fields, including personally identifiable content (email addresses, job titles entered in Defense Strategy, resume text pasted in future).
+
+PAL uses PostHog via `src/utils/analytics.js` with an env-var gate. The current wrapper calls `posthog.init()` but whether `autocapture: false` is explicitly set is unknown.
+
+**Risk:** If autocapture is on, PostHog is capturing every keystroke in the JD input field in Defense Strategy, every search query, and any text pasted into future resume input fields (V2 plan). This is a real PII risk — not theoretical.
+
+**Fix:** Open `src/utils/analytics.js`. Verify `posthog.init()` call includes `{ autocapture: false, capture_pageview: false }` in the options object. If not present, add it. One-line fix with potentially significant compliance impact.
+
+**Priority: Check this session or next. Do not defer past V4.33.**
+
+---
+
 ### 84. ⚠️ Content + IA Audit — Deep Dives (BlogBrowser) Content State + Navigation Design
 **Version:** Logged V4.32.6, fix deferred
 **Type:** Content Integrity + Navigation & Discoverability + Creativity / Product

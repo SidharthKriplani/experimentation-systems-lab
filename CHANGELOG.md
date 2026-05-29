@@ -4,6 +4,24 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.32.9] — 2026-05-29 [MD-only, no code]
+
+### Logged — 7 new audits from sibling lab cross-review (ML Systems Lab + GenAI Lab)
+
+Cross-reviewed sibling lab AUDITS.md files for transferable findings. 7 new audit entries added to PAL. No code shipped.
+
+- **#85 (HIGH)** — PostHog autocapture PII risk. Default `autocapture: true` captures all input keystrokes including JD text and future resume paste. Check `analytics.js` immediately.
+- **#86** — Case debrief explanation depth. Debriefs state right answer but not the failure mode or weak-answer pattern. Full content pass needed across all rooms.
+- **#87** — MCQ Trainer distractor quality. Some wrong options too obviously eliminable. Full 40-question rewrite pass.
+- **#88** — Timer cleanup on navigation. Verify `clearInterval` fires on `onBack` in all 5 runners using TimerButton.
+- **#89** — Stat count consistency. Numeric claims across src/, public/, CLAUDE.md never audited for consistency after content adds.
+- **#90** — Deep Dives post-to-post related arrays missing. 0 posts have `related[]` arrays. No "keep reading" path between posts. Resolve in Deep Dives overhaul pass (audit #84).
+- **#91** — Empty state quality. Bookmarks, Progress, locked-room, MCQ Trainer empty states never audited. Likely blank with no orientation or next-action CTA.
+
+**Files:** `AUDITS.md`, `IDEAS.md`, `CHANGELOG.md`, `CLAUDE.md`
+
+---
+
 ## [4.32.8] — 2026-05-29 [MD-only, no code]
 
 ### Logged — Defense Strategy V2 concept (resume-aware, round-typed, cost-weighted)

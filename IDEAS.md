@@ -54,7 +54,15 @@ _No new features until PostHog baseline is established._
 - **Emoji removal — full UI pass (audit #80)** — emojis in room headers, icon boxes, locked states, and nav give a childish, unserious feeling inconsistent with the senior-IC positioning. Replace all UI-chrome emojis with Icon component SVGs or typographic symbols. Scope: all browser header icon boxes, foundation page headers, paywall lock states, tool page headers. Do not touch emojis inside case/article content text (author-voice). Medium effort — systematic search-and-replace across ~20 files.
 - **Room header icon consistency — full pass (audit #79)** — icon treatment is inconsistent across room browsers. Growth Analytics uses bare "↗" character; A/B Foundations uses 🧪 in the h1; Stats/Metrics/RCA/Design rooms have no icon at all; others have the 36×36 colored box pattern. Standardize to the box pattern (36×36, var(--X-bg) fill, var(--X-border) border, Icon component inside) across all room browsers and foundation pages. Should be done in the same pass as audit #80.
 
+### Content Quality
+- **Case debrief explanation depth — failure mode pass (audit #86)** — debriefs state the right answer but don\'t explain what a weak answer looks like or why it fails under interviewer follow-up. Run a pass across all room data files adding: (1) what the weak answer looks like, (2) the specific follow-up that exposes the gap. Prioritize RCA, Metrics, Stats first. High effort — full content pass.
+- **MCQ Trainer distractor quality (audit #87)** — some wrong options in `trainerMCQ.js` are too obviously eliminable. Each distractor should be correct in a different context, or adjacent-but-subtly-wrong. Full 40-question pass to rewrite weak distractors. One session.
+
 ### Bugs
+- **PostHog autocapture PII risk — check immediately (audit #85)** — verify `src/utils/analytics.js` PostHog init call includes `{ autocapture: false }`. If not present, add it. One-line fix. Do not defer past V4.33.
+- **Timer cleanup on navigation (audit #88)** — verify TimerButton interval is cleared when `onBack` fires across all 5 runners. Check for `clearInterval` in useEffect cleanup or onBack handler. Quick check, potential ghost-state bug if missing.
+- **Stat count consistency audit (audit #89)** — grep all numeric claims ("150+ cases", "17 rooms") across src/, public/, CLAUDE.md and verify against actual data file counts. ~30 min pass.
+- **Empty state quality pass (audit #91)** — Bookmarks, Progress (zero rooms), locked-room state, MCQ Trainer (no attempts). Each should acknowledge state, explain what belongs here, give a specific next action.
 - **Metrics Room — linked scenarios not clickable (Batch 0 feedback)** — after revealing the senior metric design answer, linked scenario cards appear in the debrief but tapping them does nothing. Users expect to navigate directly. Small fix, high friction when it fails.
 - ~~**`onResetAllProgress` missing 9 keys** (audit #62)~~ — ✅ fixed V4.6.1 (8 keys added, reset now covers all rooms)
 - ~~**`case_opened` missing from 4 open functions** (audit #61)~~ — ✅ fixed V4.6.1 (BI, STF, Take-Home, Instrumentation now tracked)
