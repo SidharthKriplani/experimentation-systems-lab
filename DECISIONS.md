@@ -9,6 +9,9 @@ Prescriptive, present-tense standing rules. This is not build history (that's CH
 **No custom backend. Supabase is the only allowed external service (V4.24+).**
 The platform is a static SPA on Vercel. Core state lives in localStorage. Supabase auth and cross-device progress sync were added in V4.24 and are fully env-var gated — the app runs in localStorage-only mode when `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` are absent. No API routes, no custom servers. Do not introduce any other backend dependency through V4.x.
 
+**Supabase auth must be either production-complete or removed. Half-done is not acceptable.**
+As of V4.33.7, Supabase auth exists in the codebase but has not been verified as production-complete (audit #104). Before Batch 2 outreach, a decision must be made: (a) complete it — E2E test with a real Supabase project, verify `PROGRESS_KEYS` in `syncProgress.js` covers all current rooms, add auth error handling for invalid credentials and sync failures — or (b) remove it entirely and ship as localStorage-first until the Stripe sprint. The README now correctly says "optional sign-in for cross-device sync" — this claim must be true. A broken sign-in flow is worse than no sign-in.
+
 **React + Vite only. No framework migrations.**
 The stack is React 18 + Vite 8. Do not introduce Next.js, Remix, or any SSR framework. The platform is intentionally static — SEO is handled via static OG tags and sitemap, not server rendering.
 
@@ -28,6 +31,9 @@ All styling uses inline style objects with CSS variables. No CSS modules, no Tai
 **PAL covers product analytics and PM only.**
 Rooms in scope: stats, experimentation, RCA, metrics, SQL/Python analytics, product design, prioritization, behavioral/leadership, estimation/Fermi, growth analytics, BI, analytics instrumentation, spot-the-flaw, take-home challenges.
 Out of scope: ML model training, data engineering pipelines, MLOps, anything that belongs in the sibling ML Systems Lab.
+
+**The canonical product description is: "an interactive judgment system for product analysts, data analysts, and PMs."**
+This is the framing that best survives external scrutiny (confirmed by ChatGPT cold-read, V4.33.7). "Judgment system" is accurate and differentiating — PAL puts users in decisions, not reading situations. "Product analytics and PM" is the correct audience frame. Do not use: "interview prep platform," "learning platform," "no backend," "Data Scientists." README updated to reflect this in V4.33.7. Homepage (`Home.jsx`) must match — audit #103 is open.
 
 **PAL's audience is data analysts, product analysts, business analysts, PMs, TPMs, and product leads.**
 Not data scientists. This distinction matters for copy, onboarding framing, and interview prep positioning. The onboarding modal and Interview Simulator role labels were corrected in V4.32.6 to reflect this. Do not reintroduce "Data Scientist" as a primary audience label. Analyst-track and PM-track are the two correct audience frames.

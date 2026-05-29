@@ -35,6 +35,14 @@ Add to `public/sitemap.xml`: home, progress, trainer, unlock, company-tracks, de
 
 ## Deferred to own session
 
+**Supabase auth — finish or cut (audit #104)** — DECISION DUE before Batch 2 outreach. Either complete to production-ready (E2E test with real Supabase project, PROGRESS_KEYS completeness, error handling) or remove entirely. Read DECISIONS.md for the rule. Do not leave half-done.
+
+**Data file validator script (audit #102)** — `scripts/validate-data.js` that checks all `src/data/*.js` for template literals, unescaped apostrophes, missing required fields. Wire as `npm run validate-data`. Prevents the build breaks that have already happened twice. One session.
+
+**React error boundary (audit #105)** — `src/components/shared/ErrorBoundary.jsx`, wrap `<main>` in App.jsx. ~30 min. Fixes white-screen crashes and shows engineering maturity to reviewers.
+
+**Homepage framing pass (audit #103)** — read `src/pages/Home.jsx`, check for stale audience/framing copy, align with README V4.33.7 updates. ~20 min, copy-only.
+
 **Visual pass — Simulator layout + emoji removal + icon consistency (audits #82, #80, #79)**
 All three are related. Dedicated session only: redesign Simulator config screen, remove all UI-chrome emojis, standardize room header icon boxes. Do not mix with a normal bug/fix session.
 

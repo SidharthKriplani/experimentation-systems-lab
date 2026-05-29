@@ -39,6 +39,74 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XX — V4.33.7 External Review Audit (ChatGPT cold-read)
+
+Source: ChatGPT independent review of all three sister labs (PAL, ML Systems Lab, GenAI Systems Lab) with no prior context. Treated as a credible external signal. Review assessed PAL as 8/10 — most commercially coherent of the three. Gaps identified below are real and logged as audits. Items already known or intentional decisions are noted and not re-logged.
+
+### 105. ⚠️ BUILD — Missing React error boundaries
+
+**Version:** Logged V4.33.7
+**Type:** BUILD + Framework / Technical
+
+No top-level React error boundary in the app. PAL has had three confirmed runtime crashes this session cycle (Behavioral room, Cases room answer shuffle, Module25_IV null deref). In each case the crash surface was a white screen with no user-facing feedback. A single `<ErrorBoundary>` wrapping the `<main>` block (or each `<Suspense>` boundary) catches unhandled React render errors and displays a recovery message ("Something went wrong — go back to the main menu") instead of a white screen. This is one component, high return per hour of work, and shows engineering maturity to any reviewer who clones and runs the app.
+
+**Scope:** Zero error boundaries exist anywhere in the codebase. Confirmed by `grep -r "ErrorBoundary\|componentDidCatch" src/` returning empty.
+**Fix approach:** Create `src/components/shared/ErrorBoundary.jsx` (class component — required by React). Wrap `<main>` block in `App.jsx`. Optionally wrap each lazy `<Suspense>` block for room-level containment. Include a "Reload page" or "Go home" CTA in the fallback UI. Effort: ~30 min.
+**Files:** `src/components/shared/ErrorBoundary.jsx` (new), `src/App.jsx`
+
+---
+
+### 104. ⚠️ BUILD — Supabase auth half-wired (not production-tested end-to-end)
+
+**Version:** Logged V4.33.7
+**Type:** BUILD + Architecture
+
+Supabase auth is present in the codebase and referenced in the README (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SETUP_AUTH.md`), but has never been verified as production-complete in the current V4.x codebase. External reviewer flagged the README "no backend" / "localStorage only" inconsistency — fixed in V4.33.7 README update. But the underlying issue remains: a reviewer who clones the repo and sets the Supabase env vars may find broken or incomplete auth behaviour.
+
+**What "half-wired" means concretely:** Auth flows exist (sign-in, sign-out, session detection). Progress sync on tab close exists (`visibilitychange` listener, V4.25.0). But cross-device sync has never been formally end-to-end tested with a real Supabase project. The `PROGRESS_KEYS` array in `syncProgress.js` may not include all new rooms added since V4.24. Auth error states (invalid credentials, network failure during sync) have no verified graceful fallback.
+
+**Decision required (logged in DECISIONS.md):** Either (a) complete Supabase auth to production-ready standard — full E2E test, verify `PROGRESS_KEYS` covers all rooms, add auth error handling — or (b) remove Supabase entirely and be purely localStorage-first until Stripe sprint when backend investment is justified. Half-done is worse than either. This must be decided before Batch 2 outreach when new users will encounter the sign-in CTA.
+
+**Files to audit if completing:** `src/utils/syncProgress.js` (PROGRESS_KEYS completeness), `src/utils/auth.js`, `src/components/layout/Sidebar.jsx` (auth UI state), error handling paths throughout.
+
+---
+
+### 103. ⚠️ Visual Consistency / UX — Homepage live framing does not match updated README
+
+**Version:** Logged V4.33.7
+**Type:** Visual Consistency + UX / Human Elements
+
+README updated in V4.33.7 to correct audience ("data analysts, product analysts, and PMs" — not "Data Scientists and PMs"), product framing ("interactive judgment system"), and localStorage/Supabase architecture description. The live site homepage (`src/pages/Home.jsx`) was not audited for the same inconsistencies. A new visitor lands on the homepage first, not the README.
+
+**Specific checks required:**
+- Hero tagline / subheadline: does it say "Data Scientists"? Does the framing match "practice judgment calls, not recall"?
+- Room/feature copy: does any card reference data science or ML framing?
+- Auth CTA copy: does it describe sign-in benefit accurately (cross-device sync, not "unlock features")?
+- Does any in-app text still say "no backend" or equivalent?
+
+**Fix approach:** Read `src/pages/Home.jsx` fully. Search for "Data Scientist", "no backend", "localStorage", any stale framing. One copy-only pass — no component logic changes. Effort: ~20 min.
+**Files:** `src/pages/Home.jsx`
+
+---
+
+### 102. ⚠️ BUILD — Zero test coverage
+
+**Version:** Logged V4.33.7
+**Type:** BUILD + Framework / Technical
+
+No test files exist anywhere in the codebase. `package.json` has no test script, no test framework dependency (Jest, Vitest, Testing Library). This is the most significant engineering signal gap identified in the external review.
+
+**Why this matters for PAL specifically:** Two production build failures have already occurred due to apostrophe escaping and template literal bugs in data files (`challengesCases.js`, `growthAnalyticsCases.js`). A data file validator — a Node script that imports every `src/data/*.js` file and checks for illegal characters (backtick outside comments, unescaped apostrophes in single-quoted strings) — would have caught both before commit. This is not abstract test coverage; it directly solves a recurring pain point.
+
+**Highest-value tests to write (in priority order):**
+1. **Data file validator script** — Node script (no test framework needed): import all `src/data/*.js` files, verify no template literals, verify all exported arrays are non-empty, verify required fields (`id`, `title`, `difficulty` etc.) are present on every item. Run as `npm run validate-data` pre-commit. ~1 session.
+2. **Scoring logic unit tests (Vitest)** — test `isUnlocked()` (unlock.js), progress key generation patterns, `getAllStatsProgress()` return shape. Pure functions, easy to test. ~0.5 session.
+3. **Component smoke tests (Vitest + Testing Library)** — render each runner with a mock case prop, assert it mounts without crashing. Catches null deref crashes like Module25_IV before they reach Vercel. ~1 session.
+
+**Files:** `src/data/*.js` (validator target), `src/utils/unlock.js`, `src/utils/*Progress.js`, `package.json` (add Vitest), `scripts/validate-data.js` (new)
+
+---
+
 ## Part XIX — V4.33.7 Tester Bug Fixes
 
 ### 101. ✅ UX / Human Elements — Stats Room "By Difficulty" sort had no visible output
