@@ -37,7 +37,7 @@ function SchemaAccordion({ dm, open, onToggle }) {
         <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: open ? 'rotate(180deg)' : 'none' }}>▾</span>
       </button>
       {open && (
-        <div style={{ padding: '0.6rem 0.75rem', background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div style={{ padding: '0.6rem 0.75rem', background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '45vh', overflowY: 'auto' }}>
           {Object.entries(dm.tables).map(([tableName, table]) => (
             <div key={tableName}>
               <div style={{ fontFamily: 'monospace', fontSize: '0.72rem', fontWeight: 700, color: 'var(--teal)', marginBottom: '4px' }}>
@@ -143,7 +143,7 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
   const solvedCount = nonMaster.filter(p => solved.has(p.id)).length;
 
   return (
-    <div style={{ width: 256, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    <div style={{ width: 256, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', position: 'sticky', top: '1.5rem', maxHeight: 'calc(100vh - 3rem)', overflowY: 'auto' }}>
 
       {/* Progress */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.875rem' }}>
