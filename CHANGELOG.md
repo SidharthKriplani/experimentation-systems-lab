@@ -4,6 +4,43 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.38.0] — 2026-05-31 [FEATURE]
+
+### SQL Lab full build — 5 datamarts, 30 problems, new page architecture
+
+Complete rebuild of SQL Lab from a 5-problem POC to a structured practice system with shared datamart architecture, 30 problems across 4 difficulty tiers, and a new page component.
+
+**`src/data/sqlLabDatamarts.js` (NEW — 926 lines):**
+5 shared datamarts (ecomm, saas, fintech, consumer, health), each with 5 tables. Schema defined as CREATE TABLE strings. Seed data stored as JS arrays of arrays (`rows: [[1,'alice',...]]`). DB init uses prepared statements (`db.prepare('INSERT INTO t VALUES (?,?,?)').run(row)`) — avoids apostrophe-escaping nightmare. 0 backticks, 0 SQL INSERT strings in data.
+
+Datamart highlights:
+- ecomm: users (15), orders (20 — 3 users with no orders for anti-join), order_items (30), products (10), sessions (20). User 5 has orders on Jan 10/11/12 (3-day consecutive streak, gap-and-island target).
+- saas: accounts (15), subscriptions (25 — 7 active), saas_users (20), events (25), plans (4). Jan: 12 active accounts; Feb: 7 retained → 58.3% retention (CTE retention target).
+- fintech: users (15 — user 9 iris: REJECTED + high_risk + $2200 transaction → score 8, risk engine target), accounts (15), transactions (25), merchants (10), disputes (10).
+- consumer: users (15 — 14/15 have no interactions, anti-join → 2 rows), interactions (30 — content_id 1 most popular with 8 interactions), content (10), sessions (20).
+- health: patients (15), providers (10), appointments (25 — provider 1: 4/10 no-show = 40%), prescriptions (20 — Lisinopril most prescribed with 5 rxs), diagnoses (20).
+
+**`src/data/sqlLabProblems.js` (REWRITE — 650 lines):**
+30 problems (12 Easy / 10 Medium / 6 Hard / 2 Master). Each problem: `datamartId` (references shared datamart, no per-problem schema/seed), `companyDomain` (Clearbit logo), `roles[]` (PA/DA/PM/BA), `priority` (1-3), `estimatedMin`, `expectedColumns`, `expectedRowCount`, `checkValues`, `solution`, `debrief`. First 3 Easy problems `isFree: true`.
+
+Concept coverage: anti-join ×3, GROUP BY/aggregation ×4, NULL handling ×3, CASE WHEN ×3, LAG/CTE ×2, COUNT DISTINCT, strftime, cohort retention, gap-and-island, multi-CTE risk scoring, julianday channel retention.
+
+Companies covered: Amazon, Spotify, Stripe, Airbnb, Shopify, Netflix, Uber, Lyft, Apple, Google, PayPal, Robinhood, Discord, DoorDash, Meta, TikTok, Calm, Headspace, Oscar Health, Teladoc.
+
+**`src/pages/SqlLabPage.jsx` (REWRITE — 568 lines):**
+- Imports both `sqlLabDatamarts` and `sqlLabProblems`
+- DB init uses prepared statements (not INSERT strings) — `db.prepare(\`INSERT INTO ${tableName} VALUES ${placeholders}\`).run(row)`
+- `SchemaAccordion` — shows all datamart tables with columns + types
+- `SidebarProblemBtn` — Clearbit logo with `onError` hide, solved circle, difficulty badge
+- `ProblemSidebar` — filter by Easy/Medium/Hard; Challenge Vault section at bottom for Master problems (purple border, ⚡ label)
+- `DIFF_COLOR` — includes Master (purple) alongside Easy/Medium/Hard
+- Correct answer flow — `pal-success-ring` animation + "Next unsolved →" button with `pal-glow-pulse`
+- Wrong answer flow — `pal-shake` animation
+
+Files: `src/data/sqlLabDatamarts.js`, `src/data/sqlLabProblems.js`, `src/pages/SqlLabPage.jsx`, `NEXT.md`, `CHANGELOG.md`
+
+---
+
 ## [4.36.4] — 2026-05-30 [CONTENT]
 
 ### RCA Foundations depth pass — rf01, rf05, rf07 (audit #95 partial)

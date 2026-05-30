@@ -61,41 +61,68 @@ _No new features until PostHog baseline is established._
 - **Foundation modules missing task instructions (audit #95)** — interactive elements in Stat Foundations (verified: Module 02 buttons, Module 04 sliders) launch with no instruction framing. Cold user has no idea what to do with the interactive. Assumed same gap in Exp, Metrics, RCA module files — must be verified by reading each room\'s module files before writing instructions. Fix: add a 1–2 sentence "What to do" prompt directly above each interactive element in each module component JSX. Instruction format: "[Action] + [what to observe]." Start with Stat Foundations, confirm pattern, then work through remaining three rooms. Affects `src/components/[foundation]/modules/*.jsx` across all four rooms (25 stat + 7 exp + 8 metrics + 6 rca modules). Medium effort — ~1 dedicated session. Gate: resolve audit #94 (subtitle duplication) first so modules are clean before adding instructions. _Partial: rf01 and rf05 now have "What to do" context baked into the interactive framing (V4.36.4). Full systematic pass with InstructionBox component still needed across all four rooms._
 - **Foundation module depth audit — RCA, Metrics, Exp (audit #96)** — Exp now has 15 modules, Metrics 13, RCA 12 (all stubs populated as of V4.36.0). Assess whether the new modules are deep enough for senior-level prep, or whether a second layer is warranted. What topics are still missing? ~1 session per room. Gate: task instructions pass (audit #95) first. _Partial: RCA room started in V4.36.4 — rf01 (framework viz), rf05 (mix-shift playground), rf07 (SVG metric tree) upgraded. rf02, rf03, rf04, rf06 still text-only. Metrics and Exp rooms not yet assessed._
 
-### SQL Practice Lab — datamart-based query problems (new room)
+### SQL Lab — full build sprint (IN PROGRESS as of V4.37.x)
 
-**Signal:** Confirmed demand. Target community actively shares credentials across StrataScratch, DataLemur, and LeetCode — real willingness to pay, already spending. Goal: make PAL a free-first substitute that captures that spend inside the freemium model already live in PAL.
+**POC shipped V4.37.2:** 5 problems (sql001–sql005), sql.js WASM runner, sidebar with progress bar + difficulty/company filters + solved tracking. Hidden route `/sql-lab`, keyboard shortcut `q`.
 
-**Architecture decision:** Shared datamarts, not per-problem datasets. 10–15 wide, denormalized analytic tables (100–200 rows, 15–25 columns) are fabricated once per industry domain. Many problems are layered over each shared schema. Users build schema familiarity across problems — more realistic than context-switching per question, and data fabrication cost is amortised across the entire problem set.
+**Full spec confirmed — session 2026-05-31:**
 
-**Dataset inventory (5 industries × 2–3 datamarts):**
-- E-commerce / marketplace — orders, users, sessions, products
-- SaaS / subscription — subscriptions, feature_usage, accounts, churn_events
-- Fintech — transactions, wallets, fraud_signals, user_profiles
-- Consumer app / social — events, dau_snapshots, content, follows
-- Healthtech — appointments, outcomes, engagement, providers
+**Problem bank target:** 250 problems — 100 Easy / 75 Medium / 50 Hard / 25 Master. All original, not copied from DataLemur/StrataScratch. Same SQL concept coverage, different business context, different data.
 
-Each datamart: deliberate messiness baked in (nulls in predictable places, duplicates, one platform with missing events, timezone inconsistency in one timestamp column). Edge cases are data design, not afterthoughts.
+**Difficulty tiers (qualitative distinctions, not just complexity):**
+- Easy: prompt implies the technique, 1–2 tables, clean data, tests whether you know the construct
+- Medium: 2–3 concepts chained, at least 1 data trap, tests whether you can combine correctly
+- Hard: technique not implied, naive query gives wrong answer, edge case is in the data
+- Master: business question only (no technique signal), multi-concept, judgment-required, open interpretation. Challenge Vault — never in study plans.
 
-**Problem structure per datamart:**
-- Easy: single-table aggregation, basic filter, date truncation
-- Medium: join + window function, cohort slice, WoW comparison
-- Hard: multi-table, Simpson\'s Paradox trap, metric decomposition over funnel with missing data
+**Business-first framing rule:** Every prompt follows: (1) who you are, (2) what happened, (3) what they\'re asking, (4) what to return — framed as stakeholder need, not "write a query that...". Technique must be derived from the question, never named in the prompt.
 
-Target: 10–15 problems per datamart → 100–150 problems total from 10–15 fabricated datasets.
+**Datamart architecture:**
+- 5 datamarts: ecomm / saas / fintech / consumer / health
+- Each datamart: 4–5 tables, 15–25 rows per table, seed data stored as JS arrays of arrays (not SQL strings)
+- DB init: prepared statements (`db.prepare(...).run(row)`) — avoids apostrophe escaping
+- File split: `sqlLabDatamarts.js` (schemas + seed) + `sqlLabProblems.js` (problems only, reference datamartId)
 
-**Technical execution:**
-- SQL runtime: `sql.js` (SQLite via WebAssembly) — fully browser-side, zero backend, zero infrastructure cost
-- Each problem: schema definition (CREATE TABLE + INSERT), problem prompt, expected output, test case validator (checks row count + column values, not string equality)
-- Editor: CodeMirror (already evaluating) or Monaco
-- Python/Pandas: defer to v2 — Pyodide is ~10MB WASM, adds real load-time cost
+**Problem metadata per problem:** id, title, company, companyDomain, difficulty, isFree, tags[], roles[], priority (1/2/3), estimatedMin, datamartId, prompt, expectedColumns[], expectedRowCount, checkValues[], solution, debrief, sqliteNote
 
-**Freemium gate:** Uses existing `isFree` flag pattern. Easy problems free, Medium/Hard gated. Same access-code + Stripe layer that all other rooms use.
+**Features shipped / to ship:**
+- ✅ SQL editor (textarea, Tab=2-space indent, Ctrl+Enter=run)
+- ✅ sql.js WASM runtime (browser-side SQLite)
+- ✅ Results table + validation (column names + row count + spot-check values)
+- ✅ Debrief reveal with --discovery amber border
+- ✅ Right sidebar: progress bar, difficulty/company filters, problem list with solved indicators
+- ✅ localStorage solved tracking (`pal-sql-lab-solved-v1`)
+- 🔲 Company logos via Clearbit (`https://logo.clearbit.com/[domain]`)
+- 🔲 Timer: starts on first keystroke, records elapsed on correct solve to `pal-sql-lab-times-v1`
+- 🔲 Study plan onboarding: 4-step modal (interview?/when?/role?/time-per-day?) → payoff screen with daily queue
+- 🔲 Plan modes: Casual / Steady / Intensive (30/60/120 min per day)
+- 🔲 Solved-aware plan: skips already-completed problems
+- 🔲 Challenge Vault: Master problems in separate sidebar section, never in plans
+- 🔲 Master difficulty color: purple (`var(--purple)`)
+- 🔲 Role tags per problem + priority for plan generation
 
-**Industry tags:** Each problem tagged by industry + SQL concept (window functions, CTEs, cohort analysis, funnel, join type). Filter chips on the browser page.
+**Study plan numbers:**
 
-**Scope boundary:** Problems stay in product analytics SQL territory — funnel queries, cohort retention, DAU decomposition, event table investigation, mix-shift analysis. Not generic LeetCode window-function puzzles that belong on any DS platform.
+| | Casual | Steady | Intensive |
+|---|---|---|---|
+| 3-day | 4 | 9 | 15 |
+| 7-day | 10 | 21 | 35 |
+| 14-day | 18 | 35 | 56 |
+| 1-month | 30 | 70 | 120 |
 
-**Effort:** Data design (~2 sessions) + room plumbing (1 session) + problem authoring (~3 sessions for v1 with 60 problems). Gate: current NEXT.md queue clears first. Do not mix with audit or foundation work.
+**SQL concept coverage (concept matrix drives problem ordering):**
+Family 1 — Aggregation & Filtering (Easy-heavy): GROUP BY, HAVING, CASE WHEN agg, DISTINCT COUNT, NULL handling, COALESCE/NULLIF, BETWEEN/IN, string/date functions
+Family 2 — Joins (Easy→Medium): INNER, LEFT, 3–5 table, non-obvious key, anti-join, self-join, cross join, range join
+Family 3 — Subqueries & CTEs (Medium): correlated subquery, EXISTS/NOT EXISTS, scalar in SELECT, derived table, 2–3 CTE chains, recursive CTE
+Family 4 — Window Functions (Medium→Hard): ROW_NUMBER, RANK/DENSE_RANK, LAG/LEAD, FIRST_VALUE, NTILE, SUM OVER, ROWS BETWEEN N PRECEDING, 7-day rolling, session gap detection
+Family 5 — Advanced Patterns (Hard): gap-and-island, funnel analysis, cohort retention, Simpson\'s Paradox, median (SQLite hack), mode, de-duplication, SCD Type 2, first/last touch attribution
+Family 6 — Data Traps (across all): divide-by-zero, integer division, duplicate join inflation, NULL in aggregates, off-by-one dates, LEFT→INNER conversion via WHERE
+
+**Build sequence (from NEXT.md):** 12 steps, one per message. See NEXT.md #1 for full ordered list.
+
+**v2 deferred:** SQL Lab-specific progress page, Pandas/R/PySpark layers, role-specific debrief variants.
+
+**Scope boundary:** Product analytics SQL only — funnel, cohort, DAU, A/B, metric decomposition, mix-shift. No generic LeetCode algorithmic puzzles.
 
 ### Bugs
 - ~~**React error boundary — missing entirely (audit #105)**~~ — ✅ resolved V4.36.x. `src/components/shared/ErrorBoundary.jsx` created (class component), wrapping `<main>` in App.jsx. Fallback: "Something went wrong — go home" CTA.

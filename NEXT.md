@@ -4,13 +4,59 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.36.4 (2026-05-30)*
+*Last updated: V4.38.0 (2026-05-31) — SQL Lab full build complete*
 
 ---
 
 ## Next session
 
-**1. Foundation module task instructions — "What to do" framing (audit #95)** `M` `UX`
+**1. SQL Lab — vet + scale sprint** `L` `FEATURE`
+
+SQL Lab is an internal-first practice tool (hidden at `/sql-lab`, keyboard shortcut `q`). POC shipped V4.37.2 (5 problems, single sidebar, basic runner). Full build in progress.
+
+**Full feature spec:**
+- 250 problems total: 100 Easy / 75 Medium / 50 Hard / 25 Master
+- 4 difficulty tiers. Master = Challenge Vault, never included in study plans, always visible
+- Business-first framing: every prompt gives context + business question, technique not implied
+- Shared datamart architecture: 5 industries × 1 datamart = 5 datamarts, many problems per schema
+- Company logos via Clearbit (`https://logo.clearbit.com/[domain]`)
+- Timer: starts on first keystroke in editor, records elapsed time to localStorage on correct solve only
+- Study plan onboarding: 4-step sequential modal (interview? / when? / role? / time/day?) → payoff screen showing plan summary and daily queue
+- Plan modes: Casual (~30 min/day) / Steady (~60 min/day) / Intensive (~2 hrs/day)
+- Plan is solved-aware: skips already-completed problems
+- Difficulty filter in sidebar: Easy/Medium/Hard. Master excluded — shown in separate Challenge Vault section
+- Role tags per problem: PA / DA / PM / BA. Priority tags: 1 (must-know) / 2 (role-specific) / 3 (specialist)
+- localStorage keys: `pal-sql-lab-solved-v1` (Set of solved IDs), `pal-sql-lab-plan-v1` (plan config), `pal-sql-lab-times-v1` (solve times per problem)
+- SQL engine: sql.js (SQLite via WASM, `public/sql-wasm.wasm` already present)
+
+**File architecture (critical — do not merge back into one file):**
+- `src/data/sqlLabDatamarts.js` — NEW FILE. 5 datamarts. Each datamart has `tables` object where each table has `schema` (CREATE TABLE string), `columns` (array of {name,type} for display), `rows` (array of arrays — seed data). No SQL strings with apostrophes — use parameter arrays and prepared statements in the page.
+- `src/data/sqlLabProblems.js` — REWRITE. Problems array only. Each problem has `datamartId` (references datamarts), `companyDomain`, `roles[]`, `priority`. No per-problem `schema` or `seed` — those are in the datamart.
+- `src/pages/SqlLabPage.jsx` — REWRITE. Import both files. DB init uses prepared statements from datamart rows. New features: Clearbit logo, timer, PlanModal, Challenge Vault in sidebar.
+
+**V4.38.0 status — SHIPPED:**
+- `sqlLabDatamarts.js` — 926 lines, 5 datamarts × 5 tables, seed data complete, 0 backticks ✅
+- `sqlLabProblems.js` — 650 lines, 30 problems (12E/10M/6H/2Master), 0 backticks ✅
+- `SqlLabPage.jsx` — 568 lines, prepared-statement DB init, Clearbit logos, Challenge Vault ✅
+- Vite build: ✓ 807 modules, 0 errors ✅
+
+**Vet checklist (user runs these before scaling to 250):**
+1. Navigate to `/sql-lab` (or press `q`)
+2. Try Easy sql-e01 (Re-engagement Targets) — LEFT JOIN anti-join, expect 3 rows (users 13,14,15 with no orders)
+3. Try Medium sql-m05 (Channel Mix Pivot) — CASE WHEN aggregation
+4. Try Hard sql-h02 (Streak Detector) — gap-and-island, expect user 5 only
+5. Try Master sql-master01 (Risk Engine) — 3-CTE score, expect user 9 score 8
+6. Confirm Challenge Vault section visible at sidebar bottom
+7. Confirm schema accordion shows all datamart tables
+8. Confirm Clearbit logos render (or hide gracefully on error)
+
+**After vet — scale to 250 problems:**
+- Add 88 more Easy, 65 more Medium, 44 more Hard, 23 more Master
+- Add Study Plan 4-step modal (interview? / when? / role? / time?) → plan modes Casual/Steady/Intensive
+- Add timer (starts on first keystroke, records elapsed on correct solve to `pal-sql-lab-times-v1`)
+- Add SQL Lab progress section to Progress.jsx
+
+**2. Foundation module task instructions — "What to do" framing (audit #95)** `M` `UX`
 All interactive foundation elements across all 4 runners need a 1–2 sentence instruction prompt above each interactive element. InstructionBox component exists in ExpFoundationsRunner. Start with the 12 new stubs (ef12–ef15, mf11–mf13, rf08–rf12) — most launch without any instruction framing. Then audit the older modules. ~1 session. Do not mix with bug fixes.
 
 **2. Visual pass — Simulator layout + emoji removal + icon consistency (audits #82, #80, #79)** `L` `VISUAL`
@@ -39,7 +85,12 @@ Gate: PostHog confirms real Defense Strategy usage from Batch 1. Do not build un
 
 ## Carry-forward log
 
-**Done in this session (V4.35.5–V4.36.3):**
+**Done this session (V4.38.0):**
+- SQL Lab full build: sqlLabDatamarts.js (926 lines, 5 datamarts), sqlLabProblems.js (30 problems), SqlLabPage.jsx (568 lines)
+- Vite build clean — 807 modules, 0 errors
+- NEXT.md + CHANGELOG pending user commit
+
+**Done in prior session (V4.35.5–V4.36.3):**
 - Foundation broken links (NEXT #1) — dead `playbookLinks` block removed from StatsFoundationsRunner
 - Metrics linked scenario chips (NEXT #2) — confirmed already wired (audit #35)
 - Subtitle duplication across 5 stat modules (NEXT #3) — audit #94 ✅ resolved

@@ -24,6 +24,18 @@ Key naming convention: `pal-[room]-progress-v1`. New rooms must follow this patt
 **One file per component. No separate CSS files.**
 All styling uses inline style objects with CSS variables. No CSS modules, no Tailwind, no styled-components.
 
+**SQL Lab data is split across two files. Never merge them back.**
+`src/data/sqlLabDatamarts.js` — shared datamart definitions (schemas + seed data). `src/data/sqlLabProblems.js` — problems array only, each referencing `datamartId`. This split keeps each file under ~600 lines and prevents single-write token limit errors during development. The page imports both files.
+
+**SQL Lab DB init uses prepared statements, not INSERT strings.**
+Seed data in `sqlLabDatamarts.js` is stored as JS arrays of arrays (`rows: [[1,'alice',...]...]`). The page runs `db.prepare('INSERT INTO t VALUES (?,?,?)').run(row)` per row. This avoids the apostrophe-escaping nightmare that would occur if seed data were stored as raw SQL INSERT strings. Never convert seed data back to SQL string format.
+
+**SQL Lab study plans never include Master problems.**
+Master problems live in a separate Challenge Vault section in the sidebar. They are visible always but excluded from all Casual/Steady/Intensive study plan queues. This is a permanent product decision — Master is aspirational, not structured prep.
+
+**SQL Lab token limit rule: never write more than ~400 lines per tool call.**
+The 32k output token error is triggered when a single response generates and streams large code blocks. Always write to file immediately via Write/Edit tools. Never output large file contents in response text. If a file section exceeds ~400 lines, use Write (skeleton) + Edit (fill sections) pattern.
+
 ---
 
 ## Product scope
