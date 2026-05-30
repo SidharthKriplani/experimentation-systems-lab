@@ -377,8 +377,7 @@ export function SqlLabPage({ onBack }) {
   if (!problem) return null;
 
   return (
-    <div className="pal-page-enter sql-lab-shell">
-      <div style={{ maxWidth: 1280, margin: '0 auto', width: '100%', height: '100%', padding: '1.5rem 1.5rem 0', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div className="pal-page-enter sql-lab-shell" style={{ padding: '1.5rem 1.5rem 0' }}>
 
       {/* Header — fixed, never scrolls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap', flexShrink: 0 }}>
@@ -562,7 +561,6 @@ export function SqlLabPage({ onBack }) {
           onFilterDiff={setFilterDiff}
           onSelect={idx => setProblemIdx(idx)}
         />
-      </div>
       </div>
     </div>
   );
