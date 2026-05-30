@@ -707,7 +707,7 @@ export default function App() {
               ))}
             </div>
           }>
-        <div key={page} className="pal-page-enter">
+        <div key={page} className={page === 'sql-lab' ? undefined : 'pal-page-enter'}>
         {page === 'home' && (
           <Home onNavigate={navigate} onStartScenario={openScenario} />
         )}
