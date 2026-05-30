@@ -85,6 +85,124 @@ function ResultsTable({ results }) {
   );
 }
 
+function ProblemSidebar({ problems, currentIdx, solved, filterDiff, filterCompany, onFilterDiff, onFilterCompany, onSelect }) {
+  const companies = [...new Set(problems.map(p => p.company))];
+  const filtered = problems.filter(p => {
+    if (filterDiff && p.difficulty !== filterDiff) return false;
+    if (filterCompany && p.company !== filterCompany) return false;
+    return true;
+  });
+  const solvedCount = problems.filter(p => solved.has(p.id)).length;
+
+  return (
+    <div style={{ width: 256, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+
+      {/* Progress summary */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.875rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Progress</div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text)' }}>{solvedCount}</span>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>/ {problems.length} solved</span>
+        </div>
+        <div style={{ height: 4, background: 'var(--border)', borderRadius: 99, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: (solvedCount / problems.length * 100) + '%', background: 'var(--teal)', borderRadius: 99, transition: 'width 0.4s ease' }} />
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.875rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Filter</div>
+        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          {[null, 'Easy', 'Medium', 'Hard'].map(d => {
+            const label = d || 'All';
+            const active = filterDiff === d;
+            const ds = d ? DIFF_COLOR[d] : null;
+            return (
+              <button
+                key={label}
+                onClick={() => onFilterDiff(active ? null : d)}
+                style={{
+                  padding: '3px 10px', borderRadius: '99px', fontSize: '0.7rem', fontWeight: 600,
+                  cursor: 'pointer', border: '1px solid',
+                  background: active ? (ds ? ds.bg : 'var(--teal-bg, rgba(20,184,166,0.1))') : 'var(--surface-2)',
+                  color: active ? (ds ? ds.text : 'var(--teal)') : 'var(--text-muted)',
+                  borderColor: active ? (ds ? ds.border : 'var(--teal-border, rgba(20,184,166,0.3))') : 'var(--border)',
+                }}
+              >{label}</button>
+            );
+          })}
+        </div>
+        <select
+          value={filterCompany || ''}
+          onChange={e => onFilterCompany(e.target.value || null)}
+          style={{
+            width: '100%', padding: '5px 8px', fontSize: '0.75rem', borderRadius: '6px',
+            border: '1px solid var(--border)', background: 'var(--surface-2)', color: filterCompany ? 'var(--text)' : 'var(--text-muted)',
+            cursor: 'pointer', outline: 'none',
+          }}
+        >
+          <option value=''>All companies</option>
+          {companies.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
+      </div>
+
+      {/* Problem list */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', overflow: 'hidden' }}>
+        <div style={{ padding: '0.5rem 0.875rem', borderBottom: '1px solid var(--border)', fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          {filtered.length} problem{filtered.length !== 1 ? 's' : ''}
+        </div>
+        {filtered.map(p => {
+          const globalIdx = problems.findIndex(x => x.id === p.id);
+          const isCurrent = globalIdx === currentIdx;
+          const isSolved = solved.has(p.id);
+          const ds = DIFF_COLOR[p.difficulty] || DIFF_COLOR.Easy;
+          return (
+            <button
+              key={p.id}
+              onClick={() => onSelect(globalIdx)}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
+                padding: '0.6rem 0.875rem', border: 'none', borderBottom: '1px solid var(--border)',
+                background: isCurrent ? 'var(--surface-2)' : 'transparent',
+                cursor: 'pointer', textAlign: 'left',
+                borderLeft: isCurrent ? '3px solid var(--teal)' : '3px solid transparent',
+                transition: 'background 0.15s',
+              }}
+            >
+              <div style={{
+                width: 16, height: 16, borderRadius: '50%', flexShrink: 0, marginTop: 2,
+                background: isSolved ? 'var(--green)' : 'transparent',
+                border: isSolved ? 'none' : '1.5px solid var(--border)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '0.55rem', color: '#fff', fontWeight: 700,
+              }}>
+                {isSolved ? '✓' : ''}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontSize: '0.78rem', fontWeight: isCurrent ? 600 : 400, lineHeight: 1.4, marginBottom: '3px',
+                  color: isCurrent ? 'var(--text)' : 'var(--text-secondary, var(--text-muted))',
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                }}>
+                  {globalIdx + 1}. {p.title}
+                </div>
+                <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.65rem', fontWeight: 600, color: ds.text }}>{p.difficulty}</span>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--border)' }}>·</span>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{p.company}</span>
+                </div>
+              </div>
+            </button>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div style={{ padding: '1rem', fontSize: '0.78rem', color: 'var(--text-muted)', textAlign: 'center' }}>No problems match</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function SqlLabPage({ onBack }) {
   const [problemIdx, setProblemIdx] = useState(0);
   const [db, setDb] = useState(null);
@@ -97,9 +215,27 @@ export function SqlLabPage({ onBack }) {
   const [schemaOpen, setSchemaOpen] = useState(true);
   const [hasRun, setHasRun] = useState(false);
   const [correct, setCorrect] = useState(null);
+  const [filterDiff, setFilterDiff] = useState(null);
+  const [filterCompany, setFilterCompany] = useState(null);
+  const [solved, setSolved] = useState(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('pal-sql-lab-solved-v1') || '[]');
+      return new Set(stored);
+    } catch { return new Set(); }
+  });
   const dbRef = useRef(null);
 
   const problem = sqlLabProblems[problemIdx];
+
+  useEffect(() => {
+    if (correct !== true) return;
+    setSolved(prev => {
+      const next = new Set(prev);
+      next.add(problem.id);
+      try { localStorage.setItem('pal-sql-lab-solved-v1', JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  }, [correct]);
 
   useEffect(() => {
     let cancelled = false;
@@ -194,8 +330,7 @@ export function SqlLabPage({ onBack }) {
       const el = e.target;
       const start = el.selectionStart;
       const end = el.selectionEnd;
-      const val = el.value;
-      setQuery(val.substring(0, start) + '  ' + val.substring(end));
+      setQuery(el.value.substring(0, start) + '  ' + el.value.substring(end));
       requestAnimationFrame(() => {
         el.selectionStart = start + 2;
         el.selectionEnd = start + 2;
@@ -206,13 +341,13 @@ export function SqlLabPage({ onBack }) {
   const diffStyle = DIFF_COLOR[problem.difficulty] || DIFF_COLOR.Easy;
 
   return (
-    <div className="pal-page-enter" style={{ maxWidth: 1200, margin: '0 auto', padding: '1.5rem 1.5rem 4rem' }}>
+    <div className="pal-page-enter" style={{ maxWidth: 1280, margin: '0 auto', padding: '1.5rem 1.5rem 4rem' }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <button
           onClick={onBack}
-          style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '6px', padding: '0.3rem 0.7rem', fontSize: '0.78rem', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+          style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '6px', padding: '0.3rem 0.7rem', fontSize: '0.78rem', color: 'var(--text-muted)', cursor: 'pointer' }}
         >
           ← Back
         </button>
@@ -223,54 +358,30 @@ export function SqlLabPage({ onBack }) {
         </div>
       </div>
 
-      {/* Problem tabs */}
-      <div style={{ display: 'flex', gap: '6px', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-        {sqlLabProblems.map((p, i) => {
-          const ds = DIFF_COLOR[p.difficulty] || DIFF_COLOR.Easy;
-          const active = i === problemIdx;
-          return (
-            <button
-              key={p.id}
-              onClick={() => setProblemIdx(i)}
-              style={{
-                padding: '5px 14px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 600,
-                cursor: 'pointer', transition: 'all 0.15s',
-                background: active ? ds.bg : 'var(--surface)',
-                border: active ? ('1px solid ' + ds.border) : '1px solid var(--border)',
-                color: active ? ds.text : 'var(--text-muted)',
-              }}
-            >
-              {i + 1}. {p.title}
-            </button>
-          );
-        })}
-      </div>
+      {/* Body: main content + sidebar */}
+      <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
 
-      {/* Single column layout */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {/* Main column */}
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
-        {/* Problem card */}
-        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-            <Badge label={problem.difficulty} style={{ background: diffStyle.bg, color: diffStyle.text, borderColor: diffStyle.border }} />
-            {problem.tags.slice(0, 3).map(t => (
-              <Badge key={t} label={t} style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', borderColor: 'var(--border)' }} />
-            ))}
-            <Badge label={problem.company} style={{ background: 'var(--accent-bg, rgba(67,56,202,0.08))', color: 'var(--accent)', borderColor: 'var(--accent-border, rgba(67,56,202,0.2))' }} />
+          {/* Problem card */}
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+              <Badge label={problem.difficulty} style={{ background: diffStyle.bg, color: diffStyle.text, borderColor: diffStyle.border }} />
+              {problem.tags.slice(0, 3).map(t => (
+                <Badge key={t} label={t} style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', borderColor: 'var(--border)' }} />
+              ))}
+              <Badge label={problem.company} style={{ background: 'var(--accent-bg, rgba(67,56,202,0.08))', color: 'var(--accent)', borderColor: 'var(--accent-border, rgba(67,56,202,0.2))' }} />
+            </div>
+            <h2 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 0.6rem', color: 'var(--text)' }}>{problem.title}</h2>
+            <p style={{ fontSize: '0.83rem', lineHeight: 1.65, color: 'var(--text-secondary, var(--text-muted))', margin: 0 }}>{problem.prompt}</p>
+            <SchemaAccordion problem={problem} open={schemaOpen} onToggle={() => setSchemaOpen(o => !o)} />
+            <div style={{ marginTop: '0.75rem', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+              ⏱ ~{problem.estimatedMin} min &nbsp;·&nbsp; Ctrl+Enter to run
+            </div>
           </div>
 
-          <h2 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 0.6rem', color: 'var(--text)' }}>{problem.title}</h2>
-          <p style={{ fontSize: '0.83rem', lineHeight: 1.65, color: 'var(--text-secondary, var(--text-muted))', margin: 0 }}>{problem.prompt}</p>
-
-          <SchemaAccordion problem={problem} open={schemaOpen} onToggle={() => setSchemaOpen(o => !o)} />
-
-          <div style={{ marginTop: '0.75rem', fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
-            ⏱ ~{problem.estimatedMin} min &nbsp;·&nbsp; Ctrl+Enter to run
-          </div>
-        </div>
-
-        {/* Editor + results */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {/* Editor + results */}
           {sqlLoading && (
             <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.5rem', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
               Loading SQL engine…
@@ -297,7 +408,6 @@ export function SqlLabPage({ onBack }) {
                   boxSizing: 'border-box',
                 }}
               />
-
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <button
                   onClick={runQuery}
@@ -314,16 +424,14 @@ export function SqlLabPage({ onBack }) {
                   <span style={{ fontSize: '0.78rem', color: 'var(--green)', fontWeight: 600 }}>✓ Correct</span>
                 )}
                 {hasRun && correct === false && !runError && (
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Output doesn't match — check row count or column names</span>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Output does not match — check row count or column names</span>
                 )}
               </div>
-
               {runError && (
                 <div style={{ padding: '0.6rem 0.75rem', background: 'var(--red-bg, rgba(239,68,68,0.08))', border: '1px solid var(--red-border, rgba(239,68,68,0.2))', borderRadius: '6px', fontSize: '0.78rem', color: 'var(--red)', fontFamily: 'monospace' }}>
                   {runError}
                 </div>
               )}
-
               {results && !runError && (
                 <div style={{ border: '1px solid var(--border)', borderRadius: '6px', overflow: 'hidden' }}>
                   <div style={{ padding: '4px 10px', background: 'var(--surface-2)', fontSize: '0.7rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>
@@ -335,8 +443,8 @@ export function SqlLabPage({ onBack }) {
             </div>
           )}
 
-          {/* Reveal button */}
-          {!revealed && (
+          {/* Reveal */}
+          {!sqlLoading && !sqlError && !revealed && (
             <button
               onClick={() => setRevealed(true)}
               style={{
@@ -348,31 +456,43 @@ export function SqlLabPage({ onBack }) {
               Show answer
             </button>
           )}
-        </div>
-      </div>
 
-      {/* Debrief panel */}
-      {revealed && (
-        <div className="pal-reveal-in" style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <div style={{
-            borderLeft: '3px solid var(--discovery, #E8A033)',
-            background: 'rgba(232,160,51,0.07)',
-            borderRadius: '0 8px 8px 0',
-            padding: '0.85rem 1rem',
-            fontSize: '0.83rem', lineHeight: 1.65, color: 'var(--text)',
-          }}>
-            {problem.debrief}
-          </div>
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1rem' }}>
-            <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Model solution</div>
-            <pre style={{
-              margin: 0, padding: '0.75rem', background: 'var(--surface-2)', borderRadius: '6px',
-              fontSize: '0.8rem', fontFamily: 'monospace', lineHeight: 1.6, color: 'var(--text)',
-              overflowX: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-word',
-            }}>{problem.solution}</pre>
-          </div>
+          {/* Debrief */}
+          {revealed && (
+            <div className="pal-reveal-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{
+                borderLeft: '3px solid var(--discovery, #E8A033)',
+                background: 'rgba(232,160,51,0.07)',
+                borderRadius: '0 8px 8px 0',
+                padding: '0.85rem 1rem',
+                fontSize: '0.83rem', lineHeight: 1.65, color: 'var(--text)',
+              }}>
+                {problem.debrief}
+              </div>
+              <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1rem' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Model solution</div>
+                <pre style={{
+                  margin: 0, padding: '0.75rem', background: 'var(--surface-2)', borderRadius: '6px',
+                  fontSize: '0.8rem', fontFamily: 'monospace', lineHeight: 1.6, color: 'var(--text)',
+                  overflowX: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+                }}>{problem.solution}</pre>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Right sidebar */}
+        <ProblemSidebar
+          problems={sqlLabProblems}
+          currentIdx={problemIdx}
+          solved={solved}
+          filterDiff={filterDiff}
+          filterCompany={filterCompany}
+          onFilterDiff={setFilterDiff}
+          onFilterCompany={setFilterCompany}
+          onSelect={idx => setProblemIdx(idx)}
+        />
+      </div>
     </div>
   );
 }
