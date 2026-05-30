@@ -177,3 +177,4 @@ This batch should include the Pricing page explicitly. Ask testers directly: "Do
 | Version | Change |
 |---|---|
 | V4.27.0 | File created. Batch 0 checklist written. Batch 1 fully specified. Batches 2–3 stubbed. |
+| V4.39.1 | SQL Lab at 250 problems. Internal preview only (hidden route `/sql-lab`, shortcut `q`). Not yet in Batch 2 checklist — phase 2 features (Study Plan, timer) must ship first. |

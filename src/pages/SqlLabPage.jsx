@@ -143,8 +143,7 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
   const solvedCount = nonMaster.filter(p => solved.has(p.id)).length;
 
   return (
-    <div style={{ width: 256, flexShrink: 0, position: 'sticky', top: '1.5rem', maxHeight: 'calc(100vh - 3rem)' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', height: '100%', overflowY: 'auto', paddingBottom: '1rem' }}>
+    <div style={{ width: 256, flexShrink: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
 
       {/* Progress */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.875rem' }}>
@@ -223,7 +222,6 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
           })}
         </div>
       )}
-      </div>
     </div>
   );
 }
@@ -379,10 +377,10 @@ export function SqlLabPage({ onBack }) {
   if (!problem) return null;
 
   return (
-    <div className="pal-page-enter" style={{ maxWidth: 1280, margin: '0 auto', padding: '1.5rem 1.5rem 4rem' }}>
+    <div className="pal-page-enter" style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', maxWidth: 1280, margin: '0 auto', padding: '1.5rem 1.5rem 0' }}>
 
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      {/* Header — fixed, never scrolls */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap', flexShrink: 0 }}>
         <button
           onClick={onBack}
           style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '6px', padding: '0.3rem 0.7rem', fontSize: '0.78rem', color: 'var(--text-muted)', cursor: 'pointer' }}
@@ -396,11 +394,11 @@ export function SqlLabPage({ onBack }) {
         </div>
       </div>
 
-      {/* Body */}
-      <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
+      {/* Body — fills remaining height, both panels scroll independently */}
+      <div style={{ display: 'flex', gap: '1.25rem', flex: 1, minHeight: 0, overflow: 'hidden', paddingBottom: '1.5rem' }}>
 
-        {/* Main column */}
-        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {/* Main column — scrolls independently */}
+        <div style={{ flex: 1, minWidth: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
           {/* Problem card */}
           <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem' }}>

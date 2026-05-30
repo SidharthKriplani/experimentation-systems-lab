@@ -164,4 +164,4 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the full version history and upcomi
 
 ---
 
-*Product Analytics Lab — V4.36.0*
+*Product Analytics Lab — V4.39.1*
