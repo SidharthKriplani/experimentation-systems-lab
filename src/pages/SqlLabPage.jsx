@@ -143,7 +143,8 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
   const solvedCount = nonMaster.filter(p => solved.has(p.id)).length;
 
   return (
-    <div style={{ width: 256, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', position: 'sticky', top: '1.5rem', maxHeight: 'calc(100vh - 3rem)', overflowY: 'auto' }}>
+    <div style={{ width: 256, flexShrink: 0, position: 'sticky', top: '1.5rem', maxHeight: 'calc(100vh - 3rem)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', height: '100%', overflowY: 'auto', paddingBottom: '1rem' }}>
 
       {/* Progress */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.875rem' }}>
@@ -222,6 +223,7 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
           })}
         </div>
       )}
+      </div>
     </div>
   );
 }
