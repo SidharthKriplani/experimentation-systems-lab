@@ -246,12 +246,10 @@ export function SqlLabPage({ onBack }) {
         })}
       </div>
 
-      {/* Split pane */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1.1fr)', gap: '1rem', alignItems: 'start' }}
-           className="sql-lab-grid">
-        <style>{'.sql-lab-grid { } @media (max-width: 800px) { .sql-lab-grid { grid-template-columns: 1fr !important; } }'}</style>
+      {/* Single column layout */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
-        {/* Left: problem */}
+        {/* Problem card */}
         <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
             <Badge label={problem.difficulty} style={{ background: diffStyle.bg, color: diffStyle.text, borderColor: diffStyle.border }} />
@@ -271,7 +269,7 @@ export function SqlLabPage({ onBack }) {
           </div>
         </div>
 
-        {/* Right: editor + results */}
+        {/* Editor + results */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {sqlLoading && (
             <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.5rem', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
@@ -292,7 +290,7 @@ export function SqlLabPage({ onBack }) {
                 spellCheck={false}
                 placeholder={'-- Write your SQL here\n-- Ctrl+Enter to run'}
                 style={{
-                  width: '100%', minHeight: 180, resize: 'vertical', fontFamily: 'monospace',
+                  width: '100%', minHeight: 280, resize: 'vertical', fontFamily: 'monospace',
                   fontSize: '0.82rem', lineHeight: 1.6, padding: '0.75rem',
                   background: 'var(--surface-2)', border: '1px solid var(--border)',
                   borderRadius: '6px', color: 'var(--text)', outline: 'none',
