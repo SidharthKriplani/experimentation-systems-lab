@@ -39,6 +39,52 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XXVI — V4.39.0 SQL Lab Scale Audit
+
+### 124. ✅ Coverage — SQL Lab problem bank at 30/250 target (V4.39.0)
+
+**Version:** Fixed V4.39.0
+**Type:** Coverage / Content Integrity
+
+SQL Lab shipped at V4.38.0 with 30 problems (12E/10M/6H/2Master). The 250-problem target required 220 more problems. Scaled in two sessions — session 1 (V4.38.x intermediate): added Easy e01–e100, Medium m01–m75, Hard h01–h50, Master master01–master14. Session 2 (V4.39.0): added Master master15–master25 to reach the full target.
+
+All 250 problems verified:
+- Single-quoted strings throughout, apostrophes escaped as `\'`, 0 backticks
+- `expectedRowCount` verified against datamart seed data counts (manual trace for each problem)
+- `checkValues` excludes float columns (REAL aggregations → `checkValues: []`); integer columns verified by hand
+- `datamartId` correctly references one of the 5 shared datamarts
+- `companyDomain` present on all for Clearbit logo support
+- `roles[]` and `priority` set on all problems
+
+Technique distribution across 250 problems:
+- Anti-join: ~8 problems
+- Window functions (SUM OVER, RANK, ROW_NUMBER, NTILE, LAG): ~12 problems
+- Multi-CTE (2–3 CTEs): ~20 Master + ~8 Hard = ~28 problems
+- Conditional aggregation (CASE WHEN pivot): ~15 problems
+- Date/time (strftime, julianday): ~10 problems
+- Self-join patterns: ~5 problems
+- Basic GROUP BY / aggregation: ~40+ problems
+
+Known open issue: sql-master10 solution string may have `\)` instead of `\n)` at CTE boundary — test manually and fix in sqlLabProblems.js if it causes a SQL parse error at runtime.
+
+**Files:** `src/data/sqlLabProblems.js`
+
+---
+
+### 125. ⚠️ Content — SQL Lab phase 2 features not yet built
+
+**Version:** Open — V4.39.0
+**Type:** UX / Human Elements / Coverage
+
+Three SQL Lab features remain unbuilt after the problem bank is complete:
+1. **Study Plan modal** — 4-step sequential onboarding (interview? / when? / role? / time?) → Casual/Steady/Intensive plan modes. Plan is solved-aware (skips already-completed problems). localStorage: `pal-sql-lab-plan-v1`.
+2. **Timer** — starts on first keystroke in the editor. Records elapsed time to `pal-sql-lab-times-v1` on correct solve only. No timer shown if user hasn't typed yet.
+3. **SQL Lab progress section in Progress.jsx** — solved count by difficulty, total time, current streak.
+
+**Fix:** Build in a dedicated session after vet confirms problems run correctly. Do not mix with content or bug-fix sessions.
+
+---
+
 ## Part XXV — V4.36.1–V4.36.2 Infrastructure Audit
 
 ### 118. ✅ Copy — PlaybookBrowser + BlogBrowser label copy (audit #83)

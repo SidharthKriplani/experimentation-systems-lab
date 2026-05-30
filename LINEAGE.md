@@ -155,3 +155,21 @@ The foundation layer is now complete and internally consistent. Every module in 
 ---
 
 *Reconstructed from CHANGELOG.md (V1 through V4.36.0). If this file is out of date, read the CHANGELOG and update the narrative — do not delete this file.*
+
+## V4.37.x–V4.39.0 — SQL Lab: From POC to 250 Problems
+
+SQL Lab had existed as a 5-problem POC (V4.37.2) — a hidden room at `/sql-lab` with a basic editor and a single sidebar. The architecture was a single file with per-problem schema definitions and seed data embedded alongside the problem metadata. This made scaling impractical.
+
+**V4.38.0** — Complete architectural rebuild. The critical decision was separating data from problems: `sqlLabDatamarts.js` became the single source of truth for all 5 industry schemas and seed data; `sqlLabProblems.js` carries only problem metadata with a `datamartId` reference. The DB init layer in `SqlLabPage.jsx` uses SQLite prepared statements (`db.prepare(...).run(row)`) rather than SQL INSERT strings — eliminating the apostrophe-escaping problem that had broken the Vercel build twice in other data files.
+
+Five shared datamarts (ecomm, saas, fintech, consumer, health) launched with 5 tables each and seed data chosen to make specific problem types possible: user 5's three consecutive order dates enable gap-and-island problems, user 9 in fintech has the exact signals needed for the risk engine target, users 13–15 in ecomm have no orders (enabling anti-join problems). The seed data is architecture, not filler.
+
+30 problems (12E/10M/6H/2Master) shipped with the rebuild. UI additions: Challenge Vault section in sidebar for Master problems, Clearbit company logos, schema accordion showing all datamart tables.
+
+**V4.39.0** — Scaled from 30 to 250 problems: 100 Easy / 75 Medium / 50 Hard / 25 Master. The scaling process required extensive data verification — every `expectedRowCount` and `checkValues` was manually traced against the seed data before writing. Float columns were excluded from `checkValues` entirely (SQL float precision is unreliable for equality checks). The Hard and Master tiers cover window functions, multi-CTE chains, self-joins, gap-and-island patterns, composite scoring models, referral chain analysis, and monthly time-series aggregation.
+
+The 25 Master problems form the Challenge Vault — always visible in the sidebar, excluded from study plans, estimated at 20–30 minutes each. They are the hardest SQL problems a senior PA or DA would encounter in a real interview loop at a top-tier tech company.
+
+SQL Lab is still internal-first — hidden at `/sql-lab`, accessible via keyboard shortcut `q`. Phase 2 features (Study Plan modal, per-problem timer, Progress page integration) are queued but unbuilt.
+
+*V4.38.0–V4.39.0 reconstructed from CHANGELOG.md.*

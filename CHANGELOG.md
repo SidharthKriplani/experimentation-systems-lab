@@ -4,6 +4,54 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.39.0] — 2026-05-31 [FEATURE]
+
+### SQL Lab scaled to 250 problems — 100 Easy / 75 Medium / 50 Hard / 25 Master
+
+Scaled `sqlLabProblems.js` from 30 problems (V4.38.0 baseline) to the full 250-problem target across two sessions. All problems use the shared datamart architecture (5 datamarts, no per-problem schema/seed). All strings single-quoted, apostrophes escaped as `\'`, 0 backticks. Vite build: ✓ 807 modules, 0 errors.
+
+**Problem count by difficulty:**
+
+| Tier | Count | IDs |
+|---|---|---|
+| Easy | 100 | sql-e01 – sql-e100 |
+| Medium | 75 | sql-m01 – sql-m75 |
+| Hard | 50 | sql-h01 – sql-h50 |
+| Master | 25 | sql-master01 – sql-master25 |
+
+**Techniques covered (full 250-problem spread):**
+
+Easy: SELECT/WHERE/ORDER BY, COUNT/SUM/AVG/MAX/MIN, GROUP BY/HAVING, DISTINCT, NULL handling (IS NULL/IS NOT NULL), basic JOIN, LIKE, BETWEEN, IN, simple CASE WHEN, string/date functions, subqueries, multi-table aggregation.
+
+Medium: Multi-table JOIN chains, anti-join (NOT IN / LEFT JOIN + IS NULL), conditional aggregation (CASE WHEN pivot), COALESCE, date arithmetic (julianday, strftime), HAVING filters on aggregates, self-join, derived tables, ROUND, correlated subqueries, set operations.
+
+Hard: Window functions (SUM OVER, RANK, ROW_NUMBER, NTILE, LAG), single-CTE patterns, gap-and-island detection, running totals, quartile analysis, CASE WHEN multi-column pivot, co-purchase affinity (self-join on order_items), referral chain lookup, complex multi-table joins, HAVING + GROUP BY on derived metrics.
+
+Master: Multi-CTE chains (2–3 CTEs), composite scoring models, plan upgrade/downgrade classification, reactivation candidate detection, care gap analysis (double anti-join), co-purchase affinity (self-join), monthly time-series by tier/category, discount mix analysis, first-order cohort value, account health scoring, user risk profiling (dual-signal CTE), creator portfolio analytics, referral performance.
+
+**Companies covered (sample):** Amazon, Google, Stripe, Shopify, Airbnb, Netflix, Uber, Meta, TikTok, PayPal, Robinhood, DoorDash, Discord, Calm, Oscar Health, Teladoc, Salesforce, Gainsight, Zuora, Plaid, Marqeta, YouTube, Epic Systems, Doximity, Wayfair, Cash App.
+
+**V4.39.0 additions specifically (master15–master25):**
+- master15 (fintech): Monthly spend by category — strftime + GROUP BY, 20 rows
+- master16 (consumer): Creator portfolio performance — CASE WHEN pivot + ROUND, 6 rows
+- master17 (health): Prescribing volume by specialty — COUNT DISTINCT dual, 5 rows
+- master18 (ecomm): Channel first-order value — 2-CTE MIN + AVG pattern, 4 rows
+- master19 (saas): Account event activity tier — 2-CTE + COALESCE + CASE WHEN, 12 rows
+- master20 (fintech): Active account portfolio by user — WHERE filter + GROUP BY, 10 rows
+- master21 (consumer): Referral performance by referrer — self-join, 6 rows
+- master22 (health): Monthly appointment no-show rate — strftime + CASE WHEN, 3 rows
+- master23 (ecomm): Discount mix by acquisition channel — CASE WHEN dual pivot, 4 rows
+- master24 (saas): Monthly subscription acquisition by tier — strftime + JOIN, 13 rows
+- master25 (fintech): User transaction risk profile — 2-CTE + LEFT JOIN merchants + composite CASE WHEN, 12 rows
+
+All master15–master25 solutions verified against datamart seed data before writing. checkValues confirmed against manual row counts. Float columns excluded from checkValues; integer columns verified.
+
+**Known issue to vet:** sql-master10 (High-Risk Account Flagging) — solution string may contain `\)` instead of `\n)` at CTE boundary. If the problem fails to run, fix the solution field in sqlLabProblems.js at the closing parenthesis of the first CTE.
+
+**Files:** `src/data/sqlLabProblems.js`, `NEXT.md`, `CHANGELOG.md`, `AUDITS.md`
+
+---
+
 ## [4.38.0] — 2026-05-31 [FEATURE]
 
 ### SQL Lab full build — 5 datamarts, 30 problems, new page architecture

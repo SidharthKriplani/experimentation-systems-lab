@@ -61,13 +61,11 @@ _No new features until PostHog baseline is established._
 - **Foundation modules missing task instructions (audit #95)** — interactive elements in Stat Foundations (verified: Module 02 buttons, Module 04 sliders) launch with no instruction framing. Cold user has no idea what to do with the interactive. Assumed same gap in Exp, Metrics, RCA module files — must be verified by reading each room\'s module files before writing instructions. Fix: add a 1–2 sentence "What to do" prompt directly above each interactive element in each module component JSX. Instruction format: "[Action] + [what to observe]." Start with Stat Foundations, confirm pattern, then work through remaining three rooms. Affects `src/components/[foundation]/modules/*.jsx` across all four rooms (25 stat + 7 exp + 8 metrics + 6 rca modules). Medium effort — ~1 dedicated session. Gate: resolve audit #94 (subtitle duplication) first so modules are clean before adding instructions. _Partial: rf01 and rf05 now have "What to do" context baked into the interactive framing (V4.36.4). Full systematic pass with InstructionBox component still needed across all four rooms._
 - **Foundation module depth audit — RCA, Metrics, Exp (audit #96)** — Exp now has 15 modules, Metrics 13, RCA 12 (all stubs populated as of V4.36.0). Assess whether the new modules are deep enough for senior-level prep, or whether a second layer is warranted. What topics are still missing? ~1 session per room. Gate: task instructions pass (audit #95) first. _Partial: RCA room started in V4.36.4 — rf01 (framework viz), rf05 (mix-shift playground), rf07 (SVG metric tree) upgraded. rf02, rf03, rf04, rf06 still text-only. Metrics and Exp rooms not yet assessed._
 
-### SQL Lab — full build sprint (IN PROGRESS as of V4.37.x)
+### SQL Lab — phase 2 features (problem bank complete as of V4.39.0)
 
-**POC shipped V4.37.2:** 5 problems (sql001–sql005), sql.js WASM runner, sidebar with progress bar + difficulty/company filters + solved tracking. Hidden route `/sql-lab`, keyboard shortcut `q`.
+**✅ V4.39.0 SHIPPED:** 250 problems — 100 Easy / 75 Medium / 50 Hard / 25 Master. Hidden route `/sql-lab`, keyboard shortcut `q`. Shared datamart architecture (5 datamarts × 5 tables), prepared-statement DB init, Clearbit logos, Challenge Vault sidebar section.
 
-**Full spec confirmed — session 2026-05-31:**
-
-**Problem bank target:** 250 problems — 100 Easy / 75 Medium / 50 Hard / 25 Master. All original, not copied from DataLemur/StrataScratch. Same SQL concept coverage, different business context, different data.
+**Problem bank target:** ✅ COMPLETE — 250 problems (sql-e01–e100, sql-m01–m75, sql-h01–h50, sql-master01–master25). All original, not copied from DataLemur/StrataScratch. Same SQL concept coverage, different business context, different data.
 
 **Difficulty tiers (qualitative distinctions, not just complexity):**
 - Easy: prompt implies the technique, 1–2 tables, clean data, tests whether you know the construct
@@ -92,14 +90,16 @@ _No new features until PostHog baseline is established._
 - ✅ Debrief reveal with --discovery amber border
 - ✅ Right sidebar: progress bar, difficulty/company filters, problem list with solved indicators
 - ✅ localStorage solved tracking (`pal-sql-lab-solved-v1`)
-- 🔲 Company logos via Clearbit (`https://logo.clearbit.com/[domain]`)
+- ✅ Company logos via Clearbit (`https://logo.clearbit.com/[domain]`)
+- ✅ Challenge Vault: Master problems in separate sidebar section, never in plans
+- ✅ Master difficulty color: purple (`var(--purple)`)
+- ✅ Role tags per problem + priority for plan generation
+- ✅ 250 problems: 100E / 75M / 50H / 25Master
 - 🔲 Timer: starts on first keystroke, records elapsed on correct solve to `pal-sql-lab-times-v1`
 - 🔲 Study plan onboarding: 4-step modal (interview?/when?/role?/time-per-day?) → payoff screen with daily queue
 - 🔲 Plan modes: Casual / Steady / Intensive (30/60/120 min per day)
 - 🔲 Solved-aware plan: skips already-completed problems
-- 🔲 Challenge Vault: Master problems in separate sidebar section, never in plans
-- 🔲 Master difficulty color: purple (`var(--purple)`)
-- 🔲 Role tags per problem + priority for plan generation
+- 🔲 SQL Lab progress section in Progress.jsx (solved count by difficulty, total time, streak)
 
 **Study plan numbers:**
 
