@@ -100,6 +100,7 @@ const RCAFoundationsRunner      = lazy(() => import('./components/rcaFoundations
 const ExpFoundationsBrowser     = lazy(() => import('./pages/ExpFoundationsBrowser.jsx').then(m => ({ default: m.ExpFoundationsBrowser })));
 const ExpFoundationsRunner      = lazy(() => import('./components/expFoundations/ExpFoundationsRunner.jsx').then(m => ({ default: m.ExpFoundationsRunner })));
 const AuthModal                 = lazy(() => import('./components/auth/AuthModal.jsx').then(m => ({ default: m.AuthModal })));
+const SqlLabPage                = lazy(() => import('./pages/SqlLabPage.jsx').then(m => ({ default: m.SqlLabPage })));
 
 function getInitialTheme() {
   try {
@@ -218,6 +219,7 @@ export default function App() {
       'rca-foundations-runner': 'RCA Foundations — Product Analytics Lab',
       'exp-foundations': 'Experimentation Foundations — Product Analytics Lab',
       'exp-foundations-runner': 'Experimentation Foundations — Product Analytics Lab',
+      'sql-lab': 'SQL Lab — Product Analytics Lab',
     };
     document.title = titles[page] || 'Product Analytics Lab';
   }, [page]);
@@ -488,6 +490,7 @@ export default function App() {
     { key: 'x', action: () => setPage('challenges') },
     { key: 'b', action: () => setPage('bi') },
     { key: 'd', action: () => setPage('defense-doc') },
+    { key: 'q', action: () => setPage('sql-lab') },
   ]);
 
   function getNextScenarioId(currentId) {
@@ -1350,6 +1353,11 @@ export default function App() {
               }}
             />
           </Suspense>
+        )}
+
+        {/* ── SQL Lab (internal preview — hidden from nav) ── */}
+        {page === 'sql-lab' && (
+          <SqlLabPage onBack={() => navigate('home')} />
         )}
 
         {page === 'qa' && (
