@@ -639,7 +639,7 @@ export default function App() {
   const isFocusMode = page === 'runner' || page.endsWith('-runner');
 
   return (
-    <div className={`app-layout${isFocusMode ? ' focus-mode' : ''}`} style={{ color: 'var(--text)' }}>
+    <div className={`app-layout${isFocusMode ? ' focus-mode' : ''}${page === 'sql-lab' ? ' sql-lab-mode' : ''}`} style={{ color: 'var(--text)' }}>
       <Sidebar
         currentPage={page}
         onNavigate={navigate}
@@ -698,7 +698,7 @@ export default function App() {
           )}
         </div>
 
-        <main style={{ flex: 1 }}>
+        <main style={{ flex: 1, ...(page === 'sql-lab' ? { display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0 } : {}) }}>
           <ErrorBoundary>
           <Suspense fallback={
             <div style={{ padding: '2rem 2rem 0' }}>
@@ -707,7 +707,7 @@ export default function App() {
               ))}
             </div>
           }>
-        <div key={page} className={page === 'sql-lab' ? undefined : 'pal-page-enter'}>
+        <div key={page} className={page === 'sql-lab' ? 'sql-lab-page-wrap' : 'pal-page-enter'}>
         {page === 'home' && (
           <Home onNavigate={navigate} onStartScenario={openScenario} />
         )}
