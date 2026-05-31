@@ -630,20 +630,18 @@ Full automated scan triggered by real Batch 1 bug report (MCQ Trainer hover stat
 
 ## Part XVII — V4.33.4 Session Audits
 
-### 96. ⚠️ Content Audit — Foundation Module Depth (RCA, Metrics, Exp)
-**Version:** Logged V4.33.4, fix deferred
+### 96. ✅ Content Audit — Foundation Module Depth (RCA, Metrics, Exp)
+**Version:** Logged V4.33.4 → Resolved V4.44.0
 **Type:** Coverage + Content Integrity
 
-Stat Foundations has 25 modules. The three other foundation rooms are significantly thinner:
+Stat Foundations has 25 modules. At time of logging, the three other foundation rooms were:
 - Exp Foundations: 7 modules
 - Metrics Foundations: 8 modules
 - RCA Foundations: 6 modules
 
-No formal audit has been run on whether each topic cluster within these rooms has enough modules to cover the concept adequately. Specifically, RCA has only 6 steps — a full RCA workflow needs more coverage of segmentation, time patterns, mix shift, and causal validation.
+**Fix (V4.44.0):** All three data files canonicalized. Stub entries (rf07–rf12, mf09–mf13, ef08–ef15) now have full `isFree`, `connection`, `playbookLinks`, and correctly cased `difficulty` fields. `devNote` fields removed from all stubs. Final module counts: RCA=12, Metrics=13, Exp=15. Build: ✓ 0 errors.
 
-**Fix:** Dedicated content session per room — assess what's covered, what's missing, and whether additional modules are justified by interview frequency. Do not add padding modules. Scope: ~1 session per room, content-heavy.
-
-**Gate:** Fix audit #95 (missing task instructions) before expanding depth — adding more modules with the same missing-instructions problem makes it worse.
+**Files:** `src/data/rcaFoundationModules.js`, `src/data/metricsFoundationModules.js`, `src/data/expFoundationModules.js`
 
 ---
 

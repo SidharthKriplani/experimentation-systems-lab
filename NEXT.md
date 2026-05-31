@@ -4,21 +4,13 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.43.0 (2026-05-31) — Session 6 executed: nav integration, UX fixes, hints system (130 problems × 1–5 hints), per-problem timer, Progress.jsx SQL section, build clean*
+*Last updated: V4.44.0 (2026-05-31) — Audit #96 resolved: canonicalized rf07–rf12, mf09–mf13, ef08–ef15 (difficulty casing, playbookLinks, devNote removed). Build clean.*
 
 ---
 
 ## Next session
 
-**1. Foundation module depth audit — RCA, Metrics, Exp (audit #96)** `M` `CODE`
-
-Gate: task instructions pass (#95) done ✅
-
-Full spec in `AUDITS.md` audit #96.
-
----
-
-**2. SQL Lab — Phase 3 (company filter chip + streak + PostHog events)** `M` `CODE`
+**1. SQL Lab — Phase 3 (company filter chip + streak + PostHog events)** `M` `CODE`
 
 Gate: Session 6 done ✅ (V4.43.0)
 
@@ -34,9 +26,6 @@ Gate: Session 6 done ✅ (V4.43.0)
 **Visual pass — Simulator layout + emoji removal + icon consistency (audits #82, #80, #79)**
 Dedicated session: redesign Simulator config screen, remove UI-chrome emojis, standardize room header icon boxes.
 
-**Foundation module depth audit — RCA, Metrics, Exp (audit #96)**
-Gate: task instructions pass (#95) done first.
-
 **Case debrief failure mode pass (audit #86)**
 Debriefs need: (1) what weak answer looks like, (2) follow-up that exposes the gap. Prioritize RCA, Metrics, Stats.
 
@@ -46,6 +35,13 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 ---
 
 ## Carry-forward log
+
+**Done this session (V4.44.0 — Audit #96):**
+- rcaFoundationModules.js: rf07–rf12 canonicalized — difficulty casing, playbookLinks added, devNote removed. Header comment updated 6→12 modules.
+- metricsFoundationModules.js: mf09–mf13 canonicalized — same fixes. Header updated 8→13 modules.
+- expFoundationModules.js: ef08–ef15 canonicalized — same fixes (8 stubs).
+- AUDITS.md: audit #96 marked ✅ resolved.
+- Vite build: ✓ 0 errors. devNote grep: clean.
 
 **Done this session (V4.43.0 — Session 6):**
 - SQL Lab nav: added to Sidebar.jsx analytics subgroup (after Code Lab). getIsActive() extended. "internal preview" badge removed.
@@ -89,7 +85,6 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 - All MD files updated
 
 **Still open:**
-- Foundation depth audit (audit #96) — gate: task instructions done ✅
 - SQL Lab Phase 3 (company filter, hints quality review, PostHog events, streak) — gate: Session 6 done ✅
 - PostHog live in Vercel prod — confirm `VITE_POSTHOG_KEY` is set
 - Font system (Source Serif 4 + DM Sans) — research done, not shipped
@@ -103,6 +98,7 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 - New rooms / new cases — wrong session type
 - Stripe activation — own sprint
 - Learning paths — Tier 2, not yet
+- Audit #96 — ✅ done (V4.44.0)
 - Session 6 — ✅ done (V4.43.0)
 - Sessions 4+5 — ✅ done
 - Session 3 — ✅ done

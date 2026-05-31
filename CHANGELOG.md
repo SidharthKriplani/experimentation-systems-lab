@@ -4,6 +4,36 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.44.0] — 2026-05-31 [DATA]
+
+### Foundation Module Data Canonicalization (Audit #96)
+
+Canonicalized all stub entries across the three foundation room data files. No new modules added — existing stubs brought up to full spec.
+
+**`src/data/rcaFoundationModules.js`** — rf07–rf12 (6 stubs):
+- `difficulty` casing fixed: `'intermediate'` → `'Intermediate'`, `'advanced'` → `'Advanced'`
+- `devNote` field removed from all 6 entries
+- `playbookLinks` added to all 6 entries (2 links each, pointing to relevant playbook topics)
+- `connection` text refined for rf07, rf08, rf09, rf11, rf12 to be sharper and more specific to experiment analysis context
+- Header comment updated from "6 modules" to "12 modules"
+
+**`src/data/metricsFoundationModules.js`** — mf09–mf13 (5 stubs):
+- `difficulty` casing fixed: `'intermediate'` → `'Intermediate'`, `'advanced'` → `'Advanced'`
+- `devNote` field removed from all 5 entries
+- `playbookLinks` added to all 5 entries (2 links each)
+- Header comment updated from "8 modules" to "13 modules"
+
+**`src/data/expFoundationModules.js`** — ef08–ef15 (8 stubs):
+- `difficulty` casing fixed: `'intermediate'` → `'Intermediate'`, `'advanced'` → `'Advanced'`
+- `devNote` field removed from all 8 entries
+- `playbookLinks` added to all 8 entries (2 links each)
+
+**Build:** ✓ 0 errors. `devNote` grep: clean across all 3 files.
+**Audit:** #96 marked ✅ resolved.
+**Files:** `src/data/rcaFoundationModules.js`, `src/data/metricsFoundationModules.js`, `src/data/expFoundationModules.js`, `AUDITS.md`, `CHANGELOG.md`, `NEXT.md`
+
+---
+
 ## [4.43.0] — 2026-05-31 [FEATURE]
 
 ### SQL Lab — Session 6: Nav Integration + UX Fixes + Hints System + Timer + Progress Section
