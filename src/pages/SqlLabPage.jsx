@@ -143,7 +143,7 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
   const solvedCount = nonMaster.filter(p => solved.has(p.id)).length;
 
   return (
-    <div style={{ width: 256, flexShrink: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
 
       {/* Progress */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.875rem' }}>
@@ -246,6 +246,12 @@ export function SqlLabPage({ onBack }) {
     } catch { return new Set(); }
   });
   const dbRef = useRef(null);
+
+  // Lock body scroll while SQL Lab is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
 
   const problem = sqlLabProblems[problemIdx];
   const dm = problem ? datamarts[problem.datamartId] : null;
@@ -377,9 +383,10 @@ export function SqlLabPage({ onBack }) {
   if (!problem) return null;
 
   return (
-    <div className="sql-lab-fixed-shell" style={{ padding: '1.5rem 1.5rem 0' }}>
+    <>
+    <div className="sql-lab-main-panel">
 
-      {/* Header — fixed, never scrolls */}
+      {/* Header — never scrolls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap', flexShrink: 0 }}>
         <button
           onClick={onBack}
@@ -394,11 +401,8 @@ export function SqlLabPage({ onBack }) {
         </div>
       </div>
 
-      {/* Body — fills remaining height, both panels scroll independently */}
-      <div style={{ display: 'flex', gap: '1.25rem', flex: 1, minHeight: 0, overflow: 'hidden', paddingBottom: '1.5rem' }}>
-
-        {/* Main column — scrolls independently */}
-        <div style={{ flex: 1, minWidth: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {/* Scrollable content */}
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: '1.5rem' }}>
 
           {/* Problem card */}
           <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem' }}>
@@ -550,18 +554,20 @@ export function SqlLabPage({ onBack }) {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Sidebar */}
-        <ProblemSidebar
-          problems={sqlLabProblems}
-          currentIdx={problemIdx}
-          solved={solved}
-          filterDiff={filterDiff}
-          onFilterDiff={setFilterDiff}
-          onSelect={idx => setProblemIdx(idx)}
-        />
       </div>
     </div>
+
+    {/* Problem list — independent fixed panel, scrolls on its own */}
+    <div className="sql-lab-problem-panel">
+      <ProblemSidebar
+        problems={sqlLabProblems}
+        currentIdx={problemIdx}
+        solved={solved}
+        filterDiff={filterDiff}
+        onFilterDiff={setFilterDiff}
+        onSelect={idx => setProblemIdx(idx)}
+      />
+    </div>
+    </>
   );
 }

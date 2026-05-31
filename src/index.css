@@ -303,23 +303,42 @@ table { border-collapse: collapse; }
   flex-direction: column;
   overflow: hidden;
 }
-/* SQL Lab — fixed shell anchored to viewport, bypasses flex chain entirely */
-.sql-lab-fixed-shell {
+/* SQL Lab — two independent fixed panels, no flex chain dependency */
+.sql-lab-main-panel {
   position: fixed;
   top: 0;
-  left: var(--sidebar-w);
-  right: 0;
   bottom: 0;
+  left: var(--sidebar-w);
+  right: 272px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   background: var(--bg);
   z-index: 5;
+  padding: 1.5rem 1.25rem 0 1.5rem;
+}
+.sql-lab-problem-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 272px;
+  overflow-y: auto;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  z-index: 5;
+  padding: 0.875rem;
+  box-sizing: border-box;
 }
 @media (max-width: 768px) {
-  .sql-lab-fixed-shell {
+  .sql-lab-main-panel {
     left: 0;
+    right: 0;
     top: calc(46px + env(safe-area-inset-top, 0px));
+    padding: 1rem 1rem 0;
+  }
+  .sql-lab-problem-panel {
+    display: none;
   }
 }
 
