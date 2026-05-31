@@ -37,7 +37,7 @@ function SchemaAccordion({ dm, open, onToggle }) {
         <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: open ? 'rotate(180deg)' : 'none' }}>▾</span>
       </button>
       {open && (
-        <div style={{ padding: '0.6rem 0.75rem', background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '160px', overflowY: 'auto' }}>
+        <div style={{ padding: '0.6rem 0.75rem', background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '90px', overflowY: 'auto' }}>
           {Object.entries(dm.tables).map(([tableName, table]) => (
             <div key={tableName}>
               <div style={{ fontFamily: 'monospace', fontSize: '0.72rem', fontWeight: 700, color: 'var(--teal)', marginBottom: '4px' }}>
@@ -535,6 +535,21 @@ export function SqlLabPage({ onBack }) {
                 >
                   ▶ Run
                 </button>
+                {!revealed && (
+                  <button
+                    onClick={() => { if (query.trim().length >= 50) setRevealed(true); }}
+                    disabled={query.trim().length < 50}
+                    title={query.trim().length < 50 ? ('Write ' + (50 - query.trim().length) + ' more char' + (50 - query.trim().length !== 1 ? 's' : '') + ' to unlock') : 'Show answer'}
+                    style={{
+                      padding: '0.45rem 0.9rem', borderRadius: '6px', fontWeight: 500, fontSize: '0.78rem',
+                      background: 'none', color: 'var(--text-muted)', border: '1px solid var(--border)',
+                      cursor: query.trim().length >= 50 ? 'pointer' : 'not-allowed',
+                      opacity: query.trim().length >= 50 ? 1 : 0.35,
+                    }}
+                  >
+                    Show answer
+                  </button>
+                )}
                 {hasRun && correct === true && (
                   <span className="pal-success-ring" style={{ fontSize: '0.78rem', color: 'var(--green)', fontWeight: 600 }}>✓ Correct — well done</span>
                 )}
@@ -556,20 +571,6 @@ export function SqlLabPage({ onBack }) {
                 </div>
               )}
             </div>
-          )}
-
-          {/* Reveal */}
-          {!sqlLoading && !sqlError && !revealed && (
-            <button
-              onClick={() => setRevealed(true)}
-              style={{
-                background: 'none', border: '1px solid var(--border)', borderRadius: '6px',
-                padding: '0.4rem 0.9rem', fontSize: '0.78rem', color: 'var(--text-muted)',
-                cursor: 'pointer', alignSelf: 'flex-start',
-              }}
-            >
-              Show answer
-            </button>
           )}
 
           {/* Debrief */}
