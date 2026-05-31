@@ -10,46 +10,7 @@ Read this at the start of every build session. Do only this. Update before closi
 
 ## Next session
 
-**1. SQL Lab — Session 1: Execute Cull + Reclassify + Bug Fix** `L` `CODE`
-
-All findings are in `SQL_LAB_PLAN.md`. Do not re-investigate — execute.
-
-**Step A — Remove 39 problems (cull list):**
-- Easy: e27, e38, e41, e63, e75, e76, e79, e86–e96, e98, e99
-- Medium: m27, m38, m44, m50, m55, m59, m63, m65, m67, m68, m69
-- Hard: h36, h43, h46
-- Master: master15, master17, master20, master22, master24
-
-**Step B — Apply 27 reclassifications:**
-- h16, h23 → Easy (not Hard)
-- h14, h19, h20, h22, h25, h26, h27, h28, h29, h30, h35, h37, h39, h40, h44, h47, h49, h50 → Medium (not Hard)
-- master06, master07, master11, master13, master16, master21, master23 → Hard (not Master)
-Change the `difficulty:` field only. No prompt or debrief edits.
-
-**Step C — Fix master10 bug:**
-`GROUP BY a.user_id\)` → `GROUP BY a.user_id\n)` in the solution string.
-
-**Step D — Verify:**
-- Run `npm run validate-data`
-- Run Vite build (`npm_config_cache=/tmp/npm-cache ./node_modules/.bin/vite build --outDir /tmp/dist-output`)
-- Spot-check 5 problems in browser: sql-e01, sql-m05, sql-h02, sql-master01, sql-master10
-- Version bump: V4.40.0
-
-Full rubric, full cull list, full reclassification table in `SQL_LAB_PLAN.md`.
-
----
-
-**2. SQL Lab — Session 2: Prompt Type Classification** `M` `AUDIT`
-
-Gate: Session 1 complete.
-
-Tag every surviving problem as `technical-spec` or `stakeholder-request`. Identify conversion candidates at Medium/Hard/Master. Target mix: Easy 80/20, Medium 60/40, Hard 50/50, Master 40/60. Output: classification table + conversion candidates list with direction notes. No code changes this session.
-
-Full instructions in `SQL_LAB_PLAN.md` Section 4.
-
----
-
-**3. SQL Lab — Session 3: Stakeholder-Request Rewrites** `L` `CONTENT`
+**1. SQL Lab — Session 3: Stakeholder-Request Rewrites** `L` `CONTENT`
 
 Gate: Session 2 done.
 
@@ -97,14 +58,15 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 
 ## Carry-forward log
 
-**Done this session (V4.40.0):**
-- Session 1 executed: 39 problems culled, 27 reclassified (difficulty field only), master10 bug fixed
-- validate-data.js: PASS. Vite build: ✓ 0 errors. 15/15 spot checks passed
-- Audits #130–131 marked resolved
+**Done this session (Session 2 — no code changes):**
+- All 211 surviving problems read and classified: 211/211 technical-spec
+- 74 conversion candidates identified with direction notes: 16 Easy, 33 Medium, 17 Hard, 8 Master
+- Full classification table + direction notes written to SQL_LAB_PLAN.md Section 7
+- NEXT.md updated — Session 3 is next
 
-**Done prior session (V4.39.11 — investigative):**
-- Full audit of all 250 problems — cull list, reclassification table, gap list, architecture decisions
-- Created SQL_LAB_PLAN.md, updated all MD files
+**Done this session (V4.40.0):**
+- Session 1 executed: 39 culled, 27 reclassified, master10 bug fixed
+- validate-data.js: PASS. Vite build: ✓ 0 errors. 15/15 spot checks passed
 
 **Done this session (V4.39.8–V4.39.11 — code changes):**
 - SQL Lab scroll — fixed with two independent `position: fixed` panels, body scroll lock
@@ -135,3 +97,4 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 - Stripe activation — own sprint
 - Learning paths — Tier 2, not yet
 - SQL Lab Sessions 4–6 — gate: Sessions 1–3 done first
+- Session 2 — ✅ done

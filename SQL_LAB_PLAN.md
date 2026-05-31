@@ -2,7 +2,7 @@
 
 Single source of truth for all SQL Lab decisions, findings, architecture choices, and session sequencing. Created after the Session 1 investigative audit (2026-05-31). Update this file at the end of every SQL Lab session.
 
-**Current version:** V4.39.11 (analysis complete, no code changes yet)
+**Current version:** V4.40.0 (Session 1 executed; Session 2 classification complete)
 **Last updated:** 2026-05-31
 
 ---
@@ -17,7 +17,8 @@ Single source of truth for all SQL Lab decisions, findings, architecture choices
 | AUDITS.md updated | ✅ Done |
 | CHANGELOG.md updated | ✅ Done |
 | Session 1 execution (cull + reclassify + bug fix) | ✅ Done — V4.40.0 |
-| Sessions 2–6 | ⏳ Pending Session 1 |
+| Session 2 classification (all 211 prompts) | ✅ Done — results in Section 7 |
+| Sessions 3–6 | ⏳ Pending |
 
 ---
 
@@ -363,6 +364,144 @@ Session 1 is structural cleanup — removing noise (duplicates) and correcting s
 
 **Why 12 datamarts:**
 At 250 problems over 5 datamarts = 50 problems per datamart. Candidates will memorize the schema by problem 10. 12 datamarts with 10–12 problems each keeps the schema fresh. Master problems get standalone schemas to preserve "business question only" framing.
+
+---
+
+## Section 7 — Session 2: Prompt Classification + Conversion Candidates
+
+**Finding:** All 211 surviving problems are currently `technical-spec`. Zero are `stakeholder-request`. Session 3 rewrites the conversion candidates below.
+
+**Target mix (from SQL_LAB_PLAN Section 4):**
+- Easy: 80% tech-spec / 20% stakeholder-request → 16 conversions from 82
+- Medium: 60% / 40% → 33 conversions from 82
+- Hard: 50% / 50% → 17 conversions from 34
+- Master: 40% / 60% → 8 conversions from 13
+- **Total: 74 conversions**
+
+**Debrief restructure rule for stakeholder-request problems:**
+Debrief must cover in this order: (1) what the stakeholder actually wants, (2) the ambiguities and how they were resolved, (3) the SQL approach, (4) what the weak SQL looks like, (5) the interviewer follow-up question. If the current debrief only discusses SQL traps and not interpretation, it needs restructuring.
+
+---
+
+### 7A — Easy Conversions (16 of 82)
+
+Keep as technical-spec: all other 66 Easy problems. Easy stakeholder-request = natural business voice, output implied by context, no explicit column list. No technique ambiguity for Easy — the SQL is still deterministic; only the framing becomes more human.
+
+| ID | Title | Conversion direction |
+|---|---|---|
+| e09 | Provider No-Show Rate | Remove "Return provider name, total_appts, no_shows, and no_show_rate as a percentage rounded to 1 decimal. Return only the top provider." Frame as ops lead asking "who's our worst no-show provider?" |
+| e16 | Orders by Status | Remove explicit column spec. Frame as "give me a quick status breakdown of our orders." |
+| e19 | Sessions by Device | Remove "Return device and session_count." Frame as "what does our device mix look like across sessions?" |
+| e22 | Free Plan Accounts | Remove column list. Frame as "pull a list of our Starter-plan accounts for the upgrade campaign." |
+| e32 | Most Prescribed Drugs | Remove "Return drug_name and rx_count (number of prescriptions) for each drug." Frame as "what are we prescribing the most?" |
+| e33 | Transactions by Category | Remove column spec. Frame as "break down our transaction volume by merchant category." |
+| e34 | Content Interaction Types | Remove column spec. Frame as "what interaction types are most common — I need to calibrate the recommender." |
+| e35 | Session Source Mix | Remove column spec. Frame as "which sources are driving the most sessions right now?" |
+| e44 | Consumer Users by Country | Remove column spec. Frame as "give me a country breakdown of our user base." |
+| e49 | Avg Session Duration by Source | Remove column spec. Frame as "do users from different channels engage differently in a session?" |
+| e51 | Distinct Buyers Count | Remove technical framing. Frame as "how many unique users have actually bought something?" |
+| e65 | Total MRR from Active Subscriptions | Frame as "what\'s our total MRR right now — need it for the board update." |
+| e66 | Patient Gender Distribution | Frame as "I need the gender breakdown of our patient panel for HEDIS." |
+| e70 | Accounts by Currency | Frame as "how many accounts do we have per currency?" |
+| e78 | Revenue by Acquisition Channel | Frame as "which channel is driving the most revenue?" |
+| e81 | Total Disputed Exposure | Frame as "what\'s our total dollar exposure from disputed transactions — compliance is asking." |
+
+---
+
+### 7B — Medium Conversions (33 of 82)
+
+Medium stakeholder-request = remove technique name OR remove over-specified output formula. The business question becomes the framing; the candidate must derive the SQL approach.
+
+| ID | Title | Technique/prescription to remove | Ambiguity to exploit | Debrief must add |
+|---|---|---|---|---|
+| m04 | H1 vs H2 Order Volume | "in a single row. Output columns: h1_2023, h2_2023" | How to define H1/H2 (by calendar? fiscal?) | Why pivot vs two separate queries |
+| m12 | Zero-Activity Accounts | "Using a CTE that collects distinct account_ids from the events table" | What "activity" means | Why CTE chosen over subquery |
+| m13 | Latest Transaction Per Account | "Using ROW_NUMBER() OVER (PARTITION BY account_id ORDER BY occurred_at DESC)" | Whether "latest" means occurred_at or created_at | Why ROW_NUMBER over MAX + JOIN |
+| m14 | Engagement Quality by Content | "using conditional aggregation" | Whether views/likes/saves are all equal signals | Why CASE WHEN SUM vs separate subqueries |
+| m15 | Monthly Event Volume | "formatted as YYYY-MM using strftime" | Whether to include months with zero events | Why strftime vs substring |
+| m16 | Running Spend Per User | "running_total — the running sum of subtotal partitioned by user_id and ordered by created_at" | Whether to include all statuses or completed only | Why window vs self-join |
+| m20 | Top Products by Volume | "Using a CTE and RANK()" | How to handle ties (RANK vs DENSE_RANK vs ROW_NUMBER) | Trade-offs between rank functions |
+| m21 | First Interaction Per User | "Using ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY occurred_at)" | What "first" means if timestamps are equal | Why ROW_NUMBER not MIN + JOIN |
+| m22 | MRR by Industry | "Using a CTE that joins active subscriptions to accounts" | Whether to include accounts with no active sub | Why CTE over inline subquery |
+| m24 | MRR Rank Within Industry | "the RANK() of mrr within each industry" | Whether to rank by MRR or by revenue contribution | Why RANK vs DENSE_RANK in business context |
+| m26 | Session Gap Analysis | "prev_session (the previous session date per user using LAG)" | Whether to include first sessions (NULL gap) | LAG vs self-join cost-benefit |
+| m28 | Top Creators by Engagement | "Using two CTEs — one to sum interactions... another to rank" | Whether to count only published content or all | Why two CTEs, not one |
+| m29 | Next User Event | "next event" implies LEAD | Whether to include the final event (no next) | LEAD vs self-join |
+| m30 | Running Average Order Value | "running average subtotal for that user up to and including that order" | All statuses or completed only | Why window AVG over re-aggregation |
+| m31 | Balance Quartile Ranking | "using NTILE" named explicitly | How to handle ties at quartile boundaries | NTILE vs PERCENT_RANK for bucket sizing |
+| m35 | Conversion Rate by Device Type | "calculate the total session count and conversion rate (rounded to 1 decimal)" | What "conversion" means (purchase? checkout?) | How rounding affects rate comparison |
+| m39 | Account Event Date Range | "displayed alongside every event row" implies window function | Whether inactive accounts should appear | FIRST_VALUE/MIN OVER vs self-join |
+| m41 | Transaction Size Buckets | "Classify each transaction as small (under $100), medium ($100 to $999), or large" | Whether thresholds are given or candidate defines | Why CASE WHEN over NTILE for business buckets |
+| m42 | Patient Age at Appointment | "using date arithmetic" named | What "age" means (floor years vs decimal) | julianday calculation pitfalls |
+| m43 | Interaction Breakdown with Total | "Use UNION ALL to combine" named explicitly | Whether a TOTAL row is needed or just breakdown | UNION ALL vs GROUP BY ROLLUP |
+| m46 | Account Activity Tier | "Use a CTE and LEFT JOIN" named explicitly | How to define tier thresholds | LEFT JOIN to include zero-event accounts |
+| m47 | Days Since Previous Order | "Use all orders regardless of status" — hidden assumption | Whether returns count as orders | LAG vs self-join, NULL first-row handling |
+| m48 | Event Sequence Number per Account | "sequential position within an account\'s event history" | Whether to sequence by account or by user | ROW_NUMBER tie-breaking when timestamps equal |
+| m51 | Cumulative Interactions per User | "cumulative interaction count up to and including that row" | Whether to count by date or by row order | SUM OVER ROWS BETWEEN pattern |
+| m52 | Dispute Status Dashboard | "Resolved disputes show their outcome; open disputes should display \'open\'" | Whether won/lost/open is the right taxonomy | COALESCE vs CASE WHEN for NULL replacement |
+| m57 | Product Sales Rank | "Use DENSE_RANK" named explicitly | How to handle tied products fairly | DENSE_RANK vs RANK vs ROW_NUMBER business difference |
+| m64 | Most Recent Transaction per Account | "Using ROW_NUMBER" named | Whether "most recent" is by occurred_at or amount | ROW_NUMBER vs MAX + JOIN |
+| m74 | Session Duration in Minutes | "Using the started_at and ended_at timestamps, calculate session duration in minutes rounded to the nearest whole number" | Whether sessions with null ended_at are included | Integer division pitfall |
+| h25 | Running Revenue Per User | "running_total (cumulative subtotal for that user through that order)" | All statuses or completed only | Window SUM vs self-join |
+| h27 | Account Balance Quartiles | "NTILE(4) ordered by balance descending" named | 1=highest vs 1=lowest is a business decision | NTILE boundary behavior with uneven row counts |
+| h28 | Content Engagement Pivot | "in a single pivoted row" | Whether to include content with zero interactions | CASE WHEN SUM pivot vs multiple JOINs |
+| h30 | Discount Impact on Order Value | "Classify each order as \'discounted\' (discount > 0) or \'full_price\' (discount = 0)" | Whether partially discounted items are "discounted" | Why classification matters for avg vs median |
+| h40 | Completed Order Value Bands | "Use NTILE(3) ordered by subtotal ascending" named | Whether band 1 = cheapest or most expensive | NTILE vs manual CASE WHEN thresholds |
+
+---
+
+### 7C — Hard Conversions (17 of 34)
+
+Hard stakeholder-request = business question only, no technique signal, no prescribed output columns. The candidate must recognize the pattern, choose the approach, and produce the right output.
+
+| ID | Title | Why convert | Key ambiguity to exploit | Debrief must cover |
+|---|---|---|---|---|
+| h01 | Jan-to-Feb User Retention | Retention metric — naturally ambiguous | What counts as "retained" (any order? completed only?) | Day-based vs month-based retention definition |
+| h04 | Q1 2023 Cohort Repeat Purchase Rate | Cohort metric — natural stakeholder ask | Does "repeat" mean 2+ orders or 2+ in Q2+? | Cohort window choice affects result dramatically |
+| h05 | Provider Below Practice Average | Comparison analysis — natural | Which specialty to scope to, or all? | Correlated subquery vs window AVG approach |
+| h07 | Month-over-Month Order Volume | Trend — natural ask | Whether to include all statuses or completed only | LAG vs lead for MoM delta direction |
+| h08 | Top Spender per Country | Localization — natural | Whether "top" means one per country or top N | ROW_NUMBER partition vs MAX + GROUP BY |
+| h10 | Top Spending Category per Account | Personalization — natural | Whether "top" by count or by revenue | RANK within partition vs MAX subquery |
+| h11 | No-Show Patients Without Follow-Up | Clinical quality — natural | Definition of "follow-up" (any appt vs completed) | NOT EXISTS vs LEFT JOIN IS NULL pattern |
+| h12 | Multi-Action Engaged Users | Engagement — natural | Whether 3 action types or 3 interactions | COUNT DISTINCT on action vs interaction |
+| h17 | Average Reorder Interval | Retention — natural | Whether to include all orders or completed only | LAG pattern, NULL first-row exclusion |
+| h21 | Cross-Category Shoppers | Cross-sell — natural | Whether category count threshold is 3 (given) or candidate decides | HAVING COUNT DISTINCT vs EXISTS subquery |
+| h32 | Disputed Transaction Merchant Exposure | Fraud — natural | Whether to include all merchants or flagged only | Multi-table JOIN strategy |
+| h33 | Creator Interaction Leaderboard | Monetization — natural | Whether to include creators with zero interactions | LEFT JOIN vs INNER JOIN affects ranking |
+| h41 | Monthly Account Growth Trend | Growth — natural | Whether to include months with zero new accounts | Running total window vs cumulative subquery |
+| h42 | 30-Day Transaction Velocity | Fraud — natural | What "prior 30 days" means (calendar? rolling?) | Self-join rolling window vs window frame |
+| h45 | Premium vs Non-Premium Engagement | A/B-style comparison — natural | Whether to include users with zero interactions | LEFT JOIN for zero-count users |
+| master11 | Referred User Engagement vs Organic | Growth A/B — natural | How to classify users without referrer_id | CTE classification then aggregate |
+| master21 | Referral Performance by Referrer | Growth — natural | Whether to include referrers with zero premium referrals | CASE WHEN SUM vs conditional COUNT |
+
+---
+
+### 7D — Master Conversions (8 of 13)
+
+Master stakeholder-request = pure business question, zero SQL scaffolding. The prompt is 2–3 sentences max. The candidate must decompose, choose architecture, handle edge cases, and produce the correct multi-step query.
+
+| ID | Title | Frame as | Key ambiguities | Debrief must cover |
+|---|---|---|---|---|
+| master01 | User Risk Scoring Engine | "Build me a composite risk score for every user so we can prioritize our review queue." | What signals to include, how to weight them, what to do with users with no accounts | CTE architecture, scoring rule documentation |
+| master02 | Channel 6-Month Retention | "Which acquisition channel produces customers most likely to actually buy?" | What "buy" means (any order? completed?), what retention window (6 months given?) | Cohort definition, retention window choice |
+| master03 | Channel LTV Analysis | "I need a channel-level LTV report for the board." | What LTV means (total revenue? per user?), which order statuses count | Metric definition choices and their downstream effect |
+| master04 | Account Health Score | "Customer success needs a health score for every active account — something they can act on." | What makes an account healthy, what weight to assign each signal | Scoring rule derivation, "active account" definition |
+| master05 | Transaction Spend Anomaly Detection | "Flag transactions that look unusual compared to that user\'s normal spend." | What "unusual" means (3x? 2 std devs?), whether new users with 1 transaction qualify | Threshold choice rationale, per-user baseline |
+| master08 | Product Co-Purchase Affinity | "Which products tend to get bought together? I want to power a recommendation widget." | Whether to include all order statuses, minimum co-purchase count, pair deduplication | CROSS JOIN pattern, pair deduplication with a.id < b.id |
+| master09 | Plan Upgrade/Downgrade Classification | "Finance wants every subscription plan change classified — upgrade, downgrade, or lateral." | Whether lateral moves (same MRR) should be a category, first subscriptions | LAG for prior plan, CASE WHEN MRR delta |
+| master25 | User Transaction Risk Profile | "Build me a risk profile for every user who has transacted — something the review team can triage from." | Which signals to include, what counts as "high" flagged exposure | Multi-signal CTE architecture, NULL handling for new users |
+
+---
+
+### 7E — Problems staying technical-spec
+
+All 211 problems are currently technical-spec. The 137 not in the conversion lists above stay as-is. These include:
+- All Easy problems not listed in 7A (the 66 keeping technical-spec framing)
+- All Medium problems not listed in 7B (the 49 keeping technical-spec framing)
+- All Hard problems not listed in 7C: h02, h03, h06, h09, h13, h15, h18, h24, h31, h34, h38, h48, master06, master07, master13, master16, master23
+- All Master problems not listed in 7D: master10, master12, master14, master18, master19
+
+**Why keep these as technical-spec:** Either they teach a concept most clearly with precise framing (gap-and-island, recursive CTE, cohort join pattern), or the business question is specific enough that there is genuinely little ambiguity to exploit.
 
 ---
 
