@@ -37,7 +37,7 @@ function SchemaAccordion({ dm, open, onToggle }) {
         <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: open ? 'rotate(180deg)' : 'none' }}>▾</span>
       </button>
       {open && (
-        <div style={{ padding: '0.6rem 0.75rem', background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '45vh', overflowY: 'auto' }}>
+        <div style={{ padding: '0.6rem 0.75rem', background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '160px', overflowY: 'auto' }}>
           {Object.entries(dm.tables).map(([tableName, table]) => (
             <div key={tableName}>
               <div style={{ fontFamily: 'monospace', fontSize: '0.72rem', fontWeight: 700, color: 'var(--teal)', marginBottom: '4px' }}>
@@ -431,6 +431,21 @@ export function SqlLabPage({ onBack }) {
             <h2 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 0.6rem', color: 'var(--text)' }}>{problem.title}</h2>
             <p style={{ fontSize: '0.83rem', lineHeight: 1.65, color: 'var(--text-muted)', margin: 0 }}>{problem.prompt}</p>
             <SchemaAccordion dm={dm} open={schemaOpen} onToggle={() => setSchemaOpen(o => !o)} />
+
+            {/* Expected output */}
+            <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: 'var(--surface-2)', borderRadius: '6px', border: '1px solid var(--border)' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>Expected output</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{problem.expectedRowCount} row{problem.expectedRowCount !== 1 ? 's' : ''}</span>
+                <span style={{ fontSize: '0.65rem', color: 'var(--border)' }}>·</span>
+                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                  {problem.expectedColumns.map(col => (
+                    <span key={col} style={{ fontSize: '0.68rem', fontFamily: 'monospace', padding: '1px 6px', borderRadius: '3px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--teal)' }}>{col}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {problem.sqliteNote && (
               <div style={{ marginTop: '0.6rem', padding: '0.4rem 0.6rem', borderRadius: '4px', background: 'var(--surface-2)', fontSize: '0.7rem', color: 'var(--text-muted)', borderLeft: '2px solid var(--teal)' }}>
                 {problem.sqliteNote}
