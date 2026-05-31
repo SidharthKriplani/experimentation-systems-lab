@@ -39,6 +39,38 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XXVII — V4.39.8–V4.39.11 SQL Lab UX + Progress Heatmap Audit
+
+### 126. ✅ UX — SQL Lab independent scroll (V4.39.8)
+
+**Version:** Fixed V4.39.8
+**Type:** UX / BUILD
+
+SQL Lab right sidebar scrolled the whole page instead of independently. Root cause: `min-height` on parent containers is not a definite height — flex children cannot resolve `flex: 1` against it, so `overflow-y: auto` never activates. Fix: two completely independent `position: fixed` panels anchored to the viewport directly. No shared flex ancestor. Body scroll locked via `document.body.style.overflow = 'hidden'`. Confirmed working in production.
+
+### 127. ✅ Visual — SQL Lab vibrancy parity with foundation rooms (V4.39.10)
+
+**Version:** Fixed V4.39.10
+**Type:** Visual Consistency
+
+SQL Lab lacked the teal identity present in Stat Foundations and other rooms. Fixed: teal header icon, teal title, teal active sidebar state, teal progress count, difficulty-colored left border on problem card, teal-tinted editor border.
+
+### 128. ✅ UX — SQL Lab expected output showing actual sample rows (V4.39.11)
+
+**Version:** Fixed V4.39.11
+**Type:** UX / Human Elements
+
+Expected output panel previously showed only column chips + row count. No sample data was visible, so users had no concrete target to write toward. Fixed: solution query runs silently after `initDb()` completes; first 3 rows stored in `expectedSample` state and rendered as a compact read-only mini table. Degrades gracefully if solution throws.
+
+### 129. ✅ Visual — Progress streak heatmap extended to 52 weeks (V4.39.11)
+
+**Version:** Fixed V4.39.11
+**Type:** Visual Consistency / UX
+
+Streak heatmap was 13 weeks (91 days, 7×7px cells). Updated to 52-week GitHub-style full-year grid (364 days, 10×10px cells), scrollable via `overflowX: auto`. Streak calculation window extended to 364 days. Label updated to "Last year".
+
+---
+
 ## Part XXVI — V4.39.0 SQL Lab Scale Audit
 
 ### 124. ✅ Coverage — SQL Lab problem bank at 30/250 target (V4.39.0)

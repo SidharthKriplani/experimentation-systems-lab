@@ -4,7 +4,7 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.39.0 (2026-05-31) — SQL Lab scaled to 250 problems*
+*Last updated: V4.39.11 (2026-05-31) — Expected output sample rows + 52-week heatmap*
 
 ---
 
@@ -59,7 +59,15 @@ Gate: PostHog confirms real Defense Strategy usage from Batch 1. Do not build un
 
 ## Carry-forward log
 
-**Done this session (V4.39.0):**
+**Done this session (V4.39.8–V4.39.11):**
+- SQL Lab scroll — fixed with two independent `position: fixed` panels (`.sql-lab-main-panel` + `.sql-lab-problem-panel`), body scroll lock via useEffect. Definitive fix.
+- SQL Lab visual vibrancy — teal header icon + title, teal active problem text + border, teal progress count, thicker progress bar, difficulty-colored left border on problem card, teal-tinted editor border
+- Schema accordion reduced to `maxHeight: 160px` (from 45vh)
+- Expected output — column chips + row count (V4.39.10), then actual sample rows from silently running `problem.solution` after DB init (V4.39.11). Shows first 3 rows as mini table, "+N more rows" if applicable
+- Progress streak heatmap extended from 13 weeks (91 days, 7px cells) to 52 weeks (364 days, 10px cells) — GitHub-style full-year grid, label updated to "Last year", streak window extended to 364 days
+- `sql-lab-mode` class on app-layout, `sql-lab-page-wrap`, body overflow lock — all in place
+
+**Done in prior session (V4.39.0):**
 - SQL Lab scaled from 30 → 250 problems: 100 Easy / 75 Medium / 50 Hard / 25 Master
 - sqlLabProblems.js grew from 650 lines to ~6,800 lines — all single-quoted, 0 backticks
 - master15–master25: 11 new Master problems added (fintech/consumer/health/ecomm/saas, verified against seed data)
@@ -89,6 +97,9 @@ Gate: PostHog confirms real Defense Strategy usage from Batch 1. Do not build un
 - All MD files updated — V4.36.4
 
 **Still open:**
+- SQL Lab vet checklist — run per NEXT item #1 before phase 2 build
+- SQL Lab phase 2 — study plan modal, per-problem timer, Progress.jsx SQL Lab section
+- sql-master10 potential syntax bug — confirm at runtime, fix `\)` → `)` in sqlLabProblems.js if needed
 - PostHog live in Vercel prod — confirm `VITE_POSTHOG_KEY` is set in Vercel dashboard
 - Foundation task instructions (audit #95) — #1 in next session queue
 - Foundation depth audit (audit #96) — now #3 in next session queue (gate cleared)

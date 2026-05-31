@@ -360,11 +360,11 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
 
   const practiceDates = getPracticeDates();
 
-  // Build 13-week grid (91 days ending today)
+  // Build 52-week grid (364 days ending today)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const heatmapDays = [];
-  for (let i = 90; i >= 0; i--) {
+  for (let i = 363; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(today.getDate() - i);
     heatmapDays.push(d.toISOString().slice(0, 10));
@@ -372,7 +372,7 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
 
   // Streak: consecutive days ending today
   let streak = 0;
-  for (let i = 0; i < 91; i++) {
+  for (let i = 0; i < 364; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() - i);
     const ds = d.toISOString().slice(0, 10);
@@ -594,28 +594,30 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
               }}>Practice today to start a streak</span>
             )}
           </div>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(13, 7px)',
-            gridTemplateRows: 'repeat(7, 7px)',
-            gridAutoFlow: 'column',
-            gap: '2px',
-            overflowX: 'auto',
-          }}>
-            {heatmapDays.map(day => (
-              <div
-                key={day}
-                title={day}
-                style={{
-                  width: '7px', height: '7px', borderRadius: '1px',
-                  background: practiceDates.has(day) ? 'var(--yellow)' : 'var(--surface)',
-                  border: practiceDates.has(day) ? 'none' : '1px solid var(--border)',
-                }}
-              />
-            ))}
+          <div style={{ overflowX: 'auto' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(52, 10px)',
+              gridTemplateRows: 'repeat(7, 10px)',
+              gridAutoFlow: 'column',
+              gap: '2px',
+              width: 'max-content',
+            }}>
+              {heatmapDays.map(day => (
+                <div
+                  key={day}
+                  title={day}
+                  style={{
+                    width: '10px', height: '10px', borderRadius: '2px',
+                    background: practiceDates.has(day) ? 'var(--yellow)' : 'var(--surface)',
+                    border: practiceDates.has(day) ? 'none' : '1px solid var(--border)',
+                  }}
+                />
+              ))}
+            </div>
           </div>
           <div style={{ marginTop: '0.5rem', fontSize: '0.68rem', color: 'var(--text-dim)' }}>
-            Last 13 weeks
+            Last year
           </div>
         </div>
       </SectionCard>

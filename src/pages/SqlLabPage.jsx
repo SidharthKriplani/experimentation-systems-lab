@@ -245,6 +245,7 @@ export function SqlLabPage({ onBack }) {
       return new Set(stored);
     } catch { return new Set(); }
   });
+  const [expectedSample, setExpectedSample] = useState(null);
   const dbRef = useRef(null);
 
   // Lock body scroll while SQL Lab is open
@@ -280,6 +281,7 @@ export function SqlLabPage({ onBack }) {
     setHasRun(false);
     setCorrect(null);
     setQuery('');
+    setExpectedSample(null);
 
     if (dbRef.current) {
       try { dbRef.current.close(); } catch {}
@@ -308,9 +310,19 @@ export function SqlLabPage({ onBack }) {
           }
         });
 
+        // Silently run solution to populate expected output sample
+        let sample = null;
+        try {
+          const solRes = database.exec(problem.solution);
+          if (solRes.length > 0) {
+            sample = { columns: solRes[0].columns, rows: solRes[0].values.slice(0, 3) };
+          }
+        } catch {}
+
         if (cancelled) return;
         dbRef.current = database;
         setDb(database);
+        setExpectedSample(sample);
         setSqlLoading(false);
       } catch (e) {
         if (!cancelled) {
@@ -434,16 +446,45 @@ export function SqlLabPage({ onBack }) {
 
             {/* Expected output */}
             <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: 'var(--surface-2)', borderRadius: '6px', border: '1px solid var(--border)' }}>
-              <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>Expected output</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{problem.expectedRowCount} row{problem.expectedRowCount !== 1 ? 's' : ''}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                <span style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Expected output</span>
                 <span style={{ fontSize: '0.65rem', color: 'var(--border)' }}>·</span>
-                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{problem.expectedRowCount} row{problem.expectedRowCount !== 1 ? 's' : ''}</span>
+                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginLeft: '0.25rem' }}>
                   {problem.expectedColumns.map(col => (
-                    <span key={col} style={{ fontSize: '0.68rem', fontFamily: 'monospace', padding: '1px 6px', borderRadius: '3px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--teal)' }}>{col}</span>
+                    <span key={col} style={{ fontSize: '0.65rem', fontFamily: 'monospace', padding: '1px 6px', borderRadius: '3px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--teal)' }}>{col}</span>
                   ))}
                 </div>
               </div>
+              {expectedSample && (
+                <div style={{ overflowX: 'auto', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.7rem', fontFamily: 'monospace' }}>
+                    <thead>
+                      <tr style={{ background: 'var(--surface)' }}>
+                        {expectedSample.columns.map(col => (
+                          <th key={col} style={{ padding: '4px 8px', textAlign: 'left', fontWeight: 600, fontSize: '0.65rem', color: 'var(--teal)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' }}>{col}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {expectedSample.rows.map((row, ri) => (
+                        <tr key={ri} style={{ borderBottom: ri < expectedSample.rows.length - 1 ? '1px solid var(--border)' : 'none' }}>
+                          {row.map((cell, ci) => (
+                            <td key={ci} style={{ padding: '3px 8px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                              {cell === null ? <span style={{ color: 'var(--border)', fontStyle: 'italic' }}>NULL</span> : String(cell)}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {problem.expectedRowCount > 3 && (
+                    <div style={{ padding: '2px 8px', fontSize: '0.62rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
+                      +{problem.expectedRowCount - 3} more row{problem.expectedRowCount - 3 !== 1 ? 's' : ''}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {problem.sqliteNote && (

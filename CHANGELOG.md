@@ -4,6 +4,65 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.39.11] — 2026-05-31 [FEATURE / VISUAL]
+
+### SQL Lab expected output sample rows + Progress 52-week heatmap
+
+**SQL Lab — Expected output sample rows (`SqlLabPage.jsx`)**
+
+After `initDb()` finishes inserting all seed rows, the solution query now runs silently before `setDb()` fires. First 3 rows are stored in `expectedSample` state; the Expected Output panel renders them as a compact read-only table (teal column headers, muted cell values, "+N more rows" footer if `expectedRowCount > 3`). While the engine loads, the panel shows column chips + row count only, then the table appears once `expectedSample` is set. If the solution throws (malformed SQL), `expectedSample` stays null and the panel degrades gracefully to chip-only view.
+
+State lifecycle: `expectedSample` resets to `null` at the top of each problem-change useEffect alongside all other state resets, ensuring stale rows from a previous problem never flash.
+
+**Progress page — 52-week heatmap**
+
+Replaced the 13-week (91-day, 7×7px cell) heatmap with a GitHub-style full-year grid:
+- Loop: `i = 363 → 0` (364 days)
+- Grid: `repeat(52, 10px)` columns × `repeat(7, 10px)` rows, `gridAutoFlow: column`, `gap: 2px`, `width: max-content` inside an `overflowX: auto` wrapper
+- Cell: `10×10px`, `borderRadius: 2px` — larger than before, more readable at full year
+- Streak window: extended to 364 days (was 91)
+- Label: "Last 13 weeks" → "Last year"
+
+**Files:** `src/pages/SqlLabPage.jsx`, `src/pages/Progress.jsx`, `NEXT.md`, `CHANGELOG.md`, `AUDITS.md`
+
+---
+
+## [4.39.10] — 2026-05-31 [FEATURE / VISUAL]
+
+### SQL Lab visual vibrancy pass + schema space reduction + expected output (partial)
+
+Full visual audit and upgrade of SQL Lab to match Stat Foundations vibrancy level:
+- Teal `<>` icon box (28×28, solid var(--teal) background, white bold text) in header
+- `SQL Lab` title in `var(--teal)` fontWeight 700
+- Active problem button: teal title text, teal left border (3px solid), teal-tinted background
+- Solved count in `var(--teal)`, progress bar height increased to 6px
+- Difficulty-colored left border on problem card (3px, matches difficulty color)
+- Editor border: `rgba(20,184,166,0.3)` teal tint
+- Problem sidebar panel: `var(--surface)` background, `1px solid var(--border)` left edge
+- Schema accordion: `maxHeight` reduced from `45vh` → `160px` (compact scrollable)
+- Expected output panel added: shows column names as teal monospace chips + row count. Sample rows pending (delivered in V4.39.11).
+
+**Files:** `src/pages/SqlLabPage.jsx`, `src/index.css`
+
+---
+
+## [4.39.8] — 2026-05-31 [FIX]
+
+### SQL Lab independent scroll — definitive fix via two `position: fixed` panels
+
+After 7 failed attempts using flex-height chains, the scroll was fixed by treating the two panels as completely independent viewport-anchored elements:
+
+- `.sql-lab-main-panel` — `position: fixed; top: 0; bottom: 0; left: var(--sidebar-w); right: 272px` — contains header (flexShrink 0) + inner scrollable div (flex 1, overflowY auto)
+- `.sql-lab-problem-panel` — `position: fixed; top: 0; bottom: 0; right: 0; width: 272px; overflow-y: auto`
+- `document.body.style.overflow = 'hidden'` via useEffect (cleanup restores `''`) — prevents body from intercepting scroll events
+- `sql-lab-mode` class on `.app-layout` — sets `height: 100vh; overflow: hidden` on `.app-main-wrapper`
+
+These panels have no shared flex ancestor, so scroll works unconditionally regardless of what any parent does. Mobile: main panel expands to full width, problem panel hidden.
+
+**Files:** `src/pages/SqlLabPage.jsx`, `src/index.css`, `src/App.jsx`
+
+---
+
 ## [4.39.0] — 2026-05-31 [FEATURE]
 
 ### SQL Lab scaled to 250 problems — 100 Easy / 75 Medium / 50 Hard / 25 Master
