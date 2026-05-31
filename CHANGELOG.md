@@ -4,6 +4,36 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.42.0] — 2026-05-31 [CONTENT]
+
+### SQL Lab — Sessions 4 + 5: 7 New Datamarts + 130-Problem Target
+
+**Session 4 — Schema Design (7 new datamarts):**
+Added gaming, logistics, marketplace, food_delivery, social_network, edtech, hr_analytics to `sqlLabDatamarts.js`. Each datamart has 3–5 tables with deliberate seed data engineered to support the 8 gap SQL patterns (date spine, ROWS BETWEEN, PERCENT_RANK/CUME_DIST, two valid queries, ambiguous definition, syntactically valid but wrong, recursive CTE, full cohort retention). social_network.users.referred_by_user_id and hr_analytics.employees.manager_emp_id both support recursive CTE hierarchy traversal.
+
+**Session 5 — Problem Authoring (reach 130 target):**
+Culled 91 problems (33E/45M/13H) from 211 → 120. Added 10 new gap-pattern problems (1E/3M/4H/2Master). Final count: 50E/40M/25H/15Master = 130.
+
+New problems:
+- sql-e86: PERCENT_RANK (gaming) — level engagement percentile
+- sql-m76: PERCENT_RANK (hr_analytics) — salary pay-equity ranking
+- sql-m77: COUNT DISTINCT trap (marketplace) — unique buyer reach per seller
+- sql-m78: Syntactically valid but wrong (food_delivery) — courier delivery count debug
+- sql-h51: Date spine (logistics) — February 2024 daily shipment calendar with recursive CTE
+- sql-h52: ROWS BETWEEN (gaming) — rolling 3-attempt average score
+- sql-h53: Two valid queries (food_delivery) — courier workload vs delivery output
+- sql-h54: Ambiguous definition (hr_analytics) — headcount with total vs active split
+- sql-master26: Recursive CTE (social_network) — full referral tree walk from user 1
+- sql-master27: Full cohort retention (gaming) — signup cohort retention curve
+
+Also fixed: double-comma syntax error at health/gaming boundary in sqlLabDatamarts.js introduced by session4 append script.
+
+**Files changed:** `src/data/sqlLabDatamarts.js`, `src/data/sqlLabProblems.js`
+
+**Validate:** sqlLabProblems.js PASS. Vite build: ✓ 0 errors.
+
+---
+
 ## [4.41.0] — 2026-05-31 [CONTENT]
 
 ### SQL Lab — Session 3: Stakeholder-Request Prompt + Debrief Rewrites

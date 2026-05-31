@@ -19,7 +19,9 @@ Single source of truth for all SQL Lab decisions, findings, architecture choices
 | Session 1 execution (cull + reclassify + bug fix) | ✅ Done — V4.40.0 |
 | Session 2 classification (all 211 prompts) | ✅ Done — results in Section 7 |
 | Session 3 rewrites (74 prompts + debriefs) | ✅ Done — V4.41.0 |
-| Sessions 4–6 | ⏳ Pending |
+| Session 4 (7 new datamarts) | ✅ Done — V4.42.0 |
+| Session 5 (130-problem target) | ✅ Done — V4.42.0 |
+| Session 6 (UX + hints + phase 2) | ⏳ Pending |
 
 ---
 
@@ -257,13 +259,13 @@ User proposed 50/40/30/10. Decision: 25H instead of 30H (not enough distinct Har
 | fintech | ✅ Existing | |
 | consumer | ✅ Existing | |
 | health | ✅ Existing | |
-| gaming | 🔲 New | DAU/WAU/retention, session length, level completion, in-app purchase |
-| logistics | 🔲 New | Delivery SLA, driver utilization, route efficiency, damage rate |
-| marketplace | 🔲 New | GMV, take rate, seller/buyer cohorts, category mix |
-| food_delivery | 🔲 New | Order funnel, delivery time, cancellation, restaurant churn |
-| social_network | 🔲 New | Feed engagement, follower graph, content virality, DAU |
-| edtech | 🔲 New | Course completion, quiz score, study streak, refund rate |
-| hr_analytics | 🔲 New | Headcount, attrition, time-to-hire, performance bands |
+| gaming | ✅ Done — V4.42.0 | DAU/WAU/retention, session length, level completion, in-app purchase |
+| logistics | ✅ Done — V4.42.0 | Delivery SLA, driver utilization, route efficiency, damage rate |
+| marketplace | ✅ Done — V4.42.0 | GMV, take rate, seller/buyer cohorts, category mix |
+| food_delivery | ✅ Done — V4.42.0 | Order funnel, delivery time, cancellation, restaurant churn |
+| social_network | ✅ Done — V4.42.0 | Feed engagement, follower graph, content virality, referral tree |
+| edtech | ✅ Done — V4.42.0 | Course completion, quiz score, study streak, refund rate |
+| hr_analytics | ✅ Done — V4.42.0 | Headcount, attrition, time-to-hire, org hierarchy recursive CTE |
 
 "Wider not longer" — more schemas, not more rows in existing schemas. Schema memorization is the risk when 250 problems share 5 datamarts.
 
@@ -338,17 +340,32 @@ Six sessions total. Each is a complete unit of work. Order is fixed — dependen
 
 **Output:** Updated sqlLabProblems.js + sqlLabDatamarts.js at 130-problem target.
 
-### Session 6 — Phase 2 Features
+### Session 6 — UX Fixes + Hints System + Phase 2 Features
 **Gate:** Session 5 complete; all 130 problems verified correct
 **Scope:**
-- Study Plan modal (4-step: interview?/when?/role?/time?) → Casual/Steady/Intensive modes
-  - localStorage: `pal-sql-lab-plan-v1`
-  - Solved-aware: skips already-completed problems
+
+**UX fixes (prerequisite — do first, they share the layout zone):**
+- Sort fix: problem list sorted by difficulty tier (Easy → Medium → Hard → Master), then by ID within tier
+- Scroll/layout: left panel capped to 100vh; problem description scrolls internally; Run + hints button both visible without scroll
+- Company logos: Google favicon API (`https://www.google.com/s2/favicons?domain=&sz=32`) in sidebar list items
+- Filter chips: difficulty, company, estimated time (quick ≤15min / medium 15-30min / long 30min+) across top of sidebar
+
+**Hints system (replaces Show Answer button):**
+- Step-by-step first-principles hints — NOT CTE-flavored (no technique leakage)
+- Hint count by difficulty: Easy = 1, Medium = 1–2, Hard = 3–5, Master = 3–5
+- Hint style: structural reasoning questions ("What is one row in your output?" → "Which tables give you that?" → "What filter applies?")
+- Show Answer unlocks only after all hints exhausted
+- Hint content must be authored per problem — this is a content pass, not just UI
+- Study Plan modal: deprioritized (not learning-critical vs hints); move to Tier 2 IDEAS.md
+
+**Phase 2 features:**
 - Per-problem timer: starts on first keystroke, records to `pal-sql-lab-times-v1` on correct solve only
 - SQL Lab section in Progress.jsx: solved count by difficulty, total time, current streak
 - Version bump: V4.43.0
 
-**Output:** SqlLabPage.jsx + Progress.jsx updated with Phase 2 features.
+**Note:** Session 6 is large. Split into 6a (UX fixes + layout) and 6b (hints authoring + phase 2) if needed.
+
+**Output:** SqlLabPage.jsx + Progress.jsx updated; hint content added to sqlLabProblems.js.
 
 ---
 

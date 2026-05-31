@@ -4,29 +4,29 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.41.0 (2026-05-31) — Session 3 executed: 74 prompts/debriefs rewritten, build clean*
+*Last updated: V4.42.0 (2026-05-31) — Sessions 4+5 executed: 7 datamarts added, 130-problem target reached, build clean*
 
 ---
 
 ## Next session
 
-**1. Foundation module task instructions — "What to do" framing (audit #95)** `M` `UX`
+**1. SQL Lab Session 6 — UX fixes + hints system + phase 2 features** `L` `CODE`
 
-Gate: SQL Lab Sessions 1–3 complete ✅
+Gate: Sessions 4+5 done ✅ (130 problems, 12 datamarts, build clean).
 
-All interactive foundation elements across all 4 runners need a 1–2 sentence instruction prompt above each interactive element. InstructionBox component exists in ExpFoundationsRunner. Start with the 12 new stubs (ef12–ef15, mf11–mf13, rf08–rf12). Then audit older modules. ~1 session.
+- UX fixes: sort by difficulty tier, Google favicon API logos, filter chips (difficulty/company/time), scroll/layout restructure (left panel fixed, description scrolls internally)
+- Hints system: replaces Show Answer; 1 hint Easy / 1–2 Medium / 3–5 Hard+Master; structural reasoning questions ("What is one row in your output?"); Show Answer unlocks only after hints exhausted; hints authored per problem
+- Phase 2: per-problem timer (starts on first keystroke, records to pal-sql-lab-times-v1), Progress.jsx SQL section (solved count by difficulty, total time, streak)
+- Study Plan modal: deprioritized — move to Tier 2 IDEAS.md
+- May split 6a (UX fixes + layout) and 6b (hints authoring + phase 2)
+
+Full spec in `SQL_LAB_PLAN.md` Section 4.
 
 ---
 
-**2. SQL Lab — Sessions 4–6 (schema design → new problems → phase 2)** `L` `CODE`
+**2. Foundation module depth audit — RCA, Metrics, Exp (audit #96)** `M` `CODE`
 
-Gate: Sessions 1–3 done ✅ (prompt style locked before new authoring).
-
-- Session 4: Design 7 new datamarts (gaming, logistics, marketplace, food_delivery, social_network, edtech, hr_analytics) + standalone Master schemas
-- Session 5: Author new problems to fill 8-pattern gap list, reach 130-problem target (50E/40M/25H/15Master)
-- Session 6: Phase 2 features — study plan modal, per-problem timer, Progress.jsx SQL Lab section
-
-Full spec in `SQL_LAB_PLAN.md` Sections 3–4.
+Gate: task instructions pass (#95) done ✅
 
 ---
 
@@ -47,6 +47,12 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 ---
 
 ## Carry-forward log
+
+**Done this session (V4.42.0 — Sessions 4+5):**
+- Session 4: 7 new datamarts appended to sqlLabDatamarts.js (gaming, logistics, marketplace, food_delivery, social_network, edtech, hr_analytics). Seed data engineered for all 8 gap patterns. Double-comma syntax bug fixed at health/gaming boundary.
+- Session 5: Culled 91 problems (33E/45M/13H). Added 10 new gap-pattern problems (1E/3M/4H/2Master). Final: 50E/40M/25H/15Master = 130.
+- Also completed: Foundation task instructions audit #95 (4 "What to do:" prompts added to RCAFoundationsRunner.jsx for rf11/rf12)
+- validate-data.js: sqlLabProblems.js PASS. Vite build: ✓ 0 errors. 6/6 spot checks passed.
 
 **Done this session (V4.41.0 — Session 3):**
 - 74 prompts and debriefs rewritten: 16 Easy (prompt only) + 33 Medium + 17 Hard + 8 Master
@@ -76,10 +82,9 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 - All MD files updated
 
 **Still open:**
-- SQL Lab Sessions 4–6 (schema design → new problems → phase 2)
+- SQL Lab Session 6 (UX + hints + phase 2) — gate: Sessions 4+5 done ✅
 - PostHog live in Vercel prod — confirm `VITE_POSTHOG_KEY` is set
-- Foundation task instructions (audit #95) — gate now clear
-- Foundation depth audit (audit #96) — gate: task instructions done first
+- Foundation depth audit (audit #96) — gate: task instructions done ✅
 - Font system (Source Serif 4 + DM Sans) — research done, not shipped
 
 ---
@@ -91,5 +96,6 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 - New rooms / new cases — wrong session type
 - Stripe activation — own sprint
 - Learning paths — Tier 2, not yet
+- Sessions 4+5 — ✅ done
 - Session 3 — ✅ done
 - Sessions 1–2 — ✅ done

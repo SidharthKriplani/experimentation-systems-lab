@@ -1800,6 +1800,10 @@ function Module_RF11({ onComplete }) {
         })}
       </div>
 
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> For each event below, select the category that best explains it — Seasonal, Competitor, Platform, or Macro — then click Check to confirm your classification.
+      </div>
+
       {EVENTS.map(function(ev) {
         const sel = selections[ev.id];
         const isRevealed = !!revealed[ev.id];
@@ -1857,6 +1861,9 @@ function Module_RF11({ onComplete }) {
 
       {allRevealed && (
         <div style={{ marginTop: '1.1rem' }}>
+          <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+            <strong>What to do:</strong> Select the answer that correctly describes how to handle an external confound discovered during an A/B test window, then click Check.
+          </div>
           <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.65rem' }}>{RF11_MCQ.question}</div>
           {RF11_MCQ.options.map(function(opt, oi) {
             return (
@@ -2033,6 +2040,9 @@ function Module_RF12({ onComplete }) {
       </div>
 
       {/* Cause cards */}
+      <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.75rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+        <strong>What to do:</strong> Click Remove on each cause to see how the unexplained gap grows — then add them all back to confirm all 22 percentage points are accounted for.
+      </div>
       {CAUSES.map(function(c) {
         const isOn = active[c.id];
         return (
@@ -2077,6 +2087,9 @@ function Module_RF12({ onComplete }) {
 
       {/* MCQ */}
       <div style={{ marginTop: '1.25rem' }}>
+        <div style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.9rem', marginBottom: '0.65rem', fontSize: '0.83rem', color: 'var(--teal)', lineHeight: 1.5 }}>
+          <strong>What to do:</strong> Select the answer that correctly defines when an RCA investigation is complete, then click Check.
+        </div>
         <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.65rem' }}>{RF12_MCQ.question}</div>
         {RF12_MCQ.options.map(function(opt, oi) {
           return (
