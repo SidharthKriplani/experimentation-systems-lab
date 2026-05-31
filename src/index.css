@@ -324,7 +324,7 @@ table { border-collapse: collapse; }
   right: 0;
   width: 272px;
   overflow-y: auto;
-  background: var(--bg);
+  background: var(--surface);
   border-left: 1px solid var(--border);
   z-index: 5;
   padding: 0.875rem;

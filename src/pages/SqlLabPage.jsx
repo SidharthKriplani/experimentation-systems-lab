@@ -95,7 +95,7 @@ function SidebarProblemBtn({ p, globalIdx, isCurrent, isSolved, onSelect }) {
       style={{
         width: '100%', display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
         padding: '0.6rem 0.875rem', border: 'none', borderBottom: '1px solid var(--border)',
-        background: isCurrent ? 'var(--surface-2)' : 'transparent',
+        background: isCurrent ? 'rgba(20,184,166,0.08)' : 'transparent',
         cursor: 'pointer', textAlign: 'left',
         borderLeft: isCurrent ? '3px solid var(--teal)' : '3px solid transparent',
         transition: 'background 0.15s',
@@ -113,7 +113,7 @@ function SidebarProblemBtn({ p, globalIdx, isCurrent, isSolved, onSelect }) {
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
           fontSize: '0.78rem', fontWeight: isCurrent ? 600 : 400, lineHeight: 1.4, marginBottom: '2px',
-          color: isCurrent ? 'var(--text)' : 'var(--text-muted)',
+          color: isCurrent ? 'var(--teal)' : 'var(--text-muted)',
           whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
         }}>
           {globalIdx + 1}. {p.title}
@@ -149,10 +149,10 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.875rem' }}>
         <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Progress</div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem', marginBottom: '0.5rem' }}>
-          <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text)' }}>{solvedCount}</span>
+          <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--teal)' }}>{solvedCount}</span>
           <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>/ {nonMaster.length} solved</span>
         </div>
-        <div style={{ height: 4, background: 'var(--border)', borderRadius: 99, overflow: 'hidden' }}>
+        <div style={{ height: 6, background: 'var(--border)', borderRadius: 99, overflow: 'hidden' }}>
           <div style={{ height: '100%', width: `${solvedCount / nonMaster.length * 100}%`, background: 'var(--teal)', borderRadius: 99, transition: 'width 0.4s ease' }} />
         </div>
       </div>
@@ -395,8 +395,8 @@ export function SqlLabPage({ onBack }) {
           ← Back
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{ width: 28, height: 28, background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.25)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', color: 'var(--teal)' }}>{'<>'}</div>
-          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text)', letterSpacing: '-0.02em' }}>SQL Lab</span>
+          <div style={{ width: 28, height: 28, background: 'var(--teal)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', color: '#fff', fontWeight: 700 }}>{'<>'}</div>
+          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--teal)', letterSpacing: '-0.02em' }}>SQL Lab</span>
           <span style={{ fontSize: '0.72rem', padding: '1px 7px', borderRadius: '99px', background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>internal preview</span>
         </div>
       </div>
@@ -405,7 +405,7 @@ export function SqlLabPage({ onBack }) {
       <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: '1.5rem' }}>
 
           {/* Problem card */}
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem' }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1.25rem', borderLeft: '3px solid ' + diffStyle.text }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
               <Badge label={problem.difficulty} style={{ background: diffStyle.bg, color: diffStyle.text, borderColor: diffStyle.border }} />
               {problem.tags.slice(0, 3).map(t => (
@@ -463,7 +463,7 @@ export function SqlLabPage({ onBack }) {
                 style={{
                   width: '100%', minHeight: 280, resize: 'vertical', fontFamily: 'monospace',
                   fontSize: '0.82rem', lineHeight: 1.6, padding: '0.75rem',
-                  background: 'var(--surface-2)', border: '1px solid var(--border)',
+                  background: 'var(--surface-2)', border: '1px solid rgba(20,184,166,0.3)',
                   borderRadius: '6px', color: 'var(--text)', outline: 'none', boxSizing: 'border-box',
                 }}
               />
