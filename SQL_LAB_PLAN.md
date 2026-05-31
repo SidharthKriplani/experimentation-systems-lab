@@ -2,7 +2,7 @@
 
 Single source of truth for all SQL Lab decisions, findings, architecture choices, and session sequencing. Created after the Session 1 investigative audit (2026-05-31). Update this file at the end of every SQL Lab session.
 
-**Current version:** V4.41.0 (Sessions 1–3 complete)
+**Current version:** V4.43.0 (Sessions 1–6 complete)
 **Last updated:** 2026-05-31
 
 ---
@@ -21,7 +21,7 @@ Single source of truth for all SQL Lab decisions, findings, architecture choices
 | Session 3 rewrites (74 prompts + debriefs) | ✅ Done — V4.41.0 |
 | Session 4 (7 new datamarts) | ✅ Done — V4.42.0 |
 | Session 5 (130-problem target) | ✅ Done — V4.42.0 |
-| Session 6 (UX + hints + phase 2) | ⏳ Pending |
+| Session 6 (UX + hints + phase 2) | ✅ Done — V4.43.0 |
 
 ---
 
@@ -340,7 +340,7 @@ Six sessions total. Each is a complete unit of work. Order is fixed — dependen
 
 **Output:** Updated sqlLabProblems.js + sqlLabDatamarts.js at 130-problem target.
 
-### Session 6 — UX Fixes + Hints System + Phase 2 Features
+### Session 6 — UX Fixes + Hints System + Phase 2 Features ✅ DONE V4.43.0
 **Gate:** Session 5 complete; all 130 problems verified correct
 **Scope:**
 
@@ -366,6 +366,12 @@ Six sessions total. Each is a complete unit of work. Order is fixed — dependen
 **Note:** Session 6 is large. Split into 6a (UX fixes + layout) and 6b (hints authoring + phase 2) if needed.
 
 **Output:** SqlLabPage.jsx + Progress.jsx updated; hint content added to sqlLabProblems.js.
+
+**Execution notes (V4.43.0):**
+- Sidebar.jsx: SQL Lab added to analytics subgroup after Code Lab. getIsActive() extended.
+- SqlLabPage.jsx: Clearbit → Google favicon API (both locations). Schema accordion 90px→200px. Master filter chip added. SORTED_PROBLEMS constant enforces difficulty order. "internal preview" badge removed. Hints UI: IIFE inline renders progressive hint button → Show Answer flow. Timer: timerRef+timerStartRef, starts on first keystroke, saves to pal-sql-lab-times-v1 on correct. Progress bar denominator fixed to 130.
+- sqlLabProblems.js: add_hints.py ran; 130 problems × 1–5 hints added. Breakdown: 50×1, 40×2, 25×5, 15×5.
+- Progress.jsx: sqlLabProblems imported, sqlSolved+sqlTimes from localStorage, SQL Lab SectionCard (total/per-diff/time/nav), SQL Lab in allRoomProgress.
 
 ---
 

@@ -17,6 +17,7 @@ import { rcaCases } from '../data/rcaCases.js';
 import { businessCases } from '../data/businessCases.js';
 import { designScenarios } from '../data/designScenarios.js';
 import { codeModules } from '../data/codeModules.js';
+import { sqlLabProblems } from '../data/sqlLabProblems.js';
 import { productDesignScenarios } from '../data/productDesignScenarios.js';
 import { prioritizationScenarios } from '../data/prioritizationScenarios.js';
 import { behavioralQuestions } from '../data/behavioralQuestions.js';
@@ -184,6 +185,9 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
   const rfProgress = getAllRCAFoundationProgress();
   const efProgress = getAllExpFoundationProgress();
 
+  const sqlSolved = (() => { try { return new Set(JSON.parse(localStorage.getItem('pal-sql-lab-solved-v1') || '[]')); } catch { return new Set(); } })();
+  const sqlTimes  = (() => { try { return JSON.parse(localStorage.getItem('pal-sql-lab-times-v1') || '{}'); } catch { return {}; } })();
+
   const statsCompleted = statsModules.filter(m => statsProgress[m.id]?.attempts > 0);
   const metricsCompleted = metricCases.filter(c => metricsProgress[c.id]?.attempts > 0);
   const rcaCompleted = rcaCases.filter(c => rcaProgress[c.id]?.attempts > 0);
@@ -249,6 +253,8 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
       onReset: makeRoomResetter(['pal-exp-foundation-progress-v1']) },
     { label: 'Prioritization', completed: prioritizationScenarios.filter(s => priProgress[s.id]?.completedAt).length, total: prioritizationScenarios.length, color: 'var(--yellow)',
       onReset: makeRoomResetter(['pal-pri-progress-v1']) },
+    { label: 'SQL Lab', completed: sqlLabProblems.filter(p => sqlSolved.has(p.id)).length, total: sqlLabProblems.length, color: 'var(--teal)',
+      onReset: makeRoomResetter(['pal-sql-lab-solved-v1', 'pal-sql-lab-times-v1']) },
   ];
 
   const gaCompleted = growthAnalyticsCases.filter(c => gaProgress[c.id]?.rating).length;
@@ -405,6 +411,7 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
   const [reviewQueueOpen, setReviewQueueOpen] = useState(true);
   const [roomProgressOpen, setRoomProgressOpen] = useState(true);
   const [studyPlanOpen, setStudyPlanOpen] = useState(true);
+  const [sqlLabOpen, setSqlLabOpen] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   function handleClear() {
@@ -1141,6 +1148,78 @@ export function Progress({ allProgress, onSelect, onClear, onNavigate, unlocked 
           </div>
         )}
       </SectionCard>
+
+      {/* SQL Lab Section */}
+      {(() => {
+        const diffs = ['Easy', 'Medium', 'Hard', 'Master'];
+        const totals = { Easy: 50, Medium: 40, Hard: 25, Master: 15 };
+        const diffColors = { Easy: 'var(--green)', Medium: 'var(--yellow)', Hard: 'var(--red)', Master: 'var(--purple)' };
+        const byDiff = {};
+        diffs.forEach(d => {
+          byDiff[d] = sqlLabProblems.filter(p => p.difficulty === d && sqlSolved.has(p.id)).length;
+        });
+        const totalSqlSolved = sqlLabProblems.filter(p => sqlSolved.has(p.id)).length;
+        const totalTimeSec = Object.values(sqlTimes).reduce((s, t) => s + (t || 0), 0);
+        const totalTimeMin = Math.round(totalTimeSec / 60);
+        return (
+          <SectionCard
+            icon="<>"
+            title="SQL Lab"
+            open={sqlLabOpen}
+            onToggle={() => setSqlLabOpen(o => !o)}
+            badge={totalSqlSolved > 0 ? totalSqlSolved : undefined}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {/* Summary row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+                <div>
+                  <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--teal)' }}>{totalSqlSolved}</span>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginLeft: '0.35rem' }}>/ {sqlLabProblems.length} solved</span>
+                </div>
+                {totalTimeMin > 0 && (
+                  <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                    ⏱ {totalTimeMin} min total practice time
+                  </div>
+                )}
+                {onNavigate && (
+                  <button
+                    onClick={() => onNavigate('sql-lab')}
+                    style={{
+                      marginLeft: 'auto', padding: '0.35rem 0.8rem', borderRadius: '6px',
+                      background: 'rgba(20,184,166,0.08)', border: '1px solid rgba(20,184,166,0.25)',
+                      color: 'var(--teal)', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                    }}
+                  >Open SQL Lab →</button>
+                )}
+              </div>
+              {/* Progress bar */}
+              <div style={{ height: 6, background: 'var(--border)', borderRadius: 99, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${totalSqlSolved / sqlLabProblems.length * 100}%`, background: 'var(--teal)', borderRadius: 99, transition: 'width 0.4s' }} />
+              </div>
+              {/* By difficulty */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, 100%), 1fr))', gap: '0.6rem' }}>
+                {diffs.map(d => {
+                  const done = byDiff[d];
+                  const tot = totals[d];
+                  const col = diffColors[d];
+                  return (
+                    <div key={d} style={{ border: '1px solid var(--border)', borderRadius: '8px', padding: '0.65rem 0.875rem' }}>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 700, color: col, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.35rem' }}>{d}</div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem' }}>
+                        <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text)' }}>{done}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>/ {tot}</span>
+                      </div>
+                      <div style={{ marginTop: '0.35rem', height: 4, background: 'var(--border)', borderRadius: 99, overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${done / tot * 100}%`, background: col, borderRadius: 99 }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </SectionCard>
+        );
+      })()}
 
       {/* Settings Section */}
       <SectionCard

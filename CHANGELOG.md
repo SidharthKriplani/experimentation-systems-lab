@@ -4,6 +4,47 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.43.0] — 2026-05-31 [FEATURE]
+
+### SQL Lab — Session 6: Nav Integration + UX Fixes + Hints System + Timer + Progress Section
+
+**Nav integration:**
+SQL Lab added to `Sidebar.jsx` analytics subgroup (after Code Lab). `getIsActive()` extended with `sql-lab` mapping. `q` keyboard shortcut unchanged. The "internal preview" badge removed from the page header.
+
+**UX fixes (`SqlLabPage.jsx`):**
+- Company logos switched from Clearbit to Google Favicon API (`https://www.google.com/s2/favicons?domain=...&sz=32`) — both the sidebar list and the problem card
+- Schema accordion `maxHeight` raised from `90px` to `200px` — visible for large datamarts (hr_analytics has 5 tables)
+- Difficulty filter chips extended to include Master tier (previously only All/Easy/Medium/Hard)
+- When Master filter is active, Challenge Vault section is hidden (Master problems already shown in main list)
+- Sort enforcement: `SORTED_PROBLEMS` constant sorts all 130 problems by `DIFF_ORDER` ({Easy:0, Medium:1, Hard:2, Master:3}) at module load time; component uses this instead of raw `sqlLabProblems`
+- Progress bar and solved count now track all 130 problems including Master (previously excluded Master from denominator)
+
+**Hints system (`sqlLabProblems.js` + `SqlLabPage.jsx`):**
+- `add_hints.py` script authored and ran: adds `hints: [...]` array to all 130 problems
+- Difficulty-scaled hint count: Easy → 1 hint, Medium → 2 hints, Hard → 5 hints, Master → 5 hints
+- Hints generated from solution analysis: shape hint (output row count + columns), pattern hint (window function / CTE / date / exclusion / etc.), decomposition hint, edge-case hint, validate hint
+- Show Answer button replaced with progressive hint flow: "Hint N of M" button reveals one hint at a time
+- After all hints exhausted, Show Answer unlocks (still requires ≥50 chars in textarea)
+- Hints rendered as teal-bordered cards below the editor buttons
+
+**Per-problem timer (`SqlLabPage.jsx`):**
+- Timer starts on first keystroke in textarea (zero-overhead until user types)
+- Live display in problem card footer: `⏱ 0:42 elapsed` replaces the `~X min` estimate while active
+- On correct solve, elapsed seconds saved to `pal-sql-lab-times-v1` localStorage (keyed by problem ID)
+- Timer resets on problem navigation
+- State: `timerRef` (setInterval handle), `timerStartRef` (start timestamp), `elapsedSec` (displayed)
+
+**Progress.jsx SQL section:**
+- `sqlLabProblems` imported; `sqlSolved` and `sqlTimes` read from localStorage at render
+- SQL Lab added to `allRoomProgress` array (appears in Overview readiness bars + reset button)
+- New SQL Lab SectionCard between Room Progress and Settings: shows total solved / 130, total practice time in minutes, per-difficulty breakdown (Easy/Medium/Hard/Master with individual progress bars), "Open SQL Lab →" nav button
+
+**Files changed:** `src/components/layout/Sidebar.jsx`, `src/pages/SqlLabPage.jsx`, `src/data/sqlLabProblems.js`, `src/pages/Progress.jsx`
+
+**Validate:** sqlLabProblems.js PASS. Vite build: ✓ 0 errors. 5/5 spot checks passed.
+
+---
+
 ## [4.42.0] — 2026-05-31 [CONTENT]
 
 ### SQL Lab — Sessions 4 + 5: 7 New Datamarts + 130-Problem Target

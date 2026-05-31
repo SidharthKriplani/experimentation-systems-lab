@@ -24,6 +24,7 @@ const ROOM_SUBGROUPS = [
       { id: 'bi',               label: 'BI & Reporting' },
       { id: 'instrumentation',  label: 'Instrumentation' },
       { id: 'code',             label: 'Code Lab' },
+      { id: 'sql-lab',          label: 'SQL Lab' },
     ],
   },
   {
@@ -104,7 +105,8 @@ function getIsActive(itemId, currentPage) {
     || (itemId === 'foundations'     && currentPage === 'foundations')
     || (itemId === 'metrics-foundations' && (currentPage === 'metrics-foundations' || currentPage === 'metrics-foundations-runner'))
     || (itemId === 'rca-foundations'     && (currentPage === 'rca-foundations' || currentPage === 'rca-foundations-runner'))
-    || (itemId === 'exp-foundations'     && (currentPage === 'exp-foundations' || currentPage === 'exp-foundations-runner'));
+    || (itemId === 'exp-foundations'     && (currentPage === 'exp-foundations' || currentPage === 'exp-foundations-runner'))
+    || (itemId === 'sql-lab'             && currentPage === 'sql-lab');
 }
 
 function getActiveSubGroup(currentPage) {

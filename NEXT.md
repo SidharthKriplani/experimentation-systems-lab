@@ -4,29 +4,28 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.42.0 (2026-05-31) — Sessions 4+5 executed: 7 datamarts added, 130-problem target reached, build clean*
+*Last updated: V4.43.0 (2026-05-31) — Session 6 executed: nav integration, UX fixes, hints system (130 problems × 1–5 hints), per-problem timer, Progress.jsx SQL section, build clean*
 
 ---
 
 ## Next session
 
-**1. SQL Lab Session 6 — UX fixes + hints system + phase 2 features** `L` `CODE`
+**1. Foundation module depth audit — RCA, Metrics, Exp (audit #96)** `M` `CODE`
 
-Gate: Sessions 4+5 done ✅ (130 problems, 12 datamarts, build clean).
+Gate: task instructions pass (#95) done ✅
 
-- UX fixes: sort by difficulty tier, Google favicon API logos, filter chips (difficulty/company/time), scroll/layout restructure (left panel fixed, description scrolls internally)
-- Hints system: replaces Show Answer; 1 hint Easy / 1–2 Medium / 3–5 Hard+Master; structural reasoning questions ("What is one row in your output?"); Show Answer unlocks only after hints exhausted; hints authored per problem
-- Phase 2: per-problem timer (starts on first keystroke, records to pal-sql-lab-times-v1), Progress.jsx SQL section (solved count by difficulty, total time, streak)
-- Study Plan modal: deprioritized — move to Tier 2 IDEAS.md
-- May split 6a (UX fixes + layout) and 6b (hints authoring + phase 2)
-
-Full spec in `SQL_LAB_PLAN.md` Section 4.
+Full spec in `AUDITS.md` audit #96.
 
 ---
 
-**2. Foundation module depth audit — RCA, Metrics, Exp (audit #96)** `M` `CODE`
+**2. SQL Lab — Phase 3 (company filter chip + streak + PostHog events)** `M` `CODE`
 
-Gate: task instructions pass (#95) done ✅
+Gate: Session 6 done ✅ (V4.43.0)
+
+- Company filter chip in ProblemSidebar (filter by datamartId/company)
+- Hints quality review: spot-check 20 problems for hint accuracy, rewrite any that are too generic
+- PostHog events: `sql_problem_solved`, `sql_hint_used`, `sql_answer_revealed` (check VITE_POSTHOG_KEY is live in Vercel)
+- SQL Lab streak tracking (integrate into Progress.jsx heatmap)
 
 ---
 
@@ -47,6 +46,14 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 ---
 
 ## Carry-forward log
+
+**Done this session (V4.43.0 — Session 6):**
+- SQL Lab nav: added to Sidebar.jsx analytics subgroup (after Code Lab). getIsActive() extended. "internal preview" badge removed.
+- UX fixes: Google favicon API (replaced Clearbit), schema accordion 90px→200px, Master added to difficulty filter, sort enforcement via SORTED_PROBLEMS constant, progress bar denominator fixed to 130.
+- Hints system: add_hints.py added hints to all 130 problems (1/2/5/5 by difficulty). Progressive reveal UI replaces Show Answer. Show Answer unlocks only after all hints exhausted.
+- Per-problem timer: starts on first keystroke, live display in problem footer, saves elapsed to pal-sql-lab-times-v1 on correct solve.
+- Progress.jsx: SQL Lab SectionCard added (total solved, per-difficulty breakdown, total time, nav button). SQL Lab added to allRoomProgress for readiness bars.
+- validate-data.js: sqlLabProblems.js PASS. Vite build: ✓ 0 errors.
 
 **Done this session (V4.42.0 — Sessions 4+5):**
 - Session 4: 7 new datamarts appended to sqlLabDatamarts.js (gaming, logistics, marketplace, food_delivery, social_network, edtech, hr_analytics). Seed data engineered for all 8 gap patterns. Double-comma syntax bug fixed at health/gaming boundary.
@@ -82,9 +89,9 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 - All MD files updated
 
 **Still open:**
-- SQL Lab Session 6 (UX + hints + phase 2) — gate: Sessions 4+5 done ✅
-- PostHog live in Vercel prod — confirm `VITE_POSTHOG_KEY` is set
 - Foundation depth audit (audit #96) — gate: task instructions done ✅
+- SQL Lab Phase 3 (company filter, hints quality review, PostHog events, streak) — gate: Session 6 done ✅
+- PostHog live in Vercel prod — confirm `VITE_POSTHOG_KEY` is set
 - Font system (Source Serif 4 + DM Sans) — research done, not shipped
 
 ---
@@ -96,6 +103,7 @@ DECISION DUE before Batch 2 outreach. Do not leave half-done.
 - New rooms / new cases — wrong session type
 - Stripe activation — own sprint
 - Learning paths — Tier 2, not yet
+- Session 6 — ✅ done (V4.43.0)
 - Sessions 4+5 — ✅ done
 - Session 3 — ✅ done
 - Sessions 1–2 — ✅ done

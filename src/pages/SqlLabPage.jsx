@@ -1,6 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { sqlLabProblems } from '../data/sqlLabProblems.js';
 import { datamarts } from '../data/sqlLabDatamarts.js';
+
+const DIFF_ORDER = { Easy: 0, Medium: 1, Hard: 2, Master: 3 };
+
+const SORTED_PROBLEMS = [...sqlLabProblems].sort((a, b) => DIFF_ORDER[a.difficulty] - DIFF_ORDER[b.difficulty]);
 
 const DIFF_COLOR = {
   Easy:   { bg: 'var(--green-bg,  rgba(16,185,129,0.08))',  text: 'var(--green)',  border: 'var(--green-border,  rgba(16,185,129,0.25))' },
@@ -37,7 +41,7 @@ function SchemaAccordion({ dm, open, onToggle }) {
         <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: open ? 'rotate(180deg)' : 'none' }}>▾</span>
       </button>
       {open && (
-        <div style={{ padding: '0.6rem 0.75rem', background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '90px', overflowY: 'auto' }}>
+        <div style={{ padding: '0.6rem 0.75rem', background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '200px', overflowY: 'auto' }}>
           {Object.entries(dm.tables).map(([tableName, table]) => (
             <div key={tableName}>
               <div style={{ fontFamily: 'monospace', fontSize: '0.72rem', fontWeight: 700, color: 'var(--teal)', marginBottom: '4px' }}>
@@ -123,7 +127,7 @@ function SidebarProblemBtn({ p, globalIdx, isCurrent, isSolved, onSelect }) {
           <span style={{ fontSize: '0.65rem', color: 'var(--border)' }}>·</span>
           {p.companyDomain ? (
             <img
-              src={`https://logo.clearbit.com/${p.companyDomain}`}
+              src={`https://www.google.com/s2/favicons?domain=${p.companyDomain}&sz=32`}
               alt={p.company}
               style={{ width: 12, height: 12, borderRadius: 2, objectFit: 'contain', verticalAlign: 'middle' }}
               onError={e => { e.currentTarget.style.display = 'none'; }}
@@ -139,8 +143,10 @@ function SidebarProblemBtn({ p, globalIdx, isCurrent, isSolved, onSelect }) {
 function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff, onSelect }) {
   const nonMaster = problems.filter(p => p.difficulty !== 'Master');
   const masterProblems = problems.filter(p => p.difficulty === 'Master');
-  const filtered = nonMaster.filter(p => !filterDiff || p.difficulty === filterDiff);
-  const solvedCount = nonMaster.filter(p => solved.has(p.id)).length;
+  const filtered = filterDiff === 'Master'
+    ? masterProblems
+    : nonMaster.filter(p => !filterDiff || p.difficulty === filterDiff);
+  const solvedCount = problems.filter(p => solved.has(p.id)).length;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -150,10 +156,10 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
         <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Progress</div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem', marginBottom: '0.5rem' }}>
           <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--teal)' }}>{solvedCount}</span>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>/ {nonMaster.length} solved</span>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>/ {problems.length} solved</span>
         </div>
         <div style={{ height: 6, background: 'var(--border)', borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${solvedCount / nonMaster.length * 100}%`, background: 'var(--teal)', borderRadius: 99, transition: 'width 0.4s ease' }} />
+          <div style={{ height: '100%', width: `${solvedCount / problems.length * 100}%`, background: 'var(--teal)', borderRadius: 99, transition: 'width 0.4s ease' }} />
         </div>
       </div>
 
@@ -161,7 +167,7 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0.875rem' }}>
         <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Difficulty</div>
         <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-          {[null, 'Easy', 'Medium', 'Hard'].map(d => {
+          {[null, 'Easy', 'Medium', 'Hard', 'Master'].map(d => {
             const label = d || 'All';
             const active = filterDiff === d;
             const ds = d ? DIFF_COLOR[d] : null;
@@ -203,8 +209,8 @@ function ProblemSidebar({ problems, currentIdx, solved, filterDiff, onFilterDiff
         )}
       </div>
 
-      {/* Challenge Vault — Master problems */}
-      {masterProblems.length > 0 && (
+      {/* Challenge Vault — Master problems (hidden when Master filter is active, they show in main list) */}
+      {masterProblems.length > 0 && filterDiff !== 'Master' && (
         <div style={{ background: 'var(--surface)', border: '1px solid var(--purple-border, rgba(139,92,246,0.25))', borderRadius: '10px', overflow: 'hidden' }}>
           <div style={{ padding: '0.5rem 0.875rem', borderBottom: '1px solid var(--border)', fontSize: '0.68rem', fontWeight: 700, color: 'var(--purple, #8b5cf6)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             ⚡ Challenge Vault
@@ -238,7 +244,11 @@ export function SqlLabPage({ onBack }) {
   const [schemaOpen, setSchemaOpen] = useState(true);
   const [hasRun, setHasRun] = useState(false);
   const [correct, setCorrect] = useState(null);
+  const [hintsShown, setHintsShown] = useState(0);
   const [filterDiff, setFilterDiff] = useState(null);
+  const timerRef = useRef(null);
+  const timerStartRef = useRef(null);
+  const [elapsedSec, setElapsedSec] = useState(0);
   const [solved, setSolved] = useState(() => {
     try {
       const stored = JSON.parse(localStorage.getItem('pal-sql-lab-solved-v1') || '[]');
@@ -254,13 +264,22 @@ export function SqlLabPage({ onBack }) {
     return () => { document.body.style.overflow = ''; };
   }, []);
 
-  const problem = sqlLabProblems[problemIdx];
+  const problem = SORTED_PROBLEMS[problemIdx];
   const dm = problem ? datamarts[problem.datamartId] : null;
   const diffStyle = problem ? (DIFF_COLOR[problem.difficulty] || DIFF_COLOR.Easy) : DIFF_COLOR.Easy;
 
-  // Mark solved on correct answer
+  // Mark solved on correct answer + save elapsed time
   useEffect(() => {
     if (correct !== true || !problem) return;
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    if (timerStartRef.current) {
+      const elapsed = Math.round((Date.now() - timerStartRef.current) / 1000);
+      try {
+        const stored = JSON.parse(localStorage.getItem('pal-sql-lab-times-v1') || '{}');
+        stored[problem.id] = elapsed;
+        localStorage.setItem('pal-sql-lab-times-v1', JSON.stringify(stored));
+      } catch {}
+    }
     setSolved(prev => {
       const next = new Set(prev);
       next.add(problem.id);
@@ -282,6 +301,10 @@ export function SqlLabPage({ onBack }) {
     setCorrect(null);
     setQuery('');
     setExpectedSample(null);
+    setHintsShown(0);
+    setElapsedSec(0);
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    timerStartRef.current = null;
 
     if (dbRef.current) {
       try { dbRef.current.close(); } catch {}
@@ -374,6 +397,14 @@ export function SqlLabPage({ onBack }) {
     return true;
   }
 
+  function startTimer() {
+    if (timerStartRef.current) return;
+    timerStartRef.current = Date.now();
+    timerRef.current = setInterval(() => {
+      setElapsedSec(Math.round((Date.now() - timerStartRef.current) / 1000));
+    }, 1000);
+  }
+
   function handleKeyDown(e) {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       e.preventDefault();
@@ -409,7 +440,6 @@ export function SqlLabPage({ onBack }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <div style={{ width: 28, height: 28, background: 'var(--teal)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', color: '#fff', fontWeight: 700 }}>{'<>'}</div>
           <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--teal)', letterSpacing: '-0.02em' }}>SQL Lab</span>
-          <span style={{ fontSize: '0.72rem', padding: '1px 7px', borderRadius: '99px', background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>internal preview</span>
         </div>
       </div>
 
@@ -426,7 +456,7 @@ export function SqlLabPage({ onBack }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 {problem.companyDomain && (
                   <img
-                    src={`https://logo.clearbit.com/${problem.companyDomain}`}
+                    src={`https://www.google.com/s2/favicons?domain=${problem.companyDomain}&sz=32`}
                     alt={problem.company}
                     style={{ width: 14, height: 14, borderRadius: 2, objectFit: 'contain' }}
                     onError={e => { e.currentTarget.style.display = 'none'; }}
@@ -493,7 +523,10 @@ export function SqlLabPage({ onBack }) {
               </div>
             )}
             <div style={{ marginTop: '0.6rem', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-              ⏱ ~{problem.estimatedMin} min &nbsp;·&nbsp; Ctrl+Enter to run
+              {elapsedSec > 0
+                ? `⏱ ${Math.floor(elapsedSec / 60)}:${String(elapsedSec % 60).padStart(2, '0')} elapsed`
+                : `⏱ ~${problem.estimatedMin} min`
+              } &nbsp;·&nbsp; Ctrl+Enter to run
             </div>
           </div>
 
@@ -512,7 +545,7 @@ export function SqlLabPage({ onBack }) {
             <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <textarea
                 value={query}
-                onChange={e => setQuery(e.target.value)}
+                onChange={e => { startTimer(); setQuery(e.target.value); }}
                 onKeyDown={handleKeyDown}
                 spellCheck={false}
                 placeholder={'-- Write your SQL here\n-- Ctrl+Enter to run'}
@@ -535,21 +568,43 @@ export function SqlLabPage({ onBack }) {
                 >
                   ▶ Run
                 </button>
-                {!revealed && (
-                  <button
-                    onClick={() => { if (query.trim().length >= 50) setRevealed(true); }}
-                    disabled={query.trim().length < 50}
-                    title={query.trim().length < 50 ? ('Write ' + (50 - query.trim().length) + ' more char' + (50 - query.trim().length !== 1 ? 's' : '') + ' to unlock') : 'Show answer'}
-                    style={{
-                      padding: '0.45rem 0.9rem', borderRadius: '6px', fontWeight: 500, fontSize: '0.78rem',
-                      background: 'none', color: 'var(--text-muted)', border: '1px solid var(--border)',
-                      cursor: query.trim().length >= 50 ? 'pointer' : 'not-allowed',
-                      opacity: query.trim().length >= 50 ? 1 : 0.35,
-                    }}
-                  >
-                    Show answer
-                  </button>
-                )}
+                {!revealed && (() => {
+                  const maxH = { Easy: 1, Medium: 2, Hard: 5, Master: 5 }[problem.difficulty] || 1;
+                  const availableHints = (problem.hints || []).length;
+                  const hintCap = Math.min(maxH, availableHints);
+                  const allExhausted = hintsShown >= hintCap;
+                  return (
+                    <>
+                      {!allExhausted && (
+                        <button
+                          onClick={() => setHintsShown(n => Math.min(n + 1, hintCap))}
+                          style={{
+                            padding: '0.45rem 0.9rem', borderRadius: '6px', fontWeight: 500, fontSize: '0.78rem',
+                            background: 'rgba(20,184,166,0.08)', color: 'var(--teal)',
+                            border: '1px solid rgba(20,184,166,0.25)', cursor: 'pointer',
+                          }}
+                        >
+                          Hint {hintsShown + 1} of {hintCap}
+                        </button>
+                      )}
+                      {allExhausted && (
+                        <button
+                          onClick={() => { if (query.trim().length >= 50) setRevealed(true); }}
+                          disabled={query.trim().length < 50}
+                          title={query.trim().length < 50 ? ('Write ' + (50 - query.trim().length) + ' more char' + (50 - query.trim().length !== 1 ? 's' : '') + ' to unlock') : 'Show answer'}
+                          style={{
+                            padding: '0.45rem 0.9rem', borderRadius: '6px', fontWeight: 500, fontSize: '0.78rem',
+                            background: 'none', color: 'var(--text-muted)', border: '1px solid var(--border)',
+                            cursor: query.trim().length >= 50 ? 'pointer' : 'not-allowed',
+                            opacity: query.trim().length >= 50 ? 1 : 0.35,
+                          }}
+                        >
+                          Show answer
+                        </button>
+                      )}
+                    </>
+                  );
+                })()}
                 {hasRun && correct === true && (
                   <span className="pal-success-ring" style={{ fontSize: '0.78rem', color: 'var(--green)', fontWeight: 600 }}>✓ Correct — well done</span>
                 )}
@@ -557,6 +612,21 @@ export function SqlLabPage({ onBack }) {
                   <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Output does not match — check row count or column names</span>
                 )}
               </div>
+              {hintsShown > 0 && problem.hints && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  {problem.hints.slice(0, hintsShown).map((h, i) => (
+                    <div key={i} style={{
+                      padding: '0.55rem 0.75rem', background: 'rgba(20,184,166,0.06)',
+                      border: '1px solid rgba(20,184,166,0.2)', borderRadius: '6px',
+                      borderLeft: '3px solid var(--teal)',
+                      fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.55,
+                    }}>
+                      <span style={{ fontWeight: 700, color: 'var(--teal)', marginRight: '0.4rem' }}>Hint {i + 1}:</span>
+                      {h}
+                    </div>
+                  ))}
+                </div>
+              )}
               {runError && (
                 <div style={{ padding: '0.6rem 0.75rem', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '6px', fontSize: '0.78rem', color: 'var(--red)', fontFamily: 'monospace' }}>
                   {runError}
@@ -596,7 +666,7 @@ export function SqlLabPage({ onBack }) {
                   <button
                     className="pal-glow-pulse"
                     onClick={() => {
-                      const next = sqlLabProblems.findIndex((p, i) => i > problemIdx && !solved.has(p.id));
+                      const next = SORTED_PROBLEMS.findIndex((p, i) => i > problemIdx && !solved.has(p.id));
                       if (next !== -1) setProblemIdx(next);
                     }}
                     style={{
@@ -617,7 +687,7 @@ export function SqlLabPage({ onBack }) {
     {/* Problem list — independent fixed panel, scrolls on its own */}
     <div className="sql-lab-problem-panel">
       <ProblemSidebar
-        problems={sqlLabProblems}
+        problems={SORTED_PROBLEMS}
         currentIdx={problemIdx}
         solved={solved}
         filterDiff={filterDiff}
