@@ -36,6 +36,18 @@ Master problems live in a separate Challenge Vault section in the sidebar. They 
 **SQL Lab token limit rule: never write more than ~400 lines per tool call.**
 The 32k output token error is triggered when a single response generates and streams large code blocks. Always write to file immediately via Write/Edit tools. Never output large file contents in response text. If a file section exceeds ~400 lines, use Write (skeleton) + Edit (fill sections) pattern.
 
+**SQL Lab target problem count: 130 (50 Easy / 40 Medium / 25 Hard / 15 Master).**
+The original 250-problem bank contains ~39 duplicate skeletons and ~21 difficulty misclassifications. The cleaned target is 130 problems with zero duplicate SQL patterns. 15 Master (not 10 — too thin for a vault; not 18 — overextends authoring). This decision was made post-market-research audit (2026-05-31). Full rationale in SQL_LAB_PLAN.md.
+
+**SQL Lab difficulty rubric is market-anchored (LeetCode/DataLemur/StrataScratch benchmark).**
+Easy = one SQL concept, direct mapping. Medium = any basic window function (RANK, NTILE, LAG, SUM OVER) OR multi-step composition (CTE, conditional agg, 3-table JOIN). Hard = chaining 2+ advanced concepts where the combination is the difficulty (gaps-and-islands, recursive CTE, window+date arithmetic, multi-CTE pipelines). Master = beyond standard interview complexity (4+ CTE chains, retention curves, combinatorics). Single window functions are Medium, NOT Hard. Anti-joins (NOT IN, LEFT JOIN IS NULL) are Easy, NOT Medium. Full rubric in SQL_LAB_PLAN.md Section 1.
+
+**SQL Lab datamart count target: 12 (5 existing + 7 new).**
+Existing: ecomm, saas, fintech, consumer, health. New: gaming, logistics, marketplace, food_delivery, social_network, edtech, hr_analytics. Principle: "wider not longer" — more schemas prevent schema memorization across 130 problems. 250 problems over 5 datamarts = 50 problems/datamart; candidates memorize the layout by problem 10. Target: 10–12 problems per datamart. Master problems get standalone schemas (one per problem, never shared).
+
+**SQL Lab sessions 2–3 (prompt rewrites) come before sessions 4–5 (schema design + new authoring).**
+Lock the stakeholder-request framing style before writing new problems against new datamarts. If new problems are authored before the prompt style is locked, they will need rewriting again. Order is non-negotiable.
+
 ---
 
 ## Product scope

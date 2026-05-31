@@ -4,106 +4,126 @@ Read this at the start of every build session. Do only this. Update before closi
 
 **Rule:** Max 5 items, ordered by priority. Never a dump — if it grows past 5, something doesn't belong here. When done, cross off, reorder, add what carries forward.
 
-*Last updated: V4.39.11 (2026-05-31) — Expected output sample rows + 52-week heatmap*
+*Last updated: V4.40.0 (2026-05-31) — Session 1 executed: 39 culled, 27 reclassified, master10 bug fixed*
 
 ---
 
 ## Next session
 
-**1. SQL Lab — vet + phase 2 features** `L` `FEATURE`
+**1. SQL Lab — Session 1: Execute Cull + Reclassify + Bug Fix** `L` `CODE`
 
-SQL Lab is live at `/sql-lab` (keyboard shortcut `q`). Problems are complete: 100 Easy / 75 Medium / 50 Hard / 25 Master = 250 total. Vet first, then build the remaining features.
+All findings are in `SQL_LAB_PLAN.md`. Do not re-investigate — execute.
 
-**Vet checklist (run before anything else):**
-1. Navigate to `/sql-lab` (or press `q`)
-2. Try Easy sql-e01 (Re-engagement Targets) — LEFT JOIN anti-join, expect 3 rows (users 13,14,15 with no orders)
-3. Try Medium sql-m05 (Channel Mix Pivot) — CASE WHEN aggregation
-4. Try Hard sql-h02 (Streak Detector) — gap-and-island, expect user 5 only
-5. Try Master sql-master01 (Risk Engine) — 3-CTE score, expect user 9 score 8
-6. Try Master sql-master10 (High-Risk Account Flagging) — 2-CTE dual-signal, expect user 5 only. **Flag if SQL parse error** (potential `\)` syntax issue in solution string — fix if broken)
-7. Confirm Challenge Vault section visible at sidebar bottom
-8. Confirm schema accordion shows all datamart tables
-9. Confirm Clearbit logos render (or hide gracefully on error)
+**Step A — Remove 39 problems (cull list):**
+- Easy: e27, e38, e41, e63, e75, e76, e79, e86–e96, e98, e99
+- Medium: m27, m38, m44, m50, m55, m59, m63, m65, m67, m68, m69
+- Hard: h36, h43, h46
+- Master: master15, master17, master20, master22, master24
 
-**Phase 2 features (after vet passes):**
-- Study Plan 4-step modal (interview? / when? / role? / time?) → Casual/Steady/Intensive plan modes. Plan is solved-aware. localStorage key: `pal-sql-lab-plan-v1`
-- Timer: starts on first keystroke in editor, records elapsed time on correct solve only to `pal-sql-lab-times-v1`
-- SQL Lab progress section in Progress.jsx (solved count, difficulty breakdown, streak)
+**Step B — Apply 27 reclassifications:**
+- h16, h23 → Easy (not Hard)
+- h14, h19, h20, h22, h25, h26, h27, h28, h29, h30, h35, h37, h39, h40, h44, h47, h49, h50 → Medium (not Hard)
+- master06, master07, master11, master13, master16, master21, master23 → Hard (not Master)
+Change the `difficulty:` field only. No prompt or debrief edits.
 
-**2. Foundation module task instructions — "What to do" framing (audit #95)** `M` `UX`
-All interactive foundation elements across all 4 runners need a 1–2 sentence instruction prompt above each interactive element. InstructionBox component exists in ExpFoundationsRunner. Start with the 12 new stubs (ef12–ef15, mf11–mf13, rf08–rf12) — most launch without any instruction framing. Then audit the older modules. ~1 session. Do not mix with bug fixes.
+**Step C — Fix master10 bug:**
+`GROUP BY a.user_id\)` → `GROUP BY a.user_id\n)` in the solution string.
 
-**2. Visual pass — Simulator layout + emoji removal + icon consistency (audits #82, #80, #79)** `L` `VISUAL`
-All three are related. Dedicated session: redesign Simulator config screen (remove emojis from role cards, tighten spacing, increase visual gravity), remove all UI-chrome emojis (replace with Icon.jsx SVGs), standardize room header icon boxes to 36×36 box pattern across all browsers and foundation pages. Do not mix with a normal bug/fix session.
+**Step D — Verify:**
+- Run `npm run validate-data`
+- Run Vite build (`npm_config_cache=/tmp/npm-cache ./node_modules/.bin/vite build --outDir /tmp/dist-output`)
+- Spot-check 5 problems in browser: sql-e01, sql-m05, sql-h02, sql-master01, sql-master10
+- Version bump: V4.40.0
 
-**3. Foundation module depth audit — RCA, Metrics, Exp (audit #96)** `L` `CONTENT`
-All 72 foundation modules are now interactive. Assess depth: are the new modules sufficient for senior-level prep, or does a second layer exist? What topics are still missing per room? ~1 session per room. Gate: task instructions pass (audit #95) done first — now satisfied.
-
-**4. Case debrief failure mode pass (audit #86)** `L` `CONTENT`
-Debriefs state the right answer but don't explain what a weak answer looks like or why it fails under interviewer follow-up. Add: (1) what the weak answer looks like, (2) the specific follow-up that exposes the gap. Prioritize RCA, Metrics, Stats first. High effort — full data file pass.
-
-**5. Supabase auth — finish or cut decision (audit #104)** `M` `ARCH`
-DECISION DUE before Batch 2 outreach. Options: (A) complete to production-ready — E2E test with real Supabase project, PROGRESS_KEYS completeness, error handling; (B) remove entirely. Read DECISIONS.md rule before deciding. Do not leave half-done.
+Full rubric, full cull list, full reclassification table in `SQL_LAB_PLAN.md`.
 
 ---
 
-## Deferred to own session
+**2. SQL Lab — Session 2: Prompt Type Classification** `M` `AUDIT`
 
-**Empty state quality pass (audit #91)**
-Deferred — lower priority than above.
+Gate: Session 1 complete.
 
-**Defense Strategy Layer 4A — micro-sequence per skill**
-Gate: PostHog confirms real Defense Strategy usage from Batch 1. Do not build until then.
+Tag every surviving problem as `technical-spec` or `stakeholder-request`. Identify conversion candidates at Medium/Hard/Master. Target mix: Easy 80/20, Medium 60/40, Hard 50/50, Master 40/60. Output: classification table + conversion candidates list with direction notes. No code changes this session.
+
+Full instructions in `SQL_LAB_PLAN.md` Section 4.
+
+---
+
+**3. SQL Lab — Session 3: Stakeholder-Request Rewrites** `L` `CONTENT`
+
+Gate: Session 2 done.
+
+Rewrite prompts and debriefs for all conversion candidates. Prompt only and debrief only — do not touch expectedColumns, expectedRowCount, checkValues, or solution. Debrief order: (1) what stakeholder wants, (2) ambiguities resolved, (3) SQL approach, (4) weak SQL, (5) follow-up. Single-quote rules apply. Version bump: V4.41.0.
+
+Full instructions in `SQL_LAB_PLAN.md` Section 4.
+
+---
+
+**4. Foundation module task instructions — "What to do" framing (audit #95)** `M` `UX`
+
+Gate: SQL Lab Sessions 1–3 complete (SQL Lab is the momentum builder — get it right first).
+
+All interactive foundation elements across all 4 runners need a 1–2 sentence instruction prompt above each interactive element. InstructionBox component exists in ExpFoundationsRunner. Start with the 12 new stubs (ef12–ef15, mf11–mf13, rf08–rf12). Then audit older modules. ~1 session.
+
+---
+
+**5. SQL Lab — Sessions 4–6 (schema design → new problems → phase 2)** `L` `CODE`
+
+Gate: Sessions 1–3 done (prompt style locked before new authoring).
+
+- Session 4: Design 7 new datamarts (gaming, logistics, marketplace, food_delivery, social_network, edtech, hr_analytics) + standalone Master schemas
+- Session 5: Author new problems to fill 8-pattern gap list, reach 130-problem target (50E/40M/25H/15Master)
+- Session 6: Phase 2 features — study plan modal, per-problem timer, Progress.jsx SQL Lab section
+
+Full spec in `SQL_LAB_PLAN.md` Sections 3–4.
+
+---
+
+## Deferred (own sessions, not blocking)
+
+**Visual pass — Simulator layout + emoji removal + icon consistency (audits #82, #80, #79)**
+Dedicated session: redesign Simulator config screen, remove UI-chrome emojis, standardize room header icon boxes.
+
+**Foundation module depth audit — RCA, Metrics, Exp (audit #96)**
+Gate: task instructions pass (#95) done first.
+
+**Case debrief failure mode pass (audit #86)**
+Debriefs need: (1) what weak answer looks like, (2) follow-up that exposes the gap. Prioritize RCA, Metrics, Stats.
+
+**Supabase auth — finish or cut decision (audit #104)**
+DECISION DUE before Batch 2 outreach. Do not leave half-done.
 
 ---
 
 ## Carry-forward log
 
-**Done this session (V4.39.8–V4.39.11):**
-- SQL Lab scroll — fixed with two independent `position: fixed` panels (`.sql-lab-main-panel` + `.sql-lab-problem-panel`), body scroll lock via useEffect. Definitive fix.
-- SQL Lab visual vibrancy — teal header icon + title, teal active problem text + border, teal progress count, thicker progress bar, difficulty-colored left border on problem card, teal-tinted editor border
-- Schema accordion reduced to `maxHeight: 160px` (from 45vh)
-- Expected output — column chips + row count (V4.39.10), then actual sample rows from silently running `problem.solution` after DB init (V4.39.11). Shows first 3 rows as mini table, "+N more rows" if applicable
-- Progress streak heatmap extended from 13 weeks (91 days, 7px cells) to 52 weeks (364 days, 10px cells) — GitHub-style full-year grid, label updated to "Last year", streak window extended to 364 days
-- `sql-lab-mode` class on app-layout, `sql-lab-page-wrap`, body overflow lock — all in place
+**Done this session (V4.40.0):**
+- Session 1 executed: 39 problems culled, 27 reclassified (difficulty field only), master10 bug fixed
+- validate-data.js: PASS. Vite build: ✓ 0 errors. 15/15 spot checks passed
+- Audits #130–131 marked resolved
+
+**Done prior session (V4.39.11 — investigative):**
+- Full audit of all 250 problems — cull list, reclassification table, gap list, architecture decisions
+- Created SQL_LAB_PLAN.md, updated all MD files
+
+**Done this session (V4.39.8–V4.39.11 — code changes):**
+- SQL Lab scroll — fixed with two independent `position: fixed` panels, body scroll lock
+- SQL Lab visual vibrancy — teal header, teal active state, difficulty-colored borders
+- Schema accordion reduced to `maxHeight: 160px`
+- Expected output — column chips + actual sample rows (first 3 rows from running solution silently)
+- Progress streak heatmap extended to 52 weeks (364 days, GitHub-style)
 
 **Done in prior session (V4.39.0):**
 - SQL Lab scaled from 30 → 250 problems: 100 Easy / 75 Medium / 50 Hard / 25 Master
-- sqlLabProblems.js grew from 650 lines to ~6,800 lines — all single-quoted, 0 backticks
-- master15–master25: 11 new Master problems added (fintech/consumer/health/ecomm/saas, verified against seed data)
-- Vite build: ✓ 807 modules, 0 errors
 - All MD files updated
 
-**Done in prior session (V4.38.0):**
-- SQL Lab full build: sqlLabDatamarts.js (926 lines, 5 datamarts), sqlLabProblems.js (30 problems), SqlLabPage.jsx (568 lines)
-- Vite build clean — 807 modules, 0 errors
-
-**Done in prior session (V4.35.5–V4.36.3):**
-- Foundation broken links (NEXT #1) — dead `playbookLinks` block removed from StatsFoundationsRunner
-- Metrics linked scenario chips (NEXT #2) — confirmed already wired (audit #35)
-- Subtitle duplication across 5 stat modules (NEXT #3) — audit #94 ✅ resolved
-- GuidedPathCard item list removed (NEXT #4) — sequence block removed from Progress.jsx
-- Homepage framing pass (NEXT #5, audit #103) — ✅ resolved
-- Right-side module nav panel across all 4 foundation runners — V4.35.5
-- Foundation nav stub greying — V4.35.6 (isStub: true on 19 entries)
-- Foundation stub population — V4.36.0 (12 interactive modules: ef12–ef15, mf11–mf13, rf08–rf12)
-- CSS variable pass — V4.36.1 (audit #92 ✅, 7 files, --overlay token added)
-- React error boundary — confirmed present, audit #105 ✅ resolved
-- Sitemap 8 routes — confirmed present, audit #93 ✅ resolved
-- Label copy fixes — confirmed present, audit #83 ✅ resolved
-- Data validator script — V4.36.2 (audit #102 ✅, scripts/validate-data.js)
-- Depth palette pass — V4.36.3 (audit #122 ✅, dark mode deepening, --discovery token, DECISIONS rule)
-- RCA Foundations depth pass — V4.36.4 (rf01 framework viz, rf05 mix-shift playground, rf07 SVG metric tree)
-- All MD files updated — V4.36.4
-
 **Still open:**
-- SQL Lab vet checklist — run per NEXT item #1 before phase 2 build
-- SQL Lab phase 2 — study plan modal, per-problem timer, Progress.jsx SQL Lab section
-- sql-master10 potential syntax bug — confirm at runtime, fix `\)` → `)` in sqlLabProblems.js if needed
-- PostHog live in Vercel prod — confirm `VITE_POSTHOG_KEY` is set in Vercel dashboard
-- Foundation task instructions (audit #95) — #1 in next session queue
-- Foundation depth audit (audit #96) — now #3 in next session queue (gate cleared)
-- Font system (Source Serif 4 + DM Sans) — research complete, NOT shipped. Preview locally before deciding.
+- SQL Lab Sessions 1–6 (execution pending — findings are ready)
+- sql-master10 syntax bug — fix in Session 1
+- PostHog live in Vercel prod — confirm `VITE_POSTHOG_KEY` is set
+- Foundation task instructions (audit #95) — after SQL Lab Sessions 1–3
+- Foundation depth audit (audit #96) — gate: task instructions done first
+- Font system (Source Serif 4 + DM Sans) — research done, not shipped
 
 ---
 
@@ -114,3 +134,4 @@ Gate: PostHog confirms real Defense Strategy usage from Batch 1. Do not build un
 - New rooms / new cases — wrong session type
 - Stripe activation — own sprint
 - Learning paths — Tier 2, not yet
+- SQL Lab Sessions 4–6 — gate: Sessions 1–3 done first

@@ -232,6 +232,29 @@ Same card-per-day format as current, but now the plan:
 
 ---
 
+### Room relationship map — learning arc visualization
+
+**Gate: PostHog shows users getting lost — low room diversity per user, or high Home.jsx bounce.**
+
+The discoverability problem is real: a new user doesn't know what the difference is between Stats Room and Stat Foundations, how SQL Lab relates to Code Room, or what the learning arc looks like from beginner to staff. Home.jsx already shows all rooms as a list — a map that is also just a list adds nothing.
+
+What actually solves it: a visual overview that shows *how rooms connect and progress*. Not navigation (sidebar + Search handle that), but learning arc legibility. Proposed structure — two tracks shown visually:
+
+- **Analytics track:** Stat Foundations → Stats Room → Experiment Review → RCA Foundations → RCA Room → Metrics Foundations → Metrics Room → Growth Analytics
+- **SQL track:** SQL Lab (standalone, beginner-to-master self-contained)
+- **PM/judgment track:** Product Design → Prioritization → Behavioral → Estimation
+- **Tools layer (cross-track):** Defense Strategy, Company Tracks, Interview Simulator, MCQ Trainer
+
+Each node in the arc shows: room name, what it tests (foundations vs. practice vs. simulation), estimated time commitment. The arc is the thing Home.jsx doesn't show — Home.jsx shows rooms as peers, not as a progression.
+
+The keyboard shortcut badges (Tier 1 item above) can live on these nodes too, making this a unified entry point for both discoverability and speed.
+
+**Effort:** Medium. Needs a visual layout decision (SVG diagram? CSS grid with connecting lines?), new route (`/map`), and a data structure mapping rooms to track membership. ~1 dedicated session.
+
+**Do not build:** A "map" that is just a prettier Home.jsx with shortcut badges. That's Home.jsx with extra steps. The value is specifically the track relationships + progression signal that Home.jsx lacks.
+
+---
+
 ### Deep Dives (BlogBrowser) — IA + UX overhaul
 
 **Gate: do not build until ≥6 posts per major category have full content.** Currently 81 posts exist, 12 with full content, ~69 stubs. Any UI redesign that exposes posts before content is real will surface empty stubs — worse experience than the current flat list.
@@ -263,6 +286,8 @@ Same card-per-day format as current, but now the plan:
 - **"Analytics Failures" catalog** (from GenAI Lab Debug pattern) — 25 named failure patterns: bad event taxonomy, selection bias in A/B, cohort leakage, Simpson's Paradox in segmentation, metric definition drift, silent imputation, etc. Failure modes catalog for RCA, Metrics, Growth rooms.
 
 ### Features
+- **Keyboard shortcuts for all rooms** — extend the existing shortcut system (`q` → SQL Lab, `/` → Search) to cover every room with a 1–2 char code (e.g. `s` → Stats, `m` → Metrics, `r` → RCA, `e` → Experiment Review, `x` → Stat Foundations, etc.). Display the shortcut as a small muted badge on each room card in Home.jsx so users discover them passively. The shortcut hook already exists — this is ~50 lines in the keyboard handler + badge copy on cards. Low effort, real power-user value for returning users who want zero-click navigation. Do not add to a "map" page — the sidebar and Search already handle navigation. Shortcuts are for speed, not discovery.
+
 - **Code Room — SQL playground (Batch 0 feedback)** — the Run Code button only works for Python. SQL modules display code with no execution path. Ideal end state: lightweight in-browser SQL execution (e.g. sql.js / DuckDB-WASM) with a sample dataset pre-loaded per module so users can run and validate queries. Adds significant value for the SQL-strong/experimentation-weak Batch 1 profile.
 - ~~**Timer — play/pause + tooltip (Batch 0 feedback)**~~ — ✅ shipped V4.32.0. Shared `TimerButton` component; pause/resume toggle across 5 runners; tooltip on hover.
 - Stripe payment flow activation (link already scaffolded in `VITE_STRIPE_PAYMENT_LINK`) — requires flipping paywall gate + end-to-end test

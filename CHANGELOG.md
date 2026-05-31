@@ -4,6 +4,82 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.40.0] — 2026-05-31 [CONTENT / FIX]
+
+### SQL Lab — Session 1: Cull 39 duplicates, reclassify 27 problems, fix master10 bug
+
+Executed all three steps from the Session 1 investigative findings (SQL_LAB_PLAN.md).
+
+**Step A — Cull (39 problems removed):**
+- Easy (20): e27, e38, e41, e63, e75, e76, e79, e86–e96, e98, e99 — duplicate GROUP BY COUNT / WHERE / top-N skeletons
+- Medium (11): m27, m38, m44, m50, m55, m59, m63, m65, m67, m68, m69 — Easy-level problems mislabeled Medium, or duplicate CTEs
+- Hard (3): h36 (dup of h28), h43 (Easy mislabeled Hard), h46 (dup of h29)
+- Master (5): master15, master17, master20, master22, master24 — Medium-level problems mislabeled Master
+
+**Step B — Reclassify (27 problems, difficulty field only — no prompt/debrief edits):**
+- Hard → Easy (2): h16 (SUM arithmetic GROUP BY), h23 (NOT IN anti-join)
+- Hard → Medium (18): h14, h19, h20, h22, h25–h30, h35, h37, h39, h40, h44, h47, h49, h50 (single window functions, basic CTEs, multi-column GROUP BY)
+- Master → Hard (7): master06, master07, master11, master13, master16, master21, master23 (Medium-complexity multi-step, not Master caliber)
+
+**Step C — Bug fix:**
+- master10 solution: `GROUP BY a.user_id\)` → `GROUP BY a.user_id\n)` (CTE closing paren syntax)
+
+**Post-execution counts:**
+| Tier | Before | After |
+|---|---|---|
+| Easy | 100 | 82 |
+| Medium | 75 | 82 |
+| Hard | 50 | 34 |
+| Master | 25 | 13 |
+| **Total** | **250** | **211** |
+
+validate-data.js: PASS (sqlLabProblems.js). Vite build: ✓ 0 errors.
+15/15 spot checks passed (survivors intact, culled absent, reclassified correct, bug fixed).
+
+**Files:** `src/data/sqlLabProblems.js`, `NEXT.md`, `AUDITS.md`, `CHANGELOG.md`, `SQL_LAB_PLAN.md`
+
+---
+
+## [4.39.11-analysis] — 2026-05-31 [AUDIT / PLANNING — no code changes]
+
+### SQL Lab full investigative audit + overhaul plan finalized
+
+**What happened:**
+Full read-through of all 250 SQL Lab problems (h01–h50, all 25 Master, e13–e100, m01–m75). No code changes — findings only. Market research conducted on LeetCode, DataLemur, StrataScratch to anchor the difficulty rubric to real-world standards.
+
+**Critical finding — difficulty rubric was self-invented:**
+The original bank classified basic window functions (RANK, NTILE, SUM OVER) as Hard and anti-joins (NOT IN, LEFT JOIN IS NULL) as Medium. Market benchmark contradicts this: window functions = Medium on DataLemur/StrataScratch; anti-joins = Easy on LeetCode (183 is explicitly Easy). This error propagated through the entire Hard tier.
+
+**Cull list — 39 duplicate-skeleton problems:**
+- Easy (20): e27, e38, e41, e63, e75, e76, e79, e86–e96, e98, e99
+- Medium (11): m27, m38, m44, m50, m55, m59, m63, m65, m67, m68, m69
+- Hard (3): h36, h43, h46
+- Master (5): master15, master17, master20, master22, master24
+
+**Reclassification — 27 problems:**
+- h16, h23 → Easy (from Hard)
+- h14, h19, h20, h22, h25–h30, h35, h37, h39, h40, h44, h47, h49, h50 → Medium (from Hard)
+- master06, master07, master11, master13, master16, master21, master23 → Hard (from Master)
+
+**Gap list — 8 missing SQL patterns:**
+Date spine, ROWS BETWEEN, PERCENT_RANK/CUME_DIST, two-query-different-results, ambiguous-definition, semantically-wrong-SQL, recursive CTE, full cohort retention.
+
+**Architecture decisions finalized:**
+- Target problem count: 130 (50E/40M/25H/15Master) — down from 250
+- Target datamart count: 12 (5 existing + 7 new: gaming, logistics, marketplace, food_delivery, social_network, edtech, hr_analytics)
+- Master schemas: standalone, never shared
+- Session order: Sessions 2–3 (prompt rewrites) → Session 4 (schema design) → Session 5 (new problems) → Session 6 (phase 2 features)
+
+**Outputs:**
+- `SQL_LAB_PLAN.md` created — comprehensive single source of truth
+- `NEXT.md` updated — 6-session sequence with full detail
+- `DECISIONS.md` updated — rubric, target counts, sequencing rules added
+- `AUDITS.md` updated — audits #130–134 added
+
+**Files:** `SQL_LAB_PLAN.md` (created), `NEXT.md`, `DECISIONS.md`, `AUDITS.md`, `CHANGELOG.md`
+
+---
+
 ## [4.39.11] — 2026-05-31 [FEATURE / VISUAL]
 
 ### SQL Lab expected output sample rows + Progress 52-week heatmap

@@ -39,6 +39,88 @@ Start here when running an audit. Add rows as new types emerge.
 
 ---
 
+## Part XXVIII — V4.39.11 SQL Lab Content Quality Audit (Investigative — no code changes)
+
+### 130. ✅ Content — SQL Lab 39 duplicate-skeleton problems removed (V4.40.0)
+
+**Version:** Open — findings produced V4.39.11; execution pending Session 1
+**Type:** Content Integrity / Coverage
+
+Full investigative audit of all 250 SQL problems. 39 problems identified as duplicate skeletons — same primary SQL clause pattern applied to a different column or datamart domain with no added SQL concept. Breakdown: 20 Easy, 11 Medium, 3 Hard, 5 Master.
+
+Easy cuts (20): e27, e38, e41, e63, e75, e76, e79, e86–e96, e98, e99 — all are repeat GROUP BY COUNT, WHERE filter, or top-N patterns on different columns.
+Medium cuts (11): m27, m38, m44, m50, m55, m59, m63, m65, m67, m68, m69 — Easy-level problems mislabeled Medium, or duplicate CTEs/window functions.
+Hard cuts (3): h36 (duplicate of h28), h43 (Easy-level mislabeled Hard), h46 (duplicate of h29).
+Master cuts (5): master15, master17, master20, master22, master24 — Medium-level problems mislabeled Master.
+
+**Fix:** Removed in V4.40.0. Full list in SQL_LAB_PLAN.md Section 2A.
+**Files:** `src/data/sqlLabProblems.js`
+
+---
+
+### 131. ✅ Content — SQL Lab 27 difficulty misclassifications corrected (V4.40.0)
+
+**Version:** Open — findings produced V4.39.11; execution pending Session 1
+**Type:** Content Integrity / Source material
+
+Market research on LeetCode, DataLemur, StrataScratch revealed systemic over-classification. The original bank classified single window functions and anti-joins as Hard; market standard places both at Medium and Easy respectively.
+
+Critical corrections:
+- h16, h23 → Easy (from Hard) — arithmetic GROUP BY and NOT IN anti-join are Easy by market standard
+- h14, h19, h20, h22, h25–h30, h35, h37, h39, h40, h44, h47, h49, h50 → Medium (from Hard) — all involve a single window function, one CTE, or JOIN+GROUP BY without multi-concept chaining
+- master06, master07, master11, master13, master16, master21, master23 → Hard (from Master) — Medium-complexity multi-step problems that don't meet the Master threshold (4+ CTEs, cohort retention, combinatorics)
+
+**Fix:** Applied in V4.40.0 — `difficulty:` field only, no prompt/debrief edits. Full table in SQL_LAB_PLAN.md Section 2B.
+**Files:** `src/data/sqlLabProblems.js`
+
+---
+
+### 132. ⚠️ Content — SQL Lab 8 SQL patterns missing from problem bank
+
+**Version:** Open — findings produced V4.39.11; new problems to be authored in Session 5
+**Type:** Coverage
+
+After culling, these patterns have zero or near-zero representation:
+1. Date spine / gap-filling (recursive CTE + LEFT JOIN to fill missing dates)
+2. ROWS BETWEEN frame specification (explicit named frame clause as the actual test)
+3. PERCENT_RANK / CUME_DIST (NTILE exists but percentile rank functions absent)
+4. Two valid queries producing different results (NULL handling or JOIN type differences)
+5. Ambiguous-definition problems (metric itself undefined — candidate must interpret)
+6. Syntactically valid but semantically wrong SQL (produces wrong result, no error)
+7. Recursive CTE / hierarchy traversal (org chart, referral tree, category hierarchy)
+8. Full cohort retention curve (month 0/1/2/3 in one result set)
+
+**Fix:** Author new problems covering these patterns in Session 5, using new datamarts from Session 4. Full gap list in SQL_LAB_PLAN.md Section 2D.
+**Files:** `src/data/sqlLabProblems.js`, `src/data/sqlLabDatamarts.js`
+
+---
+
+### 133. ⚠️ Content — SQL Lab prompt framing 100% technical-spec; stakeholder-request missing
+
+**Version:** Open — classification in Session 2; rewrites in Session 3
+**Type:** Content Integrity / Source material
+
+All 250 current problems use technical-spec framing: precisely stated columns, output described, business context is set dressing. This is StrataScratch-equivalent and fails to differentiate PAL. The differentiating layer — stakeholder-request framing where the candidate must interpret an ambiguous ask — is entirely absent.
+
+Target mix: Easy 80/20, Medium 60/40, Hard 50/50, Master 40/60 (technical-spec/stakeholder-request). Stakeholder-request debrief format: (1) what stakeholder wants, (2) ambiguities resolved, (3) SQL approach, (4) what weak SQL looks like, (5) interviewer follow-up.
+
+**Fix:** Session 2 classifies every survivor; Session 3 rewrites conversion candidates. Full instructions in SQL_LAB_PLAN.md Section 4.
+**Files:** `src/data/sqlLabProblems.js`
+
+---
+
+### 134. ⚠️ Architecture — SQL Lab schema fragmentation insufficient (5 datamarts for 130 problems)
+
+**Version:** Open — new datamarts to be designed in Session 4
+**Type:** Architecture / Content Integrity
+
+5 shared datamarts across 130 problems = 26 problems per datamart average. Candidates practicing sequentially will memorize the schema layout, breaking the "business question only" framing. Target: 12 datamarts, 10–12 problems per datamart. New datamarts: gaming, logistics, marketplace, food_delivery, social_network, edtech, hr_analytics. Master problems: standalone schema per problem (never shared).
+
+**Fix:** Design 7 new datamarts in Session 4. Full spec in SQL_LAB_PLAN.md Section 3.
+**Files:** `src/data/sqlLabDatamarts.js`
+
+---
+
 ## Part XXVII — V4.39.8–V4.39.11 SQL Lab UX + Progress Heatmap Audit
 
 ### 126. ✅ UX — SQL Lab independent scroll (V4.39.8)
