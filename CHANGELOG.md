@@ -4,6 +4,34 @@ Full build lineage. Covers what changed, why, what was added, what was fixed, an
 
 ---
 
+## [4.41.0] — 2026-05-31 [CONTENT]
+
+### SQL Lab — Session 3: Stakeholder-Request Prompt + Debrief Rewrites
+
+Rewrote prompts and debriefs for all 74 conversion candidates identified in Session 2. No structural changes — `expectedColumns`, `expectedRowCount`, `checkValues`, and `solution` fields untouched.
+
+**Scope:**
+- 16 Easy prompts: natural stakeholder voice, removed explicit column specs
+- 33 Medium prompts + debriefs: removed technique names and prescribed output formulas; 5-section debrief structure applied
+- 17 Hard prompts + debriefs: pure business question framing, zero SQL scaffolding; 5-section debrief
+- 8 Master prompts + debriefs: 2–3 sentence business question only; debrief covers CTE architecture, scoring rule derivation, threshold decisions
+
+**5-section debrief format applied to all 57 Medium/Hard/Master rewrites:**
+1. What the stakeholder wants
+2. Ambiguities resolved
+3. SQL approach
+4. What weak SQL looks like
+5. Interviewer follow-up
+
+**Bug found and fixed:** Python regex replacement interprets `\n` in replacement strings as literal newlines — single-quoted JS strings cannot span lines. Fixed by post-processing all debrief fields with a character-by-character scanner that converts actual newlines to `\n` escape sequences. 58 fields corrected total.
+
+validate-data.js: PASS (sqlLabProblems.js). Vite build: ✓ 0 errors.
+6/6 spot checks passed (m39, m57, h01, h32, master01, master08 — prompts correct in file).
+
+**Files:** `src/data/sqlLabProblems.js`, `NEXT.md`, `AUDITS.md`, `CHANGELOG.md`, `SQL_LAB_PLAN.md`
+
+---
+
 ## [4.40.0] — 2026-05-31 [CONTENT / FIX]
 
 ### SQL Lab — Session 1: Cull 39 duplicates, reclassify 27 problems, fix master10 bug

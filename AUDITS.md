@@ -95,7 +95,7 @@ After culling, these patterns have zero or near-zero representation:
 
 ---
 
-### 133. ⚠️ Content — SQL Lab prompt framing 100% technical-spec; stakeholder-request missing
+### 133. ✅ Content — SQL Lab prompt framing 100% technical-spec; stakeholder-request missing (V4.41.0)
 
 **Version:** Open — classification in Session 2; rewrites in Session 3
 **Type:** Content Integrity / Source material
@@ -104,7 +104,7 @@ All 250 current problems use technical-spec framing: precisely stated columns, o
 
 Target mix: Easy 80/20, Medium 60/40, Hard 50/50, Master 40/60 (technical-spec/stakeholder-request). Stakeholder-request debrief format: (1) what stakeholder wants, (2) ambiguities resolved, (3) SQL approach, (4) what weak SQL looks like, (5) interviewer follow-up.
 
-**Fix:** Session 2 classifies every survivor; Session 3 rewrites conversion candidates. Full instructions in SQL_LAB_PLAN.md Section 4.
+**Fix:** Session 2 classified all 211 survivors; Session 3 rewrote all 74 conversion candidates (16 Easy / 33 Medium / 17 Hard / 8 Master) in V4.41.0. Full rewrite rules in SQL_LAB_PLAN.md Section 4.
 **Files:** `src/data/sqlLabProblems.js`
 
 ---

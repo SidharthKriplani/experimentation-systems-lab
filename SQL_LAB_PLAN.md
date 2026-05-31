@@ -2,7 +2,7 @@
 
 Single source of truth for all SQL Lab decisions, findings, architecture choices, and session sequencing. Created after the Session 1 investigative audit (2026-05-31). Update this file at the end of every SQL Lab session.
 
-**Current version:** V4.40.0 (Session 1 executed; Session 2 classification complete)
+**Current version:** V4.41.0 (Sessions 1–3 complete)
 **Last updated:** 2026-05-31
 
 ---
@@ -18,7 +18,8 @@ Single source of truth for all SQL Lab decisions, findings, architecture choices
 | CHANGELOG.md updated | ✅ Done |
 | Session 1 execution (cull + reclassify + bug fix) | ✅ Done — V4.40.0 |
 | Session 2 classification (all 211 prompts) | ✅ Done — results in Section 7 |
-| Sessions 3–6 | ⏳ Pending |
+| Session 3 rewrites (74 prompts + debriefs) | ✅ Done — V4.41.0 |
+| Sessions 4–6 | ⏳ Pending |
 
 ---
 
