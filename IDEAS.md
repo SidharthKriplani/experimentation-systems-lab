@@ -145,6 +145,16 @@ Family 6 — Data Traps (across all): divide-by-zero, integer division, duplicat
 - ~~**Dark mode palette low-brightness readability** (audit #74)~~ — ✅ shipped V4.25.3/V4.25.4 (full palette rebuild: bg #111520, surface #191e30, lifted semantic bg colors; incremental V4.25.3 pass was not visible on real devices, required full rebuild in V4.25.4)
 - ~~**Duplicate sign-in CTA in sidebar and topbar** (audit #76)~~ — ✅ fixed V4.26.1 (removed sign-in button from Sidebar.jsx; topbar is canonical mobile sign-in location)
 
+### Distribution / Go-to-Market
+
+*Source signal: practitioner post (May 2026) — quiz platform builder earned £1k+ via automated video pipeline + Etsy PDF. Validated model: free content → paid conversion, bypass SEO via automation.*
+
+- **Etsy summary PDFs** — low-effort, real monetisation signal. PAL has the content to produce "A/B Testing Interview Cheat Sheet", "SQL for Product Analysts Quick Reference", "Metrics Framework 1-pager". Each is a 2-hour build. List at £4–9. Tests willingness to pay before Stripe goes live. No code required.
+- **TikTok / YouTube Shorts video pipeline** — automated shorts from PAL\'s question bank. Stack: Amazon Polly (TTS) → HTML Canvas (question image frame) → stitch into 30–60s video → auto-upload. One video per SQL problem or RCA case. "Can you answer this product analytics interview question?" Distribution without SEO competition. 250 SQL problems alone = 250 pieces of content. Do after Stripe is live so free → paid funnel exists.
+- **Free value → paid conversion pattern** — validated by post: 10k TikTok followers giving away answers, then converted to course sales. PAL\'s beta-free access follows same logic. Don\'t rush the paywall flip — build audience on free first, then convert.
+
+*Note: "Video content" in Retired refers to PAL housing passive video lessons as a product feature. TikTok/Shorts pipeline is a distribution channel, not a product feature — no conflict.*
+
 ---
 
 ## Tier 2 — High impact, more effort

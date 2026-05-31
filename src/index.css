@@ -303,6 +303,25 @@ table { border-collapse: collapse; }
   flex-direction: column;
   overflow: hidden;
 }
+/* SQL Lab — fixed shell anchored to viewport, bypasses flex chain entirely */
+.sql-lab-fixed-shell {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-w);
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+  z-index: 5;
+}
+@media (max-width: 768px) {
+  .sql-lab-fixed-shell {
+    left: 0;
+    top: calc(46px + env(safe-area-inset-top, 0px));
+  }
+}
 
 /* Mobile top bar — hidden on desktop */
 .mobile-topbar {
